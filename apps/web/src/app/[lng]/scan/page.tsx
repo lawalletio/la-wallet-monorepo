@@ -2,6 +2,7 @@
 
 import Navbar from '@/components/Layout/Navbar'
 import { Button, Flex, Modal, Text } from '@/components/UI'
+import NimiqQrScanner from 'qr-scanner'
 import QrScanner from '@/components/UI/Scanner/Scanner'
 import { regexURL } from '@/constants/constants'
 import { useTranslation } from '@/context/TranslateContext'
@@ -30,7 +31,7 @@ export default function Page() {
     }
   }
 
-  const handleScan = (result: any) => {
+  const handleScan = (result: NimiqQrScanner.ScanResult) => {
     if (!result || !result.data) return
 
     const isURL: boolean = regexURL.test(result.data)

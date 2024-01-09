@@ -34,11 +34,7 @@ import {
 import config from '@/constants/config'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
 import useErrors from '@/hooks/useErrors'
-import {
-  lnurl_encode,
-  requestInvoice,
-  buildZapRequestEvent
-} from '@repo/utils'
+import { lnurl_encode, requestInvoice, buildZapRequestEvent } from '@repo/utils'
 import theme from '@/styles/theme'
 import { useRouter } from 'next/navigation'
 import { useSubscription, useWalletContext } from '@repo/hooks'

@@ -24,8 +24,8 @@ export const Input = styled.input<InputCustomProps>`
       props.$showValidate
         ? theme.colors.gray20
         : props.$isSuccess
-        ? theme.colors.success
-        : theme.colors.error};
+          ? theme.colors.success
+          : theme.colors.error};
 
   color: ${theme.colors.text};
   font-size: 0.8em;
@@ -156,8 +156,8 @@ export const Textarea = styled.textarea<InputCustomProps>`
       props.$showValidate
         ? theme.colors.gray20
         : props.$isSuccess
-        ? theme.colors.success
-        : theme.colors.error};
+          ? theme.colors.success
+          : theme.colors.error};
 
   color: ${theme.colors.text};
   font-size: 0.8em;

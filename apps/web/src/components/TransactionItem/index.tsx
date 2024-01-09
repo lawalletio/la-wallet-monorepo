@@ -10,11 +10,7 @@ import { Accordion, AccordionBody, Flex, Text } from '@/components/UI'
 
 import config from '@/constants/config'
 import { useTranslation } from '@/context/TranslateContext'
-import {
-  dateFormatter,
-  formatToPreference,
-  defaultCurrency
-} from '@repo/hooks'
+import { dateFormatter, formatToPreference, defaultCurrency } from '@repo/hooks'
 import { unescapingText } from '@/utils'
 import theme from '@/styles/theme'
 import {

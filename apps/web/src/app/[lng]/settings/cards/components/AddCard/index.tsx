@@ -2,10 +2,7 @@
 import { Alert, Button, Flex, Modal, Text } from '@/components/UI'
 import { useTranslation } from '@/context/TranslateContext'
 import useAlert, { AlertTypes } from '@/hooks/useAlerts'
-import {
-  requestCardActivation,
-  buildCardActivationEvent
-} from '@repo/utils'
+import { requestCardActivation, buildCardActivationEvent } from '@repo/utils'
 import { useWalletContext } from '@repo/hooks'
 import { NostrEvent } from '@nostr-dev-kit/ndk'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
