@@ -6,7 +6,8 @@
     "build": "turbo build --no-cache",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "test": "turbo run build --filter={apps/web}"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
