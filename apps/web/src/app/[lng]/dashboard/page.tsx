@@ -72,6 +72,8 @@ export default function Page() {
     router.prefetch('/scan')
   }, [router])
 
+  alert("alerta de prueba");
+
   useEffect(() => {
     const userMadeBackup: boolean = Boolean(
       localStorage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`) || false
