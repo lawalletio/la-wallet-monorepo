@@ -1,10 +1,6 @@
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js'
 import { parseContent } from '@repo/utils'
-import {
-  type UserIdentity,
-  defaultIdentity,
-  getUsername
-} from '@repo/utils'
+import { type UserIdentity, defaultIdentity, getUsername } from '@repo/utils'
 import { getPublicKey } from 'nostr-tools'
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 

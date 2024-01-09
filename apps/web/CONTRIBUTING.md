@@ -18,7 +18,7 @@ feat(lang): spanish language added
 |
 +-------------> Type: feat, fix, chore, build, ci, docs, style, refactor, perf, test
 ```
- 
+
 ### Commit Types
 
 - `build`: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)

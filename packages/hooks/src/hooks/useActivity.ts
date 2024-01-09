@@ -1,7 +1,7 @@
 import {
   LaWalletKinds,
   LaWalletTags,
-  type  Transaction,
+  type Transaction,
   TransactionDirection,
   TransactionStatus,
   TransactionType,
@@ -172,19 +172,18 @@ export const useActivity = ({
     const statusTag: string | undefined = getTag(statusEvent.tags, 't')
 
     if (statusTag) {
-
       const isError: boolean = statusTag.includes('error')
-  
+
       if (
         transaction.direction === TransactionDirection.INCOMING &&
         statusTag.includes('inbound')
       )
         transaction.type = TransactionType.LN
-  
+
       transaction.status = isError
         ? TransactionStatus.ERROR
         : TransactionStatus.CONFIRMED
-  
+
       if (isError) transaction.errors = [parsedContent]
       transaction.events.push(await statusEvent.toNostrEvent())
     }
@@ -196,7 +195,7 @@ export const useActivity = ({
     (events: NDKEvent[], eventId: string) => {
       return events.find(event => {
         const associatedEvents: string[] = getMultipleTags(event.tags, 'e')
-        return (associatedEvents.includes(eventId)) ? event : undefined
+        return associatedEvents.includes(eventId) ? event : undefined
       })
     },
     []
@@ -211,13 +210,13 @@ export const useActivity = ({
       const subkind: string | undefined = getTag(e.tags, 't')
       if (subkind) {
         const isStatusEvent: boolean = statusTags.includes(subkind)
-  
+
         if (isStatusEvent) {
           statusEvents.push(e)
           return
         } else {
           const eTags: string[] = getMultipleTags(e.tags, 'e')
-  
+
           if (eTags.length) {
             const isRefundEvent = events.find(event => eTags.includes(event.id))
             isRefundEvent ? refundEvents.push(e) : startedEvents.push(e)
@@ -226,7 +225,7 @@ export const useActivity = ({
             const existTransaction: boolean = Boolean(
               startedEvents.find(startEvent => startEvent.id === e.id)
             )
-  
+
             if (!existTransaction) startedEvents.push(e)
             return
           }
@@ -311,9 +310,10 @@ export const useActivity = ({
 
       if (cachedTxs.length) {
         const lastCached: number = cachedTxs.length
-          ? 1 + cachedTxs[0]!.events[cachedTxs[0]!.events.length - 1]!.created_at
+          ? 1 +
+            cachedTxs[0]!.events[cachedTxs[0]!.events.length - 1]!.created_at
           : 0
-  
+
         setActivityInfo({
           subscription: [],
           idsLoaded: cachedTxs.map(tx => tx.id.toString()),

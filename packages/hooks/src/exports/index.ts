@@ -8,10 +8,36 @@ export { useTokenBalance } from '../hooks/useTokenBalance.js'
 export { useUser } from '../hooks/useUser.js'
 
 export { NDKProvider, useNDK, NDKContext } from '../context/NDKContext.js'
-export { WalletContext, WalletProvider, useWalletContext } from '../context/WalletContext.js'
+export {
+  WalletContext,
+  WalletProvider,
+  useWalletContext
+} from '../context/WalletContext.js'
 
-export { type AvailableCurrencies, type UserConfigProps, defaultCurrency, defaultUserConfig, CurrenciesList, CurrenciesMetadata  } from '../types/config.js'
-export { type AvailableLanguages, type DictionaryEntry, type ReplacementParams, LanguagesList, defaultLocale } from '../types/translations.js'
+export {
+  type AvailableCurrencies,
+  type UserConfigProps,
+  defaultCurrency,
+  defaultUserConfig,
+  CurrenciesList,
+  CurrenciesMetadata
+} from '../types/config.js'
+export {
+  type AvailableLanguages,
+  type DictionaryEntry,
+  type ReplacementParams,
+  LanguagesList,
+  defaultLocale
+} from '../types/translations.js'
 
-export { formatter, decimalsToUse, roundNumber, roundToDown, formatAddress, dateFormatter, upperText, lowerText, formatToPreference } from '../utils/formatter.js'
-
+export {
+  formatter,
+  decimalsToUse,
+  roundNumber,
+  roundToDown,
+  formatAddress,
+  dateFormatter,
+  upperText,
+  lowerText,
+  formatToPreference
+} from '../utils/formatter.js'

@@ -91,7 +91,10 @@ export const useCardConfig = (): CardConfigReturns => {
       }
     }
 
-    buildAndBroadcastCardConfig(new_card_config as CardConfigPayload, identity.privateKey)
+    buildAndBroadcastCardConfig(
+      new_card_config as CardConfigPayload,
+      identity.privateKey
+    )
   }
 
   const processReceivedEvent = async (event: NDKEvent) => {
@@ -105,15 +108,16 @@ export const useCardConfig = (): CardConfigReturns => {
       )
 
       const subkind: string | undefined = getTag(nostrEv.tags, 't')
-      if (subkind) setCards(prev => {
-        return {
-          ...prev,
-          loadedAt: nostrEv.created_at + 1,
-          [subkind === ConfigTypes.DATA ? 'data' : 'config']:
-            parseContent(parsedEncryptedData),
-          loading: false
-        }
-      })
+      if (subkind)
+        setCards(prev => {
+          return {
+            ...prev,
+            loadedAt: nostrEv.created_at + 1,
+            [subkind === ConfigTypes.DATA ? 'data' : 'config']:
+              parseContent(parsedEncryptedData),
+            loading: false
+          }
+        })
     } catch (err) {
       console.log(err)
       setCards({

@@ -164,8 +164,8 @@ export const removeLightningStandard = (str: string) => {
   return lowStr.startsWith('lightning://')
     ? lowStr.replace('lightning://', '')
     : lowStr.startsWith('lightning:')
-    ? lowStr.replace('lightning:', '')
-    : lowStr
+      ? lowStr.replace('lightning:', '')
+      : lowStr
 }
 
 export const formatTransferData = async (
