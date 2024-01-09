@@ -1,0 +1,68 @@
+{
+  "name": "lawallet-front",
+  "version": "1.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format": "pnpm prettier --write ."
+  },
+  "dependencies": {
+    "@bitcoin-design/bitcoin-icons-react": "^0.1.10",
+    "@ducanh2912/next-pwa": "9.7.2",
+    "@formatjs/intl-localematcher": "^0.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@nostr-dev-kit/ndk": "^2.3.2",
+    "@repo/hooks": "*",
+    "@repo/utils": "*",
+    "@uidotdev/usehooks": "^2.4.1",
+    "@unllamas/components": "^1.4.12",
+    "bech32": "^2.0.0",
+    "confetti-js": "^0.0.18",
+    "date-fns": "^3.0.6",
+    "lottie-react": "^2.4.0",
+    "negotiator": "^0.6.3",
+    "next": "13.5.4",
+    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0",
+    "postcss": "8.4.33",
+    "qr-scanner": "^1.4.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-qr-code": "^2.0.12",
+    "react-verification-input": "^4.0.0",
+    "styled-components": "^6.1.7",
+    "shallowequal": "1.1.0",
+    "@emotion/is-prop-valid": "1.2.1",
+    "@emotion/unitless": "0.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.10.5",
+    "@types/react": "18.2.45",
+    "@types/react-dom": "18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "autoprefixer": "10.4.16",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.1",
+    "typescript": "5.3.3"
+  },
+  "overrides": {
+    "nostr-tools": "npm:@lawallet/nostr-tools"
+  },
+  "pnpm": {
+    "overrides": {
+      "nostr-tools": "npm:@lawallet/nostr-tools"
+    }
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  }
+}
