@@ -175,7 +175,7 @@ importers:
         version: 2.3.2(typescript@5.3.3)
       "@repo/utils":
         specifier: "*"
-        version: link:../utils
+        version: link:utils
       "@types/node":
         specifier: ^20.10.6
         version: 20.10.7
