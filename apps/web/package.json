@@ -54,15 +54,5 @@
   },
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
-  },
-  "pnpm": {
-    "overrides": {
-      "nostr-tools": "npm:@lawallet/nostr-tools"
-    }
-  },
-  "browser": {
-    "fs": false,
-    "path": false,
-    "os": false
   }
 }
