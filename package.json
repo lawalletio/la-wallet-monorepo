@@ -1,10 +1,7 @@
 {
   "name": "lawallet-monorepo",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "type": "module",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -20,11 +17,6 @@
   "packageManager": "pnpm@8.9.0",
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
-  },
-  "npm": {
-    "overrides": {
-      "nostr-tools": "npm:@lawallet/nostr-tools"
-    }
   },
   "pnpm": {
     "overrides": {
