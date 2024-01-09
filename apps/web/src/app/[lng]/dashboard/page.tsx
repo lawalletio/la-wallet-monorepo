@@ -78,7 +78,6 @@ export default function Page() {
     )
 
     setShowBanner(!userMadeBackup ? 'backup' : 'none')
-    alert('probando re-deploy vercel')
   }, [])
 
   return (
