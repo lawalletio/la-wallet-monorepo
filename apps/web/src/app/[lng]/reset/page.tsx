@@ -11,9 +11,9 @@ import {
   buildCardActivationEvent,
   cardResetCaim,
   generateUserIdentity
-} from '@repo/utils'
+} from '@lawallet/utils'
 import theme from '@/styles/theme'
-import { useWalletContext } from '@repo/hooks'
+import { useWalletContext } from '@lawallet/hooks'
 import { NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'

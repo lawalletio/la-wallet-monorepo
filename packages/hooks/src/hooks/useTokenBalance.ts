@@ -5,11 +5,11 @@ import {
   type NDKKind,
   type NostrEvent
 } from '@nostr-dev-kit/ndk'
-import { LaWalletKinds } from '@repo/utils'
+import { LaWalletKinds } from '@lawallet/utils'
 import config from '../constants/config.js'
 import { useNDK } from '../context/NDKContext.js'
 import { useSubscription } from './useSubscription.js'
-import { type TokenBalance } from '@repo/utils'
+import { type TokenBalance } from '@lawallet/utils'
 
 export interface UseTokenBalanceReturn {
   balance: TokenBalance

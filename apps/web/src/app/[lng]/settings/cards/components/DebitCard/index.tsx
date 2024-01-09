@@ -6,7 +6,7 @@ import { CardImage, ConfigCard } from './style'
 
 import Pause from '@/components/Icons/Pause'
 import Play from '@/components/Icons/Play'
-import { CardPayload, CardStatus, Design } from '@repo/utils'
+import { CardPayload, CardStatus, Design } from '@lawallet/utils'
 
 interface ComponentProps {
   card: {

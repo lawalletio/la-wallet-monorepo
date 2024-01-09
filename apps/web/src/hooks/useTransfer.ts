@@ -10,9 +10,9 @@ import {
   defaultTransfer,
   requestInvoice,
   broadcastEvent
-} from '@repo/utils'
+} from '@lawallet/utils'
 import { addQueryParameter, escapingBrackets } from '@/utils'
-import { useNDK, useSubscription } from '@repo/hooks'
+import { useNDK, useSubscription } from '@lawallet/hooks'
 import { NDKEvent, NDKKind, NDKTag, NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getPublicKey, nip19 } from 'nostr-tools'

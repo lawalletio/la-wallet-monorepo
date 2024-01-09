@@ -4,7 +4,7 @@ import Container from '@/components/Layout/Container'
 import { Button, Flex } from '@/components/UI'
 
 import { TokenList } from './style'
-import { useWalletContext, CurrenciesList } from '@repo/hooks'
+import { useWalletContext, CurrenciesList } from '@lawallet/hooks'
 
 export default function Component() {
   const { configuration } = useWalletContext()

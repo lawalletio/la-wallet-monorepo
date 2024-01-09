@@ -21,7 +21,7 @@ import config from '@/constants/config'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
 import { useCreateIdentity } from '@/hooks/useCreateIdentity'
 import { useTranslation } from '@/context/TranslateContext'
-import { validateNonce } from '@repo/utils'
+import { validateNonce } from '@lawallet/utils'
 import { ChangeEvent, useEffect, useState } from 'react'
 
 export default function Page() {

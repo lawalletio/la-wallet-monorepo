@@ -6,7 +6,7 @@ import Navbar from '@/components/Layout/Navbar'
 import TransactionItem from '@/components/TransactionItem'
 import { Button, Divider, Flex } from '@/components/UI'
 import { useTranslation } from '@/context/TranslateContext'
-import { useWalletContext } from '@repo/hooks'
+import { useWalletContext } from '@lawallet/hooks'
 import { useRouter } from 'next/navigation'
 
 export default function Page() {

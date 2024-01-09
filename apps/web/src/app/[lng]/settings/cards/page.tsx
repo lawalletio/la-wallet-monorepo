@@ -9,8 +9,8 @@ import { Divider, Flex } from '@/components/UI'
 import AddNewCardModal from './components/AddCard'
 import DebitCard from './components/DebitCard'
 import EmptyCards from './components/EmptyCards'
-import { useCardConfig } from '@repo/hooks'
-import { Design } from '@repo/utils'
+import { useCardConfig } from '@lawallet/hooks'
+import { Design } from '@lawallet/utils'
 
 export default function Page() {
   const { cards, toggleCardStatus } = useCardConfig()

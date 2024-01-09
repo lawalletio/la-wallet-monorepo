@@ -12,7 +12,7 @@ import {
   LanguagesList,
   ReplacementParams,
   defaultLocale
-} from '@repo/hooks'
+} from '@lawallet/hooks'
 
 interface IUseTranslation {
   lng: AvailableLanguages

@@ -3,8 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@repo/utils": ["./packages/utils/dist"],
-      "@repo/hooks": ["./packages/hooks/dist"]
+      "@lawallet/utils": ["./packages/utils/dist"],
+      "@lawallet/hooks": ["./packages/hooks/dist"]
     }
   }
 }

@@ -8,12 +8,12 @@ import {
   UserIdentity,
   buildCardActivationEvent,
   buildIdentityEvent
-} from '@repo/utils'
+} from '@lawallet/utils'
 import { NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
 import useErrors, { IUseErrors } from './useErrors'
-import { useWalletContext } from '@repo/hooks'
+import { useWalletContext } from '@lawallet/hooks'
 
 export interface AccountProps {
   nonce: string

@@ -1,5 +1,5 @@
 import { useTranslation } from '@/context/TranslateContext'
-import { ReplacementParams } from '@repo/hooks'
+import { ReplacementParams } from '@lawallet/hooks'
 import { useState } from 'react'
 
 export interface IError {

@@ -9,7 +9,7 @@ import {
   parseContent,
   buildCardConfigEvent,
   parseMultiNip04Event
-} from '@repo/utils'
+} from '@lawallet/utils'
 import {
   NDKEvent,
   NDKKind,

@@ -29,10 +29,10 @@ import {
   TransactionType,
   getUsername,
   getMultipleTags
-} from '@repo/utils'
+} from '@lawallet/utils'
 import { useEffect, useState } from 'react'
 import RecipientElement from './components/RecipientElement'
-import { useWalletContext } from '@repo/hooks'
+import { useWalletContext } from '@lawallet/hooks'
 
 export default function Page() {
   const { t } = useTranslation()

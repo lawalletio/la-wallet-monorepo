@@ -7,7 +7,7 @@ import {
   TransactionType,
   getMultipleTags,
   getTag
-} from '@repo/utils'
+} from '@lawallet/utils'
 import * as React from 'react'
 
 import {
@@ -17,7 +17,7 @@ import {
   type NostrEvent
 } from '@nostr-dev-kit/ndk'
 
-import { parseContent } from '@repo/utils'
+import { parseContent } from '@lawallet/utils'
 import { type Event, nip26 } from 'nostr-tools'
 import config from '../constants/config.js'
 import { CACHE_TXS_KEY } from '../constants/constants.js'

@@ -14,11 +14,11 @@ import {
 } from '@/components/UI'
 import { CACHE_BACKUP_KEY } from '@/constants/constants'
 import useErrors from '@/hooks/useErrors'
-import { getUsername, UserIdentity } from '@repo/utils'
+import { getUsername, UserIdentity } from '@lawallet/utils'
 import { getPublicKey, nip19 } from 'nostr-tools'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
-import { useWalletContext } from '@repo/hooks'
+import { useWalletContext } from '@lawallet/hooks'
 
 export default function Page() {
   const {

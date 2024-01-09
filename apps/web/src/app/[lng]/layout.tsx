@@ -17,7 +17,7 @@ import {
   NDKProvider,
   WalletProvider,
   defaultLocale
-} from '@repo/hooks'
+} from '@lawallet/hooks'
 import AuthProvider from '@/components/Auth/AuthProvider'
 
 interface ProviderProps {

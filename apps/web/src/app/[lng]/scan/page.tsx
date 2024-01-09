@@ -10,7 +10,7 @@ import {
   detectTransferType,
   removeLightningStandard,
   TransferTypes
-} from '@repo/utils'
+} from '@lawallet/utils'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 

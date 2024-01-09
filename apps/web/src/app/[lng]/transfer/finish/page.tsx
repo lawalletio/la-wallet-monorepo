@@ -16,11 +16,11 @@ import {
 } from '@/components/UI'
 import { useTransferContext } from '@/context/TransferContext'
 import { useTranslation } from '@/context/TranslateContext'
-import { formatAddress, formatToPreference } from '@repo/hooks'
-import { TransferTypes } from '@repo/utils'
+import { formatAddress, formatToPreference } from '@lawallet/hooks'
+import { TransferTypes } from '@lawallet/utils'
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
-import { useWalletContext } from '@repo/hooks'
+import { useWalletContext } from '@lawallet/hooks'
 
 export default function Page() {
   const { lng, t } = useTranslation()

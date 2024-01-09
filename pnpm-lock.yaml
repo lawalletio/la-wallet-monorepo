@@ -47,15 +47,15 @@ importers:
       '@fortawesome/react-fontawesome':
         specifier: ^0.2.0
         version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.1)(react@18.2.0)
+      '@lawallet/hooks':
+        specifier: '*'
+        version: link:../../packages/hooks
+      '@lawallet/utils':
+        specifier: '*'
+        version: link:../../packages/utils
       '@nostr-dev-kit/ndk':
         specifier: ^2.3.2
         version: 2.3.2(typescript@5.3.3)
-      '@repo/hooks':
-        specifier: '*'
-        version: link:../../packages/hooks
-      '@repo/utils':
-        specifier: '*'
-        version: link:../../packages/utils
       '@uidotdev/usehooks':
         specifier: ^2.4.1
         version: 2.4.1(react-dom@18.2.0)(react@18.2.0)
@@ -171,12 +171,12 @@ importers:
 
   packages/hooks:
     devDependencies:
+      '@lawallet/utils':
+        specifier: '*'
+        version: link:../utils
       '@nostr-dev-kit/ndk':
         specifier: ^2.3.2
         version: 2.3.2(typescript@5.3.3)
-      '@repo/utils':
-        specifier: '*'
-        version: link:../utils
       '@types/node':
         specifier: ^20.10.6
         version: 20.10.7

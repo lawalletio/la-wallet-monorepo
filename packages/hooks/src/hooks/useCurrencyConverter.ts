@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { parseContent } from '@repo/utils'
+import { parseContent } from '@lawallet/utils'
 import { type AvailableCurrencies } from '../types/config.js'
 import { decimalsToUse, roundToDown } from '../utils/formatter.js'
 

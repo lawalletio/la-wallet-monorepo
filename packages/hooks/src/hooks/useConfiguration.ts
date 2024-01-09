@@ -3,7 +3,7 @@ import {
   type AvailableCurrencies,
   defaultUserConfig
 } from '../types/config.js'
-import { parseContent } from '@repo/utils'
+import { parseContent } from '@lawallet/utils'
 import * as React from 'react'
 
 export type ConfigReturns = {

@@ -1,4 +1,4 @@
-import { useWalletContext } from '@repo/hooks'
+import { useWalletContext } from '@lawallet/hooks'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation'
 import React, { useLayoutEffect } from 'react'
 

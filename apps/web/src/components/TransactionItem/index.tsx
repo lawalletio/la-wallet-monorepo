@@ -10,7 +10,11 @@ import { Accordion, AccordionBody, Flex, Text } from '@/components/UI'
 
 import config from '@/constants/config'
 import { useTranslation } from '@/context/TranslateContext'
-import { dateFormatter, formatToPreference, defaultCurrency } from '@repo/hooks'
+import {
+  dateFormatter,
+  formatToPreference,
+  defaultCurrency
+} from '@lawallet/hooks'
 import { unescapingText } from '@/utils'
 import theme from '@/styles/theme'
 import {
@@ -20,10 +24,10 @@ import {
   TransactionType,
   getMultipleTags,
   getUsername
-} from '@repo/utils'
+} from '@lawallet/utils'
 import { useMemo, useState } from 'react'
 import { BtnLoader } from '../Loader/Loader'
-import { useWalletContext } from '@repo/hooks'
+import { useWalletContext } from '@lawallet/hooks'
 
 interface ComponentProps {
   transaction: Transaction

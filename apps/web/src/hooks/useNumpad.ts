@@ -3,7 +3,7 @@ import {
   AvailableCurrencies,
   CurrenciesList,
   decimalsToUse
-} from '@repo/hooks'
+} from '@lawallet/hooks'
 import { useEffect, useState } from 'react'
 
 type AmountType = Record<AvailableCurrencies, number>
