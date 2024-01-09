@@ -78,6 +78,8 @@ export default function Page() {
     )
 
     setShowBanner(!userMadeBackup ? 'backup' : 'none')
+
+    alert('alerta de prueba')
   }, [])
 
   return (
