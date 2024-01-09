@@ -24,11 +24,6 @@
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
   },
-  "pnpm": {
-    "overrides": {
-      "nostr-tools": "npm:@lawallet/nostr-tools"
-    }
-  },
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
