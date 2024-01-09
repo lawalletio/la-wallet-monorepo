@@ -6,11 +6,12 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "web:start": "pnpm --filter lawallet-front start"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@lawallet/eslint-config": "*",
+    "@lawallet/typescript-config": "*",
     "prettier": "^3.1.1",
     "turbo": "latest"
   },
@@ -28,6 +29,7 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "config/*"
   ]
 }
