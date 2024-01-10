@@ -8,6 +8,8 @@
   },
   "emmet.excludeLanguages": [],
   "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact",
     "markdown": "html"
   },
   "emmet.showSuggestionsAsSnippets": true,
