@@ -1,4 +1,4 @@
-import { ConfigProps } from "../types/config.js";
+import { type ConfigProps } from "../types/config.js";
 
 export const baseConfig: ConfigProps = {
   gatewayEndpoint: 'https://api.lawallet.ar',

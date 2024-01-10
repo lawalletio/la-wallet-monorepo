@@ -43,8 +43,5 @@
       "default": "./dist/esm/exports/index.js"
     },
     "./package.json": "./package.json"
-  },
-  "dependencies": {
-    "@webbtc/webln-types": "^3.0.0"
   }
 }

@@ -8,7 +8,7 @@ import {
   type UseConverterReturns
 } from '../hooks/useCurrencyConverter.js'
 import { useUser, type UserReturns } from '../hooks/useUser.js'
-import { ConfigParameter } from '../types/config.js'
+import { type ConfigParameter } from '../types/config.js'
 import { useNostrContext } from './NDKContext.js'
 
 interface WalletContextType {

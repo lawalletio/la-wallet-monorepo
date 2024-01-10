@@ -19,7 +19,7 @@ import {
 
 import { parseContent } from '@lawallet/utils'
 import { type Event, nip26 } from 'nostr-tools'
-import { baseConfig, ConfigProps } from '@lawallet/utils'
+import { baseConfig, type ConfigProps } from '@lawallet/utils'
 import { useSubscription } from './useSubscription.js'
 import { CACHE_TXS_KEY } from '../constants/constants.js'
 

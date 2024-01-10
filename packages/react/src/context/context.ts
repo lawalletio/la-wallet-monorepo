@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ConfigParameter } from "../types/config.js"
+import { type ConfigParameter } from "../types/config.js"
 import { NDKProvider } from "./NDKContext.js"
 import { WalletProvider } from "./WalletContext.js"
 

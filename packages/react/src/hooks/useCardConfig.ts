@@ -1,4 +1,5 @@
 import {
+  type ConfigProps,
   type CardConfigPayload,
   type CardDataPayload,
   CardStatus,
@@ -9,7 +10,6 @@ import {
   parseContent,
   buildCardConfigEvent,
   parseMultiNip04Event,
-  ConfigProps
 } from '@lawallet/utils'
 import {
   NDKEvent,
@@ -19,7 +19,6 @@ import {
 import { useEffect, useState } from 'react'
 import { useSubscription } from './useSubscription.js'
 import { useWalletContext } from '../context/WalletContext.js'
-import { ConfigParameter } from '../types/config.js'
 import { baseConfig } from '@lawallet/utils'
 
 export type CardConfigReturns = {

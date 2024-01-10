@@ -1,6 +1,6 @@
 import * as React from 'react'
-import NostrExtensionProvider from '../types/nostr.js';
-import type { WebLNProvider as WebLNExtensionProvider } from "@webbtc/webln-types";
+import type NostrExtensionProvider from '../types/nostr.js';
+import { type WebLNProvider as WebLNExtensionProvider } from "../types/webln.js";
 
 import NDK, { NDKNip07Signer, NDKPrivateKeySigner, NDKUser } from '@nostr-dev-kit/ndk';
 
