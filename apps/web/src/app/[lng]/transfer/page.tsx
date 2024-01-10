@@ -32,7 +32,7 @@ import {
 } from '@lawallet/utils'
 import { useEffect, useState } from 'react'
 import RecipientElement from './components/RecipientElement'
-import { useWalletContext } from '@lawallet/hooks'
+import { useWalletContext } from '@lawallet/react'
 
 export default function Page() {
   const { t } = useTranslation()

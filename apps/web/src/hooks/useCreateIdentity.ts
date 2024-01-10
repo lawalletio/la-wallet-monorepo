@@ -13,7 +13,7 @@ import { NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
 import useErrors, { IUseErrors } from './useErrors'
-import { useWalletContext } from '@lawallet/hooks'
+import { useWalletContext } from '@lawallet/react'
 
 export interface AccountProps {
   nonce: string

@@ -13,7 +13,7 @@ import {
   LanguagesList,
   ReplacementParams,
   defaultLocale
-} from '@lawallet/hooks'
+} from '@lawallet/react'
 
 interface IUseTranslation {
   lng: AvailableLanguages

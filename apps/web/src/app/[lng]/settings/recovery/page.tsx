@@ -19,7 +19,7 @@ import {
 
 import { CACHE_BACKUP_KEY } from '@/constants/constants'
 import theme from '@/styles/theme'
-import { useWalletContext } from '@lawallet/hooks'
+import { useWalletContext } from '@lawallet/react'
 
 export default function Page() {
   const { t } = useTranslation()

@@ -8,7 +8,7 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "web:start": "pnpm --filter lawallet-front start",
-    "libs:build": "pnpm --filter @lawallet/hooks build && pnpm --filter @lawallet/utils build"
+    "libs:build": "pnpm --filter @lawallet/react build && pnpm --filter @lawallet/utils build"
   },
   "devDependencies": {
     "@lawallet/eslint-config": "*",

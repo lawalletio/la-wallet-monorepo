@@ -9,7 +9,7 @@ import { Divider, Flex } from '@/components/UI'
 import AddNewCardModal from './components/AddCard'
 import DebitCard from './components/DebitCard'
 import EmptyCards from './components/EmptyCards'
-import { useCardConfig } from '@lawallet/hooks'
+import { useCardConfig } from '@lawallet/react'
 import { Design } from '@lawallet/utils'
 
 export default function Page() {

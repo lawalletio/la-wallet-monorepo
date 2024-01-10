@@ -16,7 +16,7 @@ import {
   AvailableLanguages,
   WalletConfig,
   defaultLocale
-} from '@lawallet/hooks'
+} from '@lawallet/react'
 import AuthProvider from '@/components/Auth/AuthProvider'
 
 interface ProviderProps {
