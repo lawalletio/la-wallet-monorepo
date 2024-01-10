@@ -1,4 +1,4 @@
-import { useWalletContext } from '@lawallet/hooks'
+import { useIdentity } from '@lawallet/hooks'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation'
 import React, { useLayoutEffect, useMemo } from 'react'
 import SpinnerView from '../Loader/SpinnerView'
@@ -17,9 +17,7 @@ const protectedRoutes: string[] = [
 ]
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const {
-    user: { identity }
-  } = useWalletContext()
+  const { identity } = useIdentity()
   const { lng } = useTranslation()
 
   const router = useRouter()
