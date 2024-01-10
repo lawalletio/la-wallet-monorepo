@@ -5,7 +5,7 @@ import {
   type NDKSubscriptionOptions
 } from '@nostr-dev-kit/ndk'
 import * as React from 'react'
-import { useNDK } from '../context/NDKContext.js'
+import { useNostrContext } from '../context/NDKContext.js'
 
 export interface IUseSubscription {
   subscription: NDKSubscription | undefined
@@ -23,7 +23,7 @@ export const useSubscription = ({
   options,
   enabled
 }: SubscriptionProps) => {
-  const { ndk } = useNDK()
+  const { ndk } = useNostrContext()
 
   const [subscription, setSubscription] = React.useState<NDKSubscription>()
   const [events, setEvents] = React.useState<NDKEvent[]>([])

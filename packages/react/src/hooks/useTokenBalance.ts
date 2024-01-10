@@ -6,7 +6,7 @@ import {
   type NostrEvent
 } from '@nostr-dev-kit/ndk'
 import { LaWalletKinds } from '@lawallet/utils'
-import { useNDK } from '../context/NDKContext.js'
+import { useNostrContext } from '../context/NDKContext.js'
 import { useSubscription } from './useSubscription.js'
 import { type TokenBalance } from '@lawallet/utils'
 import { type ConfigProps, baseConfig } from '@lawallet/utils'
@@ -30,7 +30,7 @@ export const useTokenBalance = ({
   closeOnEose = false,
   config = baseConfig
 }: UseTokenBalanceProps): UseTokenBalanceReturn => {
-  const { ndk } = useNDK()
+  const { ndk } = useNostrContext()
   const [balance, setBalance] = React.useState<TokenBalance>({
     tokenId: tokenId,
     amount: 0,

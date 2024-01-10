@@ -7,12 +7,12 @@ export { useSubscription } from '../hooks/useSubscription.js'
 export { useTokenBalance } from '../hooks/useTokenBalance.js'
 export { useUser } from '../hooks/useUser.js'
 
-export { NDKProvider, useNDK, NDKContext } from '../context/NDKContext.js'
+export { NDKProvider, useNostrContext, NDKContext } from '../context/NDKContext.js'
 export {
-  WalletContext,
-  WalletProvider,
   useWalletContext,
 } from '../context/WalletContext.js'
+
+export { WalletConfig } from '../context/context.js'
 
 export {
   type AvailableCurrencies,

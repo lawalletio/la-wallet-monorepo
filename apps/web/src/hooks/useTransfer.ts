@@ -12,7 +12,7 @@ import {
   broadcastEvent
 } from '@lawallet/utils'
 import { addQueryParameter, escapingBrackets } from '@/utils'
-import { useNDK, useSubscription } from '@lawallet/react'
+import { useNostrContext, useSubscription } from '@lawallet/react'
 import { NDKEvent, NDKKind, NDKTag, NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getPublicKey, nip19 } from 'nostr-tools'
@@ -37,7 +37,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const [transferInfo, setTransferInfo] =
     useState<TransferInformation>(defaultTransfer)
 
-  const { ndk } = useNDK()
+  const { ndk } = useNostrContext()
 
   const router = useRouter()
   const params = useSearchParams()

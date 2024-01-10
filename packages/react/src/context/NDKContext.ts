@@ -12,10 +12,10 @@ export function NDKProvider(props: React.PropsWithChildren<ConfigParameter>) {
   return React.createElement(NDKContext.Provider, { value }, children)
 }
 
-export const useNDK = () => {
+export const useNostrContext = () => {
   const context = React.useContext(NDKContext)
   if (!context) {
-    throw new Error('useNDK must be used within NDKProvider')
+    throw new Error('useNostrContext must be used within NDKProvider')
   }
 
   return context
