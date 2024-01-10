@@ -3,7 +3,7 @@ export interface UserIdentity {
   hexpub: string
   npub: string
   privateKey: string
-  loaded: boolean
+  isReady: boolean
 }
 
 export const defaultIdentity: UserIdentity = {
@@ -11,5 +11,5 @@ export const defaultIdentity: UserIdentity = {
   hexpub: '',
   privateKey: '',
   npub: '',
-  loaded: false
+  isReady: false
 }

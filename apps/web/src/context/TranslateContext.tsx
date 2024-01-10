@@ -8,6 +8,7 @@ import {
 } from 'react'
 import {
   AvailableLanguages,
+  Dictionary,
   DictionaryEntry,
   LanguagesList,
   ReplacementParams,
@@ -33,6 +34,17 @@ async function dynamicLoadMessages(locale: AvailableLanguages) {
     console.error(new Error(`Unable to load locale (${locale}): ${error}`))
 
     return false
+  }
+}
+
+export const loadingMessages: Dictionary = {
+  es: {
+    LOADING_LANGUAGES: 'Cargando lenguajes...',
+    LOADING_ACCOUNT: 'Cargando cuenta...'
+  },
+  en: {
+    LOADING_LANGUAGES: 'Loading languages...',
+    LOADING_ACCOUNT: 'Loading account...'
   }
 }
 
@@ -64,7 +76,11 @@ export function TranslateProvider({
 
   return (
     <TranslateContext.Provider value={translations}>
-      {!Object.keys(dictionary).length ? <SpinnerView /> : children}
+      {!Object.keys(dictionary).length ? (
+        <SpinnerView loadingText={loadingMessages[lng]['LOADING_LANGUAGES']} />
+      ) : (
+        children
+      )}
     </TranslateContext.Provider>
   )
 }

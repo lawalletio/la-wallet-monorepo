@@ -15,7 +15,7 @@ export const useIdentity = () => {
   const setDefaultIdentity = () => {
     setIdentity({
       ...defaultIdentity,
-      loaded: true
+      isReady: true
     })
   }
 
@@ -35,14 +35,14 @@ export const useIdentity = () => {
     ) {
       setIdentity({
         ...parsedIdentity,
-        loaded: true
+        isReady: true
       })
     } else {
       setIdentity({
         ...parsedIdentity,
         hexpub,
         username,
-        loaded: true
+        isReady: true
       })
     }
 

@@ -6,7 +6,7 @@ import { LAWALLET_VERSION } from '@/constants/constants'
 import { Loader } from '@/components/Loader/Loader'
 import theme from '@/styles/theme'
 
-const SpinnerView = () => {
+const SpinnerView = ({ loadingText }: { loadingText?: string }) => {
   return (
     <Container size="medium">
       <Divider y={16} />
@@ -17,8 +17,9 @@ const SpinnerView = () => {
         </Text>
       </Flex>
 
-      <Flex flex={1} justify="center" align="center">
+      <Flex flex={1} direction="column" justify="center" align="center">
         <Loader />
+        <Text>{loadingText}</Text>
       </Flex>
     </Container>
   )

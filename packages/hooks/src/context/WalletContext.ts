@@ -18,15 +18,15 @@ interface WalletContextType {
 export const WalletContext = React.createContext({} as WalletContextType)
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
-  const [hydrated, setHydrated] = React.useState<boolean>(false)
+  // const [hydrated, setHydrated] = React.useState<boolean>(false)
 
   const user: UserReturns = useUser()
   const configuration: ConfigReturns = useConfiguration()
   const converter = useCurrencyConverter()
 
-  React.useEffect(() => {
-    if (user.identity.loaded) setHydrated(true)
-  }, [user.identity.loaded])
+  // React.useEffect(() => {
+  //   if (user.identity.isReady) setHydrated(true)
+  // }, [user.identity.isReady])
 
   const value = {
     user,
@@ -37,7 +37,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   return React.createElement(
     WalletContext.Provider,
     { value },
-    !hydrated ? null : children
+    children
   )
 }
 

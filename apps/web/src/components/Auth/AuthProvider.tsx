@@ -1,6 +1,8 @@
 import { useWalletContext } from '@lawallet/hooks'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation'
-import React, { useLayoutEffect } from 'react'
+import React, { useLayoutEffect, useMemo } from 'react'
+import SpinnerView from '../Loader/SpinnerView'
+import { loadingMessages, useTranslation } from '@/context/TranslateContext'
 
 // const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
 
@@ -15,13 +17,16 @@ const protectedRoutes: string[] = [
 ]
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useWalletContext()
+  const {
+    user: { identity }
+  } = useWalletContext()
+  const { lng } = useTranslation()
 
   const router = useRouter()
   const pathname = usePathname()
   const params = useSearchParams()
 
-  const isProtectedRoute = (path: string) => {
+  const isProtectedRoute = (path: string): boolean => {
     let isProtected: boolean = false
 
     protectedRoutes.forEach(route => {
@@ -32,9 +37,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   useLayoutEffect(() => {
-    if (user.identity.loaded) {
+    if (identity.isReady) {
       const protectedFlag = isProtectedRoute(pathname)
-      const userLogged: boolean = Boolean(user.identity.hexpub.length)
+      const userLogged: boolean = Boolean(identity.hexpub.length)
       const nonce: string = params.get('i') || ''
       const card: string = params.get('c') || ''
 
@@ -54,9 +59,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           break
       }
     }
-  }, [pathname, user.identity.loaded])
+  }, [pathname, identity.isReady])
 
-  return children
+  const hydrateApp = useMemo((): boolean => {
+    if (!identity.isReady) return false
+
+    const protectedFlag: boolean = isProtectedRoute(pathname)
+    if (identity.hexpub.length && protectedFlag) return true
+    if (!identity.hexpub && !protectedFlag) return true
+
+    return false
+  }, [identity.isReady, pathname])
+
+  return !hydrateApp ? (
+    <SpinnerView loadingText={loadingMessages[lng]['LOADING_ACCOUNT']} />
+  ) : (
+    children
+  )
 }
 
 export default AuthProvider

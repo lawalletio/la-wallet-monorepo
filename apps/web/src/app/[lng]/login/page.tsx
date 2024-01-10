@@ -59,7 +59,7 @@ export default function Page() {
         hexpub,
         npub: nip19.npubEncode(hexpub),
         privateKey: keyInput,
-        loaded: true
+        isReady: true
       }
 
       setUser(identity).then(() => {

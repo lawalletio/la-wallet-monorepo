@@ -24,6 +24,7 @@ export {
 } from '../types/config.js'
 export {
   type AvailableLanguages,
+  type Dictionary,
   type DictionaryEntry,
   type ReplacementParams,
   LanguagesList,
