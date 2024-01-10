@@ -14,8 +14,7 @@ import Script from 'next/script'
 import { ReactNode } from 'react'
 import {
   AvailableLanguages,
-  NDKProvider,
-  WalletProvider,
+  WalletConfig,
   defaultLocale
 } from '@lawallet/hooks'
 import AuthProvider from '@/components/Auth/AuthProvider'
@@ -79,13 +78,11 @@ const Providers = (props: ProviderProps) => {
         <StyledComponentsRegistry>
           <GlobalStyles />
           <TranslateProvider lng={params.lng}>
-            <NDKProvider explicitRelayUrls={config.relaysList}>
-              <WalletProvider>
-                <AuthProvider>
-                  <ThemeProvider theme={theme}>{children}</ThemeProvider>
-                </AuthProvider>
-              </WalletProvider>
-            </NDKProvider>
+            <WalletConfig relaysList={config.relaysList}>
+              <AuthProvider>
+                <ThemeProvider theme={theme}>{children}</ThemeProvider>
+              </AuthProvider>
+            </WalletConfig>
           </TranslateProvider>
         </StyledComponentsRegistry>
       </body>

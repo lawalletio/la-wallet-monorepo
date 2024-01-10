@@ -1,5 +1,6 @@
 import NDK from '@nostr-dev-kit/ndk'
 import * as React from 'react'
+import { WalletConfigProps } from './WalletContext.js'
 
 interface NDKContextType {
   ndk: NDK
@@ -7,16 +8,12 @@ interface NDKContextType {
 
 export const NDKContext = React.createContext({} as NDKContextType)
 
-export function NDKProvider({
-  children,
-  explicitRelayUrls
-}: {
-  children: React.ReactNode
-  explicitRelayUrls: string[]
-}) {
+export function NDKProvider(props: React.PropsWithChildren<WalletConfigProps>) {
+  const { children, relaysList } = props;
+
   const [ndk] = React.useState(
     new NDK({
-      explicitRelayUrls
+      explicitRelayUrls: relaysList
     })
   )
 

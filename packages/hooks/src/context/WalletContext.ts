@@ -8,6 +8,11 @@ import {
 } from '../hooks/useCurrencyConverter.js'
 import { useUser, type UserReturns } from '../hooks/useUser.js'
 import * as React from 'react'
+import { NDKProvider } from './NDKContext.js'
+
+export type WalletConfigProps = {
+  relaysList: string[]
+}
 
 interface WalletContextType {
   user: UserReturns
@@ -17,16 +22,12 @@ interface WalletContextType {
 
 export const WalletContext = React.createContext({} as WalletContextType)
 
-export function WalletProvider({ children }: { children: React.ReactNode }) {
-  // const [hydrated, setHydrated] = React.useState<boolean>(false)
-
+export function WalletProvider(props: React.PropsWithChildren<WalletConfigProps>) {
+  const { children } = props;
+  
   const user: UserReturns = useUser()
   const configuration: ConfigReturns = useConfiguration()
   const converter = useCurrencyConverter()
-
-  // React.useEffect(() => {
-  //   if (user.identity.isReady) setHydrated(true)
-  // }, [user.identity.isReady])
 
   const value = {
     user,
@@ -48,4 +49,9 @@ export const useWalletContext = () => {
   }
 
   return context
+}
+
+export const WalletConfig = (props: React.PropsWithChildren<WalletConfigProps>) => {
+  const { children } = props
+  return React.createElement(NDKProvider, props, React.createElement(WalletProvider, props, children))
 }
