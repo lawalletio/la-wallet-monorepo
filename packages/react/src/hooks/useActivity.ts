@@ -6,7 +6,7 @@ import {
   TransactionStatus,
   TransactionType,
   getMultipleTags,
-  getTag
+  getTag,
 } from '@lawallet/utils'
 import * as React from 'react'
 
@@ -19,9 +19,9 @@ import {
 
 import { parseContent } from '@lawallet/utils'
 import { type Event, nip26 } from 'nostr-tools'
-import config from '../constants/config.js'
-import { CACHE_TXS_KEY } from '../constants/constants.js'
+import { baseConfig, ConfigProps } from '@lawallet/utils'
 import { useSubscription } from './useSubscription.js'
+import { CACHE_TXS_KEY } from '../constants/constants.js'
 
 export interface ActivitySubscriptionProps {
   pubkey: string
@@ -43,6 +43,7 @@ export interface UseActivityReturn {
 export interface UseActivityProps {
   pubkey: string
   enabled: boolean
+  config?: ConfigProps
   limit?: number
 }
 
@@ -78,7 +79,8 @@ const defaultActivity = {
 export const useActivity = ({
   pubkey,
   enabled,
-  limit = 1000
+  limit = 1000,
+  config = baseConfig
 }: UseActivityProps): UseActivityReturn => {
   const [activityInfo, setActivityInfo] =
     React.useState<ActivityType>(defaultActivity)
@@ -100,7 +102,7 @@ export const useActivity = ({
         limit
       },
       {
-        authors: [config.pubKeys.ledgerPubkey],
+        authors: [config.modulePubkeys.ledger],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         '#p': [pubkey],
         '#t': statusTags,
@@ -114,7 +116,7 @@ export const useActivity = ({
 
   const formatStartTransaction = async (event: NDKEvent) => {
     const nostrEvent: NostrEvent = await event.toNostrEvent()
-    const AuthorIsCard: boolean = event.pubkey === config.pubKeys.cardPubkey
+    const AuthorIsCard: boolean = event.pubkey === config.modulePubkeys.card
 
     const DelegatorIsUser: boolean =
       AuthorIsCard && nip26.getDelegator(nostrEvent as Event) === pubkey
@@ -311,7 +313,7 @@ export const useActivity = ({
       if (cachedTxs.length) {
         const lastCached: number = cachedTxs.length
           ? 1 +
-            cachedTxs[0]!.events[cachedTxs[0]!.events.length - 1]!.created_at
+          cachedTxs[0]!.events[cachedTxs[0]!.events.length - 1]!.created_at
           : 0
 
         setActivityInfo({

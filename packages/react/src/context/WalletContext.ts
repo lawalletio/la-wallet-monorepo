@@ -8,13 +8,12 @@ import {
 } from '../hooks/useCurrencyConverter.js'
 import { useUser, type UserReturns } from '../hooks/useUser.js'
 import * as React from 'react'
-import { NDKProvider, useNDK } from './NDKContext.js'
-
-export type WalletConfigProps = {
-  relaysList: string[]
-}
+import { INostr, useNOSTR } from '../hooks/useNostr.js'
+import { baseConfig } from '@lawallet/utils'
+import { ConfigParameter } from '../types/config.js'
 
 interface WalletContextType {
+  nostr: INostr
   user: UserReturns
   configuration: ConfigReturns
   converter: UseConverterReturns
@@ -22,15 +21,16 @@ interface WalletContextType {
 
 export const WalletContext = React.createContext({} as WalletContextType)
 
-export function WalletProvider(props: React.PropsWithChildren<WalletConfigProps>) {
-  const { children } = props;
-  const nostr = useNDK()
-  
+export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) {
+  const { children, config = baseConfig } = props;
+  const nostr = useNOSTR(config.relaysList)
+
   const user: UserReturns = useUser()
   const configuration: ConfigReturns = useConfiguration()
   const converter = useCurrencyConverter()
 
   const value = {
+    nostr,
     user,
     configuration,
     converter
@@ -51,13 +51,8 @@ export function WalletProvider(props: React.PropsWithChildren<WalletConfigProps>
 export const useWalletContext = () => {
   const context = React.useContext(WalletContext)
   if (!context) {
-    throw new Error('useWalletContext must be used within WalletProvider')
+    throw new Error('useWalletContext must be used within WalletConfig provider')
   }
 
   return context
-}
-
-export const WalletConfig = (props: React.PropsWithChildren<WalletConfigProps>) => {
-  const { children } = props
-  return React.createElement(NDKProvider, props, React.createElement(WalletProvider, props, children))
 }

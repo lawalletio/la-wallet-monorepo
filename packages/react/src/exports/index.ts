@@ -12,7 +12,6 @@ export {
   WalletContext,
   WalletProvider,
   useWalletContext,
-  WalletConfig
 } from '../context/WalletContext.js'
 
 export {

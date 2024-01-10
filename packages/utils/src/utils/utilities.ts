@@ -1,5 +1,4 @@
 //@ts-nocheck
-import defaultConfig from '../constants/defaultConfig.js'
 import { getUserPubkey } from '../interceptors/identity.js'
 import {
   TransferInformation,
@@ -11,6 +10,7 @@ import bolt11 from 'light-bolt11-decoder'
 import { validateEmail } from './email.js'
 import { ConfigProps } from '../types/config.js'
 import { lnurl_decode } from './lnurl.js'
+import { baseConfig } from '../constants/constants.js'
 
 export const decodeInvoice = (invoice: string) => {
   const decodedInvoice = bolt11.decode(invoice)
@@ -25,10 +25,10 @@ export const detectTransferType = (data: string): TransferTypes | false => {
   const upperStr: string = data.toUpperCase()
   const isLUD16 = validateEmail(upperStr)
   if (isLUD16) {
-    const domain: string = upperStr.split('@')[1]
+    const domain: string = upperStr.split('@')[1]!
 
     return domain.toUpperCase() ===
-      defaultConfig.FEDERATION_DOMAIN.toUpperCase()
+      baseConfig.federation.domain.toUpperCase()
       ? TransferTypes.INTERNAL
       : TransferTypes.LUD16
   }
@@ -77,11 +77,11 @@ const removeHttpOrHttps = (str: string) => {
 
 const isInternalLNURL = (
   decodedLNURL: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): string => {
   const urlWithoutHttp: string = removeHttpOrHttps(decodedLNURL)
   const [domain, , , username] = urlWithoutHttp.split('/')
-  if (domain === config.FEDERATION_DOMAIN && username)
+  if (domain === config.federation.domain && username)
     return `${username}@${domain}`
 
   return ''
@@ -111,7 +111,7 @@ const parseLNURLInfo = async (data: string) => {
         }
       )
 
-      if (identifier && identifier.length === 2) transfer.data = identifier[1]
+      if (identifier && identifier.length === 2) transfer.data = identifier[1]!
     } catch (error) {
       console.log(error)
     }
@@ -145,7 +145,7 @@ const parseLUD16Info = async (data: string) => {
 
 const parseINTERNALInfo = async (data: string) => {
   const [username] = data.split('@')
-  const receiverPubkey: string = await getUserPubkey(username)
+  const receiverPubkey: string = await getUserPubkey(username!)
   if (!receiverPubkey) return defaultTransfer
 
   const transfer: TransferInformation = {

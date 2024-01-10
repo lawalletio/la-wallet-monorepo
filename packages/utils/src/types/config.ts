@@ -1,11 +1,14 @@
 export type ConfigProps = {
-  FEDERATION_DOMAIN: string
-  API_GATEWAY_ENDPOINT: string
-  IDENTITY_ENDPOINT: string
-  relaysList: string[]
-  modulePubKeys: {
-    card: string
-    ledger: string
-    urlx: string
-  }
+    gatewayEndpoint: string;
+    relaysList: string[]
+    federation: {
+        id: string;
+        domain: string;
+        identityEndpoint: string;
+    },
+    modulePubkeys: {
+        card: string;
+        ledger: string;
+        urlx: string;
+    }
 }

@@ -12,13 +12,13 @@ import {
   getSignature,
   nip26
 } from 'nostr-tools'
-import defaultConfig from '../constants/defaultConfig.js'
 import { type TransferInformation } from '../interceptors/transaction.js'
 import { type CardConfigPayload, ConfigTypes } from '../types/card.js'
 import { type ConfigProps } from '../types/config.js'
 import { type UserIdentity } from '../types/identity.js'
 import { buildMultiNip04Event } from './nip04.js'
 import { nowInSeconds } from './utilities.js'
+import { baseConfig } from '../constants/constants.js'
 
 export enum LaWalletKinds {
   REGULAR = 1112,
@@ -85,13 +85,13 @@ export const buildIdentityEvent = async (
 export const buildCardActivationEvent = async (
   otc: string,
   privateKey: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<NostrEvent> => {
   const signer = new NDKPrivateKeySigner(privateKey)
   const userPubkey: string = getPublicKey(privateKey)
 
   const delegation = nip26.createDelegation(privateKey, {
-    pubkey: config.modulePubKeys.card,
+    pubkey: config.modulePubkeys.card,
     kind: LaWalletKinds.REGULAR,
     since: Math.floor(Date.now() / 1000) - 36000,
     until: Math.floor(Date.now() / 1000) + 3600 * 24 * 30 * 12
@@ -110,7 +110,7 @@ export const buildCardActivationEvent = async (
   })
 
   event.tags = [
-    ['p', config.modulePubKeys.card],
+    ['p', config.modulePubkeys.card],
     ['t', LaWalletTags.CARD_ACTIVATION_REQUEST]
   ]
 
@@ -121,7 +121,7 @@ export const buildCardActivationEvent = async (
 export const buildZapRequestEvent = async (
   amount: number,
   privateKey: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ) => {
   const signer = new NDKPrivateKeySigner(privateKey)
   const userPubkey: string = getPublicKey(privateKey)
@@ -149,7 +149,7 @@ export const buildTxStartEvent = async (
   transferInfo: TransferInformation,
   tags: NDKTag[],
   privateKey: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<NostrEvent> => {
   const signer = new NDKPrivateKeySigner(privateKey)
   const userPubkey = getPublicKey(privateKey)
@@ -165,7 +165,7 @@ export const buildTxStartEvent = async (
 
   internalEvent.tags = [
     ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
-    ['p', config.modulePubKeys.ledger],
+    ['p', config.modulePubkeys.ledger],
     ['p', transferInfo.receiverPubkey]
   ]
 
@@ -199,14 +199,14 @@ export const buildCardInfoRequest = async (
 export const buildCardConfigEvent = async (
   cardConfig: CardConfigPayload,
   privateKey: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<NostrEvent> => {
   const userPubkey: string = getPublicKey(privateKey)
   const event: NostrEvent = await buildMultiNip04Event(
     JSON.stringify(cardConfig),
     privateKey,
     userPubkey,
-    [config.modulePubKeys.card, userPubkey]
+    [config.modulePubkeys.card, userPubkey]
   )
 
   event.kind = LaWalletKinds.REGULAR

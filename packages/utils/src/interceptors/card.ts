@@ -1,13 +1,13 @@
 import { type NostrEvent } from '@nostr-dev-kit/ndk'
-import defaultConfig from '../constants/defaultConfig.js'
 import { type CardConfigPayload, type CardDataPayload } from '../types/card.js'
 import { type ConfigProps } from '../types/config.js'
+import { baseConfig } from '../constants/constants.js'
 
 export const requestCardActivation = async (
   event: NostrEvent,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<boolean> => {
-  return fetch(`${config.API_GATEWAY_ENDPOINT}/card`, {
+  return fetch(`${config.gatewayEndpoint}/card`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -20,9 +20,9 @@ export const requestCardActivation = async (
 
 export const cardResetCaim = async (
   event: NostrEvent,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<Record<'name' | 'error', string>> => {
-  return fetch(`${config.API_GATEWAY_ENDPOINT}/card/reset/claim`, {
+  return fetch(`${config.gatewayEndpoint}/card/reset/claim`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -43,9 +43,9 @@ export type CardRequestResponse =
 export const cardInfoRequest = async (
   type: string,
   event: NostrEvent,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<CardRequestResponse> => {
-  return fetch(`${config.API_GATEWAY_ENDPOINT}/card/${type}/request`, {
+  return fetch(`${config.gatewayEndpoint}/card/${type}/request`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
