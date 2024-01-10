@@ -48,7 +48,7 @@ export default function Page() {
 
       <Footer>
         <Button variant="bezeledGray" onClick={() => router.push('/dashboard')}>
-          {t('CANCEL')}
+          {t('BACK')}
         </Button>
       </Footer>
     </>
