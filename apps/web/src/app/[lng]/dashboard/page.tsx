@@ -43,7 +43,7 @@ import { BtnLoader } from '@/components/Loader/Loader'
 import { CACHE_BACKUP_KEY } from '@/constants/constants'
 import { copy } from '@/utils/share'
 import Link from 'next/link'
-import { formatToPreference, useWalletContext } from '@lawallet/hooks'
+import { formatToPreference, useWalletContext } from '@lawallet/react'
 
 export default function Page() {
   const { t, lng } = useTranslation()

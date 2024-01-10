@@ -18,7 +18,7 @@ import { getUsername, UserIdentity } from '@lawallet/utils'
 import { getPublicKey, nip19 } from 'nostr-tools'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
-import { useWalletContext } from '@lawallet/hooks'
+import { useWalletContext } from '@lawallet/react'
 
 export default function Page() {
   const {

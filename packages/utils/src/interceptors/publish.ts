@@ -1,12 +1,12 @@
+import { baseConfig } from '../constants/constants.js'
 import { type ConfigProps } from '../types/config.js'
-import defaultConfig from '../constants/defaultConfig.js'
 import { type NostrEvent } from '@nostr-dev-kit/ndk'
 
 export const broadcastEvent = async (
   event: NostrEvent,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<boolean> => {
-  return fetch(`${config.API_GATEWAY_ENDPOINT}/nostr/publish`, {
+  return fetch(`${config.gatewayEndpoint}/nostr/publish`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

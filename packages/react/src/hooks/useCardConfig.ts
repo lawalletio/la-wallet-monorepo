@@ -8,7 +8,8 @@ import {
   getTag,
   parseContent,
   buildCardConfigEvent,
-  parseMultiNip04Event
+  parseMultiNip04Event,
+  ConfigProps
 } from '@lawallet/utils'
 import {
   NDKEvent,
@@ -16,9 +17,10 @@ import {
   NDKSubscriptionCacheUsage
 } from '@nostr-dev-kit/ndk'
 import { useEffect, useState } from 'react'
-import config from '../constants/config.js'
 import { useSubscription } from './useSubscription.js'
 import { useWalletContext } from '../context/WalletContext.js'
+import { ConfigParameter } from '../types/config.js'
+import { baseConfig } from '@lawallet/utils'
 
 export type CardConfigReturns = {
   cards: ICards
@@ -45,7 +47,7 @@ const buildAndBroadcastCardConfig = (
     })
 }
 
-export const useCardConfig = (): CardConfigReturns => {
+export const useCardConfig = (config: ConfigProps = baseConfig): CardConfigReturns => {
   const [cards, setCards] = useState<ICards>({
     data: {},
     config: {} as CardConfigPayload,
@@ -65,7 +67,7 @@ export const useCardConfig = (): CardConfigReturns => {
           `${identity.hexpub}:${ConfigTypes.DATA.valueOf()}`,
           `${identity.hexpub}:${ConfigTypes.CONFIG.valueOf()}`
         ],
-        authors: [config.pubKeys.cardPubkey],
+        authors: [config.modulePubkeys.card],
         since: cards.loadedAt
       }
     ],

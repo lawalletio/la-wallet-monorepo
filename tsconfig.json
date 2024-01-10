@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "paths": {
       "@lawallet/utils": ["./packages/utils/dist"],
-      "@lawallet/hooks": ["./packages/hooks/dist"]
+      "@lawallet/react": ["./packages/hooks/dist"]
     }
   }
 }

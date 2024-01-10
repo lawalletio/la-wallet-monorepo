@@ -13,7 +13,7 @@ import {
   generateUserIdentity
 } from '@lawallet/utils'
 import theme from '@/styles/theme'
-import { useWalletContext } from '@lawallet/hooks'
+import { useWalletContext } from '@lawallet/react'
 import { NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'

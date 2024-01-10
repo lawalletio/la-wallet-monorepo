@@ -20,10 +20,10 @@ import {
 import { useTransferContext } from '@/context/TransferContext'
 import { useTranslation } from '@/context/TranslateContext'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
-import { formatAddress, formatToPreference } from '@lawallet/hooks'
+import { formatAddress, formatToPreference } from '@lawallet/react'
 import { TransferTypes } from '@lawallet/utils'
 import { useEffect, useMemo, useState } from 'react'
-import { useWalletContext } from '@lawallet/hooks'
+import { useWalletContext } from '@lawallet/react'
 
 export default function Page() {
   const { lng, t } = useTranslation()

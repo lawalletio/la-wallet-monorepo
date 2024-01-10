@@ -14,7 +14,7 @@ import {
   dateFormatter,
   formatToPreference,
   defaultCurrency
-} from '@lawallet/hooks'
+} from '@lawallet/react'
 import { unescapingText } from '@/utils'
 import theme from '@/styles/theme'
 import {
@@ -27,7 +27,7 @@ import {
 } from '@lawallet/utils'
 import { useMemo, useState } from 'react'
 import { BtnLoader } from '../Loader/Loader'
-import { useWalletContext } from '@lawallet/hooks'
+import { useWalletContext } from '@lawallet/react'
 
 interface ComponentProps {
   transaction: Transaction

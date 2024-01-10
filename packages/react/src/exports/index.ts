@@ -11,7 +11,7 @@ export { NDKProvider, useNDK, NDKContext } from '../context/NDKContext.js'
 export {
   WalletContext,
   WalletProvider,
-  useWalletContext
+  useWalletContext,
 } from '../context/WalletContext.js'
 
 export {

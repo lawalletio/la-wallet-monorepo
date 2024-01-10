@@ -12,7 +12,7 @@ import {
   broadcastEvent
 } from '@lawallet/utils'
 import { addQueryParameter, escapingBrackets } from '@/utils'
-import { useNDK, useSubscription } from '@lawallet/hooks'
+import { useNDK, useSubscription } from '@lawallet/react'
 import { NDKEvent, NDKKind, NDKTag, NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getPublicKey, nip19 } from 'nostr-tools'

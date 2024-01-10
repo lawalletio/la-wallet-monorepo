@@ -25,7 +25,7 @@ export {
   requestInvoice
 } from '../interceptors/transaction.js'
 
-export * from '../constants/defaultConfig.js'
+export { baseConfig } from '../constants/constants.js'
 
 export {
   type GenerateIdentityReturns,
@@ -58,6 +58,7 @@ export {
   parseContent
 } from '../utils/utilities.js'
 
+export { type ConfigProps } from '../types/config.js'
 export { type TokenBalance } from '../types/balance.js'
 export {
   CardStatus,
@@ -68,7 +69,6 @@ export {
   type CardPayload,
   type CardConfigPayload
 } from '../types/card.js'
-export { type ConfigProps } from '../types/config.js'
 export { type UserIdentity, defaultIdentity } from '../types/identity.js'
 export {
   type Transaction,

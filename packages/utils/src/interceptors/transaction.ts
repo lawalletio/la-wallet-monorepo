@@ -1,4 +1,4 @@
-import config from '../constants/defaultConfig.js'
+import { baseConfig } from '../constants/constants.js'
 import { type TransferTypes } from '../types/transaction.js'
 
 interface LNServiceResponse {
@@ -34,7 +34,7 @@ export const defaultTransfer: TransferInformation = {
   data: '',
   amount: 0,
   comment: '',
-  receiverPubkey: config.modulePubKeys.urlx,
+  receiverPubkey: baseConfig.modulePubkeys.urlx,
   walletService: null,
   type: false
 }

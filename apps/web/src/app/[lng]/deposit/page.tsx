@@ -7,7 +7,7 @@ import {
 } from '@bitcoin-design/bitcoin-icons-react/filled'
 import { useEffect, useMemo, useState } from 'react'
 
-import { formatAddress, formatToPreference } from '@lawallet/hooks'
+import { formatAddress, formatToPreference } from '@lawallet/react'
 import { copy } from '@/utils/share'
 
 import { useTranslation } from '@/context/TranslateContext'
@@ -41,7 +41,7 @@ import {
 } from '@lawallet/utils'
 import theme from '@/styles/theme'
 import { useRouter } from 'next/navigation'
-import { useSubscription, useWalletContext } from '@lawallet/hooks'
+import { useSubscription, useWalletContext } from '@lawallet/react'
 import useAlert from '@/hooks/useAlerts'
 
 type InvoiceProps = {

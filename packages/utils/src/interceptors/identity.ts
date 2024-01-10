@@ -1,8 +1,8 @@
 import { type NostrEvent } from '@nostr-dev-kit/ndk'
 import { generatePrivateKey, getPublicKey, nip19 } from 'nostr-tools'
-import defaultConfig from '../constants/defaultConfig.js'
 import { type ConfigProps } from '../types/config.js'
 import { type UserIdentity } from '../types/identity.js'
+import { baseConfig } from '../constants/constants.js'
 
 export type IdentityResponse = {
   success: boolean
@@ -31,11 +31,11 @@ export const generateUserIdentity = async (
 
 export const validateNonce = async (
   nonce: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<boolean> => {
   if (nonce === 'test') return true
 
-  return fetch(`${config.IDENTITY_ENDPOINT}/api/nonce/${nonce}`)
+  return fetch(`${config.federation.identityEndpoint}/api/nonce/${nonce}`)
     .then(res => res.json())
     .then(response => {
       if (!response || !response.status) return false
@@ -47,9 +47,9 @@ export const validateNonce = async (
 
 export const claimIdentity = async (
   event: NostrEvent,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<IdentityResponse> => {
-  return fetch(`${config.IDENTITY_ENDPOINT}/api/identity`, {
+  return fetch(`${config.federation.identityEndpoint}/api/identity`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -74,12 +74,12 @@ export const claimIdentity = async (
 
 export const getUsername = (
   pubkey: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ) => {
   const storagedUsername: string = localStorage.getItem(pubkey) || ''
   if (storagedUsername.length) return storagedUsername
 
-  return fetch(`${config.IDENTITY_ENDPOINT}/api/pubkey/${pubkey}`)
+  return fetch(`${config.federation.identityEndpoint}/api/pubkey/${pubkey}`)
     .then(res => res.json())
     .then(info => {
       if (!info || !info.username) return ''
@@ -92,20 +92,20 @@ export const getUsername = (
 
 export const getUserPubkey = (
   username: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ) =>
-  fetch(`${config.IDENTITY_ENDPOINT}/api/lud16/${username}`)
+  fetch(`${config.federation.identityEndpoint}/api/lud16/${username}`)
     .then(res => res.json())
     .then(info => info.accountPubKey ?? '')
     .catch(() => '')
 
 export const existIdentity = async (
   name: string,
-  config: ConfigProps = defaultConfig
+  config: ConfigProps = baseConfig
 ): Promise<boolean> => {
   try {
     const response = await fetch(
-      `${config.IDENTITY_ENDPOINT}/api/identity?name=${name}`
+      `${config.federation.identityEndpoint}/api/identity?name=${name}`
     )
     return response.status === 200
   } catch {

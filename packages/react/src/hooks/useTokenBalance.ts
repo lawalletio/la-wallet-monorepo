@@ -6,10 +6,10 @@ import {
   type NostrEvent
 } from '@nostr-dev-kit/ndk'
 import { LaWalletKinds } from '@lawallet/utils'
-import config from '../constants/config.js'
 import { useNDK } from '../context/NDKContext.js'
 import { useSubscription } from './useSubscription.js'
 import { type TokenBalance } from '@lawallet/utils'
+import { type ConfigProps, baseConfig } from '@lawallet/utils'
 
 export interface UseTokenBalanceReturn {
   balance: TokenBalance
@@ -20,13 +20,15 @@ export interface UseTokenBalanceProps {
   tokenId: string
   enabled: boolean
   closeOnEose?: boolean
+  config?: ConfigProps
 }
 
 export const useTokenBalance = ({
   pubkey,
   tokenId,
   enabled,
-  closeOnEose = false
+  closeOnEose = false,
+  config = baseConfig
 }: UseTokenBalanceProps): UseTokenBalanceReturn => {
   const { ndk } = useNDK()
   const [balance, setBalance] = React.useState<TokenBalance>({
@@ -38,7 +40,7 @@ export const useTokenBalance = ({
   const { subscription: balanceSubscription } = useSubscription({
     filters: [
       {
-        authors: [config.pubKeys.ledgerPubkey],
+        authors: [config.modulePubkeys.ledger],
         kinds: [LaWalletKinds.PARAMETRIZED_REPLACEABLE as unknown as NDKKind],
         '#d': [`balance:${tokenId}:${pubkey}`]
       }
@@ -57,7 +59,7 @@ export const useTokenBalance = ({
     })
 
     const event: NDKEvent | null = await ndk.fetchEvent({
-      authors: [config.pubKeys.ledgerPubkey],
+      authors: [config.modulePubkeys.ledger],
       kinds: [LaWalletKinds.PARAMETRIZED_REPLACEABLE as unknown as NDKKind],
       '#d': [`balance:${tokenId}:${pubkey}`]
     })

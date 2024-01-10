@@ -1,5 +1,5 @@
 {
-  "name": "@lawallet/hooks",
+  "name": "@lawallet/react",
   "version": "1.0.0",
   "private": false,
   "scripts": {
@@ -43,5 +43,8 @@
       "default": "./dist/esm/exports/index.js"
     },
     "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@webbtc/webln-types": "^3.0.0"
   }
 }
