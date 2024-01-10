@@ -1,29 +1,12 @@
-import NDK from '@nostr-dev-kit/ndk'
 import * as React from 'react'
 import { WalletConfigProps } from './WalletContext.js'
+import { INostr, useNOSTR } from '../hooks/useNostr.js'
 
-interface NDKContextType {
-  ndk: NDK
-}
-
-export const NDKContext = React.createContext({} as NDKContextType)
+export const NDKContext = React.createContext({} as INostr)
 
 export function NDKProvider(props: React.PropsWithChildren<WalletConfigProps>) {
   const { children, relaysList } = props;
-
-  const [ndk] = React.useState(
-    new NDK({
-      explicitRelayUrls: relaysList
-    })
-  )
-
-  React.useEffect(() => {
-    ndk.connect()
-  }, [ndk])
-
-  const value = {
-    ndk
-  }
+  const value = useNOSTR(relaysList)
 
   return React.createElement(NDKContext.Provider, { value }, children)
 }

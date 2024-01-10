@@ -175,6 +175,10 @@ importers:
   config/typescript-config: {}
 
   packages/hooks:
+    dependencies:
+      '@webbtc/webln-types':
+        specifier: ^3.0.0
+        version: 3.0.0
     devDependencies:
       '@lawallet/utils':
         specifier: '*'
@@ -2344,6 +2348,10 @@ packages:
     dependencies:
       '@webassemblyjs/ast': 1.11.6
       '@xtuc/long': 4.2.2
+    dev: false
+
+  /@webbtc/webln-types@3.0.0:
+    resolution: {integrity: sha512-aXfTHLKz5lysd+6xTeWl+qHNh/p3qVYbeLo+yDN5cUDmhie2ZoGvkppfWxzbGkcFBzb6dJyQ2/i2cbmDHas+zQ==}
     dev: false
 
   /@xtuc/ieee754@1.2.0:

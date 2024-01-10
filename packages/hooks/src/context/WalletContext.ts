@@ -8,7 +8,7 @@ import {
 } from '../hooks/useCurrencyConverter.js'
 import { useUser, type UserReturns } from '../hooks/useUser.js'
 import * as React from 'react'
-import { NDKProvider } from './NDKContext.js'
+import { NDKProvider, useNDK } from './NDKContext.js'
 
 export type WalletConfigProps = {
   relaysList: string[]
@@ -24,6 +24,7 @@ export const WalletContext = React.createContext({} as WalletContextType)
 
 export function WalletProvider(props: React.PropsWithChildren<WalletConfigProps>) {
   const { children } = props;
+  const nostr = useNDK()
   
   const user: UserReturns = useUser()
   const configuration: ConfigReturns = useConfiguration()
@@ -34,6 +35,11 @@ export function WalletProvider(props: React.PropsWithChildren<WalletConfigProps>
     configuration,
     converter
   }
+
+  React.useEffect(() => {
+    const { isReady, privateKey } = user.identity;
+    if (isReady && privateKey) nostr.connectWithHexKey(privateKey)
+  }, [user.identity.isReady])
 
   return React.createElement(
     WalletContext.Provider,
