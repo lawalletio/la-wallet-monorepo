@@ -24,10 +24,13 @@ import { useTranslation } from '@/context/TranslateContext'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
 import useErrors from '@/hooks/useErrors'
 import { useNumpad } from '@/hooks/useNumpad'
-import { decimalsToUse, formatToPreference } from '@lawallet/react'
 import theme from '@/styles/theme'
-import { TransferTypes } from '@lawallet/utils'
-import { useWalletContext } from '@lawallet/react'
+import {
+  decimalsToUse,
+  formatToPreference,
+  useWalletContext
+} from '@lawallet/react'
+import { TransferTypes } from '@lawallet/react/types'
 
 export default function Page() {
   const { lng, t } = useTranslation()

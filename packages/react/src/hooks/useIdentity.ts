@@ -1,8 +1,9 @@
-import { STORAGE_IDENTITY_KEY } from '../constants/constants.js'
 import { parseContent } from '@lawallet/utils'
-import { type UserIdentity, defaultIdentity, getUsername } from '@lawallet/utils'
+import { getUsername } from '@lawallet/utils/actions'
+import { defaultIdentity, type UserIdentity } from '@lawallet/utils/types'
 import { getPublicKey } from 'nostr-tools'
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import { STORAGE_IDENTITY_KEY } from '../constants/constants.js'
 
 export interface UserReturns {
   identity: UserIdentity

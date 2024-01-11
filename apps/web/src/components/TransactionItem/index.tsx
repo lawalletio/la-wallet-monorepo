@@ -10,24 +10,24 @@ import { Accordion, AccordionBody, Flex, Text } from '@/components/UI'
 
 import config from '@/constants/config'
 import { useTranslation } from '@/context/TranslateContext'
+import theme from '@/styles/theme'
+import { unescapingText } from '@/utils'
 import {
   dateFormatter,
+  defaultCurrency,
   formatToPreference,
-  defaultCurrency
+  useWalletContext
 } from '@lawallet/react'
-import { unescapingText } from '@/utils'
-import theme from '@/styles/theme'
+import { getUsername } from '@lawallet/react/actions'
 import {
   Transaction,
   TransactionDirection,
   TransactionStatus,
-  TransactionType,
-  getMultipleTags,
-  getUsername
-} from '@lawallet/utils'
+  TransactionType
+} from '@lawallet/react/types'
+import { getMultipleTags } from '@lawallet/react/utils'
 import { useMemo, useState } from 'react'
 import { BtnLoader } from '../Loader/Loader'
-import { useWalletContext } from '@lawallet/react'
 
 interface ComponentProps {
   transaction: Transaction

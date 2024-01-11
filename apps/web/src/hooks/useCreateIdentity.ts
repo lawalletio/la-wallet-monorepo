@@ -1,19 +1,22 @@
 import { regexUserName } from '@/constants/constants'
+import { useWalletContext } from '@lawallet/react'
 import {
-  requestCardActivation,
   IdentityResponse,
   claimIdentity,
   existIdentity,
   generateUserIdentity,
-  UserIdentity,
+  requestCardActivation
+} from '@lawallet/react/actions'
+import {
   buildCardActivationEvent,
   buildIdentityEvent
-} from '@lawallet/utils'
+} from '@lawallet/react/utils'
+
+import { UserIdentity } from '@lawallet/react/types'
 import { NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
 import useErrors, { IUseErrors } from './useErrors'
-import { useWalletContext } from '@lawallet/react'
 
 export interface AccountProps {
   nonce: string

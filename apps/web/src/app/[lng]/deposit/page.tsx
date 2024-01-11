@@ -7,8 +7,8 @@ import {
 } from '@bitcoin-design/bitcoin-icons-react/filled'
 import { useEffect, useMemo, useState } from 'react'
 
-import { formatAddress, formatToPreference } from '@lawallet/react'
 import { copy } from '@/utils/share'
+import { formatAddress, formatToPreference } from '@lawallet/react'
 
 import { useTranslation } from '@/context/TranslateContext'
 import { useNumpad } from '@/hooks/useNumpad'
@@ -33,16 +33,13 @@ import {
 
 import config from '@/constants/config'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
-import useErrors from '@/hooks/useErrors'
-import {
-  lnurl_encode,
-  requestInvoice,
-  buildZapRequestEvent
-} from '@lawallet/utils'
-import theme from '@/styles/theme'
-import { useRouter } from 'next/navigation'
-import { useSubscription, useWalletContext } from '@lawallet/react'
 import useAlert from '@/hooks/useAlerts'
+import useErrors from '@/hooks/useErrors'
+import theme from '@/styles/theme'
+import { useSubscription, useWalletContext } from '@lawallet/react'
+import { requestInvoice } from '@lawallet/react/actions'
+import { buildZapRequestEvent, lnurl_encode } from '@lawallet/react/utils'
+import { useRouter } from 'next/navigation'
 
 type InvoiceProps = {
   bolt11: string

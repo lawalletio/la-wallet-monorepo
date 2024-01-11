@@ -2,7 +2,7 @@ import {
   type TokenBalance,
   type Transaction,
   type UserIdentity
-} from '@lawallet/utils'
+} from '@lawallet/utils/types'
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js'
 import { useActivity } from './useActivity.js'
 import { useIdentity } from './useIdentity.js'

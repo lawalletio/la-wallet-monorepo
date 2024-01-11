@@ -6,11 +6,11 @@ import Container from '@/components/Layout/Container'
 import Navbar from '@/components/Layout/Navbar'
 import { MainLoader } from '@/components/Loader/Loader'
 import { Divider, Flex } from '@/components/UI'
+import { useCardConfig } from '@lawallet/react'
+import { Design } from '@lawallet/react/types'
 import AddNewCardModal from './components/AddCard'
 import DebitCard from './components/DebitCard'
 import EmptyCards from './components/EmptyCards'
-import { useCardConfig } from '@lawallet/react'
-import { Design } from '@lawallet/utils'
 
 export default function Page() {
   const { cards, toggleCardStatus } = useCardConfig()

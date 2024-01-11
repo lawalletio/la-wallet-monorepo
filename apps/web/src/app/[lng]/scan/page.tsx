@@ -2,16 +2,16 @@
 
 import Navbar from '@/components/Layout/Navbar'
 import { Button, Flex, Modal, Text } from '@/components/UI'
-import NimiqQrScanner from 'qr-scanner'
 import QrScanner from '@/components/UI/Scanner/Scanner'
 import { regexURL } from '@/constants/constants'
 import { useTranslation } from '@/context/TranslateContext'
+import { TransferTypes } from '@lawallet/react/types'
 import {
   detectTransferType,
-  removeLightningStandard,
-  TransferTypes
-} from '@lawallet/utils'
+  removeLightningStandard
+} from '@lawallet/react/utils'
 import { useRouter } from 'next/navigation'
+import NimiqQrScanner from 'qr-scanner'
 import { useEffect, useState } from 'react'
 
 export default function Page() {

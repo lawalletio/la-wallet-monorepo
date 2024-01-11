@@ -13,12 +13,13 @@ import {
   Textarea
 } from '@/components/UI'
 import { CACHE_BACKUP_KEY } from '@/constants/constants'
+import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
 import useErrors from '@/hooks/useErrors'
-import { getUsername, UserIdentity } from '@lawallet/utils'
+import { useWalletContext } from '@lawallet/react'
+import { getUsername } from '@lawallet/react/actions'
+import { UserIdentity } from '@lawallet/react/types'
 import { getPublicKey, nip19 } from 'nostr-tools'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
-import { useWalletContext } from '@lawallet/react'
 
 export default function Page() {
   const {

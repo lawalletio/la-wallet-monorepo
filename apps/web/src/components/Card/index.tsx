@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
+import { Design } from '@lawallet/react/types'
 import { Card } from './style'
-import { Design } from '@lawallet/utils'
 
 interface ComponentProps {
   data: { design: Design }

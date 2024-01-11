@@ -1,13 +1,20 @@
 import {
   LaWalletKinds,
   LaWalletTags,
+  baseConfig,
+  getMultipleTags,
+  getTag,
+  parseContent
+} from '@lawallet/utils'
+
+import {
+  type ConfigProps,
   type Transaction,
   TransactionDirection,
   TransactionStatus,
   TransactionType,
-  getMultipleTags,
-  getTag,
-} from '@lawallet/utils'
+} from '@lawallet/utils/types'
+
 import * as React from 'react'
 
 import {
@@ -17,9 +24,7 @@ import {
   type NostrEvent
 } from '@nostr-dev-kit/ndk'
 
-import { parseContent } from '@lawallet/utils'
 import { type Event, nip26 } from 'nostr-tools'
-import { baseConfig, type ConfigProps } from '@lawallet/utils'
 import { useSubscription } from './useSubscription.js'
 import { CACHE_TXS_KEY } from '../constants/constants.js'
 

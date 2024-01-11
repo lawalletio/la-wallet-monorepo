@@ -18,10 +18,10 @@ import {
   Text
 } from '@/components/UI'
 import config from '@/constants/config'
+import { useTranslation } from '@/context/TranslateContext'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
 import { useCreateIdentity } from '@/hooks/useCreateIdentity'
-import { useTranslation } from '@/context/TranslateContext'
-import { validateNonce } from '@lawallet/utils'
+import { validateNonce } from '@lawallet/react/actions'
 import { ChangeEvent, useEffect, useState } from 'react'
 
 export default function Page() {

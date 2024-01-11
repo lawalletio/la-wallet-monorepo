@@ -7,13 +7,10 @@ import { Feedback, Flex, Heading, Text } from '@/components/UI'
 import { LAWALLET_VERSION } from '@/constants/constants'
 import { useTranslation } from '@/context/TranslateContext'
 import useErrors from '@/hooks/useErrors'
-import {
-  buildCardActivationEvent,
-  cardResetCaim,
-  generateUserIdentity
-} from '@lawallet/utils'
 import theme from '@/styles/theme'
 import { useWalletContext } from '@lawallet/react'
+import { cardResetCaim, generateUserIdentity } from '@lawallet/react/actions'
+import { buildCardActivationEvent } from '@lawallet/react/utils'
 import { NostrEvent } from '@nostr-dev-kit/ndk'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'

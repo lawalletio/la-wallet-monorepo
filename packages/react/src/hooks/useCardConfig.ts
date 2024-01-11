@@ -1,25 +1,30 @@
 import {
-  type ConfigProps,
-  type CardConfigPayload,
-  type CardDataPayload,
-  CardStatus,
-  ConfigTypes,
   LaWalletKinds,
-  broadcastEvent,
+  baseConfig,
+  buildCardConfigEvent,
   getTag,
   parseContent,
-  buildCardConfigEvent,
-  parseMultiNip04Event,
+  parseMultiNip04Event
 } from '@lawallet/utils'
+
+import {
+  CardStatus,
+  ConfigTypes,
+  type CardConfigPayload,
+  type CardDataPayload,
+  type ConfigProps
+} from '@lawallet/utils/types'
+
+import { broadcastEvent } from '@lawallet/utils/actions'
+
 import {
   NDKEvent,
   NDKKind,
   NDKSubscriptionCacheUsage
 } from '@nostr-dev-kit/ndk'
 import { useEffect, useState } from 'react'
-import { useSubscription } from './useSubscription.js'
 import { useWalletContext } from '../context/AccountContext.js'
-import { baseConfig } from '@lawallet/utils'
+import { useSubscription } from './useSubscription.js'
 
 export type CardConfigReturns = {
   cards: ICards

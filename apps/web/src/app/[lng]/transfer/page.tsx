@@ -24,15 +24,12 @@ import { useTranslation } from '@/context/TranslateContext'
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
 import useErrors from '@/hooks/useErrors'
 import theme from '@/styles/theme'
-import {
-  TransactionDirection,
-  TransactionType,
-  getUsername,
-  getMultipleTags
-} from '@lawallet/utils'
+import { useWalletContext } from '@lawallet/react'
+import { getUsername } from '@lawallet/react/actions'
+import { TransactionDirection, TransactionType } from '@lawallet/react/types'
+import { getMultipleTags } from '@lawallet/react/utils'
 import { useEffect, useState } from 'react'
 import RecipientElement from './components/RecipientElement'
-import { useWalletContext } from '@lawallet/react'
 
 export default function Page() {
   const { t } = useTranslation()

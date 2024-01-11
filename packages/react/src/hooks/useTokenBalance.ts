@@ -1,15 +1,14 @@
 import * as React from 'react'
 
+import { LaWalletKinds, baseConfig } from '@lawallet/utils'
+import { type ConfigProps, type TokenBalance } from '@lawallet/utils/types'
 import {
   type NDKEvent,
   type NDKKind,
   type NostrEvent
 } from '@nostr-dev-kit/ndk'
-import { LaWalletKinds } from '@lawallet/utils'
 import { useNostrContext } from '../context/NDKContext.js'
 import { useSubscription } from './useSubscription.js'
-import { type TokenBalance } from '@lawallet/utils'
-import { type ConfigProps, baseConfig } from '@lawallet/utils'
 
 export interface UseTokenBalanceReturn {
   balance: TokenBalance

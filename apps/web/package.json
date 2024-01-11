@@ -18,7 +18,6 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@lawallet/react": "*",
-    "@lawallet/utils": "*",
     "@nostr-dev-kit/ndk": "^2.3.2",
     "@uidotdev/usehooks": "^2.4.1",
     "@unllamas/components": "^1.4.12",

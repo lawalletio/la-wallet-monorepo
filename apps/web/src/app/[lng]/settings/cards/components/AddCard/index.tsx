@@ -2,11 +2,9 @@
 import { Alert, Button, Flex, Modal, Text } from '@/components/UI'
 import { useTranslation } from '@/context/TranslateContext'
 import useAlert, { AlertTypes } from '@/hooks/useAlerts'
-import {
-  requestCardActivation,
-  buildCardActivationEvent
-} from '@lawallet/utils'
 import { useWalletContext } from '@lawallet/react'
+import { requestCardActivation } from '@lawallet/react/actions'
+import { buildCardActivationEvent } from '@lawallet/react/utils'
 import { NostrEvent } from '@nostr-dev-kit/ndk'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
