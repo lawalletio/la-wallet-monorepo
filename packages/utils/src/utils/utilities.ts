@@ -1,14 +1,14 @@
 //@ts-nocheck
 import { getUserPubkey } from '../interceptors/identity.js'
 import {
-  TransferInformation,
+  type TransferInformation,
   defaultTransfer,
   getWalletService
 } from '../interceptors/transaction.js'
 import { TransferTypes } from '../types/transaction.js'
-import bolt11 from 'light-bolt11-decoder'
+import bolt11 from './light-bolt11.js'
 import { validateEmail } from './email.js'
-import { ConfigProps } from '../types/config.js'
+import { type ConfigProps } from '../types/config.js'
 import { lnurl_decode } from './lnurl.js'
 import { baseConfig } from '../constants/constants.js'
 
