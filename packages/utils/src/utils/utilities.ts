@@ -1,16 +1,15 @@
-//@ts-nocheck
+import { baseConfig } from '../constants/constants.js'
 import { getUserPubkey } from '../interceptors/identity.js'
 import {
-  type TransferInformation,
   defaultTransfer,
-  getWalletService
+  getWalletService,
+  type TransferInformation
 } from '../interceptors/transaction.js'
-import { TransferTypes } from '../types/transaction.js'
-import bolt11 from './light-bolt11.js'
-import { validateEmail } from './email.js'
 import { type ConfigProps } from '../types/config.js'
+import { TransferTypes } from '../types/transaction.js'
+import { validateEmail } from './email.js'
+import bolt11 from './light-bolt11.js'
 import { lnurl_decode } from './lnurl.js'
-import { baseConfig } from '../constants/constants.js'
 
 export const decodeInvoice = (invoice: string) => {
   const decodedInvoice = bolt11.decode(invoice)
