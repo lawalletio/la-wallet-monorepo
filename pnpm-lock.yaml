@@ -50,9 +50,6 @@ importers:
       '@lawallet/react':
         specifier: '*'
         version: link:../../packages/react
-      '@lawallet/utils':
-        specifier: '*'
-        version: link:../../packages/utils
       '@nostr-dev-kit/ndk':
         specifier: ^2.3.2
         version: 2.3.2(typescript@5.3.3)
