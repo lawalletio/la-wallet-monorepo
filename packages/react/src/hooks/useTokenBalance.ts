@@ -6,7 +6,7 @@ import { type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk
 import { useNostrContext } from '../context/NDKContext.js';
 import { useSubscription } from './useSubscription.js';
 
-export interface UseTokenBalanceReturn {
+export interface UseTokenBalanceReturns {
   balance: TokenBalance;
 }
 
@@ -24,7 +24,7 @@ export const useTokenBalance = ({
   enabled,
   closeOnEose = false,
   config = baseConfig,
-}: UseTokenBalanceProps): UseTokenBalanceReturn => {
+}: UseTokenBalanceProps): UseTokenBalanceReturns => {
   const { ndk } = useNostrContext();
   const [balance, setBalance] = React.useState<TokenBalance>({
     tokenId: tokenId,

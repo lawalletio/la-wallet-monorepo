@@ -2,14 +2,14 @@ import { type UserConfigProps, type AvailableCurrencies, defaultUserConfig } fro
 import { parseContent } from '@lawallet/utils';
 import * as React from 'react';
 
-export type SettingsReturns = {
+export type UseSettingsReturns = {
   props: UserConfigProps;
   loading: boolean;
   toggleHideBalance: () => void;
   changeCurrency: (currency: AvailableCurrencies) => void;
 };
 
-export const useSettings = (): SettingsReturns => {
+export const useSettings = (): UseSettingsReturns => {
   const [loading, setLoading] = React.useState<boolean>(true);
   const [props, setProps] = React.useState<UserConfigProps>(defaultUserConfig);
 

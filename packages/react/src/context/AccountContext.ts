@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { useCurrencyConverter, type UseConverterReturns } from '../hooks/useCurrencyConverter.js';
-import { useSettings, type SettingsReturns } from '../hooks/useSettings.js';
-import { useUser, type UserReturns } from '../hooks/useUser.js';
+import { useSettings, type UseSettingsReturns } from '../hooks/useSettings.js';
+import { useUser, type UseUserReturns } from '../hooks/useUser.js';
 import { type ConfigParameter } from '../types/config.js';
 import { useNostrContext } from './NDKContext.js';
 
 interface AccountContextType {
-  user: UserReturns;
-  settings: SettingsReturns;
+  user: UseUserReturns;
+  settings: UseSettingsReturns;
   converter: UseConverterReturns;
 }
 
@@ -17,9 +17,9 @@ export function AccountProvider(props: React.PropsWithChildren<ConfigParameter>)
   const { children } = props;
   const { connectWithPrivateKey } = useNostrContext();
 
-  const user: UserReturns = useUser();
-  const settings: SettingsReturns = useSettings();
-  const converter = useCurrencyConverter();
+  const user: UseUserReturns = useUser();
+  const settings: UseSettingsReturns = useSettings();
+  const converter: UseConverterReturns = useCurrencyConverter();
 
   const value = {
     user,

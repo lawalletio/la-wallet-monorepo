@@ -5,7 +5,7 @@ import { getPublicKey } from 'nostr-tools';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 
-export interface UserReturns {
+export interface UseIdentityReturns {
   identity: UserIdentity;
   setUser: Dispatch<SetStateAction<UserIdentity>>;
 }

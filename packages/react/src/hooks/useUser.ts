@@ -4,14 +4,14 @@ import { useActivity } from './useActivity.js';
 import { useIdentity } from './useIdentity.js';
 import { useTokenBalance } from './useTokenBalance.js';
 
-export interface UserReturns {
+export interface UseUserReturns {
   identity: UserIdentity;
   transactions: Transaction[];
   balance: TokenBalance;
   setUser: (new_identity: UserIdentity) => Promise<void>;
 }
 
-export const useUser = () => {
+export const useUser = (): UseUserReturns => {
   const { identity, setIdentity } = useIdentity();
 
   const { userTransactions: transactions } = useActivity({
