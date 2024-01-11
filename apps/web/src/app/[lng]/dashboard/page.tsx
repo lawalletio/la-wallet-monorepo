@@ -52,7 +52,7 @@ export default function Page() {
   const router = useRouter()
   const {
     user: { identity, balance, transactions },
-    configuration: {
+    settings: {
       loading,
       toggleHideBalance,
       props: { hideBalance, currency }

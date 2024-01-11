@@ -18,7 +18,7 @@ import {
 } from '@nostr-dev-kit/ndk'
 import { useEffect, useState } from 'react'
 import { useSubscription } from './useSubscription.js'
-import { useWalletContext } from '../context/UserContext.js'
+import { useWalletContext } from '../context/AccountContext.js'
 import { baseConfig } from '@lawallet/utils'
 
 export type CardConfigReturns = {

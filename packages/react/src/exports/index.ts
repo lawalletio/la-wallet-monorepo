@@ -1,6 +1,6 @@
 export { useActivity } from '../hooks/useActivity.js'
 export { useCardConfig } from '../hooks/useCardConfig.js'
-export { useConfiguration } from '../hooks/useConfiguration.js'
+export { useSettings } from '../hooks/useSettings.js'
 export { useCurrencyConverter } from '../hooks/useCurrencyConverter.js'
 export { useIdentity } from '../hooks/useIdentity.js'
 export { useSubscription } from '../hooks/useSubscription.js'
@@ -9,11 +9,11 @@ export { useUser } from '../hooks/useUser.js'
 
 export { NDKProvider, useNostrContext, NDKContext } from '../context/NDKContext.js'
 export {
-  UserProvider,
+  AccountProvider,
   useWalletContext
-} from '../context/UserContext.js'
+} from '../context/AccountContext.js'
 
-export { LaWalletConfig } from '../context/context.js'
+export { LaWalletConfig, LaWalletProvider } from '../context/context.js'
 
 export {
   type AvailableCurrencies,

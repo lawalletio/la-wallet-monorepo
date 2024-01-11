@@ -7,21 +7,21 @@ import { TokenList } from './style'
 import { useWalletContext, CurrenciesList } from '@lawallet/react'
 
 export default function Component() {
-  const { configuration } = useWalletContext()
+  const { settings } = useWalletContext()
 
   return (
     <TokenList>
       <Container>
         <Flex gap={4} justify="center">
           {CurrenciesList.map(currency => {
-            const selected: boolean = configuration.props.currency === currency
+            const selected: boolean = settings.props.currency === currency
 
             return (
               <Button
                 key={currency}
                 variant={selected ? 'bezeled' : 'borderless'}
                 size="small"
-                onClick={() => configuration.changeCurrency(currency)}
+                onClick={() => settings.changeCurrency(currency)}
               >
                 {currency}
               </Button>

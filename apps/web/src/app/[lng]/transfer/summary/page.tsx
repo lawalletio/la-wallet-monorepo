@@ -32,7 +32,7 @@ export default function Page() {
   const { loading, transferInfo, executeTransfer } = useTransferContext()
   const {
     user: { identity, balance },
-    configuration: {
+    settings: {
       props: { currency }
     },
     converter: { pricesData, convertCurrency }

@@ -57,7 +57,7 @@ export default function Page() {
   const notifications = useAlert()
   const {
     user: { identity },
-    configuration: {
+    settings: {
       props: { currency }
     },
     converter: { convertCurrency }

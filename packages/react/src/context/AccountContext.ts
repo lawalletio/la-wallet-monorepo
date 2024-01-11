@@ -1,8 +1,8 @@
 import * as React from 'react'
 import {
-  useConfiguration,
-  type ConfigReturns
-} from '../hooks/useConfiguration.js'
+  useSettings,
+  type SettingsReturns
+} from '../hooks/useSettings.js'
 import {
   useCurrencyConverter,
   type UseConverterReturns
@@ -11,25 +11,25 @@ import { useUser, type UserReturns } from '../hooks/useUser.js'
 import { type ConfigParameter } from '../types/config.js'
 import { useNostrContext } from './NDKContext.js'
 
-interface UserContextType {
+interface AccountContextType {
   user: UserReturns
-  configuration: ConfigReturns
+  settings: SettingsReturns
   converter: UseConverterReturns
 }
 
-export const UserContext = React.createContext({} as UserContextType)
+export const AccountContext = React.createContext({} as AccountContextType)
 
-export function UserProvider(props: React.PropsWithChildren<ConfigParameter>) {
+export function AccountProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const { children } = props;
   const { connectWithHexKey } = useNostrContext()
 
   const user: UserReturns = useUser()
-  const configuration: ConfigReturns = useConfiguration()
+  const settings: SettingsReturns = useSettings()
   const converter = useCurrencyConverter()
 
   const value = {
     user,
-    configuration,
+    settings,
     converter
   }
 
@@ -39,14 +39,14 @@ export function UserProvider(props: React.PropsWithChildren<ConfigParameter>) {
   }, [user.identity.isReady])
 
   return React.createElement(
-    UserContext.Provider,
+    AccountContext.Provider,
     { value },
     children
   )
 }
 
 export const useWalletContext = () => {
-  const context = React.useContext(UserContext)
+  const context = React.useContext(AccountContext)
   if (!context) {
     throw new Error('useWalletContext must be used within User provider')
   }

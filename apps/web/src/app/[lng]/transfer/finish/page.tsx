@@ -25,7 +25,7 @@ import { useWalletContext } from '@lawallet/react'
 export default function Page() {
   const { lng, t } = useTranslation()
   const {
-    configuration: {
+    settings: {
       props: { currency }
     },
     converter: { pricesData, convertCurrency }
