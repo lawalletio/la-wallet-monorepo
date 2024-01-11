@@ -1,17 +1,17 @@
-import Lottie from 'lottie-react'
+import Lottie from "lottie-react";
 
-import { Animations } from './style'
+import { Animations } from "./style";
 
 interface ComponentProps {
-  data: unknown
+  data: unknown;
 }
 
 export default function Component(props: ComponentProps) {
-  const { data } = props
+  const { data } = props;
 
   return (
     <Animations>
       <Lottie animationData={data} loop={true} />
     </Animations>
-  )
+  );
 }

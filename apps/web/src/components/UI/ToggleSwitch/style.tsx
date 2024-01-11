@@ -1,6 +1,6 @@
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
 export const ToggleSwitch = styled.div`
   display: flex;
@@ -8,7 +8,7 @@ export const ToggleSwitch = styled.div`
   gap: 16px;
   width: 100%;
 
-  input[type='checkbox'] {
+  input[type="checkbox"] {
     visibility: hidden;
 
     height: 0;
@@ -30,7 +30,7 @@ export const ToggleSwitch = styled.div`
     cursor: pointer;
 
     &:after {
-      content: '';
+      content: "";
       position: absolute;
       top: 2px;
       left: 2px;
@@ -57,4 +57,4 @@ export const ToggleSwitch = styled.div`
     left: calc(100% - 2px);
     transform: translateX(-100%);
   }
-`
+`;

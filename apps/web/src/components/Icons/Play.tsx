@@ -1,4 +1,4 @@
-export default function Component({ color = 'currentColor' }) {
+export default function Component({ color = "currentColor" }) {
   return (
     <svg
       width="24"
@@ -22,5 +22,5 @@ export default function Component({ color = 'currentColor' }) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }

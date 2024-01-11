@@ -4,83 +4,85 @@ import {
   buildCardConfigEvent,
   getTag,
   parseContent,
-  parseMultiNip04Event
-} from '@lawallet/utils'
+  parseMultiNip04Event,
+} from "@lawallet/utils";
 
 import {
   CardStatus,
   ConfigTypes,
   type CardConfigPayload,
   type CardDataPayload,
-  type ConfigProps
-} from '@lawallet/utils/types'
+  type ConfigProps,
+} from "@lawallet/utils/types";
 
-import { broadcastEvent } from '@lawallet/utils/actions'
+import { broadcastEvent } from "@lawallet/utils/actions";
 
 import {
   NDKEvent,
   NDKKind,
-  NDKSubscriptionCacheUsage
-} from '@nostr-dev-kit/ndk'
-import { useEffect, useState } from 'react'
-import { useWalletContext } from '../context/AccountContext.js'
-import { useSubscription } from './useSubscription.js'
+  NDKSubscriptionCacheUsage,
+} from "@nostr-dev-kit/ndk";
+import { useEffect, useState } from "react";
+import { useWalletContext } from "../context/AccountContext.js";
+import { useSubscription } from "./useSubscription.js";
 
 export type CardConfigReturns = {
-  cards: ICards
-  toggleCardStatus: (uuid: string) => void
-}
+  cards: ICards;
+  toggleCardStatus: (uuid: string) => void;
+};
 
 export type ICards = {
-  data: CardDataPayload
-  config: CardConfigPayload
-  loadedAt: number
-  loading: boolean
-}
+  data: CardDataPayload;
+  config: CardConfigPayload;
+  loadedAt: number;
+  loading: boolean;
+};
 
 const buildAndBroadcastCardConfig = (
   config: CardConfigPayload,
-  privateKey: string
+  privateKey: string,
 ) => {
   buildCardConfigEvent(config, privateKey)
-    .then(configEvent => {
-      return broadcastEvent(configEvent)
+    .then((configEvent) => {
+      return broadcastEvent(configEvent);
     })
     .catch(() => {
-      return { error: 'UNEXPECTED_ERROR' }
-    })
-}
+      return { error: "UNEXPECTED_ERROR" };
+    });
+};
 
-export const useCardConfig = (config: ConfigProps = baseConfig): CardConfigReturns => {
+export const useCardConfig = (
+  config: ConfigProps = baseConfig,
+): CardConfigReturns => {
   const [cards, setCards] = useState<ICards>({
     data: {},
     config: {} as CardConfigPayload,
     loadedAt: 0,
-    loading: true
-  })
+    loading: true,
+  });
 
   const {
-    user: { identity }
-  } = useWalletContext()
+    user: { identity },
+  } = useWalletContext();
 
   const { subscription } = useSubscription({
     filters: [
       {
         kinds: [LaWalletKinds.PARAMETRIZED_REPLACEABLE.valueOf() as NDKKind],
-        '#d': [
+        "#d": [
           `${identity.hexpub}:${ConfigTypes.DATA.valueOf()}`,
-          `${identity.hexpub}:${ConfigTypes.CONFIG.valueOf()}`
+          `${identity.hexpub}:${ConfigTypes.CONFIG.valueOf()}`,
         ],
         authors: [config.modulePubkeys.card],
-        since: cards.loadedAt
-      }
+        since: cards.loadedAt,
+      },
     ],
     options: {
       closeOnEose: false,
-      cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+      cacheUsage: NDKSubscriptionCacheUsage.PARALLEL,
     },
-    enabled: true
-  })
+    enabled: true,
+  });
 
   const toggleCardStatus = (uuid: string) => {
     const new_card_config = {
@@ -92,52 +94,52 @@ export const useCardConfig = (config: ConfigProps = baseConfig): CardConfigRetur
           status:
             cards.config.cards?.[uuid]?.status === CardStatus.ENABLED
               ? CardStatus.DISABLED
-              : CardStatus.ENABLED
-        }
-      }
-    }
+              : CardStatus.ENABLED,
+        },
+      },
+    };
 
     buildAndBroadcastCardConfig(
       new_card_config as CardConfigPayload,
-      identity.privateKey
-    )
-  }
+      identity.privateKey,
+    );
+  };
 
   const processReceivedEvent = async (event: NDKEvent) => {
     try {
-      const nostrEv = await event.toNostrEvent()
+      const nostrEv = await event.toNostrEvent();
 
       const parsedEncryptedData = await parseMultiNip04Event(
         nostrEv,
         identity.privateKey,
-        identity.hexpub
-      )
+        identity.hexpub,
+      );
 
-      const subkind: string | undefined = getTag(nostrEv.tags, 't')
+      const subkind: string | undefined = getTag(nostrEv.tags, "t");
       if (subkind)
-        setCards(prev => {
+        setCards((prev) => {
           return {
             ...prev,
             loadedAt: nostrEv.created_at + 1,
-            [subkind === ConfigTypes.DATA ? 'data' : 'config']:
+            [subkind === ConfigTypes.DATA ? "data" : "config"]:
               parseContent(parsedEncryptedData),
-            loading: false
-          }
-        })
+            loading: false,
+          };
+        });
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setCards({
         ...cards,
-        loading: false
-      })
+        loading: false,
+      });
     }
-  }
+  };
 
   useEffect(() => {
-    subscription?.on('event', (data: NDKEvent) => {
-      processReceivedEvent(data)
-    })
-  }, [subscription])
+    subscription?.on("event", (data: NDKEvent) => {
+      processReceivedEvent(data);
+    });
+  }, [subscription]);
 
-  return { cards, toggleCardStatus }
-}
+  return { cards, toggleCardStatus };
+};

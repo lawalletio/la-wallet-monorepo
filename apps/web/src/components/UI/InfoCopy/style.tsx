@@ -1,4 +1,4 @@
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
 export const InfoCopy = styled.div`
   /* background-color: red; */
@@ -12,4 +12,4 @@ export const InfoCopy = styled.div`
       max-width: 200px;
     }
   }
-`
+`;

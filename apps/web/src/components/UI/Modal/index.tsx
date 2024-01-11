@@ -1,35 +1,35 @@
-'use client'
+"use client";
 
-import { useState, useEffect, ReactNode } from 'react'
-import { CrossIcon } from '@bitcoin-design/bitcoin-icons-react/filled'
+import { useState, useEffect, ReactNode } from "react";
+import { CrossIcon } from "@bitcoin-design/bitcoin-icons-react/filled";
 
-import Flex from '../Flex'
-import Button from '../Button'
-import Icon from '../Icon'
+import Flex from "../Flex";
+import Button from "../Button";
+import Icon from "../Icon";
 
-import { Modal, ModalContent } from './style'
-import Heading from '../Heading'
+import { Modal, ModalContent } from "./style";
+import Heading from "../Heading";
 
 interface ComponentProps {
-  children: ReactNode
-  isOpen: boolean
-  onClose: () => void
-  title?: string
+  children: ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
 }
 
 export default function Component(props: ComponentProps) {
-  const { children, isOpen, onClose, title } = props
+  const { children, isOpen, onClose, title } = props;
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setOpen(isOpen)
-  }, [isOpen])
+    setOpen(isOpen);
+  }, [isOpen]);
 
   const handleClose = () => {
-    setOpen(false)
-    onClose()
-  }
+    setOpen(false);
+    onClose();
+  };
 
   return (
     <Modal $isOpen={open}>
@@ -50,5 +50,5 @@ export default function Component(props: ComponentProps) {
         {children}
       </ModalContent>
     </Modal>
-  )
+  );
 }

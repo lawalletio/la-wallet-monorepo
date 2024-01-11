@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import ReactQRCode from 'react-qr-code'
+import { useState } from "react";
+import ReactQRCode from "react-qr-code";
 
-import { copy } from '@/utils/share'
+import { copy } from "@/utils/share";
 
-import Text from '../Text'
+import Text from "../Text";
 
-import { useTranslation } from '@/context/TranslateContext'
-import theme from '@/styles/theme'
-import { QRCode, Toast } from './style'
-import useAlert from '@/hooks/useAlerts'
-import { Alert } from '..'
+import { useTranslation } from "@/context/TranslateContext";
+import theme from "@/styles/theme";
+import { QRCode, Toast } from "./style";
+import useAlert from "@/hooks/useAlerts";
+import { Alert } from "..";
 
 interface ComponentProps {
-  value: string
-  size?: number
-  borderSize?: number
-  showCopy?: boolean
-  textToCopy?: string
+  value: string;
+  size?: number;
+  borderSize?: number;
+  showCopy?: boolean;
+  textToCopy?: string;
 }
 
 export default function Component({
@@ -26,21 +26,21 @@ export default function Component({
   size = 150,
   borderSize = 40,
   showCopy = true,
-  textToCopy
+  textToCopy,
 }: ComponentProps) {
-  const [showToast, setShowToast] = useState(true)
-  const { t } = useTranslation()
-  const notifications = useAlert()
+  const [showToast, setShowToast] = useState(true);
+  const { t } = useTranslation();
+  const notifications = useAlert();
 
   const handleCopy = (text: string) => {
-    copy(text).then(res => {
-      setShowToast(false)
+    copy(text).then((res) => {
+      setShowToast(false);
       notifications.showAlert({
-        description: res ? t('SUCCESS_COPY') : t('ERROR_COPY'),
-        type: res ? 'success' : 'error'
-      })
-    })
-  }
+        description: res ? t("SUCCESS_COPY") : t("ERROR_COPY"),
+        type: res ? "success" : "error",
+      });
+    });
+  };
 
   return (
     <>
@@ -54,12 +54,12 @@ export default function Component({
       <QRCode
         size={size + borderSize}
         onClick={() => {
-          if (showCopy) handleCopy(textToCopy ? textToCopy : value)
+          if (showCopy) handleCopy(textToCopy ? textToCopy : value);
         }}
       >
         {showCopy ? (
           <Toast $isShow={showToast}>
-            <Text size="small">{t('PRESS_TO_COPY')}</Text>
+            <Text size="small">{t("PRESS_TO_COPY")}</Text>
             <span></span>
           </Toast>
         ) : null}
@@ -72,5 +72,5 @@ export default function Component({
         />
       </QRCode>
     </>
-  )
+  );
 }

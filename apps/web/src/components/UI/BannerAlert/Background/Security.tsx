@@ -397,5 +397,5 @@ export default function Component() {
         </filter>
       </defs>
     </svg>
-  )
+  );
 }

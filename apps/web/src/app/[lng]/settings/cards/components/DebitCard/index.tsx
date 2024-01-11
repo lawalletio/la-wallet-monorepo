@@ -1,29 +1,29 @@
-import Card from '@/components/Card'
+import Card from "@/components/Card";
 
-import { Button, Flex } from '@/components/UI'
-import { useState } from 'react'
-import { CardImage, ConfigCard } from './style'
+import { Button, Flex } from "@/components/UI";
+import { useState } from "react";
+import { CardImage, ConfigCard } from "./style";
 
-import Pause from '@/components/Icons/Pause'
-import Play from '@/components/Icons/Play'
-import { CardPayload, CardStatus, Design } from '@lawallet/react/types'
+import Pause from "@/components/Icons/Pause";
+import Play from "@/components/Icons/Play";
+import { CardPayload, CardStatus, Design } from "@lawallet/react/types";
 
 interface ComponentProps {
   card: {
-    uuid: string
-    data: { design: Design }
-    config: CardPayload | undefined
-  }
-  toggleCardStatus: (uuid: string) => void
+    uuid: string;
+    data: { design: Design };
+    config: CardPayload | undefined;
+  };
+  toggleCardStatus: (uuid: string) => void;
 }
 
 export default function Component(props: ComponentProps) {
-  const { card, toggleCardStatus } = props
-  const [handleSelected, setHandleSelected] = useState(false)
+  const { card, toggleCardStatus } = props;
+  const [handleSelected, setHandleSelected] = useState(false);
 
   return (
     <Flex
-      justify={`${handleSelected ? 'end' : 'center'}`}
+      justify={`${handleSelected ? "end" : "center"}`}
       align="center"
       gap={8}
     >
@@ -69,5 +69,5 @@ export default function Component(props: ComponentProps) {
         </ConfigCard>
       )}
     </Flex>
-  )
+  );
 }

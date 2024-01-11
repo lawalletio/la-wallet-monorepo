@@ -44,5 +44,5 @@ export default function Component() {
         fill="#FDC800"
       />
     </svg>
-  )
+  );
 }

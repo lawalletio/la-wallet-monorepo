@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
 interface QRCodeProps {
-  size: number
+  size: number;
 }
 
 export const QRCode = styled.div<QRCodeProps>`
@@ -14,23 +14,23 @@ export const QRCode = styled.div<QRCodeProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${props => props.size ?? 200}px;
-  height: ${props => props.size ?? 200}px;
+  width: ${(props) => props.size ?? 200}px;
+  height: ${(props) => props.size ?? 200}px;
   background-color: ${theme.colors.white};
   border-radius: 12px;
 
   cursor: pointer;
-`
+`;
 
 interface ToastProps {
-  $isShow: boolean
+  $isShow: boolean;
 }
 
 export const Toast = styled.div<ToastProps>`
   position: absolute;
   bottom: 100%;
   margin-bottom: 5px;
-  opacity: ${props => (props.$isShow ? 1 : 0)};
+  opacity: ${(props) => (props.$isShow ? 1 : 0)};
   z-index: 1;
 
   display: flex;
@@ -62,4 +62,4 @@ export const Toast = styled.div<ToastProps>`
     border-left: 5px solid transparent;
     border-top: 5px solid ${theme.colors.primary15};
   }
-`
+`;

@@ -1,45 +1,45 @@
-'use client'
+"use client";
 
-import { useState, useEffect, ReactNode } from 'react'
-import { faSort, faCheck } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useState, useEffect, ReactNode } from "react";
+import { faSort, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Flex from '../Flex'
-import Icon from '../Icon'
-import TokenInfo from '../TokenInfo'
+import Flex from "../Flex";
+import Icon from "../Icon";
+import TokenInfo from "../TokenInfo";
 
-import theme from '@/styles/theme'
-import { Combobox, Trigger, Content, Group, Item } from './style'
+import theme from "@/styles/theme";
+import { Combobox, Trigger, Content, Group, Item } from "./style";
 
 interface ItemListCombobox {
-  id: number
-  label: string
-  symbol: string
+  id: number;
+  label: string;
+  symbol: string;
 }
 
 interface ComponentProps {
-  children?: ReactNode
-  selected: number
-  list: Array<ItemListCombobox>
-  onChange: (id: number) => void
-  showPrice?: boolean
+  children?: ReactNode;
+  selected: number;
+  list: Array<ItemListCombobox>;
+  onChange: (id: number) => void;
+  showPrice?: boolean;
 }
 
 export default function Component(props: ComponentProps) {
-  const { children, selected, list, onChange, showPrice = false } = props
+  const { children, selected, list, onChange, showPrice = false } = props;
 
-  const [open, setOpen] = useState(false)
-  const [select, setSelect] = useState(0)
+  const [open, setOpen] = useState(false);
+  const [select, setSelect] = useState(0);
 
   useEffect(() => {
-    setSelect(selected)
-  }, [selected])
+    setSelect(selected);
+  }, [selected]);
 
   const handleClick = (id: number) => {
-    setSelect(id)
-    onChange(id)
-    setOpen(false)
-  }
+    setSelect(id);
+    onChange(id);
+    setOpen(false);
+  };
 
   return (
     <Combobox $isSelected={select !== 0}>
@@ -48,7 +48,7 @@ export default function Component(props: ComponentProps) {
           <Flex flex={1}>
             {select ? (
               <TokenInfo
-                item={list.find(item => item.id === select)}
+                item={list.find((item) => item.id === select)}
                 showPrice={showPrice}
               />
             ) : (
@@ -66,7 +66,7 @@ export default function Component(props: ComponentProps) {
       {list && list.length > 0 && (
         <Content $isOpen={open}>
           <Group>
-            {list?.map(item => (
+            {list?.map((item) => (
               <Item
                 key={item.id}
                 tabIndex={open ? 0 : -1}
@@ -85,5 +85,5 @@ export default function Component(props: ComponentProps) {
         </Content>
       )}
     </Combobox>
-  )
+  );
 }

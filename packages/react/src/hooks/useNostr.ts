@@ -1,8 +1,12 @@
-import * as React from 'react'
-import type NostrExtensionProvider from '../types/nostr.js';
+import * as React from "react";
+import type NostrExtensionProvider from "../types/nostr.js";
 import { type WebLNProvider as WebLNExtensionProvider } from "../types/webln.js";
 
-import NDK, { NDKNip07Signer, NDKPrivateKeySigner, NDKUser } from '@nostr-dev-kit/ndk';
+import NDK, {
+  NDKNip07Signer,
+  NDKPrivateKeySigner,
+  NDKUser,
+} from "@nostr-dev-kit/ndk";
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;
@@ -19,9 +23,11 @@ export interface INostr {
 }
 
 export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
-  const [ndk, setNDK] = React.useState<NDK>(new NDK({
-    explicitRelayUrls
-  }));
+  const [ndk, setNDK] = React.useState<NDK>(
+    new NDK({
+      explicitRelayUrls,
+    }),
+  );
 
   const [userPubkey, setUserPubkey] = React.useState<string>("");
 
@@ -50,7 +56,7 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
   }, []);
 
   const initializeNDK = async (
-    signer: NDKNip07Signer | NDKPrivateKeySigner
+    signer: NDKNip07Signer | NDKPrivateKeySigner,
   ) => {
     try {
       const ndkProvider = new NDK({
@@ -89,14 +95,14 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
   };
 
   const requestPublicKey = async () => {
-    if (!providers.nostr) return '';
+    if (!providers.nostr) return "";
 
     try {
       await providers.nostr.enable();
       const _pubKey = await providers.nostr.getPublicKey();
       return _pubKey;
     } catch {
-      return '';
+      return "";
     }
   };
 

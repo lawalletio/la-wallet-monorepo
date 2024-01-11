@@ -1,13 +1,13 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Respaldar cuenta - LaWallet'
-}
+  title: "Respaldar cuenta - LaWallet",
+};
 
 export default function RootLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  return <>{children}</>
+  return <>{children}</>;
 }

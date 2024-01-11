@@ -1,216 +1,217 @@
-import { regexUserName } from '@/constants/constants'
-import { useWalletContext } from '@lawallet/react'
+import { regexUserName } from "@/constants/constants";
+import { useWalletContext } from "@lawallet/react";
 import {
   IdentityResponse,
   claimIdentity,
   existIdentity,
   generateUserIdentity,
-  requestCardActivation
-} from '@lawallet/react/actions'
+  requestCardActivation,
+} from "@lawallet/react/actions";
 import {
   buildCardActivationEvent,
-  buildIdentityEvent
-} from '@lawallet/react/utils'
+  buildIdentityEvent,
+} from "@lawallet/react/utils";
 
-import { UserIdentity } from '@lawallet/react/types'
-import { NostrEvent } from '@nostr-dev-kit/ndk'
-import { useRouter } from 'next/navigation'
-import { Dispatch, SetStateAction, useState } from 'react'
-import useErrors, { IUseErrors } from './useErrors'
+import { UserIdentity } from "@lawallet/react/types";
+import { NostrEvent } from "@nostr-dev-kit/ndk";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useState } from "react";
+import useErrors, { IUseErrors } from "./useErrors";
 
 export interface AccountProps {
-  nonce: string
-  card: string
-  name: string
+  nonce: string;
+  card: string;
+  name: string;
 }
 
 interface CreateIdentityParams extends AccountProps {
-  isValidNonce: boolean
-  loading: boolean
+  isValidNonce: boolean;
+  loading: boolean;
 }
 
 export type CreateIdentityReturns = {
-  success: boolean
-  message: string
-  identity?: UserIdentity
-}
+  success: boolean;
+  message: string;
+  identity?: UserIdentity;
+};
 
 export type UseIdentityReturns = {
-  loading: boolean
-  accountInfo: CreateIdentityParams
-  errors: IUseErrors
-  setAccountInfo: Dispatch<SetStateAction<CreateIdentityParams>>
-  handleChangeUsername: (username: string) => void
-  handleCreateIdentity: (props: AccountProps) => void
-}
+  loading: boolean;
+  accountInfo: CreateIdentityParams;
+  errors: IUseErrors;
+  setAccountInfo: Dispatch<SetStateAction<CreateIdentityParams>>;
+  handleChangeUsername: (username: string) => void;
+  handleCreateIdentity: (props: AccountProps) => void;
+};
 
-let checkExistUsername: NodeJS.Timeout
+let checkExistUsername: NodeJS.Timeout;
 
 const defaultAccount: CreateIdentityParams = {
-  nonce: '',
-  card: '',
-  name: '',
+  nonce: "",
+  card: "",
+  name: "",
   isValidNonce: false,
-  loading: true
-}
+  loading: true,
+};
 
 export const useCreateIdentity = (): UseIdentityReturns => {
   const {
-    user: { setUser }
-  } = useWalletContext()
-  const [loading, setLoading] = useState<boolean>(false)
+    user: { setUser },
+  } = useWalletContext();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [accountInfo, setAccountInfo] =
-    useState<CreateIdentityParams>(defaultAccount)
+    useState<CreateIdentityParams>(defaultAccount);
 
-  const errors = useErrors()
-  const router = useRouter()
+  const errors = useErrors();
+  const router = useRouter();
 
   const validateUsername = (username: string) => {
-    const invalidUsername = !regexUserName.test(username)
+    const invalidUsername = !regexUserName.test(username);
 
     if (invalidUsername) {
-      errors.modifyError('INVALID_USERNAME')
-      return false
+      errors.modifyError("INVALID_USERNAME");
+      return false;
     }
-    return true
-  }
+    return true;
+  };
 
   const checkIfExistName = (username: string) => {
-    if (checkExistUsername) clearTimeout(checkExistUsername)
+    if (checkExistUsername) clearTimeout(checkExistUsername);
 
     checkExistUsername = setTimeout(async () => {
-      const nameWasTaken = await existIdentity(username)
+      const nameWasTaken = await existIdentity(username);
 
-      setAccountInfo(prev => {
-        return { ...prev, loading: false }
-      })
+      setAccountInfo((prev) => {
+        return { ...prev, loading: false };
+      });
 
       if (nameWasTaken) {
-        errors.modifyError('NAME_ALREADY_TAKEN')
-        return false
+        errors.modifyError("NAME_ALREADY_TAKEN");
+        return false;
       }
-    }, 300)
-  }
+    }, 300);
+  };
 
   const handleChangeUsername = (username: string) => {
-    errors.resetError()
+    errors.resetError();
 
     if (!username.length && accountInfo.name.length) {
-      setAccountInfo({ ...accountInfo, name: '', loading: false })
-      if (checkExistUsername) clearTimeout(checkExistUsername)
-      return
+      setAccountInfo({ ...accountInfo, name: "", loading: false });
+      if (checkExistUsername) clearTimeout(checkExistUsername);
+      return;
     }
 
-    const validUsername: boolean = validateUsername(username)
+    const validUsername: boolean = validateUsername(username);
     if (validUsername) {
       setAccountInfo({
         ...accountInfo,
         name: username.toLowerCase(),
-        loading: true
-      })
+        loading: true,
+      });
 
-      checkIfExistName(username)
+      checkIfExistName(username);
     }
-  }
+  };
 
   const createNostrAccount = async () => {
-    setLoading(true)
+    setLoading(true);
 
-    const generatedIdentity: UserIdentity = await generateUserIdentity()
+    const generatedIdentity: UserIdentity = await generateUserIdentity();
     if (generatedIdentity) {
-      setUser(generatedIdentity)
-      router.push('/dashboard')
-      setLoading(false)
+      setUser(generatedIdentity);
+      router.push("/dashboard");
+      setLoading(false);
     }
-  }
+  };
 
   const createIdentity = async ({
     nonce,
-    name
+    name,
   }: AccountProps): Promise<CreateIdentityReturns> => {
-    const generatedIdentity: UserIdentity = await generateUserIdentity(name)
+    const generatedIdentity: UserIdentity = await generateUserIdentity(name);
 
     try {
       const event: NostrEvent = await buildIdentityEvent(
         nonce,
-        generatedIdentity
-      )
-      const createdAccount: IdentityResponse = await claimIdentity(event)
+        generatedIdentity,
+      );
+      const createdAccount: IdentityResponse = await claimIdentity(event);
       if (!createdAccount.success)
         return {
           success: false,
-          message: createdAccount.reason!
-        }
+          message: createdAccount.reason!,
+        };
 
       return {
         success: true,
-        message: 'ok',
-        identity: generatedIdentity
-      }
+        message: "ok",
+        identity: generatedIdentity,
+      };
     } catch {
       return {
         success: false,
-        message: 'ERROR_ON_CREATE_ACCOUNT'
-      }
+        message: "ERROR_ON_CREATE_ACCOUNT",
+      };
     }
-  }
+  };
 
   const handleCreateIdentity = (props: AccountProps) => {
-    if (loading) return
-    const { nonce, name } = props
+    if (loading) return;
+    const { nonce, name } = props;
 
     if (!nonce) {
-      createNostrAccount()
-      return
+      createNostrAccount();
+      return;
     }
 
-    if (!name.length) return errors.modifyError('EMPTY_USERNAME')
-    if (name.length < 3) return errors.modifyError('MIN_LENGTH_USERNAME')
-    if (name.length > 15) return errors.modifyError('MAX_LENGTH_USERNAME')
+    if (!name.length) return errors.modifyError("EMPTY_USERNAME");
+    if (name.length < 3) return errors.modifyError("MIN_LENGTH_USERNAME");
+    if (name.length > 15) return errors.modifyError("MAX_LENGTH_USERNAME");
 
-    if (!regexUserName.test(name)) return errors.modifyError('INVALID_USERNAME')
+    if (!regexUserName.test(name))
+      return errors.modifyError("INVALID_USERNAME");
 
-    setLoading(true)
+    setLoading(true);
 
     existIdentity(name)
       .then((nameWasTaken: boolean) => {
-        if (nameWasTaken) return errors.modifyError('NAME_ALREADY_TAKEN')
+        if (nameWasTaken) return errors.modifyError("NAME_ALREADY_TAKEN");
 
         return createIdentity(props).then(
           (new_identity: CreateIdentityReturns) => {
-            const { success, identity, message } = new_identity
+            const { success, identity, message } = new_identity;
 
             if (success && identity) {
-              setUser(identity!)
+              setUser(identity!);
 
               if (props.card) {
                 buildCardActivationEvent(props.card, identity.privateKey)
                   .then((cardEvent: NostrEvent) => {
                     requestCardActivation(cardEvent).then(() => {
-                      router.push('/dashboard')
-                    })
+                      router.push("/dashboard");
+                    });
                   })
                   .catch(() => {
-                    router.push('/dashboard')
-                  })
+                    router.push("/dashboard");
+                  });
               } else {
-                router.push('/dashboard')
+                router.push("/dashboard");
               }
             } else {
-              errors.modifyError(message)
+              errors.modifyError(message);
             }
-          }
-        )
+          },
+        );
       })
-      .then(() => setLoading(false))
-  }
+      .then(() => setLoading(false));
+  };
   return {
     accountInfo,
     setAccountInfo,
     handleCreateIdentity,
     handleChangeUsername,
     loading,
-    errors
-  }
-}
+    errors,
+  };
+};

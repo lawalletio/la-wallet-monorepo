@@ -1,1 +1,1 @@
-export * from '@lawallet/utils/actions'
+export * from "@lawallet/utils/actions";

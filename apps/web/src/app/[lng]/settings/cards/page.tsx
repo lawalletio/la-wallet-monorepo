@@ -1,27 +1,27 @@
-'use client'
+"use client";
 
-import { useTranslation } from '@/context/TranslateContext'
+import { useTranslation } from "@/context/TranslateContext";
 
-import Container from '@/components/Layout/Container'
-import Navbar from '@/components/Layout/Navbar'
-import { MainLoader } from '@/components/Loader/Loader'
-import { Divider, Flex } from '@/components/UI'
-import { useCardConfig } from '@lawallet/react'
-import { Design } from '@lawallet/react/types'
-import AddNewCardModal from './components/AddCard'
-import DebitCard from './components/DebitCard'
-import EmptyCards from './components/EmptyCards'
+import Container from "@/components/Layout/Container";
+import Navbar from "@/components/Layout/Navbar";
+import { MainLoader } from "@/components/Loader/Loader";
+import { Divider, Flex } from "@/components/UI";
+import { useCardConfig } from "@lawallet/react";
+import { Design } from "@lawallet/react/types";
+import AddNewCardModal from "./components/AddCard";
+import DebitCard from "./components/DebitCard";
+import EmptyCards from "./components/EmptyCards";
 
 export default function Page() {
-  const { cards, toggleCardStatus } = useCardConfig()
-  const { t } = useTranslation()
+  const { cards, toggleCardStatus } = useCardConfig();
+  const { t } = useTranslation();
 
   return (
     <>
       <Navbar
-        title={t('MY_CARDS')}
+        title={t("MY_CARDS")}
         showBackPage={true}
-        overrideBack={'/settings'}
+        overrideBack={"/settings"}
       />
 
       <Container size="small">
@@ -36,12 +36,12 @@ export default function Page() {
                   card={{
                     uuid: key,
                     data: value as { design: Design },
-                    config: cards.config.cards?.[key]
+                    config: cards.config.cards?.[key],
                   }}
                   toggleCardStatus={toggleCardStatus}
                   key={key}
                 />
-              )
+              );
             })}
           </Flex>
         ) : (
@@ -52,5 +52,5 @@ export default function Page() {
 
       <AddNewCardModal />
     </>
-  )
+  );
 }

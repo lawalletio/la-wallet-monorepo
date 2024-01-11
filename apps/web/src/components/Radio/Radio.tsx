@@ -1,13 +1,13 @@
-import styles from './Radio.module.css'
+import styles from "./Radio.module.css";
 
 type RadioProps = {
-  text: string
-  checked: boolean
-  onClick: (e) => void
-}
+  text: string;
+  checked: boolean;
+  onClick: (e) => void;
+};
 
 const Radio = (props: RadioProps) => {
-  const { text, checked, onClick } = props
+  const { text, checked, onClick } = props;
 
   return (
     <div className={styles.itemsToFilterContainer}>
@@ -25,7 +25,7 @@ const Radio = (props: RadioProps) => {
         <div className={styles.check}></div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Radio
+export default Radio;

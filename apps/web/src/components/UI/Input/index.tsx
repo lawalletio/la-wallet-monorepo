@@ -1,39 +1,39 @@
-'use client'
+"use client";
 
 import {
   CheckIcon,
-  AlertIcon
-} from '@bitcoin-design/bitcoin-icons-react/filled'
-import { BtnLoader } from '@/components/Loader/Loader'
+  AlertIcon,
+} from "@bitcoin-design/bitcoin-icons-react/filled";
+import { BtnLoader } from "@/components/Loader/Loader";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
-import { Input, InputBox, InputIcon } from './style'
+import { Input, InputBox, InputIcon } from "./style";
 
 interface InputProps {
-  placeholder: string
-  value?: string
-  type?: 'text' | 'password' | 'number' | 'email'
-  id?: string
-  name?: string
-  status?: 'success' | 'error'
-  autoFocus?: boolean
-  onChange?: (e: any) => void
-  onFocus?: (e: any) => void
-  onBlur?: (e: any) => void
-  isLoading?: boolean
-  isChecked?: boolean
-  isError?: boolean
-  disabled?: boolean
+  placeholder: string;
+  value?: string;
+  type?: "text" | "password" | "number" | "email";
+  id?: string;
+  name?: string;
+  status?: "success" | "error";
+  autoFocus?: boolean;
+  onChange?: (e: any) => void;
+  onFocus?: (e: any) => void;
+  onBlur?: (e: any) => void;
+  isLoading?: boolean;
+  isChecked?: boolean;
+  isError?: boolean;
+  disabled?: boolean;
 }
 
 export default function Component(props: InputProps) {
   const {
     placeholder,
     value,
-    type = 'text',
-    id = '',
-    name = '',
+    type = "text",
+    id = "",
+    name = "",
     status,
     autoFocus = false,
     onChange,
@@ -42,8 +42,8 @@ export default function Component(props: InputProps) {
     isLoading = false,
     isChecked = false,
     isError = false,
-    disabled = false
-  } = props
+    disabled = false,
+  } = props;
 
   return (
     <InputBox $withIcon={isLoading}>
@@ -57,7 +57,7 @@ export default function Component(props: InputProps) {
         name={name}
         value={value}
         $showValidate={!status}
-        $isSuccess={status && status === 'success'}
+        $isSuccess={status && status === "success"}
         autoFocus={autoFocus}
         disabled={disabled}
       />
@@ -69,5 +69,5 @@ export default function Component(props: InputProps) {
         </InputIcon>
       )}
     </InputBox>
-  )
+  );
 }

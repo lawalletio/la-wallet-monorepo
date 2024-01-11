@@ -1,36 +1,36 @@
-import { type ConfigProps } from '@lawallet/utils/types'
+import { type ConfigProps } from "@lawallet/utils/types";
 
 export type ConfigParameter = {
-  config?: ConfigProps
-}
+  config?: ConfigProps;
+};
 
-export type AvailableCurrencies = 'SAT' | 'USD' | 'ARS'
-export const CurrenciesList: AvailableCurrencies[] = ['SAT', 'USD', 'ARS']
-export const defaultCurrency: AvailableCurrencies = 'ARS'
+export type AvailableCurrencies = "SAT" | "USD" | "ARS";
+export const CurrenciesList: AvailableCurrencies[] = ["SAT", "USD", "ARS"];
+export const defaultCurrency: AvailableCurrencies = "ARS";
 
 type CurrencyMetadata = {
-  locale: string
-}
+  locale: string;
+};
 
 export const CurrenciesMetadata: Record<AvailableCurrencies, CurrencyMetadata> =
-{
-  ARS: {
-    locale: 'es-AR'
-  },
-  SAT: {
-    locale: 'es-AR'
-  },
-  USD: {
-    locale: 'en-US'
-  }
-}
+  {
+    ARS: {
+      locale: "es-AR",
+    },
+    SAT: {
+      locale: "es-AR",
+    },
+    USD: {
+      locale: "en-US",
+    },
+  };
 
 export type UserConfigProps = {
-  hideBalance: boolean
-  currency: AvailableCurrencies
-}
+  hideBalance: boolean;
+  currency: AvailableCurrencies;
+};
 
 export const defaultUserConfig: UserConfigProps = {
   hideBalance: false,
-  currency: 'SAT'
-}
+  currency: "SAT",
+};

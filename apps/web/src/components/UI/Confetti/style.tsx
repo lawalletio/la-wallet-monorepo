@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
 interface ConfettiProps {}
 
@@ -17,7 +17,7 @@ export const Confetti = styled.div<ConfettiProps>`
   height: 100dvh;
 
   &:before {
-    content: '';
+    content: "";
 
     position: absolute;
     bottom: 0;
@@ -31,4 +31,4 @@ export const Confetti = styled.div<ConfettiProps>`
       rgba(28, 28, 28, 0)
     );
   }
-`
+`;

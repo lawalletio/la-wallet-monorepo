@@ -1,15 +1,15 @@
-import Image from 'next/image'
+import Image from "next/image";
 
-import { Design } from '@lawallet/react/types'
-import { Card } from './style'
+import { Design } from "@lawallet/react/types";
+import { Card } from "./style";
 
 interface ComponentProps {
-  data: { design: Design }
-  active: boolean
+  data: { design: Design };
+  active: boolean;
 }
 
 export default function Component(props: ComponentProps) {
-  const { data, active } = props
+  const { data, active } = props;
 
   return (
     <Card $isActive={active}>
@@ -20,5 +20,5 @@ export default function Component(props: ComponentProps) {
         height={176}
       />
     </Card>
-  )
+  );
 }

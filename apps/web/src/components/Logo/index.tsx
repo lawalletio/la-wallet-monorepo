@@ -1,4 +1,4 @@
-export default function Component({ currentColor = 'currentColor' }) {
+export default function Component({ currentColor = "currentColor" }) {
   return (
     <svg
       width="168"
@@ -56,5 +56,5 @@ export default function Component({ currentColor = 'currentColor' }) {
         fill={currentColor}
       />
     </svg>
-  )
+  );
 }

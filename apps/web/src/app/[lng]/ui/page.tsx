@@ -1,19 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
 
 import {
   faQrcode,
   faFingerprint,
-  faDeleteLeft
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+  faDeleteLeft,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
-import Container from '@/components/Layout/Container'
-import Logo from '@/components/Logo'
+import Container from "@/components/Layout/Container";
+import Logo from "@/components/Logo";
 
 import {
   Button,
@@ -32,26 +32,26 @@ import {
   AccordionBody,
   Avatar,
   AvatarImage,
-  DotStatus
-} from '@/components/UI'
+  DotStatus,
+} from "@/components/UI";
 
 export default function Home() {
   // Input feedback
-  const inputStatusSuccess = 'success'
-  const inputStatusError = 'error'
+  const inputStatusSuccess = "success";
+  const inputStatusError = "error";
 
   // Combobox
-  const [tokenSelected, setTokenSelected] = useState(0)
+  const [tokenSelected, setTokenSelected] = useState(0);
   const listTokens = [
     {
       id: 1,
-      label: 'Bitcoin',
-      symbol: 'sats',
+      label: "Bitcoin",
+      symbol: "sats",
       amount: 1250000,
-      priceArs: 0.1259
+      priceArs: 0.1259,
     },
-    { id: 2, label: 'PintaToken', symbol: 'pnt', amount: 3, priceArs: 700 }
-  ]
+    { id: 2, label: "PintaToken", symbol: "pnt", amount: 3, priceArs: 700 },
+  ];
 
   return (
     <Container size="small">
@@ -83,33 +83,33 @@ export default function Home() {
       </Flex>
       <Divider y={32} />
       <Flex gap={4}>
-        <Button size="small" onClick={() => alert('hola')}>
+        <Button size="small" onClick={() => alert("hola")}>
           Button
         </Button>
-        <Button size="small" variant="bezeled" onClick={() => alert('hola')}>
+        <Button size="small" variant="bezeled" onClick={() => alert("hola")}>
           Button
         </Button>
         <Button
           size="small"
           variant="bezeledGray"
-          onClick={() => alert('hola')}
+          onClick={() => alert("hola")}
         >
           Button
         </Button>
-        <Button size="small" variant="borderless" onClick={() => alert('hola')}>
+        <Button size="small" variant="borderless" onClick={() => alert("hola")}>
           Button
         </Button>
       </Flex>
       <Divider y={32} />
       <Flex gap={4}>
-        <Button size="small" color="secondary" onClick={() => alert('hola')}>
+        <Button size="small" color="secondary" onClick={() => alert("hola")}>
           Button
         </Button>
         <Button
           size="small"
           color="secondary"
           variant="bezeled"
-          onClick={() => alert('hola')}
+          onClick={() => alert("hola")}
         >
           Button
         </Button>
@@ -117,7 +117,7 @@ export default function Home() {
           size="small"
           color="secondary"
           variant="bezeledGray"
-          onClick={() => alert('hola')}
+          onClick={() => alert("hola")}
         >
           Button
         </Button>
@@ -125,47 +125,47 @@ export default function Home() {
           size="small"
           color="secondary"
           variant="borderless"
-          onClick={() => alert('hola')}
+          onClick={() => alert("hola")}
         >
           Button
         </Button>
       </Flex>
       <Divider y={32} />
       <Flex gap={4}>
-        <Button onClick={() => alert('hola')}>Button</Button>
-        <Button variant="bezeled" onClick={() => alert('hola')}>
+        <Button onClick={() => alert("hola")}>Button</Button>
+        <Button variant="bezeled" onClick={() => alert("hola")}>
           Button
         </Button>
-        <Button variant="bezeledGray" onClick={() => alert('hola')}>
+        <Button variant="bezeledGray" onClick={() => alert("hola")}>
           Button
         </Button>
-        <Button variant="borderless" onClick={() => alert('hola')}>
+        <Button variant="borderless" onClick={() => alert("hola")}>
           Button
         </Button>
       </Flex>
       <Divider y={32} />
       <Flex gap={4}>
-        <Button color="secondary" onClick={() => alert('hola')}>
+        <Button color="secondary" onClick={() => alert("hola")}>
           Button
         </Button>
         <Button
           color="secondary"
           variant="bezeled"
-          onClick={() => alert('hola')}
+          onClick={() => alert("hola")}
         >
           Button
         </Button>
         <Button
           color="secondary"
           variant="bezeledGray"
-          onClick={() => alert('hola')}
+          onClick={() => alert("hola")}
         >
           Button
         </Button>
         <Button
           color="secondary"
           variant="borderless"
-          onClick={() => alert('hola')}
+          onClick={() => alert("hola")}
         >
           Button
         </Button>
@@ -176,7 +176,7 @@ export default function Home() {
           <Button
             color="primary"
             variant="bezeled"
-            onClick={() => alert('hola')}
+            onClick={() => alert("hola")}
           >
             <FontAwesomeIcon icon={faFingerprint} />
           </Button>
@@ -185,13 +185,13 @@ export default function Home() {
           <Button
             color="secondary"
             variant="bezeled"
-            onClick={() => alert('hola')}
+            onClick={() => alert("hola")}
           >
             <FontAwesomeIcon icon={faQrcode} />
           </Button>
         </div>
         <div>
-          <Button color="error" variant="bezeled" onClick={() => alert('hola')}>
+          <Button color="error" variant="bezeled" onClick={() => alert("hola")}>
             <FontAwesomeIcon icon={faDeleteLeft} />
           </Button>
         </div>
@@ -253,7 +253,7 @@ export default function Home() {
       <InputGroup>
         <Input placeholder="Input" type="text" />
         <InputGroupRight>
-          <Button size="small" variant="bezeled" onClick={() => alert('hola')}>
+          <Button size="small" variant="bezeled" onClick={() => alert("hola")}>
             Pegar
           </Button>
         </InputGroupRight>
@@ -317,14 +317,14 @@ export default function Home() {
                 size="small"
                 color="secondary"
                 variant="bezeled"
-                onClick={() => alert('hola')}
+                onClick={() => alert("hola")}
               >
                 Copiar
               </Button>
             </Flex>
             <Divider y={16} />
             <Flex>
-              <Button variant="borderless" onClick={() => alert('hola')}>
+              <Button variant="borderless" onClick={() => alert("hola")}>
                 ¿Que es una clave privada?
               </Button>
             </Flex>
@@ -373,5 +373,5 @@ export default function Home() {
       </Flex>
       <Divider y={32} />
     </Container>
-  )
+  );
 }

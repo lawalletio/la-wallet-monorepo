@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
 interface DotStatusProps {
-  $color: string
+  $color: string;
 }
 
 export const DotStatus = styled.div<DotStatusProps>`
@@ -12,6 +12,6 @@ export const DotStatus = styled.div<DotStatusProps>`
   min-height: 10px;
   height: 10px;
 
-  background-color: ${props => props.$color};
+  background-color: ${(props) => props.$color};
   border-radius: 50%;
-`
+`;

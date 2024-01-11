@@ -118,5 +118,5 @@ export default function Component() {
         </radialGradient>
       </defs>
     </svg>
-  )
+  );
 }

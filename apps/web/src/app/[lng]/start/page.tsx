@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from "next/navigation";
 
-import Container from '@/components/Layout/Container'
-import Navbar from '@/components/Layout/Navbar'
+import Container from "@/components/Layout/Container";
+import Navbar from "@/components/Layout/Navbar";
 
-import StartView from '@/app/[lng]/start/components/StartView'
+import StartView from "@/app/[lng]/start/components/StartView";
 import {
   Button,
   Divider,
@@ -15,19 +15,19 @@ import {
   Input,
   InputGroup,
   InputGroupRight,
-  Text
-} from '@/components/UI'
-import config from '@/constants/config'
-import { useTranslation } from '@/context/TranslateContext'
-import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
-import { useCreateIdentity } from '@/hooks/useCreateIdentity'
-import { validateNonce } from '@lawallet/react/actions'
-import { ChangeEvent, useEffect, useState } from 'react'
+  Text,
+} from "@/components/UI";
+import config from "@/constants/config";
+import { useTranslation } from "@/context/TranslateContext";
+import { useActionOnKeypress } from "@/hooks/useActionOnKeypress";
+import { useCreateIdentity } from "@/hooks/useCreateIdentity";
+import { validateNonce } from "@lawallet/react/actions";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function Page() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const [activeStartView, setActiveStartView] = useState<boolean>(true)
+  const [activeStartView, setActiveStartView] = useState<boolean>(true);
 
   const {
     handleCreateIdentity,
@@ -35,40 +35,41 @@ export default function Page() {
     setAccountInfo,
     handleChangeUsername,
     loading,
-    errors
-  } = useCreateIdentity()
+    errors,
+  } = useCreateIdentity();
 
-  const router = useRouter()
-  const params = useSearchParams()
+  const router = useRouter();
+  const params = useSearchParams();
 
   const handleConfirm = () => {
-    if (accountInfo.name && accountInfo.nonce) handleCreateIdentity(accountInfo)
-  }
+    if (accountInfo.name && accountInfo.nonce)
+      handleCreateIdentity(accountInfo);
+  };
 
-  useActionOnKeypress('Enter', handleConfirm, [accountInfo.name])
+  useActionOnKeypress("Enter", handleConfirm, [accountInfo.name]);
 
   useEffect(() => {
-    const nonce: string = params.get('i') || ''
-    const card: string = params.get('c') || ''
+    const nonce: string = params.get("i") || "";
+    const card: string = params.get("c") || "";
 
     if (!nonce) {
-      setAccountInfo({ ...accountInfo, loading: false })
+      setAccountInfo({ ...accountInfo, loading: false });
     } else {
-      validateNonce(nonce).then(isValidNonce => {
+      validateNonce(nonce).then((isValidNonce) => {
         setAccountInfo({
           ...accountInfo,
           nonce,
           card,
           isValidNonce,
-          loading: false
-        })
-      })
+          loading: false,
+        });
+      });
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    router.prefetch('/dashboard')
-  }, [router])
+    router.prefetch("/dashboard");
+  }, [router]);
 
   if (activeStartView)
     return (
@@ -77,14 +78,14 @@ export default function Page() {
         isValidNonce={accountInfo.isValidNonce}
         onClick={() => setActiveStartView(false)}
       />
-    )
+    );
 
   return (
     <>
       <Navbar />
       <Container size="small">
         <Flex direction="column" justify="center">
-          <Heading as="h2">{t('REGISTER_USER')}</Heading>
+          <Heading as="h2">{t("REGISTER_USER")}</Heading>
 
           <Divider y={8} />
           <InputGroup>
@@ -97,7 +98,7 @@ export default function Page() {
               id="username"
               name="username"
               status={
-                errors.isExactError('NAME_ALREADY_TAKEN') ? 'error' : undefined
+                errors.isExactError("NAME_ALREADY_TAKEN") ? "error" : undefined
               }
               autoFocus={true}
               value={accountInfo.name}
@@ -105,12 +106,12 @@ export default function Page() {
               isError={
                 accountInfo.loading
                   ? undefined
-                  : errors.isExactError('NAME_ALREADY_TAKEN')
+                  : errors.isExactError("NAME_ALREADY_TAKEN")
               }
               isChecked={
                 accountInfo.loading
                   ? undefined
-                  : !errors.isExactError('NAME_ALREADY_TAKEN') &&
+                  : !errors.isExactError("NAME_ALREADY_TAKEN") &&
                     Boolean(accountInfo.name)
               }
             />
@@ -120,7 +121,7 @@ export default function Page() {
           </InputGroup>
           <Feedback
             show={errors.errorInfo.visible}
-            status={errors.errorInfo.visible ? 'error' : undefined}
+            status={errors.errorInfo.visible ? "error" : undefined}
           >
             {errors.errorInfo.text}
           </Feedback>
@@ -134,19 +135,19 @@ export default function Page() {
               variant="bezeledGray"
               onClick={() => setActiveStartView(true)}
             >
-              {t('CANCEL')}
+              {t("CANCEL")}
             </Button>
             <Button
               onClick={handleConfirm}
               disabled={loading || !accountInfo.nonce.length}
               loading={loading}
             >
-              {t('CONFIRM')}
+              {t("CONFIRM")}
             </Button>
           </Flex>
           <Divider y={32} />
         </Container>
       </Flex>
     </>
-  )
+  );
 }

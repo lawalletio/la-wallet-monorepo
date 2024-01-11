@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const EmptySvg = () => {
   return (
@@ -34,7 +34,7 @@ const EmptySvg = () => {
         fill="white"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default EmptySvg
+export default EmptySvg;

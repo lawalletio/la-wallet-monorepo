@@ -1,6 +1,6 @@
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
 export const ButtonSetting = styled.div`
   display: inline-flex;
@@ -17,4 +17,4 @@ export const ButtonSetting = styled.div`
   color: ${theme.colors.text};
   font-size: 0.8rem;
   text-decoration: none;
-`
+`;

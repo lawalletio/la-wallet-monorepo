@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
 interface FooterProps {}
 
@@ -12,4 +12,4 @@ export const Footer = styled.div<FooterProps>`
 
   background-color: rgba(28, 28, 28, 0.65);
   backdrop-filter: blur(4px);
-`
+`;

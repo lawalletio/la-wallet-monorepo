@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
 interface HeroCardProps {}
 
@@ -13,4 +13,4 @@ export const HeroCard = styled.div<HeroCardProps>`
 
   background-color: ${theme.colors.gray15};
   border-radius: 0 0 20px 20px;
-`
+`;

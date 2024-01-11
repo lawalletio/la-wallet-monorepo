@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled'
+import { SatoshiV2Icon } from "@bitcoin-design/bitcoin-icons-react/filled";
 
-import HeroCard from '@/components/HeroCard'
-import Container from '@/components/Layout/Container'
-import Navbar from '@/components/Layout/Navbar'
+import HeroCard from "@/components/HeroCard";
+import Container from "@/components/Layout/Container";
+import Navbar from "@/components/Layout/Navbar";
 import {
   Avatar,
   Button,
@@ -14,58 +14,59 @@ import {
   Heading,
   Icon,
   LinkButton,
-  Text
-} from '@/components/UI'
+  Text,
+} from "@/components/UI";
 
-import { useTransferContext } from '@/context/TransferContext'
-import { useTranslation } from '@/context/TranslateContext'
-import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
+import { useTransferContext } from "@/context/TransferContext";
+import { useTranslation } from "@/context/TranslateContext";
+import { useActionOnKeypress } from "@/hooks/useActionOnKeypress";
 import {
   formatAddress,
   formatToPreference,
-  useWalletContext
-} from '@lawallet/react'
-import { TransferTypes } from '@lawallet/react/types'
-import { splitHandle } from '@lawallet/react/utils'
-import { useEffect, useMemo, useState } from 'react'
+  useWalletContext,
+} from "@lawallet/react";
+import { TransferTypes } from "@lawallet/react/types";
+import { splitHandle } from "@lawallet/react/utils";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Page() {
-  const { lng, t } = useTranslation()
-  const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false)
+  const { lng, t } = useTranslation();
+  const [insufficientBalance, setInsufficientBalance] =
+    useState<boolean>(false);
 
-  const { loading, transferInfo, executeTransfer } = useTransferContext()
+  const { loading, transferInfo, executeTransfer } = useTransferContext();
   const {
     user: { identity, balance },
     settings: {
-      props: { currency }
+      props: { currency },
     },
-    converter: { pricesData, convertCurrency }
-  } = useWalletContext()
+    converter: { pricesData, convertCurrency },
+  } = useWalletContext();
 
   const convertedAmount: string = useMemo(() => {
     const convertedInt: number = convertCurrency(
       transferInfo.amount,
-      'SAT',
-      currency
-    )
+      "SAT",
+      currency,
+    );
 
-    return formatToPreference(currency, convertedInt, lng)
-  }, [transferInfo.amount, pricesData, currency])
+    return formatToPreference(currency, convertedInt, lng);
+  }, [transferInfo.amount, pricesData, currency]);
 
   useEffect(() => {
-    if (balance.amount < transferInfo.amount) setInsufficientBalance(true)
-  }, [transferInfo.amount])
+    if (balance.amount < transferInfo.amount) setInsufficientBalance(true);
+  }, [transferInfo.amount]);
 
-  const [transferUsername, transferDomain] = splitHandle(transferInfo.data)
+  const [transferUsername, transferDomain] = splitHandle(transferInfo.data);
 
-  useActionOnKeypress('Enter', () => executeTransfer(identity.privateKey), [
+  useActionOnKeypress("Enter", () => executeTransfer(identity.privateKey), [
     identity,
-    transferInfo
-  ])
+    transferInfo,
+  ]);
 
   return (
     <>
-      <Navbar showBackPage={true} title={t('VALIDATE_INFO')} />
+      <Navbar showBackPage={true} title={t("VALIDATE_INFO")} />
 
       <HeroCard>
         <Container>
@@ -77,7 +78,7 @@ export default function Page() {
             flex={1}
           >
             {transferInfo.type === TransferTypes.LNURLW ? (
-              <Text size="small">{t('CLAIM_THIS_INVOICE')}</Text>
+              <Text size="small">{t("CLAIM_THIS_INVOICE")}</Text>
             ) : (
               <Avatar size="large">
                 <Text size="small">
@@ -115,7 +116,7 @@ export default function Page() {
 
           {Number(convertedAmount) !== 0 ? (
             <Flex align="center" justify="center" gap={4}>
-              {currency === 'SAT' ? (
+              {currency === "SAT" ? (
                 <Icon size="small">
                   <SatoshiV2Icon />
                 </Icon>
@@ -143,10 +144,10 @@ export default function Page() {
           !balance.loading &&
           insufficientBalance && (
             <Flex flex={1} align="center" justify="center">
-              <Feedback show={true} status={'error'}>
+              <Feedback show={true} status={"error"}>
                 {transferInfo.expired
-                  ? t('INVOICE_EXPIRED')
-                  : t('INSUFFICIENT_BALANCE')}
+                  ? t("INVOICE_EXPIRED")
+                  : t("INSUFFICIENT_BALANCE")}
               </Feedback>
             </Flex>
           ))}
@@ -156,7 +157,7 @@ export default function Page() {
           <Divider y={16} />
           <Flex gap={8}>
             <LinkButton variant="bezeledGray" href="/dashboard">
-              {t('CANCEL')}
+              {t("CANCEL")}
             </LinkButton>
 
             <Button
@@ -172,13 +173,13 @@ export default function Page() {
               loading={loading}
             >
               {transferInfo.type === TransferTypes.LNURLW
-                ? t('CLAIM')
-                : t('TRANSFER')}
+                ? t("CLAIM")
+                : t("TRANSFER")}
             </Button>
           </Flex>
           <Divider y={32} />
         </Container>
       </Flex>
     </>
-  )
+  );
 }

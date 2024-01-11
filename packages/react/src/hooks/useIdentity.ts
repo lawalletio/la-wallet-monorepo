@@ -1,34 +1,34 @@
-import { parseContent } from '@lawallet/utils'
-import { getUsername } from '@lawallet/utils/actions'
-import { defaultIdentity, type UserIdentity } from '@lawallet/utils/types'
-import { getPublicKey } from 'nostr-tools'
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
-import { STORAGE_IDENTITY_KEY } from '../constants/constants.js'
+import { parseContent } from "@lawallet/utils";
+import { getUsername } from "@lawallet/utils/actions";
+import { defaultIdentity, type UserIdentity } from "@lawallet/utils/types";
+import { getPublicKey } from "nostr-tools";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { STORAGE_IDENTITY_KEY } from "../constants/constants.js";
 
 export interface UserReturns {
-  identity: UserIdentity
-  setUser: Dispatch<SetStateAction<UserIdentity>>
+  identity: UserIdentity;
+  setUser: Dispatch<SetStateAction<UserIdentity>>;
 }
 
 export const useIdentity = () => {
-  const [identity, setIdentity] = useState<UserIdentity>(defaultIdentity)
+  const [identity, setIdentity] = useState<UserIdentity>(defaultIdentity);
 
   const setDefaultIdentity = () => {
     setIdentity({
       ...defaultIdentity,
-      isReady: true
-    })
-  }
+      isReady: true,
+    });
+  };
 
   const loadStoragedIdentity = async () => {
-    const storageIdentity = localStorage.getItem(STORAGE_IDENTITY_KEY)
-    if (!storageIdentity) return setDefaultIdentity()
+    const storageIdentity = localStorage.getItem(STORAGE_IDENTITY_KEY);
+    if (!storageIdentity) return setDefaultIdentity();
 
-    const parsedIdentity: UserIdentity = parseContent(storageIdentity)
-    if (!parsedIdentity.privateKey) return setDefaultIdentity()
+    const parsedIdentity: UserIdentity = parseContent(storageIdentity);
+    if (!parsedIdentity.privateKey) return setDefaultIdentity();
 
-    const hexpub: string = getPublicKey(parsedIdentity.privateKey)
-    const username: string = await getUsername(hexpub)
+    const hexpub: string = getPublicKey(parsedIdentity.privateKey);
+    const username: string = await getUsername(hexpub);
 
     if (
       hexpub === parsedIdentity.hexpub &&
@@ -36,26 +36,26 @@ export const useIdentity = () => {
     ) {
       setIdentity({
         ...parsedIdentity,
-        isReady: true
-      })
+        isReady: true,
+      });
     } else {
       setIdentity({
         ...parsedIdentity,
         hexpub,
         username,
-        isReady: true
-      })
+        isReady: true,
+      });
     }
 
-    return
-  }
+    return;
+  };
 
   useEffect(() => {
-    loadStoragedIdentity()
-  }, [])
+    loadStoragedIdentity();
+  }, []);
 
   return {
     identity,
-    setIdentity
-  }
-}
+    setIdentity,
+  };
+};

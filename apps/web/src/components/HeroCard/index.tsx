@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { ReactNode } from 'react'
-import { HeroCard } from './style'
+import { ReactNode } from "react";
+import { HeroCard } from "./style";
 
 interface HeroCardProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default function Component(props: HeroCardProps) {
-  const { children } = props
+  const { children } = props;
 
-  return <HeroCard>{children}</HeroCard>
+  return <HeroCard>{children}</HeroCard>;
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-'use client'
+"use client";
 
 import {
   GearIcon,
@@ -8,16 +8,16 @@ import {
   ReceiveIcon,
   SatoshiV2Icon,
   SendIcon,
-  VisibleIcon
-} from '@bitcoin-design/bitcoin-icons-react/filled'
-import { useEffect, useMemo, useState } from 'react'
+  VisibleIcon,
+} from "@bitcoin-design/bitcoin-icons-react/filled";
+import { useEffect, useMemo, useState } from "react";
 
-import HeroCard from '@/components/HeroCard'
-import Container from '@/components/Layout/Container'
-import Navbar from '@/components/Layout/Navbar'
-import TokenList from '@/components/TokenList'
-import TransactionItem from '@/components/TransactionItem'
-import ButtonCTA from '@/components/ButtonCTA'
+import HeroCard from "@/components/HeroCard";
+import Container from "@/components/Layout/Container";
+import Navbar from "@/components/Layout/Navbar";
+import TokenList from "@/components/TokenList";
+import TransactionItem from "@/components/TransactionItem";
+import ButtonCTA from "@/components/ButtonCTA";
 import {
   Avatar,
   BannerAlert,
@@ -26,59 +26,59 @@ import {
   Flex,
   Heading,
   Icon,
-  Text
-} from '@/components/UI'
+  Text,
+} from "@/components/UI";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
 // Harcode data
-import config from '@/constants/config'
-import { useTranslation } from '@/context/TranslateContext'
-import { useRouter } from 'next/navigation'
+import config from "@/constants/config";
+import { useTranslation } from "@/context/TranslateContext";
+import { useRouter } from "next/navigation";
 
 // Animations
-import Animations from '@/components/Animations'
-import BitcoinTrade from '@/components/Animations/bitcoin-trade.json'
-import { BtnLoader } from '@/components/Loader/Loader'
-import { CACHE_BACKUP_KEY } from '@/constants/constants'
-import { copy } from '@/utils/share'
-import Link from 'next/link'
-import { formatToPreference, useWalletContext } from '@lawallet/react'
+import Animations from "@/components/Animations";
+import BitcoinTrade from "@/components/Animations/bitcoin-trade.json";
+import { BtnLoader } from "@/components/Loader/Loader";
+import { CACHE_BACKUP_KEY } from "@/constants/constants";
+import { copy } from "@/utils/share";
+import Link from "next/link";
+import { formatToPreference, useWalletContext } from "@lawallet/react";
 
 export default function Page() {
-  const { t, lng } = useTranslation()
-  const [showBanner, setShowBanner] = useState<'backup' | 'none'>('none')
+  const { t, lng } = useTranslation();
+  const [showBanner, setShowBanner] = useState<"backup" | "none">("none");
 
-  const router = useRouter()
+  const router = useRouter();
   const {
     user: { identity, balance, transactions },
     settings: {
       loading,
       toggleHideBalance,
-      props: { hideBalance, currency }
+      props: { hideBalance, currency },
     },
-    converter: { pricesData, convertCurrency }
-  } = useWalletContext()
+    converter: { pricesData, convertCurrency },
+  } = useWalletContext();
 
   const convertedBalance: string = useMemo(() => {
-    const amount: number = convertCurrency(balance.amount, 'SAT', currency)
-    return formatToPreference(currency, amount, lng)
-  }, [balance, pricesData, currency])
+    const amount: number = convertCurrency(balance.amount, "SAT", currency);
+    return formatToPreference(currency, amount, lng);
+  }, [balance, pricesData, currency]);
 
   useEffect(() => {
-    router.prefetch('/deposit')
-    router.prefetch('/transfer')
-    router.prefetch('/settings')
-    router.prefetch('/scan')
-  }, [router])
+    router.prefetch("/deposit");
+    router.prefetch("/transfer");
+    router.prefetch("/settings");
+    router.prefetch("/scan");
+  }, [router]);
 
   useEffect(() => {
     const userMadeBackup: boolean = Boolean(
-      localStorage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`) || false
-    )
+      localStorage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`) || false,
+    );
 
-    setShowBanner(!userMadeBackup ? 'backup' : 'none')
-  }, [])
+    setShowBanner(!userMadeBackup ? "backup" : "none");
+  }, []);
 
   return (
     <>
@@ -89,17 +89,17 @@ export default function Page() {
               <Text size="small">
                 {identity.username
                   ? identity.username.substring(0, 2).toUpperCase()
-                  : 'AN'}
+                  : "AN"}
               </Text>
             </Avatar>
             <Flex direction="column">
               <Text size="small" color={theme.colors.gray50}>
-                {t('HELLO')},
+                {t("HELLO")},
               </Text>
               <Flex
                 onClick={() => {
                   if (identity.username)
-                    copy(`${identity.username}@${config.env.WALLET_DOMAIN}`)
+                    copy(`${identity.username}@${config.env.WALLET_DOMAIN}`);
                 }}
               >
                 {loading ? (
@@ -108,7 +108,7 @@ export default function Page() {
                   <Text>
                     {identity.username
                       ? `${identity.username}@${config.env.WALLET_DOMAIN}`
-                      : t('ANONYMOUS')}
+                      : t("ANONYMOUS")}
                   </Text>
                 )}
               </Flex>
@@ -123,7 +123,7 @@ export default function Page() {
             <Button
               variant="bezeled"
               size="small"
-              onClick={() => router.push('/settings')}
+              onClick={() => router.push("/settings")}
             >
               <Icon size="small">
                 <GearIcon />
@@ -134,14 +134,14 @@ export default function Page() {
 
         <Flex direction="column" align="center" justify="center" flex={1}>
           <Text size="small" color={theme.colors.gray50}>
-            {t('BALANCE')}
+            {t("BALANCE")}
           </Text>
           <Divider y={8} />
           <Flex justify="center" align="center" gap={4}>
             <Flex justify="center" align="center" gap={4}>
               {!hideBalance ? (
                 <>
-                  {currency === 'SAT' ? (
+                  {currency === "SAT" ? (
                     <Icon size="small">
                       <SatoshiV2Icon />
                     </Icon>
@@ -155,7 +155,7 @@ export default function Page() {
                 {loading || balance.loading ? (
                   <BtnLoader />
                 ) : hideBalance ? (
-                  '*****'
+                  "*****"
                 ) : (
                   convertedBalance
                 )}
@@ -171,27 +171,27 @@ export default function Page() {
       <Container size="small">
         <Divider y={16} />
         <Flex gap={8}>
-          <Button onClick={() => router.push('/deposit')}>
+          <Button onClick={() => router.push("/deposit")}>
             <Icon>
               <ReceiveIcon />
             </Icon>
-            {t('DEPOSIT')}
+            {t("DEPOSIT")}
           </Button>
-          <Button onClick={() => router.push('/transfer')} color="secondary">
+          <Button onClick={() => router.push("/transfer")} color="secondary">
             <Icon>
               <SendIcon />
             </Icon>
-            {t('TRANSFER')}
+            {t("TRANSFER")}
           </Button>
         </Flex>
         <Divider y={16} />
 
-        {showBanner === 'backup' ? (
+        {showBanner === "backup" ? (
           <>
             <Link href="/settings/recovery">
               <BannerAlert
-                title={t('RECOMMEND_BACKUP')}
-                description={t('RECOMMEND_BACKUP_REASON')}
+                title={t("RECOMMEND_BACKUP")}
+                description={t("RECOMMEND_BACKUP_REASON")}
                 color="error"
               />
             </Link>
@@ -202,28 +202,28 @@ export default function Page() {
         {transactions.length === 0 ? (
           <Flex direction="column" justify="center" align="center" flex={1}>
             <Animations data={BitcoinTrade} />
-            <Heading as="h4">{t('EMPTY_TRANSACTIONS_TITLE')}</Heading>
+            <Heading as="h4">{t("EMPTY_TRANSACTIONS_TITLE")}</Heading>
             <Divider y={4} />
-            <Text size="small">{t('EMPTY_TRANSACTIONS_DESC')}</Text>
+            <Text size="small">{t("EMPTY_TRANSACTIONS_DESC")}</Text>
           </Flex>
         ) : (
           <>
             <Flex justify="space-between" align="center">
               <Text size="small" color={theme.colors.gray50}>
-                {t('LAST_ACTIVITY').toUpperCase()}
+                {t("LAST_ACTIVITY").toUpperCase()}
               </Text>
 
               <Button
                 size="small"
                 variant="borderless"
-                onClick={() => router.push('/transactions')}
+                onClick={() => router.push("/transactions")}
               >
-                {t('SEE_ALL')}
+                {t("SEE_ALL")}
               </Button>
             </Flex>
 
             <Flex direction="column" gap={4}>
-              {transactions.slice(0, 5).map(transaction => (
+              {transactions.slice(0, 5).map((transaction) => (
                 <TransactionItem
                   key={transaction.id}
                   transaction={transaction}
@@ -236,10 +236,10 @@ export default function Page() {
       </Container>
 
       <ButtonCTA>
-        <Button color="secondary" onClick={() => router.push('/scan')}>
+        <Button color="secondary" onClick={() => router.push("/scan")}>
           <QrCodeIcon />
         </Button>
       </ButtonCTA>
     </>
-  )
+  );
 }

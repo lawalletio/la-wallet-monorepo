@@ -1,6 +1,6 @@
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
 export const CardAlertiPhone = styled.div`
   position: relative;
@@ -40,4 +40,4 @@ export const CardAlertiPhone = styled.div`
       }
     }
   }
-`
+`;

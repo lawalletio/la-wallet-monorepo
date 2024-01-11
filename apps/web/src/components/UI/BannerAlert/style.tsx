@@ -1,9 +1,9 @@
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
-import theme from '@/styles/theme'
+import theme from "@/styles/theme";
 
 interface BannerAlert {
-  $color: string
+  $color: string;
 }
 
 export const BannerAlert = styled.div<BannerAlert>`
@@ -33,7 +33,7 @@ export const BannerAlert = styled.div<BannerAlert>`
       width: 100%;
 
       h6 {
-        color: ${props => props.$color};
+        color: ${(props) => props.$color};
       }
 
       > div {
@@ -43,7 +43,7 @@ export const BannerAlert = styled.div<BannerAlert>`
       }
     }
   }
-`
+`;
 
 export const Asset = styled.div`
   position: absolute;
@@ -53,7 +53,7 @@ export const Asset = styled.div`
   height: 100%;
 
   &:before {
-    content: '';
+    content: "";
 
     position: absolute;
     top: 0;
@@ -73,4 +73,4 @@ export const Asset = styled.div`
     width: 100%;
     height: 100%;
   }
-`
+`;

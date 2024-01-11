@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { styled } from 'styled-components'
+import { styled } from "styled-components";
 
 export const HeadingBox = styled.div`
   h1 {
@@ -47,14 +47,14 @@ export const HeadingBox = styled.div`
     font-size: 0.8em;
     line-height: 1.1em;
   }
-`
+`;
 
 interface HeadingProps {
-  $align: 'left' | 'center' | 'right'
-  $color?: string
+  $align: "left" | "center" | "right";
+  $color?: string;
 }
 
 export const HeadingCustom = styled.div<HeadingProps>`
-  color: ${props => props.$color};
-  text-align: ${props => props.$align};
-`
+  color: ${(props) => props.$color};
+  text-align: ${(props) => props.$align};
+`;

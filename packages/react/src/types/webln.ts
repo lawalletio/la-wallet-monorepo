@@ -107,7 +107,7 @@ type WebLNRequestListPeersResponse = {
 };
 
 type WebLNRequestListPeersRequestFunc = (
-  method: "request.listpeers"
+  method: "request.listpeers",
 ) => WebLNRequestListPeersResponse;
 
 type WebLNRequestListChannelsResponse = {
@@ -164,7 +164,7 @@ type WebLNRequestListChannelsResponse = {
 };
 
 type WebLNRequestListChannelsRequestFunc = (
-  method: "request.listchannels"
+  method: "request.listchannels",
 ) => WebLNRequestListChannelsResponse;
 
 type WebLNRequestListInvoicesResponse = {
@@ -222,7 +222,7 @@ type WebLNRequestListInvoicesRequestFunc = (
     pending_only?: boolean;
     creation_date_start?: number;
     creation_date_end?: number;
-  }
+  },
 ) => WebLNRequestListInvoicesResponse;
 
 type WebLNRequestListPaymentsResponse = {
@@ -257,7 +257,7 @@ type WebLNRequestListPaymentsFunc = (
     pending_only?: boolean;
     creation_date_start?: number;
     creation_date_end?: number;
-  }
+  },
 ) => WebLNRequestListPaymentsResponse;
 
 type WebLNRequestWalletBalanceResponse = {
@@ -275,14 +275,14 @@ type WebLNRequestWalletBalanceResponse = {
 };
 
 type WebLNRequestWalletBalanceRequestFunc = (
-  method: "request.walletbalance"
+  method: "request.walletbalance",
 ) => WebLNRequestWalletBalanceResponse;
 
 interface WebLNProvider {
   enable(): Promise<void>; // Promise<{ enabled: boolean; remember: boolean }>
   getInfo(): Promise<GetInfoResponse>;
   makeInvoice(
-    args: string | number | RequestInvoiceArgs
+    args: string | number | RequestInvoiceArgs,
   ): Promise<MakeInvoiceResponse>;
   sendPayment(paymentRequest: string): Promise<SendPaymentResponse>;
 

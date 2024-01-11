@@ -1,35 +1,35 @@
-'use client'
+"use client";
 
-import { ThemeProvider } from 'styled-components'
+import { ThemeProvider } from "styled-components";
 
-import StyledComponentsRegistry from '@/utils/registry'
+import StyledComponentsRegistry from "@/utils/registry";
 
-import config from '@/constants/config'
+import config from "@/constants/config";
 
-import { TranslateProvider } from '@/context/TranslateContext'
-import GlobalStyles from '@/styles/GlobalStyles'
-import { fontSecondary } from '@/styles/fonts'
-import theme from '@/styles/theme'
-import Script from 'next/script'
-import { ReactNode } from 'react'
+import { TranslateProvider } from "@/context/TranslateContext";
+import GlobalStyles from "@/styles/GlobalStyles";
+import { fontSecondary } from "@/styles/fonts";
+import theme from "@/styles/theme";
+import Script from "next/script";
+import { ReactNode } from "react";
 import {
   AvailableLanguages,
   LaWalletProvider,
-  defaultLocale
-} from '@lawallet/react'
-import AuthProvider from '@/components/Auth/AuthProvider'
+  defaultLocale,
+} from "@lawallet/react";
+import AuthProvider from "@/components/Auth/AuthProvider";
 
 interface ProviderProps {
-  children: ReactNode
-  params: { lng: AvailableLanguages }
+  children: ReactNode;
+  params: { lng: AvailableLanguages };
 }
 
 // Metadata
-const APP_NAME = 'LaWallet'
-const APP_DESCRIPTION = 'https://lawallet.ar/'
+const APP_NAME = "LaWallet";
+const APP_DESCRIPTION = "https://lawallet.ar/";
 
 const Providers = (props: ProviderProps) => {
-  const { children, params } = props
+  const { children, params } = props;
 
   return (
     <html
@@ -87,7 +87,7 @@ const Providers = (props: ProviderProps) => {
         </StyledComponentsRegistry>
       </body>
     </html>
-  )
-}
+  );
+};
 
-export default Providers
+export default Providers;

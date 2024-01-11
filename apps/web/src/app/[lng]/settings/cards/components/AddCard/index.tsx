@@ -1,87 +1,87 @@
-'use client'
-import { Alert, Button, Flex, Modal, Text } from '@/components/UI'
-import { useTranslation } from '@/context/TranslateContext'
-import useAlert, { AlertTypes } from '@/hooks/useAlerts'
-import { useWalletContext } from '@lawallet/react'
-import { requestCardActivation } from '@lawallet/react/actions'
-import { buildCardActivationEvent } from '@lawallet/react/utils'
-import { NostrEvent } from '@nostr-dev-kit/ndk'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+"use client";
+import { Alert, Button, Flex, Modal, Text } from "@/components/UI";
+import { useTranslation } from "@/context/TranslateContext";
+import useAlert, { AlertTypes } from "@/hooks/useAlerts";
+import { useWalletContext } from "@lawallet/react";
+import { requestCardActivation } from "@lawallet/react/actions";
+import { buildCardActivationEvent } from "@lawallet/react/utils";
+import { NostrEvent } from "@nostr-dev-kit/ndk";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export type NewCard = {
-  card: string
-  loading: boolean
-}
+  card: string;
+  loading: boolean;
+};
 
 const defaultNewCard = {
-  card: '',
-  loading: false
-}
+  card: "",
+  loading: false,
+};
 
 const AddNewCardModal = () => {
-  const [newCardInfo, setNewCardInfo] = useState<NewCard>(defaultNewCard)
+  const [newCardInfo, setNewCardInfo] = useState<NewCard>(defaultNewCard);
 
-  const { t } = useTranslation()
-  const router = useRouter()
-  const pathname = usePathname()
-  const params = useSearchParams()
+  const { t } = useTranslation();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
 
-  const notifications = useAlert()
+  const notifications = useAlert();
 
   const {
-    user: { identity }
-  } = useWalletContext()
+    user: { identity },
+  } = useWalletContext();
 
   const resetCardInfo = () => {
-    setNewCardInfo(defaultNewCard)
-    router.replace(pathname)
-  }
+    setNewCardInfo(defaultNewCard);
+    router.replace(pathname);
+  };
 
   const sendNotification = (
     alertDescription: string,
-    alertType: AlertTypes
+    alertType: AlertTypes,
   ) => {
     notifications.showAlert({
       description: alertDescription,
-      type: alertType
-    })
+      type: alertType,
+    });
 
-    resetCardInfo()
-  }
+    resetCardInfo();
+  };
 
   const handleActivateCard = () => {
-    if (newCardInfo.loading) return
+    if (newCardInfo.loading) return;
     setNewCardInfo({
       ...newCardInfo,
-      loading: true
-    })
+      loading: true,
+    });
 
     buildCardActivationEvent(newCardInfo.card, identity.privateKey)
       .then((cardEvent: NostrEvent) => {
-        requestCardActivation(cardEvent).then(cardActivated => {
+        requestCardActivation(cardEvent).then((cardActivated) => {
           const description: string = cardActivated
-            ? t('ACTIVATE_SUCCESS')
-            : t('ACTIVATE_ERROR')
+            ? t("ACTIVATE_SUCCESS")
+            : t("ACTIVATE_ERROR");
 
-          const type: AlertTypes = cardActivated ? 'success' : 'error'
+          const type: AlertTypes = cardActivated ? "success" : "error";
 
-          sendNotification(description, type)
-        })
+          sendNotification(description, type);
+        });
       })
       .catch(() => {
-        sendNotification(t('ACTIVATE_ERROR'), 'error')
-      })
-  }
+        sendNotification(t("ACTIVATE_ERROR"), "error");
+      });
+  };
 
   useEffect(() => {
-    const card: string = params.get('c') ?? ''
+    const card: string = params.get("c") ?? "";
 
     setNewCardInfo({
       card,
-      loading: false
-    })
-  }, [])
+      loading: false,
+    });
+  }, []);
 
   return (
     <>
@@ -93,24 +93,24 @@ const AddNewCardModal = () => {
       />
 
       <Modal
-        title={t('NEW_CARD')}
+        title={t("NEW_CARD")}
         isOpen={Boolean(newCardInfo.card.length)}
         onClose={() => null}
       >
-        <Text>{t('DETECT_NEW_CARD')}</Text>
+        <Text>{t("DETECT_NEW_CARD")}</Text>
         <Flex direction="column" gap={4}>
           <Flex>
-            <Button onClick={handleActivateCard}>{t('ACTIVATE_CARD')}</Button>
+            <Button onClick={handleActivateCard}>{t("ACTIVATE_CARD")}</Button>
           </Flex>
           <Flex>
             <Button variant="borderless" onClick={resetCardInfo}>
-              {t('CANCEL')}
+              {t("CANCEL")}
             </Button>
           </Flex>
         </Flex>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default AddNewCardModal
+export default AddNewCardModal;
