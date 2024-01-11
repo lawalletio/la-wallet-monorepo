@@ -9,10 +9,11 @@ export { useUser } from '../hooks/useUser.js'
 
 export { NDKProvider, useNostrContext, NDKContext } from '../context/NDKContext.js'
 export {
-  useWalletContext,
-} from '../context/WalletContext.js'
+  UserProvider,
+  useWalletContext
+} from '../context/UserContext.js'
 
-export { WalletConfig } from '../context/context.js'
+export { LaWalletConfig } from '../context/context.js'
 
 export {
   type AvailableCurrencies,

@@ -11,15 +11,15 @@ import { useUser, type UserReturns } from '../hooks/useUser.js'
 import { type ConfigParameter } from '../types/config.js'
 import { useNostrContext } from './NDKContext.js'
 
-interface WalletContextType {
+interface UserContextType {
   user: UserReturns
   configuration: ConfigReturns
   converter: UseConverterReturns
 }
 
-export const WalletContext = React.createContext({} as WalletContextType)
+export const UserContext = React.createContext({} as UserContextType)
 
-export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) {
+export function UserProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const { children } = props;
   const { connectWithHexKey } = useNostrContext()
 
@@ -39,16 +39,16 @@ export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) 
   }, [user.identity.isReady])
 
   return React.createElement(
-    WalletContext.Provider,
+    UserContext.Provider,
     { value },
     children
   )
 }
 
 export const useWalletContext = () => {
-  const context = React.useContext(WalletContext)
+  const context = React.useContext(UserContext)
   if (!context) {
-    throw new Error('useWalletContext must be used within WalletConfig provider')
+    throw new Error('useWalletContext must be used within User provider')
   }
 
   return context
