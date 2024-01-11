@@ -1,34 +1,27 @@
-'use client'
+'use client';
 
-import {
-  AlertIcon,
-  CheckIcon
-} from '@bitcoin-design/bitcoin-icons-react/filled'
+import { AlertIcon, CheckIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import theme from '@/styles/theme'
+import theme from '@/styles/theme';
 
-import Icon from '../Icon'
-import Text from '../Text'
-import { Alert } from './style'
+import Icon from '../Icon';
+import Text from '../Text';
+import { Alert } from './style';
 
 interface AlertProps {
-  title: string | undefined
-  description: string | undefined
-  type: 'success' | 'warning' | 'error' | undefined
-  isOpen: boolean
+  title: string | undefined;
+  description: string | undefined;
+  type: 'success' | 'warning' | 'error' | undefined;
+  isOpen: boolean;
 }
 
 export default function Component(props: AlertProps) {
-  const { title, description, type, isOpen = false } = props
+  const { title, description, type, isOpen = false } = props;
 
-  const isSuccess = type === 'success'
+  const isSuccess = type === 'success';
 
   return (
-    <Alert
-      $background={theme.colors[`${type}15`]}
-      $color={type && theme.colors[type]}
-      $isOpen={!!isOpen}
-    >
+    <Alert $background={theme.colors[`${type}15`]} $color={type && theme.colors[type]} $isOpen={!!isOpen}>
       <div className="box">
         <Icon size="small">{isSuccess ? <CheckIcon /> : <AlertIcon />}</Icon>
         <div>
@@ -42,5 +35,5 @@ export default function Component(props: AlertProps) {
         <div className="progress"></div>
       </div>
     </Alert>
-  )
+  );
 }

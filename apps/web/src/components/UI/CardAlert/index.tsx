@@ -1,20 +1,20 @@
-import Heading from '../Heading'
-import Text from '../Text'
-import Flex from '../Flex'
-import SafariLogo from '../SafariLogo'
+import Heading from '../Heading';
+import Text from '../Text';
+import Flex from '../Flex';
+import SafariLogo from '../SafariLogo';
 
-import { CardAlertiPhone } from './style'
-import { ReactNode } from 'react'
-import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled'
+import { CardAlertiPhone } from './style';
+import { ReactNode } from 'react';
+import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 export default function Component({
   title,
   description,
-  isHome = true
+  isHome = true,
 }: {
-  title: string
-  description: ReactNode
-  isHome?: boolean
+  title: string;
+  description: ReactNode;
+  isHome?: boolean;
 }) {
   return (
     <CardAlertiPhone>
@@ -24,5 +24,5 @@ export default function Component({
       </Flex>
       <div>{isHome ? <SafariLogo /> : <CaretRightIcon />}</div>
     </CardAlertiPhone>
-  )
+  );
 }

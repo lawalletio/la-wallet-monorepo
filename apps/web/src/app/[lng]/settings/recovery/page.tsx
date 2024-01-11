@@ -1,49 +1,38 @@
-'use client'
+'use client';
 
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-import { useTranslation } from '@/context/TranslateContext'
+import { useTranslation } from '@/context/TranslateContext';
 
-import Container from '@/components/Layout/Container'
-import Navbar from '@/components/Layout/Navbar'
-import {
-  Button,
-  Divider,
-  Flex,
-  InfoCopy,
-  Text,
-  ToggleSwitch
-} from '@/components/UI'
+import Container from '@/components/Layout/Container';
+import Navbar from '@/components/Layout/Navbar';
+import { Button, Divider, Flex, InfoCopy, Text, ToggleSwitch } from '@/components/UI';
 
-import { CACHE_BACKUP_KEY } from '@/constants/constants'
-import theme from '@/styles/theme'
-import { useWalletContext } from '@lawallet/react'
+import { CACHE_BACKUP_KEY } from '@/constants/constants';
+import theme from '@/styles/theme';
+import { useWalletContext } from '@lawallet/react';
 
 export default function Page() {
-  const { t } = useTranslation()
-  const router: AppRouterInstance = useRouter()
+  const { t } = useTranslation();
+  const router: AppRouterInstance = useRouter();
 
   const {
-    user: { identity }
-  } = useWalletContext()
-  const [switchOne, setSwitchOne] = useState<boolean>(false)
-  const [switchTwo, setSwitchTwo] = useState<boolean>(false)
+    user: { identity },
+  } = useWalletContext();
+  const [switchOne, setSwitchOne] = useState<boolean>(false);
+  const [switchTwo, setSwitchTwo] = useState<boolean>(false);
 
-  const [showRecovery, setShowRecovery] = useState<boolean>(false)
+  const [showRecovery, setShowRecovery] = useState<boolean>(false);
 
   const handleShowRecovery = () => {
-    if (switchOne || switchTwo) setShowRecovery(true)
-  }
+    if (switchOne || switchTwo) setShowRecovery(true);
+  };
 
   return (
     <>
-      <Navbar
-        title={t('BACKUP_ACCOUNT')}
-        showBackPage={true}
-        overrideBack={'/settings'}
-      />
+      <Navbar title={t('BACKUP_ACCOUNT')} showBackPage={true} overrideBack={'/settings'} />
 
       {showRecovery ? (
         <>
@@ -52,10 +41,7 @@ export default function Page() {
               title={t('PRIVATE_KEY')}
               value={identity.privateKey}
               onCopy={() => {
-                localStorage.setItem(
-                  `${CACHE_BACKUP_KEY}_${identity.hexpub}`,
-                  '1'
-                )
+                localStorage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
               }}
             />
             <Divider y={16} />
@@ -65,10 +51,7 @@ export default function Page() {
             <Container size="small">
               <Divider y={16} />
               <Flex gap={8}>
-                <Button
-                  variant="bezeledGray"
-                  onClick={() => router.push('/dashboard')}
-                >
+                <Button variant="bezeledGray" onClick={() => router.push('/dashboard')}>
                   {t('CANCEL')}
                 </Button>
               </Flex>
@@ -95,17 +78,11 @@ export default function Page() {
             <Container size="small">
               <Divider y={16} />
               <Flex gap={8}>
-                <Button
-                  variant="bezeledGray"
-                  onClick={() => router.push('/dashboard')}
-                >
+                <Button variant="bezeledGray" onClick={() => router.push('/dashboard')}>
                   {t('CANCEL')}
                 </Button>
 
-                <Button
-                  onClick={handleShowRecovery}
-                  disabled={!switchOne || !switchTwo}
-                >
+                <Button onClick={handleShowRecovery} disabled={!switchOne || !switchTwo}>
                   {t('CONFIRM')}
                 </Button>
               </Flex>
@@ -115,5 +92,5 @@ export default function Page() {
         </>
       )}
     </>
-  )
+  );
 }

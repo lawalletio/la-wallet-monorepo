@@ -1,19 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import {
-  faQrcode,
-  faFingerprint,
-  faDeleteLeft
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQrcode, faFingerprint, faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import theme from '@/styles/theme'
+import theme from '@/styles/theme';
 
-import Container from '@/components/Layout/Container'
-import Logo from '@/components/Logo'
+import Container from '@/components/Layout/Container';
+import Logo from '@/components/Logo';
 
 import {
   Button,
@@ -32,26 +28,26 @@ import {
   AccordionBody,
   Avatar,
   AvatarImage,
-  DotStatus
-} from '@/components/UI'
+  DotStatus,
+} from '@/components/UI';
 
 export default function Home() {
   // Input feedback
-  const inputStatusSuccess = 'success'
-  const inputStatusError = 'error'
+  const inputStatusSuccess = 'success';
+  const inputStatusError = 'error';
 
   // Combobox
-  const [tokenSelected, setTokenSelected] = useState(0)
+  const [tokenSelected, setTokenSelected] = useState(0);
   const listTokens = [
     {
       id: 1,
       label: 'Bitcoin',
       symbol: 'sats',
       amount: 1250000,
-      priceArs: 0.1259
+      priceArs: 0.1259,
     },
-    { id: 2, label: 'PintaToken', symbol: 'pnt', amount: 3, priceArs: 700 }
-  ]
+    { id: 2, label: 'PintaToken', symbol: 'pnt', amount: 3, priceArs: 700 },
+  ];
 
   return (
     <Container size="small">
@@ -69,16 +65,14 @@ export default function Home() {
       <Divider y={32} />
       <Flex direction="column" gap={8}>
         <Text>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus
-          nostrum alias blanditiis expedita voluptate dignissimos, harum
-          accusamus soluta, placeat architecto repellat tempore quaerat
-          voluptatem quis assumenda. Deserunt pariatur perspiciatis ab?
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus nostrum alias blanditiis expedita voluptate
+          dignissimos, harum accusamus soluta, placeat architecto repellat tempore quaerat voluptatem quis assumenda.
+          Deserunt pariatur perspiciatis ab?
         </Text>
         <Text size="small">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus
-          nostrum alias blanditiis expedita voluptate dignissimos, harum
-          accusamus soluta, placeat architecto repellat tempore quaerat
-          voluptatem quis assumenda. Deserunt pariatur perspiciatis ab?
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus nostrum alias blanditiis expedita voluptate
+          dignissimos, harum accusamus soluta, placeat architecto repellat tempore quaerat voluptatem quis assumenda.
+          Deserunt pariatur perspiciatis ab?
         </Text>
       </Flex>
       <Divider y={32} />
@@ -89,11 +83,7 @@ export default function Home() {
         <Button size="small" variant="bezeled" onClick={() => alert('hola')}>
           Button
         </Button>
-        <Button
-          size="small"
-          variant="bezeledGray"
-          onClick={() => alert('hola')}
-        >
+        <Button size="small" variant="bezeledGray" onClick={() => alert('hola')}>
           Button
         </Button>
         <Button size="small" variant="borderless" onClick={() => alert('hola')}>
@@ -105,28 +95,13 @@ export default function Home() {
         <Button size="small" color="secondary" onClick={() => alert('hola')}>
           Button
         </Button>
-        <Button
-          size="small"
-          color="secondary"
-          variant="bezeled"
-          onClick={() => alert('hola')}
-        >
+        <Button size="small" color="secondary" variant="bezeled" onClick={() => alert('hola')}>
           Button
         </Button>
-        <Button
-          size="small"
-          color="secondary"
-          variant="bezeledGray"
-          onClick={() => alert('hola')}
-        >
+        <Button size="small" color="secondary" variant="bezeledGray" onClick={() => alert('hola')}>
           Button
         </Button>
-        <Button
-          size="small"
-          color="secondary"
-          variant="borderless"
-          onClick={() => alert('hola')}
-        >
+        <Button size="small" color="secondary" variant="borderless" onClick={() => alert('hola')}>
           Button
         </Button>
       </Flex>
@@ -148,45 +123,25 @@ export default function Home() {
         <Button color="secondary" onClick={() => alert('hola')}>
           Button
         </Button>
-        <Button
-          color="secondary"
-          variant="bezeled"
-          onClick={() => alert('hola')}
-        >
+        <Button color="secondary" variant="bezeled" onClick={() => alert('hola')}>
           Button
         </Button>
-        <Button
-          color="secondary"
-          variant="bezeledGray"
-          onClick={() => alert('hola')}
-        >
+        <Button color="secondary" variant="bezeledGray" onClick={() => alert('hola')}>
           Button
         </Button>
-        <Button
-          color="secondary"
-          variant="borderless"
-          onClick={() => alert('hola')}
-        >
+        <Button color="secondary" variant="borderless" onClick={() => alert('hola')}>
           Button
         </Button>
       </Flex>
       <Divider y={32} />
       <Flex gap={4}>
         <div>
-          <Button
-            color="primary"
-            variant="bezeled"
-            onClick={() => alert('hola')}
-          >
+          <Button color="primary" variant="bezeled" onClick={() => alert('hola')}>
             <FontAwesomeIcon icon={faFingerprint} />
           </Button>
         </div>
         <div>
-          <Button
-            color="secondary"
-            variant="bezeled"
-            onClick={() => alert('hola')}
-          >
+          <Button color="secondary" variant="bezeled" onClick={() => alert('hola')}>
             <FontAwesomeIcon icon={faQrcode} />
           </Button>
         </div>
@@ -206,12 +161,7 @@ export default function Home() {
       </>
       <Divider y={32} />
       <>
-        <Input
-          placeholder="Input"
-          type="text"
-          status={inputStatusSuccess}
-          isChecked={true}
-        />
+        <Input placeholder="Input" type="text" status={inputStatusSuccess} isChecked={true} />
         <Feedback show={!!inputStatusSuccess} status={inputStatusSuccess}>
           0/6 characters
         </Feedback>
@@ -232,12 +182,7 @@ export default function Home() {
       </>
       <Divider y={32} />
       <>
-        <Input
-          placeholder="Input"
-          type="text"
-          status={inputStatusError}
-          isError={true}
-        />
+        <Input placeholder="Input" type="text" status={inputStatusError} isError={true} />
         <Feedback show={!!inputStatusError} status={inputStatusError}>
           0/6 characters
         </Feedback>
@@ -259,13 +204,7 @@ export default function Home() {
         </InputGroupRight>
       </InputGroup>
       <Divider y={32} />
-      <InputWithLabel
-        label="Label"
-        name="test"
-        placeholder="InputWithLabel"
-        type="text"
-        onChange={() => null}
-      />
+      <InputWithLabel label="Label" name="test" placeholder="InputWithLabel" type="text" onChange={() => null} />
       <Divider y={32} />
       {/* <Flex direction="column" gap={8}>
         <Alert
@@ -285,19 +224,10 @@ export default function Home() {
       </Flex> */}
       <Divider y={32} />
       <Flex direction="column" gap={4}>
-        <Combobox
-          selected={tokenSelected}
-          list={listTokens}
-          onChange={setTokenSelected}
-        >
+        <Combobox selected={tokenSelected} list={listTokens} onChange={setTokenSelected}>
           <Text>Ver listado</Text>
         </Combobox>
-        <Combobox
-          selected={1}
-          list={listTokens}
-          onChange={setTokenSelected}
-          showPrice
-        />
+        <Combobox selected={1} list={listTokens} onChange={setTokenSelected} showPrice />
       </Flex>
       <Divider y={32} />
       <QRCode value="test" />
@@ -313,12 +243,7 @@ export default function Home() {
                 </Text>
                 <Text>npub1q....hq7lanw0</Text>
               </Flex>
-              <Button
-                size="small"
-                color="secondary"
-                variant="bezeled"
-                onClick={() => alert('hola')}
-              >
+              <Button size="small" color="secondary" variant="bezeled" onClick={() => alert('hola')}>
                 Copiar
               </Button>
             </Flex>
@@ -336,12 +261,7 @@ export default function Home() {
               <li>
                 <Flex align="center">
                   <Flex gap={8} flex={1} align="center">
-                    <img
-                      alt="PintToken"
-                      src="/tokens/PintaToken.png"
-                      width={28}
-                      height={28}
-                    />
+                    <img alt="PintToken" src="/tokens/PintaToken.png" width={28} height={28} />
                     <Text>PintaToken</Text>
                   </Flex>
                   <Flex gap={4} align="center">
@@ -373,5 +293,5 @@ export default function Home() {
       </Flex>
       <Divider y={32} />
     </Container>
-  )
+  );
 }

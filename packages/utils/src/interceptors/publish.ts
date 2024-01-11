@@ -1,18 +1,15 @@
-import { baseConfig } from '../constants/constants.js'
-import { type ConfigProps } from '../types/config.js'
-import { type NostrEvent } from '@nostr-dev-kit/ndk'
+import { baseConfig } from '../constants/constants.js';
+import { type ConfigProps } from '../types/config.js';
+import { type NostrEvent } from '@nostr-dev-kit/ndk';
 
-export const broadcastEvent = async (
-  event: NostrEvent,
-  config: ConfigProps = baseConfig
-): Promise<boolean> => {
+export const broadcastEvent = async (event: NostrEvent, config: ConfigProps = baseConfig): Promise<boolean> => {
   return fetch(`${config.gatewayEndpoint}/nostr/publish`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(event)
+    body: JSON.stringify(event),
   })
-    .then(res => res.status === 200 || res.status === 202)
-    .catch(() => false)
-}
+    .then((res) => res.status === 200 || res.status === 202)
+    .catch(() => false);
+};

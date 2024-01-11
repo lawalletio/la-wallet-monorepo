@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { ReactNode } from 'react'
-import { ButtonGroup } from './style'
+import { ReactNode } from 'react';
+import { ButtonGroup } from './style';
 
 interface ComponentProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default function Component(props: ComponentProps) {
-  const { children } = props
+  const { children } = props;
 
-  return <ButtonGroup>{children}</ButtonGroup>
+  return <ButtonGroup>{children}</ButtonGroup>;
 }

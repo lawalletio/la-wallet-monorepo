@@ -1,38 +1,38 @@
-'use client'
+'use client';
 
-import { useState, useEffect, ReactNode } from 'react'
+import { useState, useEffect, ReactNode } from 'react';
 
-import Container from '../../Layout/Container'
+import Container from '../../Layout/Container';
 
-import Flex from '../Flex'
-import Divider from '../Divider'
-import Button from '../Button'
-import Heading from '../Heading'
+import Flex from '../Flex';
+import Divider from '../Divider';
+import Button from '../Button';
+import Heading from '../Heading';
 
-import { Sheet, SheetContent } from './style'
-import { useTranslation } from '@/context/TranslateContext'
+import { Sheet, SheetContent } from './style';
+import { useTranslation } from '@/context/TranslateContext';
 
 interface ComponentProps {
-  children: ReactNode
-  isOpen: boolean
-  onClose: () => void
-  title?: string
+  children: ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
 }
 
 export default function Component(props: ComponentProps) {
-  const { children, isOpen, onClose, title } = props
-  const { t } = useTranslation()
+  const { children, isOpen, onClose, title } = props;
+  const { t } = useTranslation();
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setOpen(isOpen)
-  }, [isOpen])
+    setOpen(isOpen);
+  }, [isOpen]);
 
   const handleClose = () => {
-    setOpen(false)
-    onClose()
-  }
+    setOpen(false);
+    onClose();
+  };
 
   return (
     <Sheet $isOpen={open}>
@@ -54,5 +54,5 @@ export default function Component(props: ComponentProps) {
         <Divider y={24} />
       </SheetContent>
     </Sheet>
-  )
+  );
 }

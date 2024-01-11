@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
-import theme from '@/styles/theme'
+import theme from '@/styles/theme';
 
 interface ModalProps {
-  $isOpen?: boolean
+  $isOpen?: boolean;
 }
 
 export const Modal = styled.div<ModalProps>`
@@ -14,7 +14,7 @@ export const Modal = styled.div<ModalProps>`
   left: 0;
   z-index: 11;
 
-  display: ${props => (props.$isOpen ? 'flex' : 'none')};
+  display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -36,7 +36,7 @@ export const Modal = styled.div<ModalProps>`
     background-color: rgba(28, 28, 28, 0.95);
     backdrop-filter: blur(16px);
   }
-`
+`;
 
 export const ModalContent = styled.div`
   position: relative;
@@ -55,4 +55,4 @@ export const ModalContent = styled.div`
   @media screen and (min-width: 1023px) {
     max-width: 320px;
   }
-`
+`;

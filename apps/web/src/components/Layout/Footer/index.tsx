@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import Container from '../Container'
-import Divider from '../../UI/Divider'
+import Container from '../Container';
+import Divider from '../../UI/Divider';
 
-import { Footer } from './style'
-import { ReactNode } from 'react'
+import { Footer } from './style';
+import { ReactNode } from 'react';
 
 interface ComponentProps {
-  children?: ReactNode
+  children?: ReactNode;
 }
 
 export default function Component(props: ComponentProps) {
-  const { children } = props
+  const { children } = props;
 
   return (
     <Footer>
@@ -19,5 +19,5 @@ export default function Component(props: ComponentProps) {
       <Container size="small">{children}</Container>
       <Divider y={24} />
     </Footer>
-  )
+  );
 }

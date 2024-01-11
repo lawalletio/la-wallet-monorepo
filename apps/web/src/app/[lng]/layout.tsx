@@ -1,41 +1,34 @@
-'use client'
+'use client';
 
-import { ThemeProvider } from 'styled-components'
+import { ThemeProvider } from 'styled-components';
 
-import StyledComponentsRegistry from '@/utils/registry'
+import StyledComponentsRegistry from '@/utils/registry';
 
-import config from '@/constants/config'
+import config from '@/constants/config';
 
-import { TranslateProvider } from '@/context/TranslateContext'
-import GlobalStyles from '@/styles/GlobalStyles'
-import { fontSecondary } from '@/styles/fonts'
-import theme from '@/styles/theme'
-import Script from 'next/script'
-import { ReactNode } from 'react'
-import {
-  AvailableLanguages,
-  LaWalletProvider,
-  defaultLocale
-} from '@lawallet/react'
-import AuthProvider from '@/components/Auth/AuthProvider'
+import { TranslateProvider } from '@/context/TranslateContext';
+import GlobalStyles from '@/styles/GlobalStyles';
+import { fontSecondary } from '@/styles/fonts';
+import theme from '@/styles/theme';
+import Script from 'next/script';
+import { ReactNode } from 'react';
+import { AvailableLanguages, LaWalletProvider, defaultLocale } from '@lawallet/react';
+import AuthProvider from '@/components/Auth/AuthProvider';
 
 interface ProviderProps {
-  children: ReactNode
-  params: { lng: AvailableLanguages }
+  children: ReactNode;
+  params: { lng: AvailableLanguages };
 }
 
 // Metadata
-const APP_NAME = 'LaWallet'
-const APP_DESCRIPTION = 'https://lawallet.ar/'
+const APP_NAME = 'LaWallet';
+const APP_DESCRIPTION = 'https://lawallet.ar/';
 
 const Providers = (props: ProviderProps) => {
-  const { children, params } = props
+  const { children, params } = props;
 
   return (
-    <html
-      lang={params.lng ?? defaultLocale}
-      className={fontSecondary.className}
-    >
+    <html lang={params.lng ?? defaultLocale} className={fontSecondary.className}>
       <head>
         <title>{APP_NAME}</title>
         <meta name="application-name" content={APP_NAME} />
@@ -52,17 +45,11 @@ const Providers = (props: ProviderProps) => {
           content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover'
         /> */}
 
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/icons/icon-192x192.png"
-        />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon.ico" />
 
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${config.env.GOOGLE_TAG_ID}`}
-        />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${config.env.GOOGLE_TAG_ID}`} />
         <Script id="google-analytics">
           {`
           window.dataLayer = window.dataLayer || [];
@@ -87,7 +74,7 @@ const Providers = (props: ProviderProps) => {
         </StyledComponentsRegistry>
       </body>
     </html>
-  )
-}
+  );
+};
 
-export default Providers
+export default Providers;

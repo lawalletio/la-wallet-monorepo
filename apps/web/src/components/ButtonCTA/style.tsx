@@ -1,4 +1,4 @@
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
 export const Default = styled.div`
   position: fixed;
@@ -20,4 +20,4 @@ export const Default = styled.div`
       height: 32px !important;
     }
   }
-`
+`;

@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { ReactNode } from 'react'
-import { AccordionBody } from './style'
+import { ReactNode } from 'react';
+import { AccordionBody } from './style';
 
 interface ComponentProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default function Component(props: ComponentProps) {
-  const { children } = props
+  const { children } = props;
 
-  return <AccordionBody>{children}</AccordionBody>
+  return <AccordionBody>{children}</AccordionBody>;
 }

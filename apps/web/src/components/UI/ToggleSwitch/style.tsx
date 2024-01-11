@@ -1,6 +1,6 @@
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
-import theme from '@/styles/theme'
+import theme from '@/styles/theme';
 
 export const ToggleSwitch = styled.div`
   display: flex;
@@ -57,4 +57,4 @@ export const ToggleSwitch = styled.div`
     left: calc(100% - 2px);
     transform: translateX(-100%);
   }
-`
+`;

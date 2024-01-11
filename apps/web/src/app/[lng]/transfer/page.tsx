@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled'
-import { useRouter } from 'next/navigation'
+import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useRouter } from 'next/navigation';
 
-import Container from '@/components/Layout/Container'
-import Navbar from '@/components/Layout/Navbar'
+import Container from '@/components/Layout/Container';
+import Navbar from '@/components/Layout/Navbar';
 import {
   Button,
   Divider,
@@ -15,98 +15,95 @@ import {
   InputGroup,
   InputGroupRight,
   LinkButton,
-  Text
-} from '@/components/UI'
+  Text,
+} from '@/components/UI';
 
-import config from '@/constants/config'
-import { useTransferContext } from '@/context/TransferContext'
-import { useTranslation } from '@/context/TranslateContext'
-import { useActionOnKeypress } from '@/hooks/useActionOnKeypress'
-import useErrors from '@/hooks/useErrors'
-import theme from '@/styles/theme'
-import { useWalletContext } from '@lawallet/react'
-import { getUsername } from '@lawallet/react/actions'
-import { TransactionDirection, TransactionType } from '@lawallet/react/types'
-import { getMultipleTags } from '@lawallet/react/utils'
-import { useEffect, useState } from 'react'
-import RecipientElement from './components/RecipientElement'
+import config from '@/constants/config';
+import { useTransferContext } from '@/context/TransferContext';
+import { useTranslation } from '@/context/TranslateContext';
+import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
+import useErrors from '@/hooks/useErrors';
+import theme from '@/styles/theme';
+import { useWalletContext } from '@lawallet/react';
+import { getUsername } from '@lawallet/react/actions';
+import { TransactionDirection, TransactionType } from '@lawallet/react/types';
+import { getMultipleTags } from '@lawallet/react/utils';
+import { useEffect, useState } from 'react';
+import RecipientElement from './components/RecipientElement';
 
 export default function Page() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const {
-    user: { identity, transactions }
-  } = useWalletContext()
-  const { prepareTransaction, transferInfo } = useTransferContext()
+    user: { identity, transactions },
+  } = useWalletContext();
+  const { prepareTransaction, transferInfo } = useTransferContext();
 
-  const [lastDestinations, setLastDestinations] = useState<string[]>([])
-  const [inputText, setInputText] = useState<string>(transferInfo.data)
-  const [loading, setLoading] = useState<boolean>(false)
+  const [lastDestinations, setLastDestinations] = useState<string[]>([]);
+  const [inputText, setInputText] = useState<string>(transferInfo.data);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const errors = useErrors()
-  const router = useRouter()
+  const errors = useErrors();
+  const router = useRouter();
 
   const initializeTransfer = async (data: string) => {
-    if (loading) return
-    setLoading(true)
+    if (loading) return;
+    setLoading(true);
 
-    const cleanData: string = data.trim()
-    const prepared: boolean = await prepareTransaction(cleanData)
+    const cleanData: string = data.trim();
+    const prepared: boolean = await prepareTransaction(cleanData);
     if (!prepared) {
-      errors.modifyError('INVALID_RECIPIENT')
-      setLoading(false)
+      errors.modifyError('INVALID_RECIPIENT');
+      setLoading(false);
     }
-  }
+  };
 
   const handleContinue = async () => {
-    if (!inputText.length) return errors.modifyError('EMPTY_RECIPIENT')
-    initializeTransfer(inputText)
-  }
+    if (!inputText.length) return errors.modifyError('EMPTY_RECIPIENT');
+    initializeTransfer(inputText);
+  };
 
-  useActionOnKeypress('Enter', handleContinue, [inputText])
+  useActionOnKeypress('Enter', handleContinue, [inputText]);
 
   const handlePasteInput = async () => {
     try {
-      const text = await navigator.clipboard.readText()
-      setInputText(text)
+      const text = await navigator.clipboard.readText();
+      setInputText(text);
     } catch (error) {
-      console.log('error', error)
+      console.log('error', error);
     }
-  }
+  };
 
   const loadLastDestinations = () => {
-    const lastDest: string[] = []
+    const lastDest: string[] = [];
 
-    transactions.forEach(async tx => {
-      if (
-        tx.type === TransactionType.INTERNAL &&
-        tx.direction === TransactionDirection.OUTGOING
-      ) {
-        const txPubkeys: string[] = getMultipleTags(tx.events[0].tags, 'p')
-        if (txPubkeys.length !== 2) return
+    transactions.forEach(async (tx) => {
+      if (tx.type === TransactionType.INTERNAL && tx.direction === TransactionDirection.OUTGOING) {
+        const txPubkeys: string[] = getMultipleTags(tx.events[0].tags, 'p');
+        if (txPubkeys.length !== 2) return;
 
-        const receiverPubkey: string = txPubkeys[1]
-        if (receiverPubkey === identity.hexpub) return
+        const receiverPubkey: string = txPubkeys[1];
+        if (receiverPubkey === identity.hexpub) return;
 
-        const username: string = await getUsername(receiverPubkey)
+        const username: string = await getUsername(receiverPubkey);
 
         if (username.length) {
-          const formattedLud16: string = `${username}@${config.env.WALLET_DOMAIN}`
+          const formattedLud16: string = `${username}@${config.env.WALLET_DOMAIN}`;
           if (!lastDest.includes(formattedLud16)) {
-            lastDest.push(formattedLud16)
-            setLastDestinations(lastDest)
+            lastDest.push(formattedLud16);
+            setLastDestinations(lastDest);
           }
         }
       }
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    if (transactions.length) loadLastDestinations()
-  }, [transactions.length])
+    if (transactions.length) loadLastDestinations();
+  }, [transactions.length]);
 
   useEffect(() => {
-    router.prefetch('/scan')
-  }, [router])
+    router.prefetch('/scan');
+  }, [router]);
 
   return (
     <>
@@ -117,9 +114,9 @@ export default function Page() {
         <Flex flex={1} direction="column">
           <InputGroup>
             <Input
-              onChange={e => {
-                errors.resetError()
-                setInputText(e.target.value)
+              onChange={(e) => {
+                errors.resetError();
+                setInputText(e.target.value);
               }}
               placeholder={t('TRANSFER_DATA_PLACEHOLDER')}
               type="text"
@@ -154,13 +151,9 @@ export default function Page() {
 
               <Divider y={12} />
 
-              {lastDestinations.slice(0, 5).map(lud16 => {
+              {lastDestinations.slice(0, 5).map((lud16) => {
                 return (
-                  <Flex
-                    key={lud16}
-                    onClick={() => initializeTransfer(lud16)}
-                    direction="column"
-                  >
+                  <Flex key={lud16} onClick={() => initializeTransfer(lud16)} direction="column">
                     <Divider y={8} />
                     <Flex align="center">
                       <RecipientElement lud16={lud16} />
@@ -170,7 +163,7 @@ export default function Page() {
                     </Flex>
                     <Divider y={8} />
                   </Flex>
-                )
+                );
               })}
             </>
           )}
@@ -181,18 +174,11 @@ export default function Page() {
         <Container size="small">
           <Divider y={16} />
           <Flex gap={8}>
-            <Button
-              variant="bezeledGray"
-              onClick={() => router.push('/dashboard')}
-            >
+            <Button variant="bezeledGray" onClick={() => router.push('/dashboard')}>
               {t('CANCEL')}
             </Button>
 
-            <Button
-              onClick={handleContinue}
-              disabled={loading || inputText.length === 0}
-              loading={loading}
-            >
+            <Button onClick={handleContinue} disabled={loading || inputText.length === 0} loading={loading}>
               {t('CONTINUE')}
             </Button>
           </Flex>
@@ -200,5 +186,5 @@ export default function Page() {
         </Container>
       </Flex>
     </>
-  )
+  );
 }

@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { useTranslation } from '@/context/TranslateContext'
-import { Flex, Heading, Text } from '@/components/UI'
+import { useTranslation } from '@/context/TranslateContext';
+import { Flex, Heading, Text } from '@/components/UI';
 
-import theme from '@/styles/theme'
+import theme from '@/styles/theme';
 
-import { HomeDescription } from './style'
+import { HomeDescription } from './style';
 
 export default function Component() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <HomeDescription>
@@ -19,5 +19,5 @@ export default function Component() {
         </Heading>
       </Flex>
     </HomeDescription>
-  )
+  );
 }

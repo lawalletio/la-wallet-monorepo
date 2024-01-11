@@ -3,28 +3,28 @@
 type AdditionalString = string & { _additionalString?: never };
 
 type WebLNRequestMethod =
-  | "request.getinfo"
-  | "request.listchannels"
-  | "request.listinvoices"
-  | "request.channelbalance"
-  | "request.walletbalance"
-  | "request.openchannel"
-  | "request.connectpeer"
-  | "request.disconnectpeer"
-  | "request.estimatefee"
-  | "request.getchaninfo"
-  | "request.getnetworkinfo"
-  | "request.getnodeinfo"
-  | "request.gettransactions"
-  | "request.listpayments"
-  | "request.listpeers"
-  | "request.lookupinvoice"
-  | "request.queryroutes"
-  | "request.verifymessage"
-  | "request.sendtoroute"
-  | "request.decodepayreq"
-  | "request.routermc"
-  | "request.addinvoice"
+  | 'request.getinfo'
+  | 'request.listchannels'
+  | 'request.listinvoices'
+  | 'request.channelbalance'
+  | 'request.walletbalance'
+  | 'request.openchannel'
+  | 'request.connectpeer'
+  | 'request.disconnectpeer'
+  | 'request.estimatefee'
+  | 'request.getchaninfo'
+  | 'request.getnetworkinfo'
+  | 'request.getnodeinfo'
+  | 'request.gettransactions'
+  | 'request.listpayments'
+  | 'request.listpeers'
+  | 'request.lookupinvoice'
+  | 'request.queryroutes'
+  | 'request.verifymessage'
+  | 'request.sendtoroute'
+  | 'request.decodepayreq'
+  | 'request.routermc'
+  | 'request.addinvoice'
   | AdditionalString;
 
 type WebLNMethod = keyof WebLNProvider | AdditionalString;
@@ -37,7 +37,7 @@ interface WebLNNode {
 interface GetInfoResponse {
   node: WebLNNode;
   version: string;
-  supports: ("lightning" | AdditionalString)[];
+  supports: ('lightning' | AdditionalString)[];
   methods: (WebLNRequestMethod | WebLNMethod)[];
 }
 interface SendPaymentResponse {
@@ -65,9 +65,9 @@ interface SignMessageResponse {
 
 type LNURLResponse =
   | {
-      status: "OK";
+      status: 'OK';
     }
-  | { status: "ERROR"; reason: string };
+  | { status: 'ERROR'; reason: string };
 
 interface GetBalanceResponse {
   balance: number;
@@ -106,9 +106,7 @@ type WebLNRequestListPeersResponse = {
   }[];
 };
 
-type WebLNRequestListPeersRequestFunc = (
-  method: "request.listpeers"
-) => WebLNRequestListPeersResponse;
+type WebLNRequestListPeersRequestFunc = (method: 'request.listpeers') => WebLNRequestListPeersResponse;
 
 type WebLNRequestListChannelsResponse = {
   channels: {
@@ -163,9 +161,7 @@ type WebLNRequestListChannelsResponse = {
   }[];
 };
 
-type WebLNRequestListChannelsRequestFunc = (
-  method: "request.listchannels"
-) => WebLNRequestListChannelsResponse;
+type WebLNRequestListChannelsRequestFunc = (method: 'request.listchannels') => WebLNRequestListChannelsResponse;
 
 type WebLNRequestListInvoicesResponse = {
   invoices: {
@@ -189,7 +185,7 @@ type WebLNRequestListInvoicesResponse = {
     amt_paid: string;
     amt_paid_sat: string;
     amt_paid_msat: string;
-    state: "SETTLED" | "CANCELED" | string;
+    state: 'SETTLED' | 'CANCELED' | string;
     is_keysend: boolean;
     payment_addr: string;
     is_amp: false;
@@ -202,7 +198,7 @@ type WebLNRequestListInvoicesResponse = {
       accept_time: string;
       resolve_time: string;
       expiry_height: number;
-      state: "SETTLED" | "CANCELED" | string;
+      state: 'SETTLED' | 'CANCELED' | string;
       custom_records: { [key: string]: string };
       mpp_total_amt_msat: string;
       amp: unknown;
@@ -214,7 +210,7 @@ type WebLNRequestListInvoicesResponse = {
 };
 
 type WebLNRequestListInvoicesRequestFunc = (
-  method: "request.listinvoices",
+  method: 'request.listinvoices',
   args?: {
     reversed?: boolean;
     num_max_invoices?: number;
@@ -222,7 +218,7 @@ type WebLNRequestListInvoicesRequestFunc = (
     pending_only?: boolean;
     creation_date_start?: number;
     creation_date_end?: number;
-  }
+  },
 ) => WebLNRequestListInvoicesResponse;
 
 type WebLNRequestListPaymentsResponse = {
@@ -249,7 +245,7 @@ type WebLNRequestListPaymentsResponse = {
 };
 
 type WebLNRequestListPaymentsFunc = (
-  method: "request.listpayments",
+  method: 'request.listpayments',
   args?: {
     reversed?: boolean;
     num_max_invoices?: number;
@@ -257,7 +253,7 @@ type WebLNRequestListPaymentsFunc = (
     pending_only?: boolean;
     creation_date_start?: number;
     creation_date_end?: number;
-  }
+  },
 ) => WebLNRequestListPaymentsResponse;
 
 type WebLNRequestWalletBalanceResponse = {
@@ -274,16 +270,12 @@ type WebLNRequestWalletBalanceResponse = {
   };
 };
 
-type WebLNRequestWalletBalanceRequestFunc = (
-  method: "request.walletbalance"
-) => WebLNRequestWalletBalanceResponse;
+type WebLNRequestWalletBalanceRequestFunc = (method: 'request.walletbalance') => WebLNRequestWalletBalanceResponse;
 
 interface WebLNProvider {
   enable(): Promise<void>; // Promise<{ enabled: boolean; remember: boolean }>
   getInfo(): Promise<GetInfoResponse>;
-  makeInvoice(
-    args: string | number | RequestInvoiceArgs
-  ): Promise<MakeInvoiceResponse>;
+  makeInvoice(args: string | number | RequestInvoiceArgs): Promise<MakeInvoiceResponse>;
   sendPayment(paymentRequest: string): Promise<SendPaymentResponse>;
 
   // optional methods

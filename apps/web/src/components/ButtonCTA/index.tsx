@@ -1,14 +1,14 @@
-import { ReactNode } from 'react'
+import { ReactNode } from 'react';
 
-import { Default } from './style'
-import { Divider } from '@/components/UI'
+import { Default } from './style';
+import { Divider } from '@/components/UI';
 
 interface ButtonCTAProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default function ButtonCTA(props: ButtonCTAProps) {
-  const { children } = props
+  const { children } = props;
 
   return (
     <Default>
@@ -16,5 +16,5 @@ export default function ButtonCTA(props: ButtonCTAProps) {
       <div>{children}</div>
       <Divider y={24} />
     </Default>
-  )
+  );
 }

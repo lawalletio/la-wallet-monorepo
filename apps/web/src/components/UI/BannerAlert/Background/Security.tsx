@@ -1,12 +1,6 @@
 export default function Component() {
   return (
-    <svg
-      width="125"
-      height="118"
-      viewBox="0 0 125 118"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="125" height="118" viewBox="0 0 125 118" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_d_722_2060)">
         <path
           fillRule="evenodd"
@@ -99,21 +93,9 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
         <filter
           id="filter1_d_722_2060"
@@ -134,21 +116,9 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
         <filter
           id="filter2_d_722_2060"
@@ -169,21 +139,9 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
         <filter
           id="filter3_d_722_2060"
@@ -204,21 +162,9 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
         <filter
           id="filter4_d_722_2060"
@@ -239,21 +185,9 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
         <filter
           id="filter5_d_722_2060"
@@ -274,21 +208,9 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
         <filter
           id="filter6_d_722_2060"
@@ -309,21 +231,9 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
         <filter
           id="filter7_d_722_2060"
@@ -344,21 +254,9 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
         <filter
           id="filter8_d_722_2060"
@@ -379,23 +277,11 @@ export default function Component() {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="6" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_722_2060"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_722_2060"
-            result="shape"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.913725 0 0 0 0 0.313726 0 0 0 0 0.32549 0 0 0 0.35 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_722_2060" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_722_2060" result="shape" />
         </filter>
       </defs>
     </svg>
-  )
+  );
 }

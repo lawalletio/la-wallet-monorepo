@@ -1,51 +1,45 @@
 export function checkIOS(navigator: Navigator) {
   if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-    return true
+    return true;
   } else {
-    return Boolean(
-      navigator.maxTouchPoints &&
-        navigator.maxTouchPoints > 2 &&
-        /MacIntel/.test(navigator.userAgent)
-    )
+    return Boolean(navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.userAgent));
   }
 }
 
 export function addQueryParameter(url: string, parameter: string) {
   if (url.indexOf('?') === -1) {
-    return url + '?' + parameter
+    return url + '?' + parameter;
   } else {
-    return url + '&' + parameter
+    return url + '&' + parameter;
   }
 }
 
 export function parseContent(content: string) {
   try {
-    const parsed = JSON.parse(content)
-    return parsed
+    const parsed = JSON.parse(content);
+    return parsed;
   } catch {
-    return {}
+    return {};
   }
 }
 
 export const formatBigNumber = (number: number | string) => {
-  return Number(number).toLocaleString('es-ES')
-}
+  return Number(number).toLocaleString('es-ES');
+};
 
 export function escapingBrackets(text: string) {
-  return text.replace(/\[/g, '\\[\\').replace(/]/g, '\\]\\')
+  return text.replace(/\[/g, '\\[\\').replace(/]/g, '\\]\\');
 }
 
 export function unescapingText(text: string) {
-  return text.replace(/\\/g, '')
+  return text.replace(/\\/g, '');
 }
 
 export function extractEscappedMessage(text: string) {
-  const regex = /(?<!\\)\[([^\]]+)]/g
-  const fragments = text.split(regex)
+  const regex = /(?<!\\)\[([^\]]+)]/g;
+  const fragments = text.split(regex);
 
-  const escappedMessage = fragments
-    .filter((_, index) => index % 2 === 0)
-    .join('')
+  const escappedMessage = fragments.filter((_, index) => index % 2 === 0).join('');
 
-  return escappedMessage
+  return escappedMessage;
 }

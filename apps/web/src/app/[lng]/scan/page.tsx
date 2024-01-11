@@ -1,62 +1,59 @@
-'use client'
+'use client';
 
-import Navbar from '@/components/Layout/Navbar'
-import { Button, Flex, Modal, Text } from '@/components/UI'
-import QrScanner from '@/components/UI/Scanner/Scanner'
-import { regexURL } from '@/constants/constants'
-import { useTranslation } from '@/context/TranslateContext'
-import { TransferTypes } from '@lawallet/react/types'
-import {
-  detectTransferType,
-  removeLightningStandard
-} from '@lawallet/react/utils'
-import { useRouter } from 'next/navigation'
-import NimiqQrScanner from 'qr-scanner'
-import { useEffect, useState } from 'react'
+import Navbar from '@/components/Layout/Navbar';
+import { Button, Flex, Modal, Text } from '@/components/UI';
+import QrScanner from '@/components/UI/Scanner/Scanner';
+import { regexURL } from '@/constants/constants';
+import { useTranslation } from '@/context/TranslateContext';
+import { TransferTypes } from '@lawallet/react/types';
+import { detectTransferType, removeLightningStandard } from '@lawallet/react/utils';
+import { useRouter } from 'next/navigation';
+import NimiqQrScanner from 'qr-scanner';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
-  const [urlScanned, setUrlScanned] = useState<string>('')
-  const { t } = useTranslation()
-  const router = useRouter()
+  const [urlScanned, setUrlScanned] = useState<string>('');
+  const { t } = useTranslation();
+  const router = useRouter();
 
   const handleScanURL = (str: string) => {
-    const url = new URL(str)
-    const cardParameter = url.searchParams.get('c')
+    const url = new URL(str);
+    const cardParameter = url.searchParams.get('c');
 
     if (cardParameter) {
-      router.push(`/settings/cards?c=${cardParameter}`)
-      return
+      router.push(`/settings/cards?c=${cardParameter}`);
+      return;
     } else {
-      setUrlScanned(str)
+      setUrlScanned(str);
     }
-  }
+  };
 
   const handleScan = (result: NimiqQrScanner.ScanResult) => {
-    if (!result || !result.data) return
+    if (!result || !result.data) return;
 
-    const isURL: boolean = regexURL.test(result.data)
+    const isURL: boolean = regexURL.test(result.data);
 
     if (isURL) {
-      handleScanURL(result.data)
-      return
+      handleScanURL(result.data);
+      return;
     } else {
-      const cleanScan: string = removeLightningStandard(result.data)
-      const scanType: boolean | string = detectTransferType(cleanScan)
-      if (!scanType) return
+      const cleanScan: string = removeLightningStandard(result.data);
+      const scanType: boolean | string = detectTransferType(cleanScan);
+      if (!scanType) return;
 
       if (scanType === TransferTypes.INVOICE) {
-        router.push(`/transfer/summary?data=${result.data.toLowerCase()}`)
-        return
+        router.push(`/transfer/summary?data=${result.data.toLowerCase()}`);
+        return;
       }
 
-      router.push(`/transfer/amount?data=${result.data.toLowerCase()}`)
+      router.push(`/transfer/amount?data=${result.data.toLowerCase()}`);
     }
-  }
+  };
 
   useEffect(() => {
-    router.prefetch('/transfer/summary')
-    router.prefetch('/transfer/amount')
-  }, [router])
+    router.prefetch('/transfer/summary');
+    router.prefetch('/transfer/amount');
+  }, [router]);
 
   return (
     <>
@@ -73,17 +70,11 @@ export default function Page() {
         />
       </Flex>
 
-      <Modal
-        title={t('URL_SCANNED_TITLE')}
-        isOpen={Boolean(urlScanned.length)}
-        onClose={() => null}
-      >
+      <Modal title={t('URL_SCANNED_TITLE')} isOpen={Boolean(urlScanned.length)} onClose={() => null}>
         <Text>{t('URL_SCANNED_DESC', { url: urlScanned })}</Text>
         <Flex direction="column" gap={4}>
           <Flex>
-            <Button onClick={() => window.open(urlScanned)}>
-              {t('OPEN_URL')}
-            </Button>
+            <Button onClick={() => window.open(urlScanned)}>{t('OPEN_URL')}</Button>
           </Flex>
           <Flex>
             <Button variant="borderless" onClick={() => setUrlScanned('')}>
@@ -93,5 +84,5 @@ export default function Page() {
         </Flex>
       </Modal>
     </>
-  )
+  );
 }

@@ -1,35 +1,28 @@
-'use client'
-import {
-  Divider,
-  Flex,
-  Text,
-  Button,
-  CardAlert,
-  Feedback
-} from '@/components/UI'
-import Container from '@/components/Layout/Container'
-import Logo from '@/components/Logo'
-import HomeDescription from '@/app/[lng]/start/components/HomeDescription'
+'use client';
+import { Divider, Flex, Text, Button, CardAlert, Feedback } from '@/components/UI';
+import Container from '@/components/Layout/Container';
+import Logo from '@/components/Logo';
+import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
 
-import theme from '@/styles/theme'
-import { useEffect, useState } from 'react'
-import { checkIOS } from '@/utils'
-import { useTranslation } from '@/context/TranslateContext'
-import { useMediaQuery } from '@uidotdev/usehooks'
-import { Loader } from '@/components/Loader/Loader'
-import { LAWALLET_VERSION } from '@/constants/constants'
-import { useRouter } from 'next/navigation'
+import theme from '@/styles/theme';
+import { useEffect, useState } from 'react';
+import { checkIOS } from '@/utils';
+import { useTranslation } from '@/context/TranslateContext';
+import { useMediaQuery } from '@uidotdev/usehooks';
+import { Loader } from '@/components/Loader/Loader';
+import { LAWALLET_VERSION } from '@/constants/constants';
+import { useRouter } from 'next/navigation';
 
 const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
-  const { t } = useTranslation()
-  const isMobile = useMediaQuery('only screen and (max-width : 768px)')
-  const [isIOS, setIsIOS] = useState<boolean>(false)
+  const { t } = useTranslation();
+  const isMobile = useMediaQuery('only screen and (max-width : 768px)');
+  const [isIOS, setIsIOS] = useState<boolean>(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    if (isValidNonce) setIsIOS(checkIOS(navigator))
-  }, [isValidNonce])
+    if (isValidNonce) setIsIOS(checkIOS(navigator));
+  }, [isValidNonce]);
 
   return (
     <Container size="small">
@@ -55,8 +48,7 @@ const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
                   title={t('RECOMMEND_SAFARI_TITLE')}
                   description={
                     <>
-                      <strong>{t('RECOMMEND_SAFARI')}</strong>{' '}
-                      {t('RECOMMEND_SAFARI_REASON')}
+                      <strong>{t('RECOMMEND_SAFARI')}</strong> {t('RECOMMEND_SAFARI_REASON')}
                     </>
                   }
                 />
@@ -79,16 +71,14 @@ const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
             <Divider y={16} />
 
             <Flex>
-              <Button onClick={() => router.push('/')}>
-                {t('BACK_TO_HOME')}
-              </Button>
+              <Button onClick={() => router.push('/')}>{t('BACK_TO_HOME')}</Button>
             </Flex>
           </>
         )}
       </Flex>
       <Divider y={32} />
     </Container>
-  )
-}
+  );
+};
 
-export default StartView
+export default StartView;

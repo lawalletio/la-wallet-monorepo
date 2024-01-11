@@ -1,4 +1,4 @@
-export { baseConfig } from '../constants/constants.js'
+export { baseConfig } from '../constants/constants.js';
 
 export {
   type GenerateIdentityReturns,
@@ -11,16 +11,12 @@ export {
   buildCardConfigEvent,
   buildCardInfoRequest,
   buildTxStartEvent,
-  buildZapRequestEvent
-} from '../utils/events.js'
+  buildZapRequestEvent,
+} from '../utils/events.js';
 
-export { lnurl_decode, lnurl_encode } from '../utils/lnurl.js'
+export { lnurl_decode, lnurl_encode } from '../utils/lnurl.js';
 
-export {
-  type MultiNip04Content,
-  buildMultiNip04Event,
-  parseMultiNip04Event
-} from '../utils/nip04.js'
+export { type MultiNip04Content, buildMultiNip04Event, parseMultiNip04Event } from '../utils/nip04.js';
 
 export {
   decodeInvoice,
@@ -29,5 +25,5 @@ export {
   removeLightningStandard,
   formatTransferData,
   splitHandle,
-  parseContent
-} from '../utils/utilities.js'
+  parseContent,
+} from '../utils/utilities.js';

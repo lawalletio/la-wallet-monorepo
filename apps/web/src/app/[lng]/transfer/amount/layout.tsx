@@ -1,13 +1,9 @@
-import type { Metadata } from 'next'
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Transferir: Monto - LaWallet'
-}
+  title: 'Transferir: Monto - LaWallet',
+};
 
-export default function RootLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
-  return <>{children}</>
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }

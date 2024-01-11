@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import { useId, useState } from 'react'
+import { useId, useState } from 'react';
 
-import Text from '../Text'
+import Text from '../Text';
 
-import { ToggleSwitch } from './style'
+import { ToggleSwitch } from './style';
 
 interface ComponentProps {
-  label: string
-  onChange: (e: boolean) => void
+  label: string;
+  onChange: (e: boolean) => void;
 }
 
 export default function Component(props: ComponentProps) {
-  const { label, onChange } = props
+  const { label, onChange } = props;
 
-  const [active, setActive] = useState(false)
+  const [active, setActive] = useState(false);
 
-  const id = useId()
+  const id = useId();
 
   const handleChange = () => {
-    setActive(!active)
-    onChange(!active)
-  }
+    setActive(!active);
+    onChange(!active);
+  };
 
   return (
     <ToggleSwitch>
@@ -31,5 +31,5 @@ export default function Component(props: ComponentProps) {
         Toggle
       </label>
     </ToggleSwitch>
-  )
+  );
 }
