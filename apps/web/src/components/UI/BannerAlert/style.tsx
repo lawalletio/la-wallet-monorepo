@@ -15,7 +15,6 @@ export const BannerAlert = styled.div<BannerAlert>`
   padding: 24px 32px;
 
   background-color: ${theme.colors.gray15};
-  background-image: url('/banner/security.png');
   border: 1px solid ${theme.colors.gray20};
   border-radius: 24px;
 
