@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/utils",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "description": "",
   "private": false,
   "scripts": {
@@ -13,13 +13,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.10.6",
-    "typescript": "^5.3.3",
-    "@scure/base": "1.1.1"
+    "typescript": "^5.3.3"
   },
-  "peerDependencies": {
+  "dependencies": {
+    "@scure/base": "1.1.1",
     "@nostr-dev-kit/ndk": "^2.3.2",
     "bech32": "^2.0.0",
-    "date-fns": "^3.0.6",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "overrides": {

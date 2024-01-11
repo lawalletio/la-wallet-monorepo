@@ -47,7 +47,10 @@ export interface UseActivityReturn {
 
 export interface UseActivityProps {
   pubkey: string
-  enabled: boolean
+  enabled?: boolean
+  since?: number | undefined,
+  until?: number | undefined,
+  useCache?: boolean
   config?: ConfigProps
   limit?: number
 }
@@ -81,12 +84,17 @@ const defaultActivity = {
   idsLoaded: []
 }
 
-export const useActivity = ({
-  pubkey,
-  enabled,
-  limit = 1000,
-  config = baseConfig
-}: UseActivityProps): UseActivityReturn => {
+export const useActivity = (props: UseActivityProps): UseActivityReturn => {
+  const {
+    pubkey,
+    enabled = true,
+    limit = 1000,
+    since = undefined,
+    until = undefined,
+    config = baseConfig,
+    useCache = false
+  } = props;
+  
   const [activityInfo, setActivityInfo] =
     React.useState<ActivityType>(defaultActivity)
 
@@ -96,23 +104,24 @@ export const useActivity = ({
         authors: [pubkey],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
-        since: activityInfo.lastCached,
-        limit
+        since: useCache ? activityInfo.lastCached : since ? since : 0,
+        until: until,
+        limit: limit*2
       },
       {
         '#p': [pubkey],
         '#t': startTags,
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since: activityInfo.lastCached,
-        limit
+        since: useCache ? activityInfo.lastCached : since ? since : 0,
+        limit: limit*2
       },
       {
         authors: [config.modulePubkeys.ledger],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         '#p': [pubkey],
         '#t': statusTags,
-        since: activityInfo.lastCached,
-        limit
+        since: useCache ? activityInfo.lastCached : 0,
+        limit: limit*2
       }
     ],
     options,
@@ -333,6 +342,8 @@ export const useActivity = ({
   }
 
   const userTransactions: Transaction[] = React.useMemo(() => {
+    if (!useCache) return activityInfo.subscription;
+
     const TXsWithoutCached: Transaction[] = activityInfo.subscription.filter(
       tx => {
         const cached = activityInfo.cached.find(
@@ -363,11 +374,11 @@ export const useActivity = ({
   }, [walletEvents])
 
   React.useEffect(() => {
-    loadCachedTransactions()
+    if (useCache) loadCachedTransactions()
   }, [pubkey])
 
   React.useEffect(() => {
-    if (userTransactions.length)
+    if (useCache && userTransactions.length)
       localStorage.setItem(
         `${CACHE_TXS_KEY}_${pubkey}`,
         JSON.stringify(userTransactions)

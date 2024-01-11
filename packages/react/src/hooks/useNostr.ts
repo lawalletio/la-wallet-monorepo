@@ -10,10 +10,10 @@ type LightningProvidersType = {
 };
 
 export interface INostr {
-  providers: LightningProvidersType;
   ndk: NDK;
+  providers: LightningProvidersType;
   connectExtension: () => void;
-  connectWithHexKey: (hexKey: string) => Promise<boolean>;
+  connectWithPrivateKey: (hexKey: string) => Promise<boolean>;
   requestPublicKey: () => Promise<string>;
   userPubkey: string;
 }
@@ -22,6 +22,7 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
   const [ndk, setNDK] = React.useState<NDK>(new NDK({
     explicitRelayUrls
   }));
+
   const [userPubkey, setUserPubkey] = React.useState<string>("");
 
   const [providers, setProviders] = React.useState<LightningProvidersType>({
@@ -65,7 +66,7 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
     }
   };
 
-  const connectWithHexKey = async (hexKey: string): Promise<boolean> => {
+  const connectWithPrivateKey = async (hexKey: string): Promise<boolean> => {
     try {
       const privateKeySigner = new NDKPrivateKeySigner(hexKey);
       const ndkInitialized: boolean = await initializeNDK(privateKeySigner);
@@ -105,10 +106,10 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
   }, []);
 
   return {
-    providers,
     ndk,
+    providers,
     connectExtension,
-    connectWithHexKey,
+    connectWithPrivateKey,
     userPubkey,
     requestPublicKey,
   };
