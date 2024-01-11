@@ -1,5 +1,5 @@
-export { type ConfigProps } from "../types/config.js";
-export { type TokenBalance } from "../types/balance.js";
+export { type ConfigProps } from '../types/config.js';
+export { type TokenBalance } from '../types/balance.js';
 export {
   CardStatus,
   ConfigTypes,
@@ -8,8 +8,8 @@ export {
   type Limit,
   type CardPayload,
   type CardConfigPayload,
-} from "../types/card.js";
-export { type UserIdentity, defaultIdentity } from "../types/identity.js";
+} from '../types/card.js';
+export { type UserIdentity, defaultIdentity } from '../types/identity.js';
 export {
   type Transaction,
   type TokensAmount,
@@ -17,4 +17,4 @@ export {
   TransactionDirection,
   TransactionStatus,
   TransferTypes,
-} from "../types/transaction.js";
+} from '../types/transaction.js';

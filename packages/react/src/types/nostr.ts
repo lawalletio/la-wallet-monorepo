@@ -1,4 +1,4 @@
-import { type NostrEvent } from "@nostr-dev-kit/ndk";
+import { type NostrEvent } from '@nostr-dev-kit/ndk';
 
 type Nip07RelayMap = {
   [key: string]: {

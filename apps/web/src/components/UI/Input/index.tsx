@@ -1,22 +1,19 @@
-"use client";
+'use client';
 
-import {
-  CheckIcon,
-  AlertIcon,
-} from "@bitcoin-design/bitcoin-icons-react/filled";
-import { BtnLoader } from "@/components/Loader/Loader";
+import { CheckIcon, AlertIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { BtnLoader } from '@/components/Loader/Loader';
 
-import theme from "@/styles/theme";
+import theme from '@/styles/theme';
 
-import { Input, InputBox, InputIcon } from "./style";
+import { Input, InputBox, InputIcon } from './style';
 
 interface InputProps {
   placeholder: string;
   value?: string;
-  type?: "text" | "password" | "number" | "email";
+  type?: 'text' | 'password' | 'number' | 'email';
   id?: string;
   name?: string;
-  status?: "success" | "error";
+  status?: 'success' | 'error';
   autoFocus?: boolean;
   onChange?: (e: any) => void;
   onFocus?: (e: any) => void;
@@ -31,9 +28,9 @@ export default function Component(props: InputProps) {
   const {
     placeholder,
     value,
-    type = "text",
-    id = "",
-    name = "",
+    type = 'text',
+    id = '',
+    name = '',
     status,
     autoFocus = false,
     onChange,
@@ -57,7 +54,7 @@ export default function Component(props: InputProps) {
         name={name}
         value={value}
         $showValidate={!status}
-        $isSuccess={status && status === "success"}
+        $isSuccess={status && status === 'success'}
         autoFocus={autoFocus}
         disabled={disabled}
       />

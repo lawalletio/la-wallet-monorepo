@@ -1,22 +1,19 @@
-import { regexUserName } from "@/constants/constants";
-import { useWalletContext } from "@lawallet/react";
+import { regexUserName } from '@/constants/constants';
+import { useWalletContext } from '@lawallet/react';
 import {
   IdentityResponse,
   claimIdentity,
   existIdentity,
   generateUserIdentity,
   requestCardActivation,
-} from "@lawallet/react/actions";
-import {
-  buildCardActivationEvent,
-  buildIdentityEvent,
-} from "@lawallet/react/utils";
+} from '@lawallet/react/actions';
+import { buildCardActivationEvent, buildIdentityEvent } from '@lawallet/react/utils';
 
-import { UserIdentity } from "@lawallet/react/types";
-import { NostrEvent } from "@nostr-dev-kit/ndk";
-import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
-import useErrors, { IUseErrors } from "./useErrors";
+import { UserIdentity } from '@lawallet/react/types';
+import { NostrEvent } from '@nostr-dev-kit/ndk';
+import { useRouter } from 'next/navigation';
+import { Dispatch, SetStateAction, useState } from 'react';
+import useErrors, { IUseErrors } from './useErrors';
 
 export interface AccountProps {
   nonce: string;
@@ -47,9 +44,9 @@ export type UseIdentityReturns = {
 let checkExistUsername: NodeJS.Timeout;
 
 const defaultAccount: CreateIdentityParams = {
-  nonce: "",
-  card: "",
-  name: "",
+  nonce: '',
+  card: '',
+  name: '',
   isValidNonce: false,
   loading: true,
 };
@@ -60,8 +57,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
   } = useWalletContext();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [accountInfo, setAccountInfo] =
-    useState<CreateIdentityParams>(defaultAccount);
+  const [accountInfo, setAccountInfo] = useState<CreateIdentityParams>(defaultAccount);
 
   const errors = useErrors();
   const router = useRouter();
@@ -70,7 +66,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
     const invalidUsername = !regexUserName.test(username);
 
     if (invalidUsername) {
-      errors.modifyError("INVALID_USERNAME");
+      errors.modifyError('INVALID_USERNAME');
       return false;
     }
     return true;
@@ -87,7 +83,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
       });
 
       if (nameWasTaken) {
-        errors.modifyError("NAME_ALREADY_TAKEN");
+        errors.modifyError('NAME_ALREADY_TAKEN');
         return false;
       }
     }, 300);
@@ -97,7 +93,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
     errors.resetError();
 
     if (!username.length && accountInfo.name.length) {
-      setAccountInfo({ ...accountInfo, name: "", loading: false });
+      setAccountInfo({ ...accountInfo, name: '', loading: false });
       if (checkExistUsername) clearTimeout(checkExistUsername);
       return;
     }
@@ -120,22 +116,16 @@ export const useCreateIdentity = (): UseIdentityReturns => {
     const generatedIdentity: UserIdentity = await generateUserIdentity();
     if (generatedIdentity) {
       setUser(generatedIdentity);
-      router.push("/dashboard");
+      router.push('/dashboard');
       setLoading(false);
     }
   };
 
-  const createIdentity = async ({
-    nonce,
-    name,
-  }: AccountProps): Promise<CreateIdentityReturns> => {
+  const createIdentity = async ({ nonce, name }: AccountProps): Promise<CreateIdentityReturns> => {
     const generatedIdentity: UserIdentity = await generateUserIdentity(name);
 
     try {
-      const event: NostrEvent = await buildIdentityEvent(
-        nonce,
-        generatedIdentity,
-      );
+      const event: NostrEvent = await buildIdentityEvent(nonce, generatedIdentity);
       const createdAccount: IdentityResponse = await claimIdentity(event);
       if (!createdAccount.success)
         return {
@@ -145,13 +135,13 @@ export const useCreateIdentity = (): UseIdentityReturns => {
 
       return {
         success: true,
-        message: "ok",
+        message: 'ok',
         identity: generatedIdentity,
       };
     } catch {
       return {
         success: false,
-        message: "ERROR_ON_CREATE_ACCOUNT",
+        message: 'ERROR_ON_CREATE_ACCOUNT',
       };
     }
   };
@@ -165,44 +155,41 @@ export const useCreateIdentity = (): UseIdentityReturns => {
       return;
     }
 
-    if (!name.length) return errors.modifyError("EMPTY_USERNAME");
-    if (name.length < 3) return errors.modifyError("MIN_LENGTH_USERNAME");
-    if (name.length > 15) return errors.modifyError("MAX_LENGTH_USERNAME");
+    if (!name.length) return errors.modifyError('EMPTY_USERNAME');
+    if (name.length < 3) return errors.modifyError('MIN_LENGTH_USERNAME');
+    if (name.length > 15) return errors.modifyError('MAX_LENGTH_USERNAME');
 
-    if (!regexUserName.test(name))
-      return errors.modifyError("INVALID_USERNAME");
+    if (!regexUserName.test(name)) return errors.modifyError('INVALID_USERNAME');
 
     setLoading(true);
 
     existIdentity(name)
       .then((nameWasTaken: boolean) => {
-        if (nameWasTaken) return errors.modifyError("NAME_ALREADY_TAKEN");
+        if (nameWasTaken) return errors.modifyError('NAME_ALREADY_TAKEN');
 
-        return createIdentity(props).then(
-          (new_identity: CreateIdentityReturns) => {
-            const { success, identity, message } = new_identity;
+        return createIdentity(props).then((new_identity: CreateIdentityReturns) => {
+          const { success, identity, message } = new_identity;
 
-            if (success && identity) {
-              setUser(identity!);
+          if (success && identity) {
+            setUser(identity!);
 
-              if (props.card) {
-                buildCardActivationEvent(props.card, identity.privateKey)
-                  .then((cardEvent: NostrEvent) => {
-                    requestCardActivation(cardEvent).then(() => {
-                      router.push("/dashboard");
-                    });
-                  })
-                  .catch(() => {
-                    router.push("/dashboard");
+            if (props.card) {
+              buildCardActivationEvent(props.card, identity.privateKey)
+                .then((cardEvent: NostrEvent) => {
+                  requestCardActivation(cardEvent).then(() => {
+                    router.push('/dashboard');
                   });
-              } else {
-                router.push("/dashboard");
-              }
+                })
+                .catch(() => {
+                  router.push('/dashboard');
+                });
             } else {
-              errors.modifyError(message);
+              router.push('/dashboard');
             }
-          },
-        );
+          } else {
+            errors.modifyError(message);
+          }
+        });
       })
       .then(() => setLoading(false));
   };

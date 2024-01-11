@@ -1,10 +1,6 @@
-import {
-  type UserConfigProps,
-  type AvailableCurrencies,
-  defaultUserConfig,
-} from "../types/config.js";
-import { parseContent } from "@lawallet/utils";
-import * as React from "react";
+import { type UserConfigProps, type AvailableCurrencies, defaultUserConfig } from '../types/config.js';
+import { parseContent } from '@lawallet/utils';
+import * as React from 'react';
 
 export type SettingsReturns = {
   props: UserConfigProps;
@@ -19,7 +15,7 @@ export const useSettings = (): SettingsReturns => {
 
   const saveConfiguration = (newConfig: UserConfigProps) => {
     setProps(newConfig);
-    localStorage.setItem("config", JSON.stringify(newConfig));
+    localStorage.setItem('config', JSON.stringify(newConfig));
   };
 
   const toggleHideBalance = () =>
@@ -34,7 +30,7 @@ export const useSettings = (): SettingsReturns => {
       currency,
     });
   const preloadConfig = () => {
-    const storagedConfig: string | null = localStorage.getItem("config");
+    const storagedConfig: string | null = localStorage.getItem('config');
     if (!storagedConfig) {
       setLoading(false);
       return;

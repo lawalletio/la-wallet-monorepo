@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { HeroCard } from "./style";
+import { ReactNode } from 'react';
+import { HeroCard } from './style';
 
 interface HeroCardProps {
   children: ReactNode;

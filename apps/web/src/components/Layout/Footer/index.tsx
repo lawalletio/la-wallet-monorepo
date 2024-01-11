@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Container from "../Container";
-import Divider from "../../UI/Divider";
+import Container from '../Container';
+import Divider from '../../UI/Divider';
 
-import { Footer } from "./style";
-import { ReactNode } from "react";
+import { Footer } from './style';
+import { ReactNode } from 'react';
 
 interface ComponentProps {
   children?: ReactNode;

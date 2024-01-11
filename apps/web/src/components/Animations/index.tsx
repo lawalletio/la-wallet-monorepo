@@ -1,6 +1,6 @@
-import Lottie from "lottie-react";
+import Lottie from 'lottie-react';
 
-import { Animations } from "./style";
+import { Animations } from './style';
 
 interface ComponentProps {
   data: unknown;

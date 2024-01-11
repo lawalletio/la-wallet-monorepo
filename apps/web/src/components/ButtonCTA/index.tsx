@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
-import { Default } from "./style";
-import { Divider } from "@/components/UI";
+import { Default } from './style';
+import { Divider } from '@/components/UI';
 
 interface ButtonCTAProps {
   children: ReactNode;

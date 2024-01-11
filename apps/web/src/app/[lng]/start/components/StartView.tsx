@@ -1,28 +1,21 @@
-"use client";
-import {
-  Divider,
-  Flex,
-  Text,
-  Button,
-  CardAlert,
-  Feedback,
-} from "@/components/UI";
-import Container from "@/components/Layout/Container";
-import Logo from "@/components/Logo";
-import HomeDescription from "@/app/[lng]/start/components/HomeDescription";
+'use client';
+import { Divider, Flex, Text, Button, CardAlert, Feedback } from '@/components/UI';
+import Container from '@/components/Layout/Container';
+import Logo from '@/components/Logo';
+import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
 
-import theme from "@/styles/theme";
-import { useEffect, useState } from "react";
-import { checkIOS } from "@/utils";
-import { useTranslation } from "@/context/TranslateContext";
-import { useMediaQuery } from "@uidotdev/usehooks";
-import { Loader } from "@/components/Loader/Loader";
-import { LAWALLET_VERSION } from "@/constants/constants";
-import { useRouter } from "next/navigation";
+import theme from '@/styles/theme';
+import { useEffect, useState } from 'react';
+import { checkIOS } from '@/utils';
+import { useTranslation } from '@/context/TranslateContext';
+import { useMediaQuery } from '@uidotdev/usehooks';
+import { Loader } from '@/components/Loader/Loader';
+import { LAWALLET_VERSION } from '@/constants/constants';
+import { useRouter } from 'next/navigation';
 
 const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
+  const isMobile = useMediaQuery('only screen and (max-width : 768px)');
   const [isIOS, setIsIOS] = useState<boolean>(false);
 
   const router = useRouter();
@@ -52,11 +45,10 @@ const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
             {isMobile && isIOS && (
               <>
                 <CardAlert
-                  title={t("RECOMMEND_SAFARI_TITLE")}
+                  title={t('RECOMMEND_SAFARI_TITLE')}
                   description={
                     <>
-                      <strong>{t("RECOMMEND_SAFARI")}</strong>{" "}
-                      {t("RECOMMEND_SAFARI_REASON")}
+                      <strong>{t('RECOMMEND_SAFARI')}</strong> {t('RECOMMEND_SAFARI_REASON')}
                     </>
                   }
                 />
@@ -65,23 +57,21 @@ const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
             )}
 
             <Flex>
-              <Button onClick={onClick}>{t("START")}</Button>
+              <Button onClick={onClick}>{t('START')}</Button>
             </Flex>
           </>
         ) : (
           <>
             <Flex align="center" justify="center">
-              <Feedback show={true} status={"error"}>
-                {t("INVALID_NONCE")}
+              <Feedback show={true} status={'error'}>
+                {t('INVALID_NONCE')}
               </Feedback>
             </Flex>
 
             <Divider y={16} />
 
             <Flex>
-              <Button onClick={() => router.push("/")}>
-                {t("BACK_TO_HOME")}
-              </Button>
+              <Button onClick={() => router.push('/')}>{t('BACK_TO_HOME')}</Button>
             </Flex>
           </>
         )}

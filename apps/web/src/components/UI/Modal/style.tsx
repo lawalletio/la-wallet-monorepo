@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
-import theme from "@/styles/theme";
+import theme from '@/styles/theme';
 
 interface ModalProps {
   $isOpen?: boolean;
@@ -14,7 +14,7 @@ export const Modal = styled.div<ModalProps>`
   left: 0;
   z-index: 11;
 
-  display: ${(props) => (props.$isOpen ? "flex" : "none")};
+  display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -23,7 +23,7 @@ export const Modal = styled.div<ModalProps>`
   padding: 0 16px;
 
   &:before {
-    content: "";
+    content: '';
 
     position: absolute;
     top: 0;

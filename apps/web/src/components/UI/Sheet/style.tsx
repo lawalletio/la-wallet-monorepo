@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
-import theme from "@/styles/theme";
+import theme from '@/styles/theme';
 
 interface SheetProps {
   $isOpen?: boolean;
@@ -18,11 +18,9 @@ export const Sheet = styled.div<SheetProps>`
   width: 100%;
   height: 100%;
 
-  background-color: ${(props) =>
-    props.$isOpen ? theme.colors.black : "transparent"};
+  background-color: ${(props) => (props.$isOpen ? theme.colors.black : 'transparent')};
 
-  transform: ${(props) =>
-    props.$isOpen ? "translateY(0)" : "translateY(100%)"};
+  transform: ${(props) => (props.$isOpen ? 'translateY(0)' : 'translateY(100%)')};
   transition-duration: 0.2s;
   transform: ${(props) => (props.$isOpen ? 1 : 0)};
 `;
@@ -47,7 +45,6 @@ export const SheetContent = styled.div<SheetContentProps>`
   background-color: ${theme.colors.gray15};
   border-radius: 24px 24px 0 0;
 
-  transform: ${(props) =>
-    props.$isOpen ? "translateY(0)" : "translateY(100%)"};
+  transform: ${(props) => (props.$isOpen ? 'translateY(0)' : 'translateY(100%)')};
   transition-duration: 0.4s;
 `;

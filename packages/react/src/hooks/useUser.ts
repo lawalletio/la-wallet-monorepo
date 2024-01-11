@@ -1,12 +1,8 @@
-import {
-  type TokenBalance,
-  type Transaction,
-  type UserIdentity,
-} from "@lawallet/utils/types";
-import { STORAGE_IDENTITY_KEY } from "../constants/constants.js";
-import { useActivity } from "./useActivity.js";
-import { useIdentity } from "./useIdentity.js";
-import { useTokenBalance } from "./useTokenBalance.js";
+import { type TokenBalance, type Transaction, type UserIdentity } from '@lawallet/utils/types';
+import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
+import { useActivity } from './useActivity.js';
+import { useIdentity } from './useIdentity.js';
+import { useTokenBalance } from './useTokenBalance.js';
 
 export interface UserReturns {
   identity: UserIdentity;
@@ -26,7 +22,7 @@ export const useUser = () => {
 
   const { balance } = useTokenBalance({
     pubkey: identity.hexpub,
-    tokenId: "BTC",
+    tokenId: 'BTC',
     enabled: Boolean(identity.hexpub.length),
   });
 

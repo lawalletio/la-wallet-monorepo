@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { CaretLeftIcon } from "@bitcoin-design/bitcoin-icons-react/filled";
+import { useRouter } from 'next/navigation';
+import { CaretLeftIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import { Flex, Icon, Heading } from "@/components/UI";
-import Container from "../Container";
+import { Flex, Icon, Heading } from '@/components/UI';
+import Container from '../Container';
 
-import { Navbar, BackButton, Left, Right } from "./style";
-import { ReactNode } from "react";
-import { useTranslation } from "@/context/TranslateContext";
+import { Navbar, BackButton, Left, Right } from './style';
+import { ReactNode } from 'react';
+import { useTranslation } from '@/context/TranslateContext';
 
 interface ComponentProps {
   children?: ReactNode;
@@ -18,7 +18,7 @@ interface ComponentProps {
 }
 
 export default function Component(props: ComponentProps) {
-  const { children, showBackPage = false, title, overrideBack = "" } = props;
+  const { children, showBackPage = false, title, overrideBack = '' } = props;
 
   const router = useRouter();
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ export default function Component(props: ComponentProps) {
                   <Icon size="small">
                     <CaretLeftIcon />
                   </Icon>
-                  {t("BACK")}
+                  {t('BACK')}
                 </BackButton>
               )}
             </Left>

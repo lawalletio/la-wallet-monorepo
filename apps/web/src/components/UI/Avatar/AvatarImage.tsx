@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { AvatarImage } from "./style";
+import { AvatarImage } from './style';
 
 interface ComponentProps {
   src: string;

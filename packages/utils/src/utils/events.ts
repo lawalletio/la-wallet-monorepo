@@ -1,24 +1,12 @@
-import {
-  NDKEvent,
-  NDKKind,
-  NDKPrivateKeySigner,
-  type NDKTag,
-  type NostrEvent,
-} from "@nostr-dev-kit/ndk";
-import {
-  getEventHash,
-  getPublicKey,
-  getSignature,
-  nip26,
-  type UnsignedEvent,
-} from "nostr-tools";
-import { baseConfig } from "../constants/constants.js";
-import { type TransferInformation } from "../interceptors/transaction.js";
-import { ConfigTypes, type CardConfigPayload } from "../types/card.js";
-import { type ConfigProps } from "../types/config.js";
-import { type UserIdentity } from "../types/identity.js";
-import { buildMultiNip04Event } from "./nip04.js";
-import { nowInSeconds } from "./utilities.js";
+import { NDKEvent, NDKKind, NDKPrivateKeySigner, type NDKTag, type NostrEvent } from '@nostr-dev-kit/ndk';
+import { getEventHash, getPublicKey, getSignature, nip26, type UnsignedEvent } from 'nostr-tools';
+import { baseConfig } from '../constants/constants.js';
+import { type TransferInformation } from '../interceptors/transaction.js';
+import { ConfigTypes, type CardConfigPayload } from '../types/card.js';
+import { type ConfigProps } from '../types/config.js';
+import { type UserIdentity } from '../types/identity.js';
+import { buildMultiNip04Event } from './nip04.js';
+import { nowInSeconds } from './utilities.js';
 
 export enum LaWalletKinds {
   REGULAR = 1112,
@@ -27,16 +15,16 @@ export enum LaWalletKinds {
 }
 
 export enum LaWalletTags {
-  INTERNAL_TRANSACTION_START = "internal-transaction-start",
-  INTERNAL_TRANSACTION_OK = "internal-transaction-ok",
-  INTERNAL_TRANSACTION_ERROR = "internal-transaction-error",
-  INBOUND_TRANSACTION_START = "inbound-transaction-start",
-  INBOUND_TRANSACTION_OK = "inbound-transaction-ok",
-  INBOUND_TRANSACTION_ERROR = "inbound-transaction-error",
-  OUTBOUND_TRANSACTION_OK = "outbound-transaction-ok",
-  OUTBOUND_TRANSACTION_ERROR = "outbound-transaction-error",
-  CREATE_IDENTITY = "create-identity",
-  CARD_ACTIVATION_REQUEST = "card-activation-request",
+  INTERNAL_TRANSACTION_START = 'internal-transaction-start',
+  INTERNAL_TRANSACTION_OK = 'internal-transaction-ok',
+  INTERNAL_TRANSACTION_ERROR = 'internal-transaction-error',
+  INBOUND_TRANSACTION_START = 'inbound-transaction-start',
+  INBOUND_TRANSACTION_OK = 'inbound-transaction-ok',
+  INBOUND_TRANSACTION_ERROR = 'inbound-transaction-error',
+  OUTBOUND_TRANSACTION_OK = 'outbound-transaction-ok',
+  OUTBOUND_TRANSACTION_ERROR = 'outbound-transaction-error',
+  CREATE_IDENTITY = 'create-identity',
+  CARD_ACTIVATION_REQUEST = 'card-activation-request',
 }
 
 export type GenerateIdentityReturns = {
@@ -46,7 +34,7 @@ export type GenerateIdentityReturns = {
 
 export const getTag = (tags: NDKTag[], keyTag: string) => {
   const tagValue = tags.find((tag) => tag[0] === keyTag);
-  return tagValue ? tagValue[1] : "";
+  return tagValue ? tagValue[1] : '';
 };
 
 export const getMultipleTags = (tags: NDKTag[], keyTag: string) => {
@@ -58,10 +46,7 @@ export const getMultipleTags = (tags: NDKTag[], keyTag: string) => {
   return values;
 };
 
-export const buildIdentityEventWithoutSigner = (
-  nonce: string,
-  identity: UserIdentity,
-): NostrEvent => {
+export const buildIdentityEventWithoutSigner = (nonce: string, identity: UserIdentity): NostrEvent => {
   return {
     pubkey: identity.hexpub,
     kind: LaWalletKinds.REGULAR,
@@ -70,18 +55,15 @@ export const buildIdentityEventWithoutSigner = (
       pubkey: identity.hexpub,
     }),
     tags: [
-      ["t", LaWalletTags.CREATE_IDENTITY],
-      ["name", identity.username],
-      ["nonce", nonce],
+      ['t', LaWalletTags.CREATE_IDENTITY],
+      ['name', identity.username],
+      ['nonce', nonce],
     ],
     created_at: nowInSeconds(),
   };
 };
 
-export const buildIdentityEvent = async (
-  nonce: string,
-  identity: UserIdentity,
-): Promise<NostrEvent> => {
+export const buildIdentityEvent = async (nonce: string, identity: UserIdentity): Promise<NostrEvent> => {
   const signer = new NDKPrivateKeySigner(identity.privateKey);
   const event: NDKEvent = new NDKEvent();
   event.pubkey = identity.hexpub;
@@ -93,9 +75,9 @@ export const buildIdentityEvent = async (
   });
 
   event.tags = [
-    ["t", LaWalletTags.CREATE_IDENTITY],
-    ["name", identity.username],
-    ["nonce", nonce],
+    ['t', LaWalletTags.CREATE_IDENTITY],
+    ['name', identity.username],
+    ['nonce', nonce],
   ];
 
   await event.sign(signer);
@@ -130,8 +112,8 @@ export const buildCardActivationEvent = async (
   });
 
   event.tags = [
-    ["p", config.modulePubkeys.card],
-    ["t", LaWalletTags.CARD_ACTIVATION_REQUEST],
+    ['p', config.modulePubkeys.card],
+    ['t', LaWalletTags.CARD_ACTIVATION_REQUEST],
   ];
 
   await event.sign(signer);
@@ -147,18 +129,14 @@ export const buildZapRequestEventWithoutSigner = async (
     pubkey,
     kind: NDKKind.ZapRequest,
     tags: [
-      ["p", pubkey],
-      ["amount", amount.toString()],
-      ["relays", ...config.relaysList],
+      ['p', pubkey],
+      ['amount', amount.toString()],
+      ['relays', ...config.relaysList],
     ],
   };
 };
 
-export const buildZapRequestEvent = async (
-  amount: number,
-  privateKey: string,
-  config: ConfigProps = baseConfig,
-) => {
+export const buildZapRequestEvent = async (amount: number, privateKey: string, config: ConfigProps = baseConfig) => {
   const signer = new NDKPrivateKeySigner(privateKey);
   const userPubkey: string = getPublicKey(privateKey);
 
@@ -167,16 +145,14 @@ export const buildZapRequestEvent = async (
   zapEvent.kind = NDKKind.ZapRequest;
 
   zapEvent.tags = [
-    ["p", userPubkey],
-    ["amount", amount.toString()],
-    ["relays", ...config.relaysList],
+    ['p', userPubkey],
+    ['amount', amount.toString()],
+    ['relays', ...config.relaysList],
   ];
 
   await zapEvent.sign(signer);
 
-  const requestEvent: string = encodeURI(
-    JSON.stringify(await zapEvent.toNostrEvent()),
-  );
+  const requestEvent: string = encodeURI(JSON.stringify(await zapEvent.toNostrEvent()));
   return requestEvent;
 };
 
@@ -194,8 +170,8 @@ export const buildTxStartEventWithoutSigner = async (
   config: ConfigProps = baseConfig,
 ): Promise<NostrEvent> => {
   const baseTags: NDKTag[] = [
-    ["t", LaWalletTags.INTERNAL_TRANSACTION_START],
-    ["p", config.modulePubkeys.ledger],
+    ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
+    ['p', config.modulePubkeys.ledger],
   ];
 
   return {
@@ -206,12 +182,8 @@ export const buildTxStartEventWithoutSigner = async (
       ...(props.comment ? { memo: props.comment } : {}),
     }),
     tags: props.bolt11
-      ? [
-          ...baseTags,
-          ["p", config.modulePubkeys.urlx],
-          ["bolt11", props.bolt11],
-        ]
-      : [...baseTags, ["p", props.receiverPubkey]],
+      ? [...baseTags, ['p', config.modulePubkeys.urlx], ['bolt11', props.bolt11]]
+      : [...baseTags, ['p', props.receiverPubkey]],
     created_at: nowInSeconds(),
   };
 };
@@ -236,9 +208,9 @@ export const buildTxStartEvent = async (
   });
 
   internalEvent.tags = [
-    ["t", LaWalletTags.INTERNAL_TRANSACTION_START],
-    ["p", config.modulePubkeys.ledger],
-    ["p", transferInfo.receiverPubkey],
+    ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
+    ['p', config.modulePubkeys.ledger],
+    ['p', transferInfo.receiverPubkey],
   ];
 
   if (tags.length) internalEvent.tags = [...internalEvent.tags, ...tags];
@@ -248,18 +220,15 @@ export const buildTxStartEvent = async (
   return event;
 };
 
-export const buildCardInfoRequest = async (
-  subkind: string,
-  privateKey: string,
-) => {
+export const buildCardInfoRequest = async (subkind: string, privateKey: string) => {
   const userPubkey: string = getPublicKey(privateKey);
 
   const event: NostrEvent = {
-    content: "",
+    content: '',
     pubkey: userPubkey,
     created_at: nowInSeconds(),
     kind: LaWalletKinds.PARAMETRIZED_REPLACEABLE,
-    tags: [["t", subkind]],
+    tags: [['t', subkind]],
   };
 
   event.id = getEventHash(event as UnsignedEvent);
@@ -274,18 +243,14 @@ export const buildCardConfigEvent = async (
   config: ConfigProps = baseConfig,
 ): Promise<NostrEvent> => {
   const userPubkey: string = getPublicKey(privateKey);
-  const event: NostrEvent = await buildMultiNip04Event(
-    JSON.stringify(cardConfig),
-    privateKey,
+  const event: NostrEvent = await buildMultiNip04Event(JSON.stringify(cardConfig), privateKey, userPubkey, [
+    config.modulePubkeys.card,
     userPubkey,
-    [config.modulePubkeys.card, userPubkey],
-  );
+  ]);
 
   event.kind = LaWalletKinds.REGULAR;
 
-  event.tags = event.tags.concat([
-    ["t", `${ConfigTypes.CONFIG.valueOf()}-change`],
-  ]);
+  event.tags = event.tags.concat([['t', `${ConfigTypes.CONFIG.valueOf()}-change`]]);
 
   event.id = getEventHash(event as UnsignedEvent);
   event.sig = getSignature(event as UnsignedEvent, privateKey);

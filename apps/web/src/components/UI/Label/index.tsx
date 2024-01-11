@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import Text from "../Text";
-import { Label } from "./style";
+import { ReactNode } from 'react';
+import Text from '../Text';
+import { Label } from './style';
 
 interface LabelProps {
   children: ReactNode;

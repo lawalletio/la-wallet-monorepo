@@ -1,14 +1,10 @@
-import * as React from "react";
+import * as React from 'react';
 
-import { LaWalletKinds, baseConfig } from "@lawallet/utils";
-import { type ConfigProps, type TokenBalance } from "@lawallet/utils/types";
-import {
-  type NDKEvent,
-  type NDKKind,
-  type NostrEvent,
-} from "@nostr-dev-kit/ndk";
-import { useNostrContext } from "../context/NDKContext.js";
-import { useSubscription } from "./useSubscription.js";
+import { LaWalletKinds, baseConfig } from '@lawallet/utils';
+import { type ConfigProps, type TokenBalance } from '@lawallet/utils/types';
+import { type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
+import { useNostrContext } from '../context/NDKContext.js';
+import { useSubscription } from './useSubscription.js';
 
 export interface UseTokenBalanceReturn {
   balance: TokenBalance;
@@ -41,7 +37,7 @@ export const useTokenBalance = ({
       {
         authors: [config.modulePubkeys.ledger],
         kinds: [LaWalletKinds.PARAMETRIZED_REPLACEABLE as unknown as NDKKind],
-        "#d": [`balance:${tokenId}:${pubkey}`],
+        '#d': [`balance:${tokenId}:${pubkey}`],
       },
     ],
     options: {
@@ -60,15 +56,13 @@ export const useTokenBalance = ({
     const event: NDKEvent | null = await ndk.fetchEvent({
       authors: [config.modulePubkeys.ledger],
       kinds: [LaWalletKinds.PARAMETRIZED_REPLACEABLE as unknown as NDKKind],
-      "#d": [`balance:${tokenId}:${pubkey}`],
+      '#d': [`balance:${tokenId}:${pubkey}`],
     });
 
     if (event)
       setBalance({
         tokenId: tokenId,
-        amount: event
-          ? Number(event.getMatchingTags("amount")[0]?.[1]) / 1000
-          : 0,
+        amount: event ? Number(event.getMatchingTags('amount')[0]?.[1]) / 1000 : 0,
         loading: false,
         lastEvent: event ? (event as NostrEvent) : undefined,
         createdAt: event ? new Date(event.created_at!) : new Date(),
@@ -79,7 +73,7 @@ export const useTokenBalance = ({
     if (!enabled || !ndk) return;
 
     if (!pubkey.length) {
-      console.log("settle");
+      console.log('settle');
       setBalance({
         tokenId: tokenId,
         amount: 0,
@@ -98,10 +92,10 @@ export const useTokenBalance = ({
   }, [enabled, ndk, pubkey]);
 
   React.useEffect(() => {
-    balanceSubscription?.on("event", (event) => {
+    balanceSubscription?.on('event', (event) => {
       setBalance({
         tokenId: tokenId,
-        amount: Number(event.getMatchingTags("amount")[0]?.[1]) / 1000,
+        amount: Number(event.getMatchingTags('amount')[0]?.[1]) / 1000,
         lastEvent: event as NostrEvent,
         createdAt: new Date(event.created_at!),
         loading: false,

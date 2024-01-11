@@ -1,4 +1,4 @@
-import styles from "./Radio.module.css";
+import styles from './Radio.module.css';
 
 type RadioProps = {
   text: string;
@@ -14,13 +14,7 @@ const Radio = (props: RadioProps) => {
       <div onClick={onClick} className={styles.dateItem}>
         <span>{text}</span>
 
-        <input
-          type="radio"
-          className={styles.radio}
-          onChange={() => null}
-          name="date-time"
-          checked={checked}
-        />
+        <input type="radio" className={styles.radio} onChange={() => null} name="date-time" checked={checked} />
 
         <div className={styles.check}></div>
       </div>

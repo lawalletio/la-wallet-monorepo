@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import Label from "../Label";
-import Flex from "../Flex";
-import Input from "./";
+import Label from '../Label';
+import Flex from '../Flex';
+import Input from './';
 
 interface InputWithLabelProps {
   label: string;
   name: string;
   placeholder: string;
-  type?: "text" | "password" | "number";
+  type?: 'text' | 'password' | 'number';
   value?: string;
   onChange?: (e: any) => void;
   onFocus?: (e: any) => void;
@@ -16,7 +16,7 @@ interface InputWithLabelProps {
 }
 
 export default function Component(props: InputWithLabelProps) {
-  const { label, name, value = "" } = props;
+  const { label, name, value = '' } = props;
 
   return (
     <Flex direction="column" gap={8}>

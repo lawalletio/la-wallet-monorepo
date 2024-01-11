@@ -1,14 +1,14 @@
-import { copy } from "@/utils/share";
-import { useTranslation } from "@/context/TranslateContext";
-import useAlert from "@/hooks/useAlerts";
+import { copy } from '@/utils/share';
+import { useTranslation } from '@/context/TranslateContext';
+import useAlert from '@/hooks/useAlerts';
 
-import Flex from "../Flex";
-import Text from "../Text";
-import Button from "../Button";
-import Alert from "../Alert";
+import Flex from '../Flex';
+import Text from '../Text';
+import Button from '../Button';
+import Alert from '../Alert';
 
-import theme from "@/styles/theme";
-import { InfoCopy } from "./style";
+import theme from '@/styles/theme';
+import { InfoCopy } from './style';
 
 interface ComponentProps {
   title: string;
@@ -25,8 +25,8 @@ export default function Component(props: ComponentProps) {
   const handleCopy = () => {
     copy(value).then((res) => {
       showAlert({
-        description: res ? t("SUCCESS_COPY") : t("ERROR_COPY"),
-        type: res ? "success" : "error",
+        description: res ? t('SUCCESS_COPY') : t('ERROR_COPY'),
+        type: res ? 'success' : 'error',
       });
 
       if (onCopy) onCopy();
@@ -35,12 +35,7 @@ export default function Component(props: ComponentProps) {
 
   return (
     <>
-      <Alert
-        title={alert?.title}
-        description={alert?.description}
-        type={alert?.type}
-        isOpen={!!alert}
-      />
+      <Alert title={alert?.title} description={alert?.description} type={alert?.type} isOpen={!!alert} />
       <InfoCopy>
         <Flex align="center" gap={8} flex={1}>
           <Flex direction="column" flex={1}>
@@ -51,7 +46,7 @@ export default function Component(props: ComponentProps) {
           </Flex>
           <div>
             <Button size="small" variant="bezeled" onClick={handleCopy}>
-              {t("COPY")}
+              {t('COPY')}
             </Button>
           </div>
         </Flex>

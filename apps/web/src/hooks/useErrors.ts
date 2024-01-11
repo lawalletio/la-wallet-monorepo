@@ -1,6 +1,6 @@
-import { useTranslation } from "@/context/TranslateContext";
-import { ReplacementParams } from "@lawallet/react";
-import { useState } from "react";
+import { useTranslation } from '@/context/TranslateContext';
+import { ReplacementParams } from '@lawallet/react';
+import { useState } from 'react';
 
 export interface IError {
   visible: boolean;
@@ -16,7 +16,7 @@ export interface IUseErrors {
 
 export const initialErrorState: IError = {
   visible: false,
-  text: "",
+  text: '',
 };
 
 export default function useErrors(): IUseErrors {
@@ -33,10 +33,7 @@ export default function useErrors(): IUseErrors {
     setErrorInfo({ text, visible: true });
   };
 
-  const isExactError = (
-    errorCode: string,
-    params?: ReplacementParams,
-  ): boolean =>
+  const isExactError = (errorCode: string, params?: ReplacementParams): boolean =>
     errorInfo.visible && errorInfo.text === getError(errorCode, params);
 
   const removeError = () => setErrorInfo({ ...errorInfo, visible: false });

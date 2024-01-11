@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { DividerCustom } from "./style";
+import { DividerCustom } from './style';
 
 interface DividerProps {
   x?: number;

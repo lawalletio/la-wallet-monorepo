@@ -1,21 +1,18 @@
-"use client";
+'use client';
 
-import Navbar from "@/components/Layout/Navbar";
-import {
-  CheckIcon,
-  SatoshiV2Icon,
-} from "@bitcoin-design/bitcoin-icons-react/filled";
-import { useEffect, useMemo, useState } from "react";
+import Navbar from '@/components/Layout/Navbar';
+import { CheckIcon, SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useEffect, useMemo, useState } from 'react';
 
-import { copy } from "@/utils/share";
-import { formatAddress, formatToPreference } from "@lawallet/react";
+import { copy } from '@/utils/share';
+import { formatAddress, formatToPreference } from '@lawallet/react';
 
-import { useTranslation } from "@/context/TranslateContext";
-import { useNumpad } from "@/hooks/useNumpad";
+import { useTranslation } from '@/context/TranslateContext';
+import { useNumpad } from '@/hooks/useNumpad';
 
-import Container from "@/components/Layout/Container";
-import { BtnLoader } from "@/components/Loader/Loader";
-import TokenList from "@/components/TokenList";
+import Container from '@/components/Layout/Container';
+import { BtnLoader } from '@/components/Loader/Loader';
+import TokenList from '@/components/TokenList';
 import {
   Alert,
   Button,
@@ -29,17 +26,17 @@ import {
   QRCode,
   Sheet,
   Text,
-} from "@/components/UI";
+} from '@/components/UI';
 
-import config from "@/constants/config";
-import { useActionOnKeypress } from "@/hooks/useActionOnKeypress";
-import useAlert from "@/hooks/useAlerts";
-import useErrors from "@/hooks/useErrors";
-import theme from "@/styles/theme";
-import { useSubscription, useWalletContext } from "@lawallet/react";
-import { requestInvoice } from "@lawallet/react/actions";
-import { buildZapRequestEvent, lnurl_encode } from "@lawallet/react/utils";
-import { useRouter } from "next/navigation";
+import config from '@/constants/config';
+import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
+import useAlert from '@/hooks/useAlerts';
+import useErrors from '@/hooks/useErrors';
+import theme from '@/styles/theme';
+import { useSubscription, useWalletContext } from '@lawallet/react';
+import { requestInvoice } from '@lawallet/react/actions';
+import { buildZapRequestEvent, lnurl_encode } from '@lawallet/react/utils';
+import { useRouter } from 'next/navigation';
 
 type InvoiceProps = {
   bolt11: string;
@@ -47,7 +44,7 @@ type InvoiceProps = {
   loading: boolean;
 };
 
-type SheetTypes = "amount" | "qr" | "finished";
+type SheetTypes = 'amount' | 'qr' | 'finished';
 
 export default function Page() {
   const { lng, t } = useTranslation();
@@ -64,10 +61,10 @@ export default function Page() {
   const router = useRouter();
   const errors = useErrors();
   const [showSheet, setShowSeet] = useState<boolean>(false);
-  const [sheetStep, setSheetStep] = useState<SheetTypes>("amount");
+  const [sheetStep, setSheetStep] = useState<SheetTypes>('amount');
 
   const [invoice, setInvoice] = useState<InvoiceProps>({
-    bolt11: "",
+    bolt11: '',
     created_at: 0,
     loading: false,
   });
@@ -81,22 +78,18 @@ export default function Page() {
       },
     ],
     options: {},
-    enabled: Boolean(invoice.bolt11.length && !(sheetStep === "finished")),
+    enabled: Boolean(invoice.bolt11.length && !(sheetStep === 'finished')),
   });
 
   const handleClick = async () => {
     if (invoice.loading) return;
 
-    const amountSats: number = numpadData.intAmount["SAT"];
+    const amountSats: number = numpadData.intAmount['SAT'];
     if (amountSats < 1 || amountSats > config.MAX_INVOICE_AMOUNT) {
-      const convertedMinAmount: number = convertCurrency(1, "SAT", currency);
-      const convertedMaxAmount: number = convertCurrency(
-        config.MAX_INVOICE_AMOUNT,
-        "SAT",
-        currency,
-      );
+      const convertedMinAmount: number = convertCurrency(1, 'SAT', currency);
+      const convertedMaxAmount: number = convertCurrency(config.MAX_INVOICE_AMOUNT, 'SAT', currency);
 
-      errors.modifyError("ERROR_INVOICE_AMOUNT", {
+      errors.modifyError('ERROR_INVOICE_AMOUNT', {
         minAmount: convertedMinAmount.toString(),
         maxAmount: formatToPreference(currency, convertedMaxAmount, lng),
         currency: currency,
@@ -106,10 +99,7 @@ export default function Page() {
 
     setInvoice({ ...invoice, loading: true });
     const invoice_mSats: number = amountSats * 1000;
-    const zapRequest: string = await buildZapRequestEvent(
-      invoice_mSats,
-      identity.privateKey,
-    );
+    const zapRequest: string = await buildZapRequestEvent(invoice_mSats, identity.privateKey);
 
     requestInvoice(
       `${config.env.LAWALLET_ENDPOINT}/lnurlp/${identity.npub}/callback?amount=${invoice_mSats}&nostr=${zapRequest}`,
@@ -122,31 +112,31 @@ export default function Page() {
             loading: false,
           });
 
-          setSheetStep("qr");
+          setSheetStep('qr');
         } else {
-          errors.modifyError("ERROR_ON_CREATE_INVOICE");
+          errors.modifyError('ERROR_ON_CREATE_INVOICE');
         }
         return;
       })
-      .catch(() => errors.modifyError("ERROR_ON_CREATE_INVOICE"));
+      .catch(() => errors.modifyError('ERROR_ON_CREATE_INVOICE'));
   };
 
   const handleCloseSheet = () => {
-    if (sheetStep === "finished" || !identity.username.length) {
-      router.push("/dashboard");
+    if (sheetStep === 'finished' || !identity.username.length) {
+      router.push('/dashboard');
     } else {
       numpadData.resetAmount();
       setShowSeet(false);
-      setSheetStep("amount");
-      setInvoice({ bolt11: "", created_at: 0, loading: false });
+      setSheetStep('amount');
+      setInvoice({ bolt11: '', created_at: 0, loading: false });
     }
   };
 
   useEffect(() => {
     if (events.length) {
       events.map((event) => {
-        const boltTag = event.getMatchingTags("bolt11")[0]?.[1];
-        if (boltTag === invoice.bolt11) setSheetStep("finished");
+        const boltTag = event.getMatchingTags('bolt11')[0]?.[1];
+        if (boltTag === invoice.bolt11) setSheetStep('finished');
       });
     }
   }, [events.length]);
@@ -154,8 +144,8 @@ export default function Page() {
   const handleCopy = (text: string) => {
     copy(text).then((res) => {
       notifications.showAlert({
-        description: res ? t("SUCCESS_COPY") : t("ERROR_COPY"),
-        type: res ? "success" : "error",
+        description: res ? t('SUCCESS_COPY') : t('ERROR_COPY'),
+        type: res ? 'success' : 'error',
       });
     });
   };
@@ -164,7 +154,7 @@ export default function Page() {
     if (errors.errorInfo.visible) errors.resetError();
   }, [numpadData.intAmount]);
 
-  useActionOnKeypress("Enter", handleClick, [numpadData.intAmount["SAT"]]);
+  useActionOnKeypress('Enter', handleClick, [numpadData.intAmount['SAT']]);
 
   const LNURLEncoded: string = useMemo(
     () =>
@@ -178,7 +168,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar showBackPage={true} title={t("DEPOSIT")} />
+      <Navbar showBackPage={true} title={t('DEPOSIT')} />
 
       <Alert
         title={notifications.alert?.title}
@@ -193,7 +183,7 @@ export default function Page() {
             <QRCode
               size={300}
               borderSize={30}
-              value={("lightning:" + LNURLEncoded).toUpperCase()}
+              value={('lightning:' + LNURLEncoded).toUpperCase()}
               textToCopy={`${identity.username}@${config.env.WALLET_DOMAIN}`}
             />
           </Flex>
@@ -204,7 +194,7 @@ export default function Page() {
               <Flex align="center">
                 <Flex direction="column">
                   <Text size="small" color={theme.colors.gray50}>
-                    {t("USER")}
+                    {t('USER')}
                   </Text>
                   <Flex>
                     <Text>
@@ -219,14 +209,10 @@ export default function Page() {
                     size="small"
                     variant="bezeled"
                     onClick={() =>
-                      handleCopy(
-                        identity.username
-                          ? `${identity.username}@${config.env.WALLET_DOMAIN}`
-                          : LNURLEncoded,
-                      )
+                      handleCopy(identity.username ? `${identity.username}@${config.env.WALLET_DOMAIN}` : LNURLEncoded)
                     }
                   >
-                    {t("COPY")}
+                    {t('COPY')}
                   </Button>
                 </div>
               </Flex>
@@ -245,7 +231,7 @@ export default function Page() {
                     setShowSeet(true);
                   }}
                 >
-                  {t("CREATE_INVOICE")}
+                  {t('CREATE_INVOICE')}
                 </Button>
               </Flex>
               <Divider y={32} />
@@ -256,56 +242,39 @@ export default function Page() {
 
       <Sheet
         title={
-          sheetStep === "amount"
-            ? t("DEFINE_AMOUNT")
-            : sheetStep === "qr"
-              ? t("WAITING_PAYMENT")
-              : t("PAYMENT_RECEIVED")
+          sheetStep === 'amount'
+            ? t('DEFINE_AMOUNT')
+            : sheetStep === 'qr'
+              ? t('WAITING_PAYMENT')
+              : t('PAYMENT_RECEIVED')
         }
         isOpen={showSheet || !identity.username.length}
         onClose={handleCloseSheet}
       >
-        {sheetStep === "amount" && (
+        {sheetStep === 'amount' && (
           <>
             <Container size="small">
-              <Flex
-                direction="column"
-                gap={8}
-                flex={1}
-                justify="center"
-                align="center"
-              >
+              <Flex direction="column" gap={8} flex={1} justify="center" align="center">
                 <Flex justify="center" align="center" gap={4}>
-                  {currency === "SAT" ? (
+                  {currency === 'SAT' ? (
                     <Icon size="small">
                       <SatoshiV2Icon />
                     </Icon>
                   ) : (
                     <Text>$</Text>
                   )}
-                  <Heading>
-                    {formatToPreference(
-                      currency,
-                      numpadData.intAmount[numpadData.usedCurrency],
-                      lng,
-                    )}
-                  </Heading>
+                  <Heading>{formatToPreference(currency, numpadData.intAmount[numpadData.usedCurrency], lng)}</Heading>
                 </Flex>
                 <TokenList />
 
-                <Feedback show={errors.errorInfo.visible} status={"error"}>
+                <Feedback show={errors.errorInfo.visible} status={'error'}>
                   {errors.errorInfo.text}
                 </Feedback>
               </Flex>
               <Divider y={24} />
               <Flex gap={8}>
-                <Button
-                  onClick={handleClick}
-                  disabled={
-                    invoice.loading || numpadData.intAmount["SAT"] === 0
-                  }
-                >
-                  {invoice.loading ? <BtnLoader /> : t("GENERATE")}
+                <Button onClick={handleClick} disabled={invoice.loading || numpadData.intAmount['SAT'] === 0}>
+                  {invoice.loading ? <BtnLoader /> : t('GENERATE')}
                 </Button>
               </Flex>
               <Divider y={24} />
@@ -314,39 +283,27 @@ export default function Page() {
           </>
         )}
 
-        {sheetStep === "qr" && (
+        {sheetStep === 'qr' && (
           <>
             <Flex flex={1} justify="center" align="center">
               <QRCode size={300} value={`${invoice.bolt11.toUpperCase()}`} />
             </Flex>
             <Divider y={24} />
             <Container size="small">
-              <Flex
-                direction="column"
-                justify="center"
-                align="center"
-                flex={1}
-                gap={8}
-              >
+              <Flex direction="column" justify="center" align="center" flex={1} gap={8}>
                 <BtnLoader />
                 <Text size="small" color={theme.colors.gray50}>
-                  {t("WAITING_PAYMENT_OF")}
+                  {t('WAITING_PAYMENT_OF')}
                 </Text>
                 <Flex justify="center" align="center" gap={4}>
-                  {currency === "SAT" ? (
+                  {currency === 'SAT' ? (
                     <Icon size="small">
                       <SatoshiV2Icon />
                     </Icon>
                   ) : (
                     <Text>$</Text>
                   )}
-                  <Heading>
-                    {formatToPreference(
-                      currency,
-                      numpadData.intAmount[numpadData.usedCurrency],
-                      lng,
-                    )}{" "}
-                  </Heading>
+                  <Heading>{formatToPreference(currency, numpadData.intAmount[numpadData.usedCurrency], lng)} </Heading>
 
                   <Text>{currency}</Text>
                 </Flex>
@@ -354,56 +311,41 @@ export default function Page() {
               <Divider y={24} />
               <Flex gap={8}>
                 <Button variant="bezeledGray" onClick={handleCloseSheet}>
-                  {t("CANCEL")}
+                  {t('CANCEL')}
                 </Button>
-                <Button
-                  variant="bezeled"
-                  onClick={() => handleCopy(invoice.bolt11)}
-                >
-                  {t("COPY")}
+                <Button variant="bezeled" onClick={() => handleCopy(invoice.bolt11)}>
+                  {t('COPY')}
                 </Button>
               </Flex>
             </Container>
           </>
         )}
 
-        {sheetStep === "finished" && (
+        {sheetStep === 'finished' && (
           <>
             <Confetti />
             <Container size="small">
-              <Flex
-                direction="column"
-                justify="center"
-                flex={1}
-                align="center"
-                gap={8}
-              >
+              <Flex direction="column" justify="center" flex={1} align="center" gap={8}>
                 <Icon color={theme.colors.primary}>
                   <CheckIcon />
                 </Icon>
                 <Text size="small" color={theme.colors.gray50}>
-                  {t("PAYMENT_RECEIVED")}
+                  {t('PAYMENT_RECEIVED')}
                 </Text>
                 <Flex justify="center" align="center" gap={4}>
-                  {currency === "SAT" ? (
+                  {currency === 'SAT' ? (
                     <Icon size="small">
                       <SatoshiV2Icon />
                     </Icon>
                   ) : (
                     <Text>$</Text>
                   )}
-                  <Heading>
-                    {formatToPreference(
-                      currency,
-                      numpadData.intAmount[numpadData.usedCurrency],
-                      lng,
-                    )}
-                  </Heading>
+                  <Heading>{formatToPreference(currency, numpadData.intAmount[numpadData.usedCurrency], lng)}</Heading>
                 </Flex>
               </Flex>
               <Flex gap={8}>
                 <Button variant="bezeledGray" onClick={handleCloseSheet}>
-                  {t("CLOSE")}
+                  {t('CLOSE')}
                 </Button>
               </Flex>
             </Container>

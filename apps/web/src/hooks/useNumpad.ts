@@ -1,10 +1,5 @@
-import {
-  useCurrencyConverter,
-  AvailableCurrencies,
-  CurrenciesList,
-  decimalsToUse,
-} from "@lawallet/react";
-import { useEffect, useState } from "react";
+import { useCurrencyConverter, AvailableCurrencies, CurrenciesList, decimalsToUse } from '@lawallet/react';
+import { useEffect, useState } from 'react';
 
 type AmountType = Record<AvailableCurrencies, number>;
 const defaultIntAmount: AmountType = { SAT: 0, ARS: 0, USD: 0 };
@@ -21,31 +16,24 @@ export interface IUseNumpad {
   updateNumpadAmount: (new_amount: string) => void;
 }
 
-export const useNumpad = (
-  currency: AvailableCurrencies,
-  maxAmount: number = -1,
-): IUseNumpad => {
+export const useNumpad = (currency: AvailableCurrencies, maxAmount: number = -1): IUseNumpad => {
   const { convertCurrency } = useCurrencyConverter();
-  const [usedCurrency, setUsedCurrency] =
-    useState<AvailableCurrencies>(currency);
+  const [usedCurrency, setUsedCurrency] = useState<AvailableCurrencies>(currency);
 
   const modifyCurrency = (new_currency: AvailableCurrencies) => {
     setCustomAmount(intAmount[new_currency], new_currency);
     setUsedCurrency(new_currency);
   };
 
-  const multiplier = (currency: AvailableCurrencies) =>
-    10 ** decimalsToUse(currency);
+  const multiplier = (currency: AvailableCurrencies) => 10 ** decimalsToUse(currency);
 
   const [intAmount, setIntAmount] = useState<AmountType>(defaultIntAmount);
-  const [strAmount, setStrAmount] = useState<string>("0");
+  const [strAmount, setStrAmount] = useState<string>('0');
 
   const updateNumpadAmount = (new_amount: string) => {
     const castAmount: number = Number(new_amount);
 
-    const updatedAmount: number = castAmount
-      ? castAmount / multiplier(usedCurrency)
-      : 0;
+    const updatedAmount: number = castAmount ? castAmount / multiplier(usedCurrency) : 0;
 
     const formattedAmounts: AmountType = { ...defaultIntAmount };
 
@@ -53,11 +41,7 @@ export const useNumpad = (
       if (currency === usedCurrency) {
         formattedAmounts[usedCurrency] = updatedAmount;
       } else {
-        const convertedAmount: number = convertCurrency(
-          updatedAmount,
-          usedCurrency,
-          currency,
-        );
+        const convertedAmount: number = convertCurrency(updatedAmount, usedCurrency, currency);
 
         formattedAmounts[currency] = convertedAmount;
       }
@@ -79,21 +63,18 @@ export const useNumpad = (
       }
     }
 
-    strAmount.length === 1 && strAmount === "0"
-      ? updateNumpadAmount(strNumber)
-      : updateNumpadAmount(concatedStr);
+    strAmount.length === 1 && strAmount === '0' ? updateNumpadAmount(strNumber) : updateNumpadAmount(concatedStr);
   };
 
   const deleteNumber = () => {
-    if (strAmount.length === 1 && strAmount !== "0") {
-      updateNumpadAmount("0");
+    if (strAmount.length === 1 && strAmount !== '0') {
+      updateNumpadAmount('0');
     } else {
-      if (strAmount.length > 1)
-        updateNumpadAmount(strAmount.substring(0, strAmount.length - 1));
+      if (strAmount.length > 1) updateNumpadAmount(strAmount.substring(0, strAmount.length - 1));
     }
   };
 
-  const resetAmount = () => updateNumpadAmount("0");
+  const resetAmount = () => updateNumpadAmount('0');
 
   const setCustomAmount = (amount: number, currency: AvailableCurrencies) => {
     setStrAmount((amount * multiplier(currency)).toFixed(0).toString());
@@ -101,8 +82,8 @@ export const useNumpad = (
 
   const handleNumpad = (value: string) => {
     switch (value) {
-      case "0":
-        if (strAmount !== "0") concatNumber("0");
+      case '0':
+        if (strAmount !== '0') concatNumber('0');
         break;
 
       default:

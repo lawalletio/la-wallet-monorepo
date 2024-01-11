@@ -1,5 +1,5 @@
-import { baseConfig } from "../constants/constants.js";
-import { type TransferTypes } from "../types/transaction.js";
+import { baseConfig } from '../constants/constants.js';
+import { type TransferTypes } from '../types/transaction.js';
 
 interface LNServiceResponse {
   tag: string;
@@ -31,9 +31,9 @@ export type CheckInvoiceReturns = {
 };
 
 export const defaultTransfer: TransferInformation = {
-  data: "",
+  data: '',
   amount: 0,
-  comment: "",
+  comment: '',
   receiverPubkey: baseConfig.modulePubkeys.urlx,
   walletService: null,
   type: false,
@@ -54,10 +54,8 @@ export const getWalletService = (url: string): Promise<LNServiceResponse> =>
 export const requestInvoice = (callback: string) =>
   fetch(callback)
     .then((res) => res.json())
-    .then((invoiceInfo) =>
-      invoiceInfo && invoiceInfo.pr ? invoiceInfo.pr.toLowerCase() : "",
-    )
-    .catch(() => "");
+    .then((invoiceInfo) => (invoiceInfo && invoiceInfo.pr ? invoiceInfo.pr.toLowerCase() : ''))
+    .catch(() => '');
 
 // export const isInternalInvoice = (
 //   invoiceHash: string

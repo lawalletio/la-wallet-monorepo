@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { InputGroupRight } from "./style";
+import { ReactNode } from 'react';
+import { InputGroupRight } from './style';
 
 interface InputGroupRightProps {
   children: ReactNode;

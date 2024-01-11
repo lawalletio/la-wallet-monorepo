@@ -1,24 +1,13 @@
-import config from "@/constants/config";
-import { addQueryParameter, escapingBrackets } from "@/utils";
-import { useNostrContext, useSubscription } from "@lawallet/react";
-import {
-  TransferInformation,
-  broadcastEvent,
-  defaultTransfer,
-  requestInvoice,
-} from "@lawallet/react/actions";
-import { TransferTypes } from "@lawallet/react/types";
-import {
-  LaWalletKinds,
-  LaWalletTags,
-  buildTxStartEvent,
-  formatTransferData,
-  getTag,
-} from "@lawallet/react/utils";
-import { NDKEvent, NDKKind, NDKTag, NostrEvent } from "@nostr-dev-kit/ndk";
-import { useRouter, useSearchParams } from "next/navigation";
-import { getPublicKey, nip19 } from "nostr-tools";
-import { useEffect, useState } from "react";
+import config from '@/constants/config';
+import { addQueryParameter, escapingBrackets } from '@/utils';
+import { useNostrContext, useSubscription } from '@lawallet/react';
+import { TransferInformation, broadcastEvent, defaultTransfer, requestInvoice } from '@lawallet/react/actions';
+import { TransferTypes } from '@lawallet/react/types';
+import { LaWalletKinds, LaWalletTags, buildTxStartEvent, formatTransferData, getTag } from '@lawallet/react/utils';
+import { NDKEvent, NDKKind, NDKTag, NostrEvent } from '@nostr-dev-kit/ndk';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { getPublicKey, nip19 } from 'nostr-tools';
+import { useEffect, useState } from 'react';
 
 export interface TransferContextType {
   loading: boolean;
@@ -36,8 +25,7 @@ interface TransferProps {
 const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const [loading, setLoading] = useState<boolean>(false);
   const [startEvent, setStartEvent] = useState<NostrEvent | null>(null);
-  const [transferInfo, setTransferInfo] =
-    useState<TransferInformation>(defaultTransfer);
+  const [transferInfo, setTransferInfo] = useState<TransferInformation>(defaultTransfer);
 
   const { ndk } = useNostrContext();
 
@@ -50,7 +38,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
         authors: [config.pubKeys.ledgerPubkey],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         since: startEvent ? startEvent.created_at - 60000 : undefined,
-        "#e": startEvent?.id ? [startEvent.id] : [],
+        '#e': startEvent?.id ? [startEvent.id] : [],
       },
     ],
     options: {
@@ -63,32 +51,26 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const claimLNURLw = (info: TransferInformation, npub: string) => {
     const { walletService } = info;
 
-    requestInvoice(
-      `${config.env.LAWALLET_ENDPOINT}/lnurlp/${npub}/callback?amount=${walletService?.maxWithdrawable}`,
-    )
+    requestInvoice(`${config.env.LAWALLET_ENDPOINT}/lnurlp/${npub}/callback?amount=${walletService?.maxWithdrawable}`)
       .then((pr) => {
         if (pr) {
           let urlCallback: string = walletService!.callback;
-          urlCallback = addQueryParameter(
-            urlCallback,
-            `k1=${walletService!.k1!}`,
-          );
+          urlCallback = addQueryParameter(urlCallback, `k1=${walletService!.k1!}`);
           urlCallback = addQueryParameter(urlCallback, `pr=${pr}`);
 
           fetch(urlCallback).then((res) => {
-            if (res.status !== 200) router.push("/transfer/error");
+            if (res.status !== 200) router.push('/transfer/error');
 
-            router.push("/transfer/finish");
+            router.push('/transfer/finish');
             return;
           });
         }
       })
-      .catch(() => router.push("/transfer/error"));
+      .catch(() => router.push('/transfer/error'));
   };
 
   const prepareTransaction = async (data: string) => {
-    const formattedTransferInfo: TransferInformation =
-      await formatTransferData(data);
+    const formattedTransferInfo: TransferInformation = await formatTransferData(data);
 
     switch (formattedTransferInfo.type) {
       case false:
@@ -100,8 +82,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
         break;
 
       case TransferTypes.INVOICE:
-        if (formattedTransferInfo.amount > 0)
-          router.push(`/transfer/summary?data=${formattedTransferInfo.data}`);
+        if (formattedTransferInfo.amount > 0) router.push(`/transfer/summary?data=${formattedTransferInfo.data}`);
         break;
 
       default:
@@ -131,39 +112,26 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const publishTransfer = (event: NostrEvent) => {
     setStartEvent(event);
     broadcastEvent(event).then((published) => {
-      if (!published) router.push("/transfer/error");
+      if (!published) router.push('/transfer/error');
     });
   };
 
-  const execInternalTransfer = async (
-    privateKey: string,
-    info: TransferInformation,
-  ) => {
-    const txEvent: NostrEvent = await buildTxStartEvent(
-      tokenName,
-      info,
-      [],
-      privateKey,
-    );
+  const execInternalTransfer = async (privateKey: string, info: TransferInformation) => {
+    const txEvent: NostrEvent = await buildTxStartEvent(tokenName, info, [], privateKey);
     publishTransfer(txEvent);
   };
 
   const execOutboundTransfer = async (privateKey: string) => {
     const bolt11: string = transferInfo.walletService
       ? await requestInvoice(
-          `${transferInfo.walletService?.callback}?amount=${
-            transferInfo.amount * 1000
-          }&comment=${escapingBrackets(transferInfo.comment)}`,
+          `${transferInfo.walletService?.callback}?amount=${transferInfo.amount * 1000}&comment=${escapingBrackets(
+            transferInfo.comment,
+          )}`,
         )
       : transferInfo.data;
 
-    const eventTags: NDKTag[] = [["bolt11", bolt11]];
-    const txEvent: NostrEvent = await buildTxStartEvent(
-      tokenName,
-      transferInfo,
-      eventTags,
-      privateKey,
-    );
+    const eventTags: NDKTag[] = [['bolt11', bolt11]];
+    const txEvent: NostrEvent = await buildTxStartEvent(tokenName, transferInfo, eventTags, privateKey);
 
     publishTransfer(txEvent);
   };
@@ -182,27 +150,25 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
         execOutboundTransfer(privateKey);
       }
     } catch {
-      router.push("/transfer/error");
+      router.push('/transfer/error');
     }
   };
 
   const processStatusTransfer = async (ledgerEvent: NDKEvent) => {
     if (startEvent) {
-      const subkind: string | undefined = getTag(ledgerEvent.tags, "t");
+      const subkind: string | undefined = getTag(ledgerEvent.tags, 't');
       if (subkind) {
-        if (subkind.includes("error")) router.push("/transfer/error");
+        if (subkind.includes('error')) router.push('/transfer/error');
 
-        if (subkind.includes("ok")) {
+        if (subkind.includes('ok')) {
           const refundEvent = await ndk.fetchEvent({
             kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
             authors: [config.pubKeys.urlxPubkey],
-            "#t": [LaWalletTags.INTERNAL_TRANSACTION_START],
-            "#e": [startEvent.id!],
+            '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
+            '#e': [startEvent.id!],
           });
 
-          refundEvent
-            ? router.push("/transfer/error")
-            : router.push("/transfer/finish");
+          refundEvent ? router.push('/transfer/error') : router.push('/transfer/finish');
         }
       }
     }
@@ -213,7 +179,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   }, [events]);
 
   useEffect(() => {
-    const data: string = params.get("data") ?? "";
+    const data: string = params.get('data') ?? '';
     if (!data) return;
 
     prepareTransaction(data);

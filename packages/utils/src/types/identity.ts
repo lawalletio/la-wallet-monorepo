@@ -7,9 +7,9 @@ export interface UserIdentity {
 }
 
 export const defaultIdentity: UserIdentity = {
-  username: "",
-  hexpub: "",
-  privateKey: "",
-  npub: "",
+  username: '',
+  hexpub: '',
+  privateKey: '',
+  npub: '',
   isReady: false,
 };

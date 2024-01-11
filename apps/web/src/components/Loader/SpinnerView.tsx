@@ -1,10 +1,10 @@
-import React from "react";
-import Logo from "@/components/Logo";
-import Container from "@/components/Layout/Container";
-import { Divider, Flex, Text } from "@/components/UI";
-import { LAWALLET_VERSION } from "@/constants/constants";
-import { Loader } from "@/components/Loader/Loader";
-import theme from "@/styles/theme";
+import React from 'react';
+import Logo from '@/components/Logo';
+import Container from '@/components/Layout/Container';
+import { Divider, Flex, Text } from '@/components/UI';
+import { LAWALLET_VERSION } from '@/constants/constants';
+import { Loader } from '@/components/Loader/Loader';
+import theme from '@/styles/theme';
 
 const SpinnerView = ({ loadingText }: { loadingText?: string }) => {
   return (

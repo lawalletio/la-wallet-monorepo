@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { match } from "@formatjs/intl-localematcher";
-import Negotiator from "negotiator";
+import { NextRequest, NextResponse } from 'next/server';
+import { match } from '@formatjs/intl-localematcher';
+import Negotiator from 'negotiator';
 
-type AvailableLanguages = "es" | "en";
-const LanguagesList: AvailableLanguages[] = ["es", "en"];
-const defaultLocale: AvailableLanguages = "es";
+type AvailableLanguages = 'es' | 'en';
+const LanguagesList: AvailableLanguages[] = ['es', 'en'];
+const defaultLocale: AvailableLanguages = 'es';
 
-const cookieName = "localeTranslation";
+const cookieName = 'localeTranslation';
 
 function getLocale(request: NextRequest): string {
   if (request.cookies.has(cookieName)) {
@@ -15,10 +15,9 @@ function getLocale(request: NextRequest): string {
   }
 
   const headers = new Headers(request.headers);
-  const acceptLanguage = headers.get("accept-language");
+  const acceptLanguage = headers.get('accept-language');
 
-  if (acceptLanguage)
-    headers.set("accept-language", acceptLanguage.replaceAll("_", "-"));
+  if (acceptLanguage) headers.set('accept-language', acceptLanguage.replaceAll('_', '-'));
 
   const headersObject = Object.fromEntries(headers.entries());
   const languages = new Negotiator({ headers: headersObject }).languages();
@@ -34,7 +33,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next|api|favicon.ico|manifest.json|sw.js|workbox-*.js|_next/static|icons/|media/|cards/).*)",
-  ],
+  matcher: ['/((?!_next|api|favicon.ico|manifest.json|sw.js|workbox-*.js|_next/static|icons/|media/|cards/).*)'],
 };

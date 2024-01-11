@@ -1,5 +1,5 @@
-import NimiqQrScanner from "qr-scanner";
-export { default as Nimiq } from "qr-scanner";
+import NimiqQrScanner from 'qr-scanner';
+export { default as Nimiq } from 'qr-scanner';
 
 export interface QrScannerProps {
   /**

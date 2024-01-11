@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import theme from "@/styles/theme";
-import { LinkButton } from "./style";
-import { ReactNode } from "react";
+import theme from '@/styles/theme';
+import { LinkButton } from './style';
+import { ReactNode } from 'react';
 
-type Color = "primary" | "secondary" | "error";
-type Variant = "filled" | "bezeled" | "bezeledGray" | "borderless";
-type Size = "small" | "normal";
+type Color = 'primary' | 'secondary' | 'error';
+type Variant = 'filled' | 'bezeled' | 'bezeledGray' | 'borderless';
+type Size = 'small' | 'normal';
 
 interface ComponentProps {
   children: ReactNode;
@@ -45,9 +45,9 @@ function variantsList(variant: Variant, color: Color) {
 export default function Component(props: ComponentProps) {
   const {
     children,
-    color = "primary",
-    variant = "filled",
-    size = "normal",
+    color = 'primary',
+    variant = 'filled',
+    size = 'normal',
     // disabled = false,
     tabIndex = 0,
     href,
@@ -58,7 +58,7 @@ export default function Component(props: ComponentProps) {
       href={href}
       tabIndex={tabIndex}
       // disabled={disabled}
-      $isSmall={size === "small"}
+      $isSmall={size === 'small'}
       $background={variantsList(variant, color)?.background}
       $color={variantsList(variant, color)?.color}
     >

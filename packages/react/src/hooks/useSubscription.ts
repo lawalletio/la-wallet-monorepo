@@ -1,11 +1,6 @@
-import {
-  type NDKEvent,
-  type NDKFilter,
-  type NDKSubscription,
-  type NDKSubscriptionOptions,
-} from "@nostr-dev-kit/ndk";
-import * as React from "react";
-import { useNostrContext } from "../context/NDKContext.js";
+import { type NDKEvent, type NDKFilter, type NDKSubscription, type NDKSubscriptionOptions } from '@nostr-dev-kit/ndk';
+import * as React from 'react';
+import { useNostrContext } from '../context/NDKContext.js';
 
 export interface IUseSubscription {
   subscription: NDKSubscription | undefined;
@@ -18,11 +13,7 @@ export type SubscriptionProps = {
   enabled: boolean;
 };
 
-export const useSubscription = ({
-  filters,
-  options,
-  enabled,
-}: SubscriptionProps) => {
+export const useSubscription = ({ filters, options, enabled }: SubscriptionProps) => {
   const { ndk } = useNostrContext();
 
   const [subscription, setSubscription] = React.useState<NDKSubscription>();
@@ -31,9 +22,7 @@ export const useSubscription = ({
   const startSubscription = React.useCallback(() => {
     if (ndk && enabled && !subscription) {
       const newSubscription = ndk.subscribe(filters, options);
-      newSubscription.on("event", async (event: NDKEvent) =>
-        setEvents((prev) => [...prev, event]),
-      );
+      newSubscription.on('event', async (event: NDKEvent) => setEvents((prev) => [...prev, event]));
 
       setSubscription(newSubscription);
       return;

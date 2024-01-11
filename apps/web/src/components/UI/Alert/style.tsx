@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
-import theme from "@/styles/theme";
+import theme from '@/styles/theme';
 
 interface AlertProps {
   $background?: string;
@@ -17,8 +17,7 @@ export const Alert = styled.div<AlertProps>`
   left: 0;
   z-index: ${(props) => (props.$isOpen ? 15 : -1)};
   opacity: ${(props) => (props.$isOpen ? 1 : 0)};
-  transform: ${(props) =>
-    props.$isOpen ? "translateY(-20px)" : "translateY(0px)"};
+  transform: ${(props) => (props.$isOpen ? 'translateY(-20px)' : 'translateY(0px)')};
   transition-duration: 0.3s;
 
   display: flex;
@@ -33,7 +32,7 @@ export const Alert = styled.div<AlertProps>`
     position: relative;
     overflow: hidden;
 
-    display: ${(props) => (props.$isOpen ? "flex" : "none")};
+    display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
     align-items: center;
     gap: 12px;
     width: 100%;

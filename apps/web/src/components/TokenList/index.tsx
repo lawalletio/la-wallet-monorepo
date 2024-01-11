@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Container from "@/components/Layout/Container";
-import { Button, Flex } from "@/components/UI";
+import Container from '@/components/Layout/Container';
+import { Button, Flex } from '@/components/UI';
 
-import { TokenList } from "./style";
-import { useWalletContext, CurrenciesList } from "@lawallet/react";
+import { TokenList } from './style';
+import { useWalletContext, CurrenciesList } from '@lawallet/react';
 
 export default function Component() {
   const { settings } = useWalletContext();
@@ -19,7 +19,7 @@ export default function Component() {
             return (
               <Button
                 key={currency}
-                variant={selected ? "bezeled" : "borderless"}
+                variant={selected ? 'bezeled' : 'borderless'}
                 size="small"
                 onClick={() => settings.changeCurrency(currency)}
               >

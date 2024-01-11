@@ -16,7 +16,7 @@ export const copy = async (text: string): Promise<boolean> => {
     await navigator.clipboard.writeText(text);
     return true;
   } catch (error) {
-    console.log("Failed to copy: ", error);
+    console.log('Failed to copy: ', error);
     return false;
   }
 };

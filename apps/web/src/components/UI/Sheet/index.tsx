@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, ReactNode } from 'react';
 
-import Container from "../../Layout/Container";
+import Container from '../../Layout/Container';
 
-import Flex from "../Flex";
-import Divider from "../Divider";
-import Button from "../Button";
-import Heading from "../Heading";
+import Flex from '../Flex';
+import Divider from '../Divider';
+import Button from '../Button';
+import Heading from '../Heading';
 
-import { Sheet, SheetContent } from "./style";
-import { useTranslation } from "@/context/TranslateContext";
+import { Sheet, SheetContent } from './style';
+import { useTranslation } from '@/context/TranslateContext';
 
 interface ComponentProps {
   children: ReactNode;
@@ -42,7 +42,7 @@ export default function Component(props: ComponentProps) {
             <Flex align="center" justify="space-between">
               <Heading as="h6">{title}</Heading>
               <Button variant="borderless" size="small" onClick={handleClose}>
-                {t("CLOSE")}
+                {t('CLOSE')}
               </Button>
             </Flex>
           </Container>

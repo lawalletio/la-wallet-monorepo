@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect, ReactNode } from "react";
-import { CrossIcon } from "@bitcoin-design/bitcoin-icons-react/filled";
+import { useState, useEffect, ReactNode } from 'react';
+import { CrossIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import Flex from "../Flex";
-import Button from "../Button";
-import Icon from "../Icon";
+import Flex from '../Flex';
+import Button from '../Button';
+import Icon from '../Icon';
 
-import { Modal, ModalContent } from "./style";
-import Heading from "../Heading";
+import { Modal, ModalContent } from './style';
+import Heading from '../Heading';
 
 interface ComponentProps {
   children: ReactNode;

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
-import theme from "@/styles/theme";
+import theme from '@/styles/theme';
 
 interface ComboboxProps {
   $isSelected: boolean;
@@ -13,8 +13,7 @@ export const Combobox = styled.a<ComboboxProps>`
   width: 100%;
 
   .trigger {
-    border-color: ${(props) =>
-      props.$isSelected ? theme.colors.primary : theme.colors.gray20};
+    border-color: ${(props) => (props.$isSelected ? theme.colors.primary : theme.colors.gray20)};
   }
 `;
 
@@ -50,7 +49,7 @@ export const Content = styled.div<ContentProps>`
   overflow: hidden;
   top: 100%;
 
-  display: ${(props) => (props.$isOpen ? "block" : "none")};
+  display: ${(props) => (props.$isOpen ? 'block' : 'none')};
   width: 100%;
 
   margin-top: 4px;

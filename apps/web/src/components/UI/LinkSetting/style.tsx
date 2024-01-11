@@ -1,6 +1,6 @@
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
-import theme from "@/styles/theme";
+import theme from '@/styles/theme';
 
 export const LinkSetting = styled.div`
   width: 100%;

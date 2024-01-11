@@ -1,7 +1,7 @@
-import Image from "next/image";
+import Image from 'next/image';
 
-import { Design } from "@lawallet/react/types";
-import { Card } from "./style";
+import { Design } from '@lawallet/react/types';
+import { Card } from './style';
 
 interface ComponentProps {
   data: { design: Design };
@@ -13,12 +13,7 @@ export default function Component(props: ComponentProps) {
 
   return (
     <Card $isActive={active}>
-      <Image
-        src={`/cards/${data.design.uuid}.png`}
-        alt={data.design.uuid}
-        width={280}
-        height={176}
-      />
+      <Image src={`/cards/${data.design.uuid}.png`} alt={data.design.uuid} width={280} height={176} />
     </Card>
   );
 }

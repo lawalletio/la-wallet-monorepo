@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect, ReactNode } from "react";
-import { AccordionTrigger } from "./style";
+import { useState, useEffect, ReactNode } from 'react';
+import { AccordionTrigger } from './style';
 
 interface ComponentProps {
   children: ReactNode;

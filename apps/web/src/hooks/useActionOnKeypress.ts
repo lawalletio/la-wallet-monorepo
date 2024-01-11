@@ -1,4 +1,4 @@
-import { DependencyList, useEffect } from "react";
+import { DependencyList, useEffect } from 'react';
 
 export interface IUseActionOnEnter {
   handlePressKey: (e: KeyboardEvent) => void;
@@ -16,10 +16,10 @@ export const useActionOnKeypress = (
   };
 
   useEffect(() => {
-    window.addEventListener("keydown", handlePressKey);
+    window.addEventListener('keydown', handlePressKey);
 
     return () => {
-      window.removeEventListener("keydown", handlePressKey);
+      window.removeEventListener('keydown', handlePressKey);
     };
   }, [...dependences]);
 

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { styled } from "styled-components";
-import theme from "@/styles/theme";
+import { styled } from 'styled-components';
+import theme from '@/styles/theme';
 
 interface InputCustomProps {
   $isSuccess?: boolean;
@@ -21,11 +21,7 @@ export const Input = styled.input<InputCustomProps>`
   border-radius: 8px;
   border: 1px solid
     ${(props) =>
-      props.$showValidate
-        ? theme.colors.gray20
-        : props.$isSuccess
-          ? theme.colors.success
-          : theme.colors.error};
+      props.$showValidate ? theme.colors.gray20 : props.$isSuccess ? theme.colors.success : theme.colors.error};
 
   color: ${theme.colors.text};
   font-size: 0.8em;
@@ -103,8 +99,7 @@ export const Feedback = styled.div<FeedbackProps>`
 
   margin-top: 4px;
 
-  color: ${(props) =>
-    props.$isSuccess ? theme.colors.success : theme.colors.error};
+  color: ${(props) => (props.$isSuccess ? theme.colors.success : theme.colors.error)};
 
   /* font-size: 0.7em; */
 `;
@@ -121,7 +116,7 @@ export const InputBox = styled.div<InputBoxProps>`
   width: 100%;
 
   input {
-    padding-right: ${(props) => (props.$withIcon ? "60px" : "8px")};
+    padding-right: ${(props) => (props.$withIcon ? '60px' : '8px')};
   }
 `;
 
@@ -153,11 +148,7 @@ export const Textarea = styled.textarea<InputCustomProps>`
   border-radius: 8px;
   border: 1px solid
     ${(props) =>
-      props.$showValidate
-        ? theme.colors.gray20
-        : props.$isSuccess
-          ? theme.colors.success
-          : theme.colors.error};
+      props.$showValidate ? theme.colors.gray20 : props.$isSuccess ? theme.colors.success : theme.colors.error};
 
   color: ${theme.colors.text};
   font-size: 0.8em;

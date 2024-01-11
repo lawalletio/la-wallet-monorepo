@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { ButtonSetting } from "./style";
+import { ReactNode } from 'react';
+import { ButtonSetting } from './style';
 
 interface ComponentProps {
   children: ReactNode;

@@ -1,36 +1,22 @@
-"use client";
+'use client';
 
-import { SatoshiV2Icon } from "@bitcoin-design/bitcoin-icons-react/filled";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 
-import Container from "@/components/Layout/Container";
-import Navbar from "@/components/Layout/Navbar";
-import TokenList from "@/components/TokenList";
-import {
-  Button,
-  Divider,
-  Feedback,
-  Flex,
-  Heading,
-  Icon,
-  InputWithLabel,
-  Keyboard,
-  Text,
-} from "@/components/UI";
-import { regexComment } from "@/constants/constants";
-import { useTransferContext } from "@/context/TransferContext";
-import { useTranslation } from "@/context/TranslateContext";
-import { useActionOnKeypress } from "@/hooks/useActionOnKeypress";
-import useErrors from "@/hooks/useErrors";
-import { useNumpad } from "@/hooks/useNumpad";
-import theme from "@/styles/theme";
-import {
-  decimalsToUse,
-  formatToPreference,
-  useWalletContext,
-} from "@lawallet/react";
-import { TransferTypes } from "@lawallet/react/types";
+import Container from '@/components/Layout/Container';
+import Navbar from '@/components/Layout/Navbar';
+import TokenList from '@/components/TokenList';
+import { Button, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Keyboard, Text } from '@/components/UI';
+import { regexComment } from '@/constants/constants';
+import { useTransferContext } from '@/context/TransferContext';
+import { useTranslation } from '@/context/TranslateContext';
+import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
+import useErrors from '@/hooks/useErrors';
+import { useNumpad } from '@/hooks/useNumpad';
+import theme from '@/styles/theme';
+import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
+import { TransferTypes } from '@lawallet/react/types';
 
 export default function Page() {
   const { lng, t } = useTranslation();
@@ -47,11 +33,7 @@ export default function Page() {
   } = useWalletContext();
 
   const maxAvailableAmount: number = useMemo(() => {
-    const convertedAmount: number = convertCurrency(
-      balance.amount,
-      "SAT",
-      userCurrency,
-    );
+    const convertedAmount: number = convertCurrency(balance.amount, 'SAT', userCurrency);
 
     return convertedAmount;
   }, [pricesData, balance.amount, userCurrency]);
@@ -62,27 +44,22 @@ export default function Page() {
 
   const handleClick = () => {
     if (loading) return;
-    if (!transferInfo.data) router.push("/transfer");
+    if (!transferInfo.data) router.push('/transfer');
 
     setLoading(true);
 
     const satsAmount: number =
-      numpadData.intAmount["SAT"] > balance.amount
-        ? balance.amount
-        : numpadData.intAmount["SAT"];
+      numpadData.intAmount['SAT'] > balance.amount ? balance.amount : numpadData.intAmount['SAT'];
 
-    if (
-      transferInfo.type === TransferTypes.LUD16 &&
-      transferInfo.walletService
-    ) {
+    if (transferInfo.type === TransferTypes.LUD16 && transferInfo.walletService) {
       const mSats = satsAmount * 1000;
       const { minSendable, maxSendable } = transferInfo.walletService;
 
       if (mSats < minSendable! || mSats > maxSendable!) {
-        errors.modifyError("INVALID_SENDABLE_AMOUNT", {
+        errors.modifyError('INVALID_SENDABLE_AMOUNT', {
           minSendable: (minSendable! / 1000).toString(),
           maxSendable: (maxSendable! / 1000).toString(),
-          currency: "SAT",
+          currency: 'SAT',
         });
 
         setLoading(false);
@@ -96,16 +73,12 @@ export default function Page() {
 
   const handleChangeComment = (text: string) => {
     if (!text.length) {
-      setComment("");
+      setComment('');
       return;
     }
 
-    if (
-      text.length > 255 ||
-      (transferInfo.walletService &&
-        text.length > transferInfo.walletService.commentAllowed)
-    ) {
-      errors.modifyError("COMMENT_MAX_LENGTH", {
+    if (text.length > 255 || (transferInfo.walletService && text.length > transferInfo.walletService.commentAllowed)) {
+      errors.modifyError('COMMENT_MAX_LENGTH', {
         chars: (transferInfo.walletService?.commentAllowed ?? 255).toString(),
       });
       return;
@@ -113,7 +86,7 @@ export default function Page() {
 
     const isValidComment = regexComment.test(text);
     if (!isValidComment) {
-      errors.modifyError("ERROR_ON_COMMENT");
+      errors.modifyError('ERROR_ON_COMMENT');
       return;
     }
 
@@ -121,50 +94,39 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (
-      transferInfo.amount &&
-      transferInfo.amount !== numpadData.intAmount["SAT"]
-    ) {
+    if (transferInfo.amount && transferInfo.amount !== numpadData.intAmount['SAT']) {
       const convertedAmount: number =
-        convertCurrency(transferInfo.amount, "SAT", userCurrency) *
-        10 ** decimalsToUse(userCurrency);
+        convertCurrency(transferInfo.amount, 'SAT', userCurrency) * 10 ** decimalsToUse(userCurrency);
 
       numpadData.updateNumpadAmount(convertedAmount.toString());
     }
   }, [pricesData]);
 
-  useActionOnKeypress("Enter", handleClick, [numpadData, transferInfo]);
+  useActionOnKeypress('Enter', handleClick, [numpadData, transferInfo]);
 
   return (
     <>
-      <Navbar showBackPage={true} title={t("DEFINE_AMOUNT")} />
+      <Navbar showBackPage={true} title={t('DEFINE_AMOUNT')} />
 
       <Container size="small">
         <Divider y={16} />
         <Flex direction="column" gap={8} flex={1} justify="center">
           <Flex justify="center" align="center" gap={4}>
-            {userCurrency === "SAT" ? (
+            {userCurrency === 'SAT' ? (
               <Icon size="small">
                 <SatoshiV2Icon />
               </Icon>
             ) : (
               <Text>$</Text>
             )}
-            <Heading>
-              {formatToPreference(
-                userCurrency,
-                numpadData.intAmount[numpadData.usedCurrency],
-                lng,
-              )}
-            </Heading>
+            <Heading>{formatToPreference(userCurrency, numpadData.intAmount[numpadData.usedCurrency], lng)}</Heading>
           </Flex>
 
           {!hideBalance && (
             <Flex justify="center" align="center" gap={4}>
               <Heading as="h6" color={theme.colors.gray50}>
-                {userCurrency !== "SAT" && "$"}
-                {formatToPreference(userCurrency, maxAvailableAmount, lng)}{" "}
-                {t("AVAILABLE")}.
+                {userCurrency !== 'SAT' && '$'}
+                {formatToPreference(userCurrency, maxAvailableAmount, lng)} {t('AVAILABLE')}.
               </Heading>
             </Flex>
           )}
@@ -173,25 +135,17 @@ export default function Page() {
 
           {transferInfo.walletService && (
             <Flex justify="center">
-              <Feedback show={true} status={"success"}>
-                {t("SENDABLE_AMOUNT", {
-                  minSendable: formatToPreference(
-                    "SAT",
-                    transferInfo.walletService.minSendable! / 1000,
-                    lng,
-                  ),
-                  maxSendable: formatToPreference(
-                    "SAT",
-                    transferInfo.walletService.maxSendable! / 1000,
-                    lng,
-                  ),
+              <Feedback show={true} status={'success'}>
+                {t('SENDABLE_AMOUNT', {
+                  minSendable: formatToPreference('SAT', transferInfo.walletService.minSendable! / 1000, lng),
+                  maxSendable: formatToPreference('SAT', transferInfo.walletService.maxSendable! / 1000, lng),
                 })}
               </Feedback>
             </Flex>
           )}
         </Flex>
 
-        <Feedback show={errors.errorInfo.visible} status={"error"}>
+        <Feedback show={errors.errorInfo.visible} status={'error'}>
           {errors.errorInfo.text}
         </Feedback>
 
@@ -200,9 +154,9 @@ export default function Page() {
           <Flex direction="column" align="end">
             {/* POC: integrate message */}
             <InputWithLabel
-              label={t("MESSAGE")}
+              label={t('MESSAGE')}
               name="message"
-              placeholder={t("OPTIONAL")}
+              placeholder={t('OPTIONAL')}
               onChange={(e) => handleChangeComment(e.target.value)}
               value={transferInfo.comment}
               onFocus={() => setCommentFocus(true)}
@@ -212,14 +166,10 @@ export default function Page() {
           <Flex>
             <Button
               onClick={handleClick}
-              disabled={
-                loading ||
-                balance.amount === 0 ||
-                numpadData.intAmount["SAT"] === 0
-              }
+              disabled={loading || balance.amount === 0 || numpadData.intAmount['SAT'] === 0}
               loading={loading}
             >
-              {t("CONTINUE")}
+              {t('CONTINUE')}
             </Button>
           </Flex>
         </Flex>

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-export type AlertTypes = "success" | "warning" | "error";
+export type AlertTypes = 'success' | 'warning' | 'error';
 
 interface Alert {
   title?: string;

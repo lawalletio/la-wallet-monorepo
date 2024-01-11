@@ -1,9 +1,9 @@
-import { fontSecondary } from "@/styles/fonts";
-import { Textarea } from "./style";
+import { fontSecondary } from '@/styles/fonts';
+import { Textarea } from './style';
 
 interface ComponentProps {
   placeholder: string;
-  status?: "success" | "error";
+  status?: 'success' | 'error';
   onChange?: (e: any) => void;
   id?: string;
   name?: string;
@@ -12,15 +12,7 @@ interface ComponentProps {
 }
 
 export default function Component(props: ComponentProps) {
-  const {
-    placeholder,
-    status,
-    onChange,
-    id = "",
-    name = "",
-    value,
-    disabled = false,
-  } = props;
+  const { placeholder, status, onChange, id = '', name = '', value, disabled = false } = props;
 
   return (
     <Textarea
@@ -32,7 +24,7 @@ export default function Component(props: ComponentProps) {
       onChange={onChange}
       disabled={disabled}
       $showValidate={!status}
-      $isSuccess={status && status === "success"}
+      $isSuccess={status && status === 'success'}
     ></Textarea>
   );
 }

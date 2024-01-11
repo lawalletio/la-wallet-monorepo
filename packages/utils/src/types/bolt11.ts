@@ -45,13 +45,7 @@ type UnknownTag = {
 };
 
 // Start exports
-export declare type TagData =
-  | string
-  | number
-  | RoutingInfo
-  | FallbackAddress
-  | FeatureBits
-  | UnknownTag;
+export declare type TagData = string | number | RoutingInfo | FallbackAddress | FeatureBits | UnknownTag;
 export declare type TagsObject = {
   payment_hash?: string;
   payment_secret?: string;

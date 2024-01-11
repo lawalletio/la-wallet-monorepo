@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import VerificationInput from "react-verification-input";
+import VerificationInput from 'react-verification-input';
 
-import { Pin } from "./style";
+import { Pin } from './style';
 
 interface InputProps {
   length: number;
@@ -18,7 +18,7 @@ export default function Component(props: InputProps) {
   return (
     <Pin>
       <VerificationInput
-        validChars={"0-9"}
+        validChars={'0-9'}
         onComplete={onComplete}
         onChange={onChange}
         length={length}

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { ButtonGroup } from "./style";
+import { ReactNode } from 'react';
+import { ButtonGroup } from './style';
 
 interface ComponentProps {
   children: ReactNode;

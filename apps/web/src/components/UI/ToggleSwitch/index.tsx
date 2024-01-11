@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useId, useState } from "react";
+import { useId, useState } from 'react';
 
-import Text from "../Text";
+import Text from '../Text';
 
-import { ToggleSwitch } from "./style";
+import { ToggleSwitch } from './style';
 
 interface ComponentProps {
   label: string;

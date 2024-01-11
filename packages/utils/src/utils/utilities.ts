@@ -1,15 +1,11 @@
-import { baseConfig } from "../constants/constants.js";
-import { getUserPubkey } from "../interceptors/identity.js";
-import {
-  defaultTransfer,
-  getWalletService,
-  type TransferInformation,
-} from "../interceptors/transaction.js";
-import { type ConfigProps } from "../types/config.js";
-import { TransferTypes } from "../types/transaction.js";
-import { validateEmail } from "./email.js";
-import bolt11 from "./light-bolt11.js";
-import { lnurl_decode } from "./lnurl.js";
+import { baseConfig } from '../constants/constants.js';
+import { getUserPubkey } from '../interceptors/identity.js';
+import { defaultTransfer, getWalletService, type TransferInformation } from '../interceptors/transaction.js';
+import { type ConfigProps } from '../types/config.js';
+import { TransferTypes } from '../types/transaction.js';
+import { validateEmail } from './email.js';
+import bolt11 from './light-bolt11.js';
+import { lnurl_decode } from './lnurl.js';
 
 export const decodeInvoice = (invoice: string) => {
   const decodedInvoice = bolt11.decode(invoice);
@@ -26,15 +22,15 @@ export const detectTransferType = (data: string): TransferTypes | false => {
   const upperStr: string = data.toUpperCase();
   const isLUD16 = validateEmail(upperStr);
   if (isLUD16) {
-    const domain: string = upperStr.split("@")[1]!;
+    const domain: string = upperStr.split('@')[1]!;
 
     return domain.toUpperCase() === baseConfig.federation.domain.toUpperCase()
       ? TransferTypes.INTERNAL
       : TransferTypes.LUD16;
   }
 
-  if (upperStr.startsWith("LNURL")) return TransferTypes.LNURL;
-  if (upperStr.startsWith("LNBC")) return TransferTypes.INVOICE;
+  if (upperStr.startsWith('LNURL')) return TransferTypes.LNURL;
+  if (upperStr.startsWith('LNBC')) return TransferTypes.INVOICE;
 
   if (data.length > 15) return false;
   return TransferTypes.INTERNAL;
@@ -42,15 +38,11 @@ export const detectTransferType = (data: string): TransferTypes | false => {
 
 const parseInvoiceInfo = (invoice: string) => {
   const decodedInvoice = decodeInvoice(invoice);
-  const invoiceAmount = decodedInvoice.sections.find(
-    (section: Record<string, string>) => section.name === "amount",
-  );
+  const invoiceAmount = decodedInvoice.sections.find((section: Record<string, string>) => section.name === 'amount');
 
   if (!invoiceAmount) return defaultTransfer;
 
-  const createdAt = decodedInvoice.sections.find(
-    (section: Record<string, string>) => section.name === "timestamp",
-  );
+  const createdAt = decodedInvoice.sections.find((section: Record<string, string>) => section.name === 'timestamp');
 
   const transfer: TransferInformation = {
     ...defaultTransfer,
@@ -61,8 +53,7 @@ const parseInvoiceInfo = (invoice: string) => {
   };
 
   if (createdAt && createdAt.value) {
-    const expirationDate: number =
-      (createdAt.value + decodedInvoice.expiry) * 1000;
+    const expirationDate: number = (createdAt.value + decodedInvoice.expiry) * 1000;
     if (expirationDate < Date.now()) transfer.expired = true;
   }
 
@@ -70,22 +61,18 @@ const parseInvoiceInfo = (invoice: string) => {
 };
 
 const removeHttpOrHttps = (str: string) => {
-  if (str.startsWith("http://")) return str.replace("http://", "");
-  if (str.startsWith("https://")) return str.replace("https://", "");
+  if (str.startsWith('http://')) return str.replace('http://', '');
+  if (str.startsWith('https://')) return str.replace('https://', '');
 
   return str;
 };
 
-const isInternalLNURL = (
-  decodedLNURL: string,
-  config: ConfigProps = baseConfig,
-): string => {
+const isInternalLNURL = (decodedLNURL: string, config: ConfigProps = baseConfig): string => {
   const urlWithoutHttp: string = removeHttpOrHttps(decodedLNURL);
-  const [domain, , , username] = urlWithoutHttp.split("/");
-  if (domain === config.federation.domain && username)
-    return `${username}@${domain}`;
+  const [domain, , , username] = urlWithoutHttp.split('/');
+  if (domain === config.federation.domain && username) return `${username}@${domain}`;
 
-  return "";
+  return '';
 };
 
 const parseLNURLInfo = async (data: string) => {
@@ -103,22 +90,18 @@ const parseLNURLInfo = async (data: string) => {
     walletService,
   };
 
-  if (walletService.tag === "payRequest") {
+  if (walletService.tag === 'payRequest') {
     try {
-      const parsedMetadata: Array<string>[] = JSON.parse(
-        walletService.metadata,
-      );
-      const identifier: string[] | undefined = parsedMetadata.find(
-        (data: string[]) => {
-          if (data[0] === "text/identifier") return data;
-        },
-      );
+      const parsedMetadata: Array<string>[] = JSON.parse(walletService.metadata);
+      const identifier: string[] | undefined = parsedMetadata.find((data: string[]) => {
+        if (data[0] === 'text/identifier') return data;
+      });
 
       if (identifier && identifier.length === 2) transfer.data = identifier[1]!;
     } catch (error) {
       console.log(error);
     }
-  } else if (walletService.tag === "withdrawRequest") {
+  } else if (walletService.tag === 'withdrawRequest') {
     transfer.type = TransferTypes.LNURLW;
     transfer.amount = walletService.maxWithdrawable! / 1000;
   }
@@ -129,8 +112,8 @@ const parseLNURLInfo = async (data: string) => {
 export const splitHandle = (handle: string): string[] => {
   if (!handle.length) return [];
 
-  if (handle.includes("@")) {
-    const [username, domain] = handle.split("@");
+  if (handle.includes('@')) {
+    const [username, domain] = handle.split('@');
     return [username!, domain!];
   } else {
     return [handle, baseConfig.federation.domain];
@@ -139,9 +122,7 @@ export const splitHandle = (handle: string): string[] => {
 
 const parseLUD16Info = async (data: string) => {
   const [username, domain] = splitHandle(data);
-  const walletService = await getWalletService(
-    `https://${domain}/.well-known/lnurlp/${username}`,
-  );
+  const walletService = await getWalletService(`https://${domain}/.well-known/lnurlp/${username}`);
   if (!walletService) return defaultTransfer;
 
   const transfer: TransferInformation = {
@@ -151,8 +132,7 @@ const parseLUD16Info = async (data: string) => {
     walletService,
   };
 
-  if (walletService.minSendable == walletService.maxSendable)
-    transfer.amount = walletService.maxSendable! / 1000;
+  if (walletService.minSendable == walletService.maxSendable) transfer.amount = walletService.maxSendable! / 1000;
 
   return transfer;
 };
@@ -175,21 +155,18 @@ const parseINTERNALInfo = async (data: string) => {
 export const removeLightningStandard = (str: string) => {
   const lowStr: string = str.toLowerCase();
 
-  return lowStr.startsWith("lightning://")
-    ? lowStr.replace("lightning://", "")
-    : lowStr.startsWith("lightning:")
-      ? lowStr.replace("lightning:", "")
+  return lowStr.startsWith('lightning://')
+    ? lowStr.replace('lightning://', '')
+    : lowStr.startsWith('lightning:')
+      ? lowStr.replace('lightning:', '')
       : lowStr;
 };
 
-export const formatTransferData = async (
-  data: string,
-): Promise<TransferInformation> => {
+export const formatTransferData = async (data: string): Promise<TransferInformation> => {
   if (!data.length) return defaultTransfer;
 
   const cleanStr: string = removeLightningStandard(data);
-  const decodedTransferType: TransferTypes | false =
-    detectTransferType(cleanStr);
+  const decodedTransferType: TransferTypes | false = detectTransferType(cleanStr);
 
   if (!decodedTransferType) return defaultTransfer;
 

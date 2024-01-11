@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import Container from "@/components/Layout/Container";
-import Logo from "@/components/Logo";
-import { Button, Divider, Text } from "@/components/UI";
-import { LAWALLET_VERSION } from "@/constants/constants";
-import { useTranslation } from "@/context/TranslateContext";
+import Container from '@/components/Layout/Container';
+import Logo from '@/components/Logo';
+import { Button, Divider, Text } from '@/components/UI';
+import { LAWALLET_VERSION } from '@/constants/constants';
+import { useTranslation } from '@/context/TranslateContext';
 
 // import { useCreateIdentity } from '@/hooks/useCreateIdentity'
 
-import theme from "@/styles/theme";
-import { Flex } from "@unllamas/components";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import theme from '@/styles/theme';
+import { Flex } from '@unllamas/components';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Page() {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ export default function Page() {
   // const { handleCreateIdentity, loading } = useCreateIdentity()
 
   useEffect(() => {
-    router.prefetch("/login");
+    router.prefetch('/login');
   }, [router]);
 
   return (
@@ -50,9 +50,7 @@ export default function Page() {
         <Divider y={16} />
 
         <Flex>
-          <Button onClick={() => router.push("/login")}>
-            {t("LOGIN_ACCOUNT")}
-          </Button>
+          <Button onClick={() => router.push('/login')}>{t('LOGIN_ACCOUNT')}</Button>
         </Flex>
       </Flex>
       <Divider y={32} />

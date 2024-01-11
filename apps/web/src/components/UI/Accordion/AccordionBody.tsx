@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { AccordionBody } from "./style";
+import { ReactNode } from 'react';
+import { AccordionBody } from './style';
 
 interface ComponentProps {
   children: ReactNode;

@@ -1,7 +1,7 @@
-import { type NostrEvent } from "@nostr-dev-kit/ndk";
-import crypto from "crypto";
-import { nip04 } from "nostr-tools";
-import { nowInSeconds, parseContent } from "./utilities.js";
+import { type NostrEvent } from '@nostr-dev-kit/ndk';
+import crypto from 'crypto';
+import { nip04 } from 'nostr-tools';
+import { nowInSeconds, parseContent } from './utilities.js';
 
 /**
  * An interface representing the general structure of the JSON-encoded content of a Multi-NIP-04 event
@@ -37,16 +37,10 @@ export interface MultiNip04Content {
  */
 function doEncryptNip04Like(keyHex: string, message: string): string {
   const iv: Uint8Array = Uint8Array.from(crypto.randomBytes(16));
-  const cipher: crypto.Cipher = crypto.createCipheriv(
-    "aes128",
-    Buffer.from(keyHex, "hex"),
-    iv,
-  );
+  const cipher: crypto.Cipher = crypto.createCipheriv('aes128', Buffer.from(keyHex, 'hex'), iv);
   return (
-    Buffer.from([
-      ...cipher.update(Buffer.from(message, "utf8")),
-      ...cipher.final(),
-    ]).toString("base64") + `?iv=${Buffer.from(iv).toString("base64")}`
+    Buffer.from([...cipher.update(Buffer.from(message, 'utf8')), ...cipher.final()]).toString('base64') +
+    `?iv=${Buffer.from(iv).toString('base64')}`
   );
 }
 
@@ -69,20 +63,19 @@ function doEncryptNip04Like(keyHex: string, message: string): string {
  * @returns  The UTF-8 string corresponding to the deciphered plaintext
  */
 function doDecryptNip04Like(keyHex: string, message: string): string {
-  const re: RegExpExecArray | null =
-    /^(?<ciphertext>[^?]*)\?iv=(?<iv>.*)$/.exec(message);
+  const re: RegExpExecArray | null = /^(?<ciphertext>[^?]*)\?iv=(?<iv>.*)$/.exec(message);
   if (null === re) {
-    throw new Error("Malformed message");
+    throw new Error('Malformed message');
   }
   const decipher: crypto.Decipher = crypto.createDecipheriv(
-    "aes128",
-    Buffer.from(keyHex, "hex"),
-    Buffer.from(re.groups?.iv ?? "", "base64"),
+    'aes128',
+    Buffer.from(keyHex, 'hex'),
+    Buffer.from(re.groups?.iv ?? '', 'base64'),
   );
   return Buffer.from([
-    ...decipher.update(Buffer.from(re.groups?.ciphertext ?? "", "base64")),
+    ...decipher.update(Buffer.from(re.groups?.ciphertext ?? '', 'base64')),
     ...decipher.final(),
-  ]).toString("utf8");
+  ]).toString('utf8');
 }
 
 /**
@@ -187,42 +180,32 @@ export async function buildMultiNip04Event(
   senderPubKeyHex: string, // HEX sender public key
   receiverPubKeysHex: string[], // HEX receivers public keys
 ): Promise<NostrEvent> {
-  const macBase64: string = crypto
-    .createHash("sha256")
-    .update(message)
-    .digest()
-    .toString("base64");
+  const macBase64: string = crypto.createHash('sha256').update(message).digest().toString('base64');
 
-  const randomMessageKeyHex: string = Buffer.from(
-    crypto.randomBytes(16),
-  ).toString("hex");
+  const randomMessageKeyHex: string = Buffer.from(crypto.randomBytes(16)).toString('hex');
 
-  const encryptedContentNip04Like: string = doEncryptNip04Like(
-    randomMessageKeyHex,
-    message,
-  );
+  const encryptedContentNip04Like: string = doEncryptNip04Like(randomMessageKeyHex, message);
 
-  const receiverPubKeysHexToNip04RandomMessageKey: { [pk: string]: string } =
-    Object.fromEntries(
-      await Promise.all(
-        receiverPubKeysHex.map(
-          async (pk: string): Promise<[string, string]> => [
-            pk,
-            await nip04.encrypt(senderSecKeyHex, pk, randomMessageKeyHex),
-          ],
-        ),
+  const receiverPubKeysHexToNip04RandomMessageKey: { [pk: string]: string } = Object.fromEntries(
+    await Promise.all(
+      receiverPubKeysHex.map(
+        async (pk: string): Promise<[string, string]> => [
+          pk,
+          await nip04.encrypt(senderSecKeyHex, pk, randomMessageKeyHex),
+        ],
       ),
-    );
+    ),
+  );
 
   return {
     pubkey: senderPubKeyHex,
     created_at: nowInSeconds(),
-    tags: receiverPubKeysHex.map((pk: string) => ["p", pk]),
+    tags: receiverPubKeysHex.map((pk: string) => ['p', pk]),
     content: JSON.stringify({
       mac: macBase64,
       enc: encryptedContentNip04Like,
       key: receiverPubKeysHexToNip04RandomMessageKey,
-      alg: "sha256:nip-04:nip-04",
+      alg: 'sha256:nip-04:nip-04',
     }),
   };
 }
@@ -327,58 +310,48 @@ export async function parseMultiNip04Event(
   receiverSecKeyHex: string,
   receiverPubKeyHex: string,
 ): Promise<string> {
-  if (
-    !event.tags.some(
-      (tag: string[]) =>
-        (tag[0] ?? null) === "p" && (tag[1] ?? null) === receiverPubKeyHex,
-    )
-  ) {
-    throw new Error("Receiver not in receivers list");
+  if (!event.tags.some((tag: string[]) => (tag[0] ?? null) === 'p' && (tag[1] ?? null) === receiverPubKeyHex)) {
+    throw new Error('Receiver not in receivers list');
   }
 
   const rawContent = parseContent(event.content);
 
-  if (!("mac" in rawContent)) {
+  if (!('mac' in rawContent)) {
     throw new Error('Malformed event content, missing "mac"');
   }
-  if (!("enc" in rawContent)) {
+  if (!('enc' in rawContent)) {
     throw new Error('Malformed event content, missing "enc"');
   }
-  if (!("key" in rawContent)) {
+  if (!('key' in rawContent)) {
     throw new Error('Malformed event content, missing "key"');
   }
-  if (!("alg" in rawContent)) {
+  if (!('alg' in rawContent)) {
     throw new Error('Malformed event content, missing "alg"');
   }
 
-  if (typeof rawContent.mac !== "string") {
+  if (typeof rawContent.mac !== 'string') {
     throw new Error('Malformed event content, "mac" should be a string');
   }
-  if (typeof rawContent.enc !== "string") {
+  if (typeof rawContent.enc !== 'string') {
     throw new Error('Malformed event content, "enc" should be a string');
   }
-  if (typeof rawContent.key !== "object") {
+  if (typeof rawContent.key !== 'object') {
     throw new Error('Malformed event content, "key" should be an object');
   }
-  if (typeof rawContent.alg !== "string") {
+  if (typeof rawContent.alg !== 'string') {
     throw new Error('Malformed event content, "alg" should be a string');
   }
 
-  if (rawContent.alg !== "sha256:nip-04:nip-04") {
-    throw new Error(
-      'Malformed event content, "alg" expected to be "sha256:nip-04:nip-04"',
-    );
+  if (rawContent.alg !== 'sha256:nip-04:nip-04') {
+    throw new Error('Malformed event content, "alg" expected to be "sha256:nip-04:nip-04"');
   }
 
   if (
     !Object.entries(rawContent.key ?? {}).every(
-      (entry: [string, any]): boolean =>
-        typeof entry[1] === "string" && /^[^?]*\?iv=.*$/.test(entry[1]),
+      (entry: [string, any]): boolean => typeof entry[1] === 'string' && /^[^?]*\?iv=.*$/.test(entry[1]),
     )
   ) {
-    throw new Error(
-      'Malformed event content, "key" values should be strings of the form "{content}?iv={iv}"',
-    );
+    throw new Error('Malformed event content, "key" values should be strings of the form "{content}?iv={iv}"');
   }
 
   const content: MultiNip04Content = rawContent as MultiNip04Content;
@@ -389,19 +362,12 @@ export async function parseMultiNip04Event(
     content.key[receiverPubKeyHex] as string,
   );
 
-  const decryptedMessage: string = doDecryptNip04Like(
-    messageKeyHex,
-    content.enc,
-  );
+  const decryptedMessage: string = doDecryptNip04Like(messageKeyHex, content.enc);
 
-  const macBase64: string = crypto
-    .createHash("sha256")
-    .update(decryptedMessage)
-    .digest()
-    .toString("base64");
+  const macBase64: string = crypto.createHash('sha256').update(decryptedMessage).digest().toString('base64');
 
   if (content.mac !== macBase64) {
-    throw new Error("MAC mismatch");
+    throw new Error('MAC mismatch');
   }
 
   return decryptedMessage;

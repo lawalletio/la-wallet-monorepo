@@ -1,11 +1,11 @@
 export enum CardStatus {
-  ENABLED = "ENABLED",
-  DISABLED = "DISABLED",
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED',
 }
 
 export enum ConfigTypes {
-  DATA = "card-data",
-  CONFIG = "card-config",
+  DATA = 'card-data',
+  CONFIG = 'card-config',
 }
 
 export type Design = { uuid: string; name: string; description: string };
@@ -25,6 +25,6 @@ export type CardPayload = {
   limits: Limit[];
 };
 export type CardConfigPayload = {
-  "trusted-merchants": { pubkey: string }[];
+  'trusted-merchants': { pubkey: string }[];
   cards: { [uuid: string]: CardPayload };
 };

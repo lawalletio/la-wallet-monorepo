@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import theme from "@/styles/theme";
-import { ButtonCustom } from "./style";
-import { ReactNode } from "react";
-import { BtnLoader } from "@/components/Loader/Loader";
+import theme from '@/styles/theme';
+import { ButtonCustom } from './style';
+import { ReactNode } from 'react';
+import { BtnLoader } from '@/components/Loader/Loader';
 
-type Color = "primary" | "secondary" | "error";
-type Variant = "filled" | "bezeled" | "bezeledGray" | "borderless";
-type Size = "small" | "normal";
+type Color = 'primary' | 'secondary' | 'error';
+type Variant = 'filled' | 'bezeled' | 'bezeledGray' | 'borderless';
+type Size = 'small' | 'normal';
 
 interface ButtonProps {
   children: ReactNode;
@@ -51,9 +51,9 @@ function variantsList(variant: Variant, color: Color) {
 export default function Button(props: ButtonProps) {
   const {
     children,
-    color = "primary",
-    variant = "filled",
-    size = "normal",
+    color = 'primary',
+    variant = 'filled',
+    size = 'normal',
     loading = false,
     disabled = false,
     tabIndex = 0,
@@ -73,7 +73,7 @@ export default function Button(props: ButtonProps) {
       onMouseUp={onMouseUp}
       tabIndex={tabIndex}
       disabled={disabled || loading}
-      $isSmall={size === "small"}
+      $isSmall={size === 'small'}
       $background={variantsList(variant, color)?.background}
       $color={variantsList(variant, color)?.color}
     >

@@ -3,7 +3,7 @@ export {
   requestCardActivation,
   cardResetCaim,
   cardInfoRequest,
-} from "../interceptors/card.js";
+} from '../interceptors/card.js';
 
 export {
   type IdentityResponse,
@@ -13,9 +13,9 @@ export {
   getUsername,
   claimIdentity,
   existIdentity,
-} from "../interceptors/identity.js";
+} from '../interceptors/identity.js';
 
-export { broadcastEvent } from "../interceptors/publish.js";
+export { broadcastEvent } from '../interceptors/publish.js';
 
 export {
   type TransferInformation,
@@ -23,4 +23,4 @@ export {
   defaultTransfer,
   getWalletService,
   requestInvoice,
-} from "../interceptors/transaction.js";
+} from '../interceptors/transaction.js';

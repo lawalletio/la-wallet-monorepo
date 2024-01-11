@@ -1,24 +1,24 @@
-import * as React from "react";
-import NimiqQrScanner from "qr-scanner";
-import { QrScannerProps } from "./types";
+import * as React from 'react';
+import NimiqQrScanner from 'qr-scanner';
+import { QrScannerProps } from './types';
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
     bottom: 0,
     left: 0,
-    overflow: "hidden",
-    position: "fixed",
+    overflow: 'hidden',
+    position: 'fixed',
   },
   video: {
     top: 0,
     left: 0,
-    width: "100%",
-    height: "100%",
-    display: "block",
-    overflow: "hidden",
-    position: "absolute",
+    width: '100%',
+    height: '100%',
+    display: 'block',
+    overflow: 'hidden',
+    position: 'absolute',
   },
 };
 
@@ -73,12 +73,12 @@ const QrScanner = (props: QrScannerProps) => {
       );
 
       if (startOnLaunch) {
-        scanner.setInversionMode("both");
+        scanner.setInversionMode('both');
         scanner.start().then(
           () => {
             /*Started successfully*/
           },
-          (err) => console.log("Error starting scanner: ", err),
+          (err) => console.log('Error starting scanner: ', err),
         );
       }
 

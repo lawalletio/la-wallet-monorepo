@@ -1,19 +1,19 @@
-"use client";
-import Container from "@/components/Layout/Container";
-import { Loader } from "@/components/Loader/Loader";
-import Logo from "@/components/Logo";
+'use client';
+import Container from '@/components/Layout/Container';
+import { Loader } from '@/components/Loader/Loader';
+import Logo from '@/components/Logo';
 
-import { Feedback, Flex, Heading, Text } from "@/components/UI";
-import { LAWALLET_VERSION } from "@/constants/constants";
-import { useTranslation } from "@/context/TranslateContext";
-import useErrors from "@/hooks/useErrors";
-import theme from "@/styles/theme";
-import { useWalletContext } from "@lawallet/react";
-import { cardResetCaim, generateUserIdentity } from "@lawallet/react/actions";
-import { buildCardActivationEvent } from "@lawallet/react/utils";
-import { NostrEvent } from "@nostr-dev-kit/ndk";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Feedback, Flex, Heading, Text } from '@/components/UI';
+import { LAWALLET_VERSION } from '@/constants/constants';
+import { useTranslation } from '@/context/TranslateContext';
+import useErrors from '@/hooks/useErrors';
+import theme from '@/styles/theme';
+import { useWalletContext } from '@lawallet/react';
+import { cardResetCaim, generateUserIdentity } from '@lawallet/react/actions';
+import { buildCardActivationEvent } from '@lawallet/react/utils';
+import { NostrEvent } from '@nostr-dev-kit/ndk';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Page() {
   const { t } = useTranslation();
@@ -28,9 +28,9 @@ export default function Page() {
   useEffect(() => {
     if (identity.hexpub.length) return;
 
-    const recoveryNonce: string = params.get("n") || "";
+    const recoveryNonce: string = params.get('n') || '';
     if (!recoveryNonce) {
-      router.push("/");
+      router.push('/');
       return;
     }
 
@@ -44,13 +44,13 @@ export default function Page() {
               setUser({
                 ...generatedIdentity,
                 username: res.name,
-              }).then(() => router.push("/dashboard"));
+              }).then(() => router.push('/dashboard'));
             } else {
-              errors.modifyError("ERROR_ON_RESET_ACCOUNT");
+              errors.modifyError('ERROR_ON_RESET_ACCOUNT');
             }
           });
         })
-        .catch(() => router.push("/"));
+        .catch(() => router.push('/'));
     });
   }, []);
 
@@ -64,7 +64,7 @@ export default function Page() {
       </Flex>
 
       <Flex direction="column" align="center" justify="center">
-        <Heading as="h2">{t("RECOVERING_ACCOUNT")}</Heading>
+        <Heading as="h2">{t('RECOVERING_ACCOUNT')}</Heading>
       </Flex>
 
       <Flex flex={1} justify="center" align="center">
@@ -72,7 +72,7 @@ export default function Page() {
       </Flex>
 
       <Flex flex={1} justify="center" align="center">
-        <Feedback show={errors.errorInfo.visible} status={"error"}>
+        <Feedback show={errors.errorInfo.visible} status={'error'}>
           {errors.errorInfo.text}
         </Feedback>
       </Flex>

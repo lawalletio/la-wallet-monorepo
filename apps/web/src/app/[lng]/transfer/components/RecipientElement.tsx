@@ -1,5 +1,5 @@
-import { Avatar, Flex, Text } from "@/components/UI";
-import { splitHandle } from "@lawallet/react/utils";
+import { Avatar, Flex, Text } from '@/components/UI';
+import { splitHandle } from '@lawallet/react/utils';
 
 const RecipientElement = ({ lud16 }: { lud16: string }) => {
   const [username, domain] = splitHandle(lud16);

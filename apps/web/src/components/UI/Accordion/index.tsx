@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useState } from 'react';
 
-import AccordionTrigger from "./AccordionTrigger";
+import AccordionTrigger from './AccordionTrigger';
 
-import { Accordion, AccordionContent } from "./style";
-import theme from "@/styles/theme";
+import { Accordion, AccordionContent } from './style';
+import theme from '@/styles/theme';
 
 interface ComponentProps {
   children: ReactNode;
   trigger: ReactNode;
   onOpen?: () => void;
-  variant?: "filled" | "borderless";
+  variant?: 'filled' | 'borderless';
 }
 
 const variants = {
@@ -20,13 +20,13 @@ const variants = {
     border: theme.colors.gray20,
   },
   borderless: {
-    background: "transparent",
-    border: "transparent",
+    background: 'transparent',
+    border: 'transparent',
   },
 };
 
 export default function Component(props: ComponentProps) {
-  const { children, trigger, onOpen, variant = "filled" } = props;
+  const { children, trigger, onOpen, variant = 'filled' } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -36,11 +36,7 @@ export default function Component(props: ComponentProps) {
   };
 
   return (
-    <Accordion
-      $isOpen={open}
-      $background={variants[variant].background}
-      $borderColor={variants[variant].border}
-    >
+    <Accordion $isOpen={open} $background={variants[variant].background} $borderColor={variants[variant].border}>
       <AccordionTrigger onClick={handleClick} isOpen={open}>
         {trigger}
       </AccordionTrigger>
