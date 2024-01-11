@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
+    "dev": "pnpm libs:build && turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "web:start": "pnpm --filter lawallet-front start",

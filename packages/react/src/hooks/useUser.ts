@@ -21,7 +21,7 @@ export const useUser = () => {
   const { userTransactions: transactions } = useActivity({
     pubkey: identity.hexpub,
     enabled: Boolean(identity.hexpub.length),
-    useCache: true
+    cache: true,
   })
 
   const { balance } = useTokenBalance({
