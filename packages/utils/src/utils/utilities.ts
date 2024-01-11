@@ -21,13 +21,14 @@ export const nowInSeconds = (): number => {
 }
 
 export const detectTransferType = (data: string): TransferTypes | false => {
+  if (!data.length) return false
+
   const upperStr: string = data.toUpperCase()
   const isLUD16 = validateEmail(upperStr)
   if (isLUD16) {
     const domain: string = upperStr.split('@')[1]!
 
-    return domain.toUpperCase() ===
-      baseConfig.federation.domain.toUpperCase()
+    return domain.toUpperCase() === baseConfig.federation.domain.toUpperCase()
       ? TransferTypes.INTERNAL
       : TransferTypes.LUD16
   }
@@ -35,7 +36,8 @@ export const detectTransferType = (data: string): TransferTypes | false => {
   if (upperStr.startsWith('LNURL')) return TransferTypes.LNURL
   if (upperStr.startsWith('LNBC')) return TransferTypes.INVOICE
 
-  return false
+  if (data.length > 15) return false
+  return TransferTypes.INTERNAL
 }
 
 const parseInvoiceInfo = (invoice: string) => {
@@ -122,8 +124,19 @@ const parseLNURLInfo = async (data: string) => {
   return transfer
 }
 
+export const splitHandle = (handle: string): string[] => {
+  if (!handle.length) return [];
+
+  if (handle.includes('@')) {
+    const [username, domain] = handle.split('@')
+    return [username!, domain!]
+  } else {
+    return [handle, baseConfig.federation.domain]
+  }
+}
+
 const parseLUD16Info = async (data: string) => {
-  const [username, domain] = data.split('@')
+  const [username, domain] = splitHandle(data)
   const walletService = await getWalletService(
     `https://${domain}/.well-known/lnurlp/${username}`
   )
@@ -143,7 +156,7 @@ const parseLUD16Info = async (data: string) => {
 }
 
 const parseINTERNALInfo = async (data: string) => {
-  const [username] = data.split('@')
+  const [username] = splitHandle(data);
   const receiverPubkey: string = await getUserPubkey(username!)
   if (!receiverPubkey) return defaultTransfer
 

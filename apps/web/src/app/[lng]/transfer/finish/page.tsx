@@ -17,7 +17,7 @@ import {
 import { useTransferContext } from '@/context/TransferContext'
 import { useTranslation } from '@/context/TranslateContext'
 import { formatAddress, formatToPreference } from '@lawallet/react'
-import { TransferTypes } from '@lawallet/utils'
+import { TransferTypes, splitHandle } from '@lawallet/utils'
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import { useWalletContext } from '@lawallet/react'
@@ -44,7 +44,7 @@ export default function Page() {
   }, [pricesData])
 
   const router = useRouter()
-  const [transferUsername, transferDomain] = transferInfo.data.split('@')
+  const [transferUsername, transferDomain] = splitHandle(transferInfo.data)
   if (!transferInfo.data) router.push('/dashboard')
 
   return (

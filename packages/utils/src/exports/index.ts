@@ -55,6 +55,7 @@ export {
   detectTransferType,
   removeLightningStandard,
   formatTransferData,
+  splitHandle,
   parseContent
 } from '../utils/utilities.js'
 
