@@ -3,7 +3,7 @@
 To manually add @lawallet/react to your project, install the required packages.
 
 ```bash-vue [pnpm]
-pnpm add @lawallet/react @lawallet/utils
+pnpm add @lawallet/react
 ```
 
 ### Create Config
@@ -11,7 +11,7 @@ pnpm add @lawallet/react @lawallet/utils
 The following configuration contains the default values. If you want to use these values, you should not send any config to the provider.
 
 ```tsx [config.ts]
-import { type ConfigProps } from "@lawallet/utils";
+import { type ConfigProps } from "@lawallet/react/types";
 
 export const config: ConfigProps = {
   gatewayEndpoint: "https://api.lawallet.ar",
