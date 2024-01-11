@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/react",
-  "version": "0.0.5",
+  "version": "0.0.51",
   "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
