@@ -2,8 +2,6 @@
 
 To manually add @lawallet/react to your project, install the required packages.
 
-::: code-group
-
 ```bash-vue [pnpm]
 pnpm add @lawallet/react @lawallet/utils
 ```
@@ -36,16 +34,10 @@ export const config: ConfigProps = {
 Wrap your app in the `LaWalletProvider` React Context Provider and pass the `config` you created earlier to the `value` property.
 
 ```tsx [app.tsx]
-import { LaWalletProvider } from "@lawallet/react"; // [!code focus]
-import { config } from "./config"; // [!code focus]
+import { LaWalletProvider } from "@lawallet/react";
+import { config } from "./config";
 
 function App() {
-  return (
-    <LaWalletProvider config={config}>
-      {" "}
-      // [!code focus]
-      {/** ... */} // [!code focus]
-    </LaWalletProvider> // [!code focus]
-  );
+  return <LaWalletProvider config={config}>{/** ... **/}</LaWalletProvider>;
 }
 ```
