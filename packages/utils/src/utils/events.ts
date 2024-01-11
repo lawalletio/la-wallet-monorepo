@@ -183,9 +183,9 @@ export const buildZapRequestEvent = async (
 type TransactionProps = {
   tokenName: string;
   amount: number;
-  comment: string;
   senderPubkey: string;
   receiverPubkey: string;
+  comment?: string;
   bolt11?: string;
 };
 
@@ -203,7 +203,7 @@ export const buildTxStartEventWithoutSigner = async (
     kind: LaWalletKinds.REGULAR,
     content: JSON.stringify({
       tokens: { [props.tokenName]: (props.amount * 1000).toString() },
-      memo: props.comment,
+      ...(props.comment ? { memo: props.comment } : {}),
     }),
     tags: props.bolt11
       ? [
