@@ -40,8 +40,9 @@ export default function Page() {
 
     if (confirmation) {
       localStorage.removeItem(STORAGE_IDENTITY_KEY);
-      setUser(defaultIdentity);
-      router.push('/login');
+      setUser(defaultIdentity).then(() => {
+        router.push('/login');
+      });
     }
   };
 

@@ -1,7 +1,7 @@
 import { parseContent } from '@lawallet/utils';
 import { getUsername } from '@lawallet/utils/actions';
 import { defaultIdentity, type UserIdentity } from '@lawallet/utils/types';
-import { getPublicKey } from 'nostr-tools';
+import { getPublicKey, nip19 } from 'nostr-tools';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 import { useConfig } from './useConfig.js';
@@ -9,7 +9,8 @@ import type { ConfigParameter } from '../types/config.js';
 
 export interface UseIdentityReturns {
   identity: UserIdentity;
-  setIdentity: Dispatch<SetStateAction<UserIdentity>>;
+  loadIdentityFromPubkey: (pubkey: string) => void;
+  loadIdentityFromPrivateKey: (privkey: string) => void;
 }
 
 export type UseIdentityParameters = ConfigParameter & { pubkey?: string };
@@ -31,6 +32,24 @@ export const useIdentity = (params: UseIdentityParameters): UseIdentityReturns =
       ...identity,
       username,
       hexpub: pub,
+      isReady: true,
+    });
+  };
+
+  const loadIdentityFromPrivateKey = async (privkey: string) => {
+    if (!privkey.length) {
+      setIdentity({ ...defaultIdentity, isReady: true });
+      return;
+    }
+
+    const pubkey: string = getPublicKey(privkey);
+    const username: string = await getUsername(pubkey, config);
+
+    setIdentity({
+      username,
+      hexpub: pubkey,
+      npub: nip19.npubEncode(pubkey),
+      privateKey: privkey,
       isReady: true,
     });
   };
@@ -68,6 +87,7 @@ export const useIdentity = (params: UseIdentityParameters): UseIdentityReturns =
 
   return {
     identity,
-    setIdentity,
+    loadIdentityFromPubkey,
+    loadIdentityFromPrivateKey,
   };
 };
