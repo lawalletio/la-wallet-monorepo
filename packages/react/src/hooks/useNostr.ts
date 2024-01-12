@@ -11,17 +11,23 @@ type LightningProvidersType = {
   nostr: NostrExtensionProvider | undefined;
 };
 
+type NostrConfig = {
+  explicitRelayUrls: string[];
+  autoConnect?: boolean;
+};
+
 export interface INostr {
   ndk: NDK;
   signer: SignerTypes;
   signerPubkey: string;
   providers: LightningProvidersType;
+  connectNDK: () => Promise<boolean>;
   connectExtension: () => void;
   connectWithPrivateKey: (hexKey: string) => Promise<boolean>;
   requestPublicKey: () => Promise<string>;
 }
 
-export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
+export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig): INostr => {
   const [ndk] = React.useState<NDK>(
     new NDK({
       explicitRelayUrls,
@@ -55,7 +61,7 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const connectNDK = async (signer: NDKNip07Signer | NDKPrivateKeySigner) => {
+  const connectNDK = async () => {
     try {
       await ndk.connect();
       return true;
@@ -100,14 +106,17 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
 
   React.useEffect(() => {
     loadProviders();
+
+    if (autoConnect) connectNDK();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [autoConnect]);
 
   return {
     ndk,
     signer,
     providers,
     signerPubkey,
+    connectNDK,
     connectExtension,
     connectWithPrivateKey,
     requestPublicKey,

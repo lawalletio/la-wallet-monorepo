@@ -7,7 +7,7 @@ export const NDKContext = React.createContext({} as INostr);
 
 export function NDKProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const { children, config = baseConfig } = props;
-  const value = useNOSTR(config.relaysList);
+  const value = useNOSTR({ explicitRelayUrls: config.relaysList, autoConnect: true });
 
   return React.createElement(NDKContext.Provider, { value }, children);
 }
