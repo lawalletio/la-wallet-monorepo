@@ -1,7 +1,6 @@
-import { NDKEvent, type NDKNip07Signer, type NDKPrivateKeySigner, type NostrEvent } from '@nostr-dev-kit/ndk';
-import NDK from '@nostr-dev-kit/ndk';
+import NDK, { NDKEvent, type NDKSigner, type NostrEvent } from '@nostr-dev-kit/ndk';
 
-export async function SignEvent(signer: NDKPrivateKeySigner | NDKNip07Signer, event: NostrEvent) {
+export async function SignEvent(signer: NDKSigner, event: NostrEvent) {
   try {
     const ndk = new NDK({ signer });
     const eventToSign: NDKEvent = new NDKEvent(ndk, event);

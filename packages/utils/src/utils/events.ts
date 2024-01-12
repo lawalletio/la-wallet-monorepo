@@ -120,41 +120,39 @@ export const buildCardActivationEvent = async (
   return event.toNostrEvent();
 };
 
-export const buildZapRequestEventWithoutSigner = async (
-  pubkey: string,
-  amount: number,
-  config: ConfigProps = baseConfig,
-) => {
+export const buildZapRequestEvent = (pubkey: string, amount: number, config: ConfigProps = baseConfig): NostrEvent => {
   return {
     pubkey,
+    content: '',
     kind: NDKKind.ZapRequest,
     tags: [
       ['p', pubkey],
       ['amount', amount.toString()],
       ['relays', ...config.relaysList],
     ],
+    created_at: nowInSeconds(),
   };
 };
 
-export const buildZapRequestEvent = async (amount: number, privateKey: string, config: ConfigProps = baseConfig) => {
-  const signer = new NDKPrivateKeySigner(privateKey);
-  const userPubkey: string = getPublicKey(privateKey);
+// export const buildZapRequestEvent = async (amount: number, privateKey: string, config: ConfigProps = baseConfig) => {
+//   const signer = new NDKPrivateKeySigner(privateKey);
+//   const userPubkey: string = getPublicKey(privateKey);
 
-  const zapEvent: NDKEvent = new NDKEvent();
-  zapEvent.pubkey = userPubkey;
-  zapEvent.kind = NDKKind.ZapRequest;
+//   const zapEvent: NDKEvent = new NDKEvent();
+//   zapEvent.pubkey = userPubkey;
+//   zapEvent.kind = NDKKind.ZapRequest;
 
-  zapEvent.tags = [
-    ['p', userPubkey],
-    ['amount', amount.toString()],
-    ['relays', ...config.relaysList],
-  ];
+//   zapEvent.tags = [
+//     ['p', userPubkey],
+//     ['amount', amount.toString()],
+//     ['relays', ...config.relaysList],
+//   ];
 
-  await zapEvent.sign(signer);
+//   await zapEvent.sign(signer);
 
-  const requestEvent: string = encodeURI(JSON.stringify(await zapEvent.toNostrEvent()));
-  return requestEvent;
-};
+//   const requestEvent: string = encodeURI(JSON.stringify(await zapEvent.toNostrEvent()));
+//   return requestEvent;
+// };
 
 type TransactionProps = {
   tokenName: string;

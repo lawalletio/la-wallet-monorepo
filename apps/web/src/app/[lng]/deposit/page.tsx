@@ -5,7 +5,7 @@ import { CheckIcon, SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/fi
 import { useEffect, useMemo, useState } from 'react';
 
 import { copy } from '@/utils/share';
-import { formatAddress, formatToPreference, useConfig } from '@lawallet/react';
+import { formatAddress, formatToPreference, useConfig, useSigner } from '@lawallet/react';
 
 import { useTranslation } from '@/context/TranslateContext';
 import { useNumpad } from '@/hooks/useNumpad';
@@ -34,9 +34,10 @@ import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
 import { useSubscription, useWalletContext } from '@lawallet/react';
 import { requestInvoice } from '@lawallet/react/actions';
-import { buildZapRequestEvent, lnurl_encode } from '@lawallet/react/utils';
+import { SignEvent, buildZapRequestEvent, lnurl_encode } from '@lawallet/react/utils';
 import { useRouter } from 'next/navigation';
 import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
+import { NostrEvent } from '@nostr-dev-kit/ndk';
 
 type InvoiceProps = {
   bolt11: string;
@@ -48,6 +49,7 @@ type SheetTypes = 'amount' | 'qr' | 'finished';
 
 export default function Page() {
   const config = useConfig();
+  const { signer } = useSigner();
   const { lng, t } = useTranslation();
   const notifications = useAlert();
   const {
@@ -100,10 +102,16 @@ export default function Page() {
 
     setInvoice({ ...invoice, loading: true });
     const invoice_mSats: number = amountSats * 1000;
-    const zapRequest: string = await buildZapRequestEvent(invoice_mSats, identity.privateKey);
+    console.log(signer);
+    const zapRequestEvent: NostrEvent | undefined = await SignEvent(
+      signer!,
+      buildZapRequestEvent(identity.hexpub, invoice_mSats, config),
+    );
+    console.log(zapRequestEvent);
+    const zapRequestURI: string = encodeURI(JSON.stringify(zapRequestEvent));
 
     requestInvoice(
-      `${config.gatewayEndpoint}/lnurlp/${identity.npub}/callback?amount=${invoice_mSats}&nostr=${zapRequest}`,
+      `${config.gatewayEndpoint}/lnurlp/${identity.npub}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}`,
     )
       .then((bolt11) => {
         if (bolt11) {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import type NostrExtensionProvider from '../types/nostr.js';
 import { type WebLNProvider as WebLNExtensionProvider } from '../types/webln.js';
 
-import NDK from '@nostr-dev-kit/ndk';
+import NDK, { NDKNip07Signer, NDKPrivateKeySigner } from '@nostr-dev-kit/ndk';
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;
@@ -18,7 +18,10 @@ export interface INostr {
   ndk: NDK;
   providers: LightningProvidersType;
   connectNDK: () => Promise<boolean>;
+  initializeSigner: (signer: SignerTypes) => void;
 }
+
+export type SignerTypes = NDKPrivateKeySigner | NDKNip07Signer | undefined;
 
 export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig): INostr => {
   const [ndk] = React.useState<NDK>(
@@ -31,6 +34,11 @@ export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig)
     webln: undefined,
     nostr: undefined,
   });
+
+  const initializeSigner = (signer: SignerTypes) => {
+    if (!signer) return;
+    ndk.signer = signer;
+  };
 
   const loadProviders = React.useCallback(async () => {
     setProviders({
@@ -71,5 +79,6 @@ export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig)
     ndk,
     providers,
     connectNDK,
+    initializeSigner,
   };
 };

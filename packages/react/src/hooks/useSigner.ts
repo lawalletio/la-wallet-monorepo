@@ -1,8 +1,7 @@
 import { NDKPrivateKeySigner, NDKNip07Signer, NDKUser } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 import { useNostrContext } from '../context/NDKContext.js';
-
-type SignerTypes = NDKPrivateKeySigner | NDKNip07Signer | undefined;
+import type { SignerTypes } from './useNostr.js';
 
 export type UseSignerReturns = {
   signer: SignerTypes;
@@ -12,14 +11,18 @@ export type UseSignerReturns = {
 };
 
 export const useSigner = () => {
-  const { providers } = useNostrContext();
-  const [signer, setSigner] = React.useState<SignerTypes>();
+  const {
+    ndk: { signer },
+    initializeSigner,
+    providers,
+  } = useNostrContext();
+
   const [signerPubkey, setSignerPubkey] = React.useState<string>('');
 
   const connectWithPrivateKey = async (hexKey: string): Promise<SignerTypes> => {
     try {
       const privateKeySigner = new NDKPrivateKeySigner(hexKey);
-      setSigner(privateKeySigner);
+      initializeSigner(privateKeySigner);
 
       const user: NDKUser = await privateKeySigner.user();
       if (user && user.pubkey) setSignerPubkey(user.pubkey);
@@ -35,7 +38,7 @@ export const useSigner = () => {
     await providers.webln.enable();
 
     const nip07signer = new NDKNip07Signer();
-    setSigner(nip07signer);
+    initializeSigner(nip07signer);
 
     const pubKey = await requestPublicKey();
     if (pubKey) setSignerPubkey(pubKey);
