@@ -62,7 +62,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const claimLNURLw = (info: TransferInformation, npub: string) => {
     const { walletService } = info;
 
-    requestInvoice(`${config.gatewayEndpoint}/lnurlp/${npub}/callback?amount=${walletService?.maxWithdrawable}`)
+    requestInvoice(`${config.endpoints.api}/lnurlp/${npub}/callback?amount=${walletService?.maxWithdrawable}`)
       .then((pr) => {
         if (pr) {
           let urlCallback: string = walletService!.callback;

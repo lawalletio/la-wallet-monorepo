@@ -1,12 +1,14 @@
 import { type ConfigProps } from '../types/config.js';
 
 export const baseConfig: ConfigProps = {
-  gatewayEndpoint: 'https://api.lawallet.ar',
+  endpoints: {
+    api: 'https://api.lawallet.ar',
+    identity: 'https://lawallet.ar',
+  },
   relaysList: ['wss://relay.damus.io', 'wss://relay.lawallet.ar'],
   federation: {
     id: 'lawallet.ar',
     domain: 'lawallet.ar',
-    identityEndpoint: 'https://lawallet.ar',
   },
   modulePubkeys: {
     card: '18f6a706091b421bd9db1ec964b4f934007fb6997c60e3c500fdaebe5f9f7b18',

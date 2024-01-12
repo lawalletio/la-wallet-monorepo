@@ -30,7 +30,7 @@ export const generateUserIdentity = async (name?: string): Promise<UserIdentity>
 export const validateNonce = async (nonce: string, config: ConfigProps = baseConfig): Promise<boolean> => {
   if (nonce === 'test') return true;
 
-  return fetch(`${config.federation.identityEndpoint}/api/nonce/${nonce}`)
+  return fetch(`${config.endpoints.identity}/api/nonce/${nonce}`)
     .then((res) => res.json())
     .then((response) => {
       if (!response || !response.status) return false;
@@ -41,7 +41,7 @@ export const validateNonce = async (nonce: string, config: ConfigProps = baseCon
 };
 
 export const claimIdentity = async (event: NostrEvent, config: ConfigProps = baseConfig): Promise<IdentityResponse> => {
-  return fetch(`${config.federation.identityEndpoint}/api/identity`, {
+  return fetch(`${config.endpoints.identity}/api/identity`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export const getUsername = (pubkey: string, config: ConfigProps = baseConfig) =>
   const storagedUsername: string = localStorage.getItem(pubkey) || '';
   if (storagedUsername.length) return storagedUsername;
 
-  return fetch(`${config.federation.identityEndpoint}/api/pubkey/${pubkey}`)
+  return fetch(`${config.endpoints.identity}/api/pubkey/${pubkey}`)
     .then((res) => res.json())
     .then((info) => {
       if (!info || !info.username) return '';
@@ -80,14 +80,14 @@ export const getUsername = (pubkey: string, config: ConfigProps = baseConfig) =>
 };
 
 export const getUserPubkey = (username: string, config: ConfigProps = baseConfig) =>
-  fetch(`${config.federation.identityEndpoint}/api/lud16/${username}`)
+  fetch(`${config.endpoints.identity}/api/lud16/${username}`)
     .then((res) => res.json())
     .then((info) => info.accountPubKey ?? '')
     .catch(() => '');
 
 export const existIdentity = async (name: string, config: ConfigProps = baseConfig): Promise<boolean> => {
   try {
-    const response = await fetch(`${config.federation.identityEndpoint}/api/identity?name=${name}`);
+    const response = await fetch(`${config.endpoints.identity}/api/identity?name=${name}`);
     return response.status === 200;
   } catch {
     return false;

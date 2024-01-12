@@ -1,14 +1,18 @@
+export type EndpointsType = {
+  identity: string;
+  api: string;
+};
+
 export type ConfigProps = {
-  gatewayEndpoint: string;
-  relaysList: string[];
+  endpoints: EndpointsType;
   federation: {
     id: string;
     domain: string;
-    identityEndpoint: string;
   };
   modulePubkeys: {
     card: string;
     ledger: string;
     urlx: string;
   };
+  relaysList: string[];
 };

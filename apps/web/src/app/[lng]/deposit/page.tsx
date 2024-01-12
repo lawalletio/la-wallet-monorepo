@@ -109,7 +109,7 @@ export default function Page() {
     const zapRequestURI: string = encodeURI(JSON.stringify(zapRequestEvent));
 
     requestInvoice(
-      `${config.gatewayEndpoint}/lnurlp/${identity.npub}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}`,
+      `${config.endpoints.api}/lnurlp/${identity.npub}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}`,
     )
       .then((bolt11) => {
         if (bolt11) {
