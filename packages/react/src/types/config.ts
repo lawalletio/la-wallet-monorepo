@@ -1,6 +1,9 @@
 import { type ConfigProps } from '@lawallet/utils/types';
 
-export type ConfigParameter = {
+// export type ConfigParameter = {
+//   config?: ConfigProps;
+// };
+export type ConfigParameter<T extends ConfigProps = ConfigProps> = {
   config?: ConfigProps;
 };
 

@@ -1,7 +1,7 @@
 import { type TokenBalance, type Transaction, type UserIdentity } from '@lawallet/utils/types';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 import { useActivity } from './useActivity.js';
-import { useIdentity } from './useIdentity.js';
+import { useIdentity, type UseIdentityParameters } from './useIdentity.js';
 import { useTokenBalance } from './useTokenBalance.js';
 import { useConfig } from './useConfig.js';
 
@@ -12,9 +12,9 @@ export interface UseUserReturns {
   setUser: (new_identity: UserIdentity) => Promise<void>;
 }
 
-export const useUser = (): UseUserReturns => {
-  const config = useConfig();
-  const { identity, setIdentity } = useIdentity();
+export const useUser = (params: UseIdentityParameters): UseUserReturns => {
+  const config = useConfig(params);
+  const { identity, setIdentity } = useIdentity(params);
 
   const { userTransactions: transactions } = useActivity({
     pubkey: identity.hexpub,

@@ -14,10 +14,10 @@ interface AccountContextType {
 export const AccountContext = React.createContext({} as AccountContextType);
 
 export function AccountProvider(props: React.PropsWithChildren<ConfigParameter>) {
-  const { children } = props;
+  const { children, config } = props;
   const { connectWithPrivateKey } = useNostrContext();
 
-  const user: UseUserReturns = useUser();
+  const user: UseUserReturns = useUser({ config });
   const settings: UseSettingsReturns = useSettings();
   const converter: UseConverterReturns = useCurrencyConverter();
 
