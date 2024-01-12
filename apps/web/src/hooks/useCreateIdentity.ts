@@ -1,5 +1,5 @@
 import { regexUserName } from '@/constants/constants';
-import { useWalletContext } from '@lawallet/react';
+import { useSigner, useWalletContext } from '@lawallet/react';
 import {
   IdentityResponse,
   claimIdentity,
@@ -7,7 +7,7 @@ import {
   generateUserIdentity,
   requestCardActivation,
 } from '@lawallet/react/actions';
-import { buildCardActivationEvent, buildIdentityEvent } from '@lawallet/react/utils';
+import { SignEvent, buildCardActivationEvent, buildIdentityEvent } from '@lawallet/react/utils';
 
 import { UserIdentity } from '@lawallet/react/types';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
@@ -55,6 +55,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
   const {
     user: { setUser },
   } = useWalletContext();
+  const { connectWithPrivateKey } = useSigner();
   const [loading, setLoading] = useState<boolean>(false);
 
   const [accountInfo, setAccountInfo] = useState<CreateIdentityParams>(defaultAccount);
@@ -124,26 +125,44 @@ export const useCreateIdentity = (): UseIdentityReturns => {
   const createIdentity = async ({ nonce, name }: AccountProps): Promise<CreateIdentityReturns> => {
     const generatedIdentity: UserIdentity = await generateUserIdentity(name);
 
-    try {
-      const event: NostrEvent = await buildIdentityEvent(nonce, generatedIdentity);
-      const createdAccount: IdentityResponse = await claimIdentity(event);
-      if (!createdAccount.success)
+    return connectWithPrivateKey(generatedIdentity.privateKey)
+      .then(async (tmpSigner) => {
+        if (!tmpSigner)
+          return {
+            success: false,
+            message: 'ERROR_WITH_SIGNER',
+          };
+
+        const identityEvent: NostrEvent | undefined = await SignEvent(
+          tmpSigner,
+          buildIdentityEvent(nonce, generatedIdentity),
+        );
+
+        if (!identityEvent)
+          return {
+            success: false,
+            message: 'ERROR_WITH_IDENTITY_EVENT',
+          };
+
+        const createdAccount: IdentityResponse = await claimIdentity(identityEvent);
+        if (!createdAccount.success)
+          return {
+            success: false,
+            message: createdAccount.reason!,
+          };
+
+        return {
+          success: true,
+          message: 'ok',
+          identity: generatedIdentity,
+        };
+      })
+      .catch(() => {
         return {
           success: false,
-          message: createdAccount.reason!,
+          message: 'ERROR_ON_CREATE_ACCOUNT',
         };
-
-      return {
-        success: true,
-        message: 'ok',
-        identity: generatedIdentity,
-      };
-    } catch {
-      return {
-        success: false,
-        message: 'ERROR_ON_CREATE_ACCOUNT',
-      };
-    }
+      });
   };
 
   const handleCreateIdentity = (props: AccountProps) => {
@@ -191,7 +210,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
           }
         });
       })
-      .then(() => setLoading(false));
+      .finally(() => setLoading(false));
   };
   return {
     accountInfo,

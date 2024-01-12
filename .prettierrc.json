@@ -6,6 +6,12 @@
   "trailingComma": "all",
   "overrides": [
     {
+      "files": "*.js",
+      "options": {
+        "parser": "typescript"
+      }
+    },
+    {
       "files": "*.ts",
       "options": {
         "parser": "typescript"

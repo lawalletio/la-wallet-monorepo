@@ -46,7 +46,7 @@ export const getMultipleTags = (tags: NDKTag[], keyTag: string) => {
   return values;
 };
 
-export const buildIdentityEventWithoutSigner = (nonce: string, identity: UserIdentity): NostrEvent => {
+export const buildIdentityEvent = (nonce: string, identity: UserIdentity): NostrEvent => {
   return {
     pubkey: identity.hexpub,
     kind: LaWalletKinds.REGULAR,
@@ -63,26 +63,26 @@ export const buildIdentityEventWithoutSigner = (nonce: string, identity: UserIde
   };
 };
 
-export const buildIdentityEvent = async (nonce: string, identity: UserIdentity): Promise<NostrEvent> => {
-  const signer = new NDKPrivateKeySigner(identity.privateKey);
-  const event: NDKEvent = new NDKEvent();
-  event.pubkey = identity.hexpub;
-  event.kind = LaWalletKinds.REGULAR;
+// export const buildIdentityEvent = async (nonce: string, identity: UserIdentity): Promise<NostrEvent> => {
+//   const signer = new NDKPrivateKeySigner(identity.privateKey);
+//   const event: NDKEvent = new NDKEvent();
+//   event.pubkey = identity.hexpub;
+//   event.kind = LaWalletKinds.REGULAR;
 
-  event.content = JSON.stringify({
-    name: identity.username,
-    pubkey: identity.hexpub,
-  });
+//   event.content = JSON.stringify({
+//     name: identity.username,
+//     pubkey: identity.hexpub,
+//   });
 
-  event.tags = [
-    ['t', LaWalletTags.CREATE_IDENTITY],
-    ['name', identity.username],
-    ['nonce', nonce],
-  ];
+//   event.tags = [
+//     ['t', LaWalletTags.CREATE_IDENTITY],
+//     ['name', identity.username],
+//     ['nonce', nonce],
+//   ];
 
-  await event.sign(signer);
-  return event.toNostrEvent();
-};
+//   await event.sign(signer);
+//   return event.toNostrEvent();
+// };
 
 export const buildCardActivationEvent = async (
   otc: string,

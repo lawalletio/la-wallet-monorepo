@@ -14,6 +14,8 @@ export {
   buildZapRequestEvent,
 } from '../utils/events.js';
 
+export { SignEvent } from '../utils/ndk.js';
+
 export { lnurl_decode, lnurl_encode } from '../utils/lnurl.js';
 
 export { type MultiNip04Content, buildMultiNip04Event, parseMultiNip04Event } from '../utils/nip04.js';
