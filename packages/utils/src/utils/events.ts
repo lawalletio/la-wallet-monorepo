@@ -1,7 +1,6 @@
 import { NDKEvent, NDKKind, NDKPrivateKeySigner, type NDKTag, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { getEventHash, getPublicKey, getSignature, nip26, type UnsignedEvent } from 'nostr-tools';
 import { baseConfig } from '../constants/constants.js';
-import { type TransferInformation } from '../interceptors/transaction.js';
 import { ConfigTypes, type CardConfigPayload } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
 import { type UserIdentity } from '../types/identity.js';
@@ -63,27 +62,6 @@ export const buildIdentityEvent = (nonce: string, identity: UserIdentity): Nostr
   };
 };
 
-// export const buildIdentityEvent = async (nonce: string, identity: UserIdentity): Promise<NostrEvent> => {
-//   const signer = new NDKPrivateKeySigner(identity.privateKey);
-//   const event: NDKEvent = new NDKEvent();
-//   event.pubkey = identity.hexpub;
-//   event.kind = LaWalletKinds.REGULAR;
-
-//   event.content = JSON.stringify({
-//     name: identity.username,
-//     pubkey: identity.hexpub,
-//   });
-
-//   event.tags = [
-//     ['t', LaWalletTags.CREATE_IDENTITY],
-//     ['name', identity.username],
-//     ['nonce', nonce],
-//   ];
-
-//   await event.sign(signer);
-//   return event.toNostrEvent();
-// };
-
 export const buildCardActivationEvent = async (
   otc: string,
   privateKey: string,
@@ -134,39 +112,16 @@ export const buildZapRequestEvent = (pubkey: string, amount: number, config: Con
   };
 };
 
-// export const buildZapRequestEvent = async (amount: number, privateKey: string, config: ConfigProps = baseConfig) => {
-//   const signer = new NDKPrivateKeySigner(privateKey);
-//   const userPubkey: string = getPublicKey(privateKey);
-
-//   const zapEvent: NDKEvent = new NDKEvent();
-//   zapEvent.pubkey = userPubkey;
-//   zapEvent.kind = NDKKind.ZapRequest;
-
-//   zapEvent.tags = [
-//     ['p', userPubkey],
-//     ['amount', amount.toString()],
-//     ['relays', ...config.relaysList],
-//   ];
-
-//   await zapEvent.sign(signer);
-
-//   const requestEvent: string = encodeURI(JSON.stringify(await zapEvent.toNostrEvent()));
-//   return requestEvent;
-// };
-
 type TransactionProps = {
   tokenName: string;
   amount: number;
   senderPubkey: string;
-  receiverPubkey: string;
+  receiverPubkey?: string;
   comment?: string;
   bolt11?: string;
 };
 
-export const buildTxStartEventWithoutSigner = async (
-  props: TransactionProps,
-  config: ConfigProps = baseConfig,
-): Promise<NostrEvent> => {
+export const buildTxStartEvent = (props: TransactionProps, config: ConfigProps = baseConfig): NostrEvent => {
   const baseTags: NDKTag[] = [
     ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
     ['p', config.modulePubkeys.ledger],
@@ -181,42 +136,42 @@ export const buildTxStartEventWithoutSigner = async (
     }),
     tags: props.bolt11
       ? [...baseTags, ['p', config.modulePubkeys.urlx], ['bolt11', props.bolt11]]
-      : [...baseTags, ['p', props.receiverPubkey]],
+      : [...baseTags, ['p', props.receiverPubkey!]],
     created_at: nowInSeconds(),
   };
 };
 
-export const buildTxStartEvent = async (
-  tokenName: string,
-  transferInfo: TransferInformation,
-  tags: NDKTag[],
-  privateKey: string,
-  config: ConfigProps = baseConfig,
-): Promise<NostrEvent> => {
-  const signer = new NDKPrivateKeySigner(privateKey);
-  const userPubkey = getPublicKey(privateKey);
+// export const buildTxStartEvent = async (
+//   tokenName: string,
+//   transferInfo: TransferInformation,
+//   tags: NDKTag[],
+//   privateKey: string,
+//   config: ConfigProps = baseConfig,
+// ): Promise<NostrEvent> => {
+//   const signer = new NDKPrivateKeySigner(privateKey);
+//   const userPubkey = getPublicKey(privateKey);
 
-  const internalEvent: NDKEvent = new NDKEvent();
-  internalEvent.pubkey = userPubkey;
-  internalEvent.kind = LaWalletKinds.REGULAR;
+//   const internalEvent: NDKEvent = new NDKEvent();
+//   internalEvent.pubkey = userPubkey;
+//   internalEvent.kind = LaWalletKinds.REGULAR;
 
-  internalEvent.content = JSON.stringify({
-    tokens: { [tokenName]: (transferInfo.amount * 1000).toString() },
-    memo: transferInfo.comment,
-  });
+//   internalEvent.content = JSON.stringify({
+//     tokens: { [tokenName]: (transferInfo.amount * 1000).toString() },
+//     memo: transferInfo.comment,
+//   });
 
-  internalEvent.tags = [
-    ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
-    ['p', config.modulePubkeys.ledger],
-    ['p', transferInfo.receiverPubkey],
-  ];
+//   internalEvent.tags = [
+//     ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
+//     ['p', config.modulePubkeys.ledger],
+//     ['p', transferInfo.receiverPubkey],
+//   ];
 
-  if (tags.length) internalEvent.tags = [...internalEvent.tags, ...tags];
+//   if (tags.length) internalEvent.tags = [...internalEvent.tags, ...tags];
 
-  await internalEvent.sign(signer!);
-  const event: NostrEvent = await internalEvent.toNostrEvent();
-  return event;
-};
+//   await internalEvent.sign(signer!);
+//   const event: NostrEvent = await internalEvent.toNostrEvent();
+//   return event;
+// };
 
 export const buildCardInfoRequest = async (subkind: string, privateKey: string) => {
   const userPubkey: string = getPublicKey(privateKey);

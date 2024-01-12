@@ -102,12 +102,10 @@ export default function Page() {
 
     setInvoice({ ...invoice, loading: true });
     const invoice_mSats: number = amountSats * 1000;
-    console.log(signer);
     const zapRequestEvent: NostrEvent | undefined = await SignEvent(
       signer!,
       buildZapRequestEvent(identity.hexpub, invoice_mSats, config),
     );
-    console.log(zapRequestEvent);
     const zapRequestURI: string = encodeURI(JSON.stringify(zapRequestEvent));
 
     requestInvoice(

@@ -1,8 +1,15 @@
 import { addQueryParameter, escapingBrackets } from '@/utils';
-import { useConfig, useNostrContext, useSubscription } from '@lawallet/react';
+import { useConfig, useNostrContext, useSigner, useSubscription, useWalletContext } from '@lawallet/react';
 import { TransferInformation, broadcastEvent, defaultTransfer, requestInvoice } from '@lawallet/react/actions';
 import { TransferTypes } from '@lawallet/react/types';
-import { LaWalletKinds, LaWalletTags, buildTxStartEvent, formatTransferData, getTag } from '@lawallet/react/utils';
+import {
+  LaWalletKinds,
+  LaWalletTags,
+  SignEvent,
+  buildTxStartEvent,
+  formatTransferData,
+  getTag,
+} from '@lawallet/react/utils';
 import { NDKEvent, NDKKind, NDKTag, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getPublicKey, nip19 } from 'nostr-tools';
@@ -28,7 +35,11 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const [transferInfo, setTransferInfo] = useState<TransferInformation>(defaultTransfer);
 
   const { ndk } = useNostrContext();
+  const {
+    user: { identity },
+  } = useWalletContext();
 
+  const { signer } = useSigner();
   const router = useRouter();
   const params = useSearchParams();
 
@@ -116,24 +127,39 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
     });
   };
 
-  const execInternalTransfer = async (privateKey: string, info: TransferInformation) => {
-    const txEvent: NostrEvent = await buildTxStartEvent(tokenName, info, [], privateKey);
-    publishTransfer(txEvent);
+  const execInternalTransfer = async (info: TransferInformation) => {
+    const { amount, receiverPubkey, comment } = info;
+
+    const txEvent: NostrEvent | undefined = await SignEvent(
+      signer!,
+      buildTxStartEvent({
+        tokenName,
+        amount,
+        senderPubkey: identity.hexpub,
+        receiverPubkey,
+        comment,
+      }),
+    );
+    if (txEvent) publishTransfer(txEvent);
   };
 
-  const execOutboundTransfer = async (privateKey: string) => {
+  const execOutboundTransfer = async (info: TransferInformation) => {
+    const { data, amount, walletService, comment } = info;
     const bolt11: string = transferInfo.walletService
-      ? await requestInvoice(
-          `${transferInfo.walletService?.callback}?amount=${transferInfo.amount * 1000}&comment=${escapingBrackets(
-            transferInfo.comment,
-          )}`,
-        )
-      : transferInfo.data;
+      ? await requestInvoice(`${walletService?.callback}?amount=${amount * 1000}&comment=${escapingBrackets(comment)}`)
+      : data;
 
-    const eventTags: NDKTag[] = [['bolt11', bolt11]];
-    const txEvent: NostrEvent = await buildTxStartEvent(tokenName, transferInfo, eventTags, privateKey);
+    const txEvent: NostrEvent | undefined = await SignEvent(
+      signer!,
+      buildTxStartEvent({
+        tokenName,
+        amount,
+        senderPubkey: identity.hexpub,
+        bolt11,
+      }),
+    );
 
-    publishTransfer(txEvent);
+    if (txEvent) publishTransfer(txEvent);
   };
 
   const executeTransfer = (privateKey: string) => {
@@ -145,9 +171,9 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
         const npubKey = nip19.npubEncode(getPublicKey(privateKey));
         claimLNURLw(transferInfo, npubKey);
       } else if (transferInfo.type === TransferTypes.INTERNAL) {
-        execInternalTransfer(privateKey, transferInfo);
+        execInternalTransfer(transferInfo);
       } else {
-        execOutboundTransfer(privateKey);
+        execOutboundTransfer(transferInfo);
       }
     } catch {
       router.push('/transfer/error');
