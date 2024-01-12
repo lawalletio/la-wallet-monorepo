@@ -4,11 +4,10 @@ import { CreditCardIcon, LightningIcon, TransferIcon } from '@bitcoin-design/bit
 
 import { Accordion, AccordionBody, Flex, Text } from '@/components/UI';
 
-import config from '@/constants/config';
 import { useTranslation } from '@/context/TranslateContext';
 import theme from '@/styles/theme';
 import { unescapingText } from '@/utils';
-import { dateFormatter, defaultCurrency, formatToPreference, useWalletContext } from '@lawallet/react';
+import { dateFormatter, defaultCurrency, formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { Transaction, TransactionDirection, TransactionStatus, TransactionType } from '@lawallet/react/types';
 import { getMultipleTags } from '@lawallet/react/utils';
@@ -26,7 +25,7 @@ type LudInfoProps = {
 
 export default function Component({ transaction }: ComponentProps) {
   if (!transaction) return null;
-
+  const config = useConfig();
   const { lng, t } = useTranslation();
   const { status, type } = transaction;
   const {
@@ -73,7 +72,7 @@ export default function Component({ transaction }: ComponentProps) {
       username.length
         ? setLudInfo({
             loading: false,
-            data: `${username}@${config.env.WALLET_DOMAIN}`,
+            data: `${username}@${config.federation.domain}`,
           })
         : setLudInfo({ ...ludInfo, loading: false });
     }

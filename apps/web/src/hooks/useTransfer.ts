@@ -1,6 +1,5 @@
-import config from '@/constants/config';
 import { addQueryParameter, escapingBrackets } from '@/utils';
-import { useNostrContext, useSubscription } from '@lawallet/react';
+import { useConfig, useNostrContext, useSubscription } from '@lawallet/react';
 import { TransferInformation, broadcastEvent, defaultTransfer, requestInvoice } from '@lawallet/react/actions';
 import { TransferTypes } from '@lawallet/react/types';
 import { LaWalletKinds, LaWalletTags, buildTxStartEvent, formatTransferData, getTag } from '@lawallet/react/utils';
@@ -23,6 +22,7 @@ interface TransferProps {
 }
 
 const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
+  const config = useConfig();
   const [loading, setLoading] = useState<boolean>(false);
   const [startEvent, setStartEvent] = useState<NostrEvent | null>(null);
   const [transferInfo, setTransferInfo] = useState<TransferInformation>(defaultTransfer);
@@ -35,7 +35,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const { events } = useSubscription({
     filters: [
       {
-        authors: [config.pubKeys.ledgerPubkey],
+        authors: [config.modulePubkeys.ledger],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         since: startEvent ? startEvent.created_at - 60000 : undefined,
         '#e': startEvent?.id ? [startEvent.id] : [],
@@ -51,7 +51,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const claimLNURLw = (info: TransferInformation, npub: string) => {
     const { walletService } = info;
 
-    requestInvoice(`${config.env.LAWALLET_ENDPOINT}/lnurlp/${npub}/callback?amount=${walletService?.maxWithdrawable}`)
+    requestInvoice(`${config.gatewayEndpoint}/lnurlp/${npub}/callback?amount=${walletService?.maxWithdrawable}`)
       .then((pr) => {
         if (pr) {
           let urlCallback: string = walletService!.callback;
@@ -163,7 +163,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
         if (subkind.includes('ok')) {
           const refundEvent = await ndk.fetchEvent({
             kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-            authors: [config.pubKeys.urlxPubkey],
+            authors: [config.modulePubkeys.urlx],
             '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
             '#e': [startEvent.id!],
           });

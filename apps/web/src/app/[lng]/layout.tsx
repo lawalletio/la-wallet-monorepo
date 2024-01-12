@@ -4,8 +4,6 @@ import { ThemeProvider } from 'styled-components';
 
 import StyledComponentsRegistry from '@/utils/registry';
 
-import config from '@/constants/config';
-
 import { TranslateProvider } from '@/context/TranslateContext';
 import GlobalStyles from '@/styles/GlobalStyles';
 import { fontSecondary } from '@/styles/fonts';
@@ -49,14 +47,14 @@ const Providers = (props: ProviderProps) => {
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon.ico" />
 
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=${config.env.GOOGLE_TAG_ID}`} />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_TAG_ID}`} />
         <Script id="google-analytics">
           {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
         
-          gtag('config', '${config.env.GOOGLE_TAG_ID}');
+          gtag('config', '${process.env.GOOGLE_TAG_ID}');
         `}
         </Script>
       </head>

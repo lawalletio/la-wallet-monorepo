@@ -18,13 +18,12 @@ import {
   Text,
 } from '@/components/UI';
 
-import config from '@/constants/config';
 import { useTransferContext } from '@/context/TransferContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
-import { useWalletContext } from '@lawallet/react';
+import { useConfig, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { TransactionDirection, TransactionType } from '@lawallet/react/types';
 import { getMultipleTags } from '@lawallet/react/utils';
@@ -32,6 +31,7 @@ import { useEffect, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
 
 export default function Page() {
+  const config = useConfig();
   const { t } = useTranslation();
   const {
     user: { identity, transactions },
@@ -87,7 +87,7 @@ export default function Page() {
         const username: string = await getUsername(receiverPubkey);
 
         if (username.length) {
-          const formattedLud16: string = `${username}@${config.env.WALLET_DOMAIN}`;
+          const formattedLud16: string = `${username}@${config.federation.domain}`;
           if (!lastDest.includes(formattedLud16)) {
             lastDest.push(formattedLud16);
             setLastDestinations(lastDest);

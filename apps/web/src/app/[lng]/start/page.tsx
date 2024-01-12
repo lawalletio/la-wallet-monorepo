@@ -7,14 +7,16 @@ import Navbar from '@/components/Layout/Navbar';
 
 import StartView from '@/app/[lng]/start/components/StartView';
 import { Button, Divider, Feedback, Flex, Heading, Input, InputGroup, InputGroupRight, Text } from '@/components/UI';
-import config from '@/constants/config';
+
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import { useCreateIdentity } from '@/hooks/useCreateIdentity';
 import { validateNonce } from '@lawallet/react/actions';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { useConfig } from '@lawallet/react';
 
 export default function Page() {
+  const config = useConfig();
   const { t } = useTranslation();
 
   const [activeStartView, setActiveStartView] = useState<boolean>(true);
@@ -90,7 +92,7 @@ export default function Page() {
               }
             />
             <InputGroupRight>
-              <Text size="small">@{config.env.WALLET_DOMAIN}</Text>
+              <Text size="small">@{config.federation.domain}</Text>
             </InputGroupRight>
           </InputGroup>
           <Feedback show={errors.errorInfo.visible} status={errors.errorInfo.visible ? 'error' : undefined}>

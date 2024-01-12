@@ -5,7 +5,7 @@ import { CheckIcon, SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/fi
 import { useEffect, useMemo, useState } from 'react';
 
 import { copy } from '@/utils/share';
-import { formatAddress, formatToPreference } from '@lawallet/react';
+import { formatAddress, formatToPreference, useConfig } from '@lawallet/react';
 
 import { useTranslation } from '@/context/TranslateContext';
 import { useNumpad } from '@/hooks/useNumpad';
@@ -28,7 +28,6 @@ import {
   Text,
 } from '@/components/UI';
 
-import config from '@/constants/config';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useAlert from '@/hooks/useAlerts';
 import useErrors from '@/hooks/useErrors';
@@ -37,6 +36,7 @@ import { useSubscription, useWalletContext } from '@lawallet/react';
 import { requestInvoice } from '@lawallet/react/actions';
 import { buildZapRequestEvent, lnurl_encode } from '@lawallet/react/utils';
 import { useRouter } from 'next/navigation';
+import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 
 type InvoiceProps = {
   bolt11: string;
@@ -47,6 +47,7 @@ type InvoiceProps = {
 type SheetTypes = 'amount' | 'qr' | 'finished';
 
 export default function Page() {
+  const config = useConfig();
   const { lng, t } = useTranslation();
   const notifications = useAlert();
   const {
@@ -72,7 +73,7 @@ export default function Page() {
   const { events } = useSubscription({
     filters: [
       {
-        authors: [config.pubKeys.ledgerPubkey, config.pubKeys.urlxPubkey],
+        authors: [config.modulePubkeys.ledger, config.modulePubkeys.urlx],
         kinds: [9735],
         since: invoice.created_at,
       },
@@ -85,9 +86,9 @@ export default function Page() {
     if (invoice.loading) return;
 
     const amountSats: number = numpadData.intAmount['SAT'];
-    if (amountSats < 1 || amountSats > config.MAX_INVOICE_AMOUNT) {
+    if (amountSats < 1 || amountSats > MAX_INVOICE_AMOUNT) {
       const convertedMinAmount: number = convertCurrency(1, 'SAT', currency);
-      const convertedMaxAmount: number = convertCurrency(config.MAX_INVOICE_AMOUNT, 'SAT', currency);
+      const convertedMaxAmount: number = convertCurrency(MAX_INVOICE_AMOUNT, 'SAT', currency);
 
       errors.modifyError('ERROR_INVOICE_AMOUNT', {
         minAmount: convertedMinAmount.toString(),
@@ -102,7 +103,7 @@ export default function Page() {
     const zapRequest: string = await buildZapRequestEvent(invoice_mSats, identity.privateKey);
 
     requestInvoice(
-      `${config.env.LAWALLET_ENDPOINT}/lnurlp/${identity.npub}/callback?amount=${invoice_mSats}&nostr=${zapRequest}`,
+      `${config.gatewayEndpoint}/lnurlp/${identity.npub}/callback?amount=${invoice_mSats}&nostr=${zapRequest}`,
     )
       .then((bolt11) => {
         if (bolt11) {
@@ -159,7 +160,7 @@ export default function Page() {
   const LNURLEncoded: string = useMemo(
     () =>
       lnurl_encode(
-        `https://${config.env.WALLET_DOMAIN}/.well-known/lnurlp/${
+        `https://${config.federation.domain}/.well-known/lnurlp/${
           identity.username ? identity.username : identity.npub
         }`,
       ).toUpperCase(),
@@ -184,7 +185,7 @@ export default function Page() {
               size={300}
               borderSize={30}
               value={('lightning:' + LNURLEncoded).toUpperCase()}
-              textToCopy={`${identity.username}@${config.env.WALLET_DOMAIN}`}
+              textToCopy={`${identity.username}@${config.federation.domain}`}
             />
           </Flex>
           <Flex>
@@ -199,7 +200,7 @@ export default function Page() {
                   <Flex>
                     <Text>
                       {identity.username
-                        ? `${identity.username}@${config.env.WALLET_DOMAIN}`
+                        ? `${identity.username}@${config.federation.domain}`
                         : formatAddress(LNURLEncoded, 20)}
                     </Text>
                   </Flex>
@@ -209,7 +210,7 @@ export default function Page() {
                     size="small"
                     variant="bezeled"
                     onClick={() =>
-                      handleCopy(identity.username ? `${identity.username}@${config.env.WALLET_DOMAIN}` : LNURLEncoded)
+                      handleCopy(identity.username ? `${identity.username}@${config.federation.domain}` : LNURLEncoded)
                     }
                   >
                     {t('COPY')}

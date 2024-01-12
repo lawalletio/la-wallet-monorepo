@@ -23,7 +23,6 @@ import { Avatar, BannerAlert, Button, Divider, Flex, Heading, Icon, Text } from 
 import theme from '@/styles/theme';
 
 // Harcode data
-import config from '@/constants/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { useRouter } from 'next/navigation';
 
@@ -34,9 +33,10 @@ import { BtnLoader } from '@/components/Loader/Loader';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { copy } from '@/utils/share';
 import Link from 'next/link';
-import { formatToPreference, useWalletContext } from '@lawallet/react';
+import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
 
 export default function Page() {
+  const config = useConfig();
   const { t, lng } = useTranslation();
   const [showBanner, setShowBanner] = useState<'backup' | 'none'>('none');
 
@@ -83,13 +83,13 @@ export default function Page() {
               </Text>
               <Flex
                 onClick={() => {
-                  if (identity.username) copy(`${identity.username}@${config.env.WALLET_DOMAIN}`);
+                  if (identity.username) copy(`${identity.username}@${config.federation.domain}`);
                 }}
               >
                 {loading ? (
                   <Text> -- </Text>
                 ) : (
-                  <Text>{identity.username ? `${identity.username}@${config.env.WALLET_DOMAIN}` : t('ANONYMOUS')}</Text>
+                  <Text>{identity.username ? `${identity.username}@${config.federation.domain}` : t('ANONYMOUS')}</Text>
                 )}
               </Flex>
             </Flex>
