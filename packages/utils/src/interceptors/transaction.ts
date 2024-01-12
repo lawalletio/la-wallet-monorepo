@@ -18,7 +18,7 @@ export interface TransferInformation {
   amount: number;
   comment: string;
   receiverPubkey: string;
-  walletService: LNServiceResponse | null;
+  payRequest: LNServiceResponse | null;
   type: TransferTypes | false;
   expired?: boolean;
 }
@@ -35,11 +35,11 @@ export const defaultTransfer: TransferInformation = {
   amount: 0,
   comment: '',
   receiverPubkey: baseConfig.modulePubkeys.urlx,
-  walletService: null,
+  payRequest: null,
   type: false,
 };
 
-export const getWalletService = (url: string): Promise<LNServiceResponse> =>
+export const getPayRequest = (url: string): Promise<LNServiceResponse> =>
   fetch(url)
     .then((res) => {
       if (res.status !== 200) return null;

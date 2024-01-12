@@ -60,13 +60,13 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   });
 
   const claimLNURLw = (info: TransferInformation, npub: string) => {
-    const { walletService } = info;
+    const { payRequest } = info;
 
-    requestInvoice(`${config.endpoints.api}/lnurlp/${npub}/callback?amount=${walletService?.maxWithdrawable}`)
+    requestInvoice(`${config.endpoints.api}/lnurlp/${npub}/callback?amount=${payRequest?.maxWithdrawable}`)
       .then((pr) => {
         if (pr) {
-          let urlCallback: string = walletService!.callback;
-          urlCallback = addQueryParameter(urlCallback, `k1=${walletService!.k1!}`);
+          let urlCallback: string = payRequest!.callback;
+          urlCallback = addQueryParameter(urlCallback, `k1=${payRequest!.k1!}`);
           urlCallback = addQueryParameter(urlCallback, `pr=${pr}`);
 
           fetch(urlCallback).then((res) => {
@@ -88,7 +88,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
         return false;
 
       case TransferTypes.LNURLW:
-        if (!formattedTransferInfo.walletService?.maxWithdrawable) return false;
+        if (!formattedTransferInfo.payRequest?.maxWithdrawable) return false;
         router.push(`/transfer/summary?data=${formattedTransferInfo.data}`);
         break;
 
@@ -144,9 +144,9 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   };
 
   const execOutboundTransfer = async (info: TransferInformation) => {
-    const { data, amount, walletService, comment } = info;
-    const bolt11: string = transferInfo.walletService
-      ? await requestInvoice(`${walletService?.callback}?amount=${amount * 1000}&comment=${escapingBrackets(comment)}`)
+    const { data, amount, payRequest, comment } = info;
+    const bolt11: string = transferInfo.payRequest
+      ? await requestInvoice(`${payRequest?.callback}?amount=${amount * 1000}&comment=${escapingBrackets(comment)}`)
       : data;
 
     const txEvent: NostrEvent | undefined = await SignEvent(

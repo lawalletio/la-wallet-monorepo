@@ -21,6 +21,6 @@ export {
   type TransferInformation,
   type CheckInvoiceReturns,
   defaultTransfer,
-  getWalletService,
+  getPayRequest,
   requestInvoice,
 } from '../interceptors/transaction.js';

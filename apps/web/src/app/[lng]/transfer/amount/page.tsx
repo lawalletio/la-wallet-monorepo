@@ -51,9 +51,9 @@ export default function Page() {
     const satsAmount: number =
       numpadData.intAmount['SAT'] > balance.amount ? balance.amount : numpadData.intAmount['SAT'];
 
-    if (transferInfo.type === TransferTypes.LUD16 && transferInfo.walletService) {
+    if (transferInfo.type === TransferTypes.LUD16 && transferInfo.payRequest) {
       const mSats = satsAmount * 1000;
-      const { minSendable, maxSendable } = transferInfo.walletService;
+      const { minSendable, maxSendable } = transferInfo.payRequest;
 
       if (mSats < minSendable! || mSats > maxSendable!) {
         errors.modifyError('INVALID_SENDABLE_AMOUNT', {
@@ -77,9 +77,9 @@ export default function Page() {
       return;
     }
 
-    if (text.length > 255 || (transferInfo.walletService && text.length > transferInfo.walletService.commentAllowed)) {
+    if (text.length > 255 || (transferInfo.payRequest && text.length > transferInfo.payRequest.commentAllowed)) {
       errors.modifyError('COMMENT_MAX_LENGTH', {
-        chars: (transferInfo.walletService?.commentAllowed ?? 255).toString(),
+        chars: (transferInfo.payRequest?.commentAllowed ?? 255).toString(),
       });
       return;
     }
@@ -133,12 +133,12 @@ export default function Page() {
 
           <TokenList />
 
-          {transferInfo.walletService && (
+          {transferInfo.payRequest && (
             <Flex justify="center">
               <Feedback show={true} status={'success'}>
                 {t('SENDABLE_AMOUNT', {
-                  minSendable: formatToPreference('SAT', transferInfo.walletService.minSendable! / 1000, lng),
-                  maxSendable: formatToPreference('SAT', transferInfo.walletService.maxSendable! / 1000, lng),
+                  minSendable: formatToPreference('SAT', transferInfo.payRequest.minSendable! / 1000, lng),
+                  maxSendable: formatToPreference('SAT', transferInfo.payRequest.maxSendable! / 1000, lng),
                 })}
               </Feedback>
             </Flex>

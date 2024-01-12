@@ -1,6 +1,6 @@
 import { baseConfig } from '../constants/constants.js';
 import { getUserPubkey } from '../interceptors/identity.js';
-import { defaultTransfer, getWalletService, type TransferInformation } from '../interceptors/transaction.js';
+import { defaultTransfer, getPayRequest, type TransferInformation } from '../interceptors/transaction.js';
 import { type ConfigProps } from '../types/config.js';
 import { TransferTypes } from '../types/transaction.js';
 import { validateEmail } from './email.js';
@@ -80,19 +80,19 @@ const parseLNURLInfo = async (data: string) => {
   const internalLUD16: string = isInternalLNURL(decodedLNURL);
   if (internalLUD16.length) return parseINTERNALInfo(internalLUD16);
 
-  const walletService = await getWalletService(decodedLNURL);
-  if (!walletService) return defaultTransfer;
+  const payRequest = await getPayRequest(decodedLNURL);
+  if (!payRequest) return defaultTransfer;
 
   const transfer: TransferInformation = {
     ...defaultTransfer,
     data,
     type: TransferTypes.LNURL,
-    walletService,
+    payRequest,
   };
 
-  if (walletService.tag === 'payRequest') {
+  if (payRequest.tag === 'payRequest') {
     try {
-      const parsedMetadata: Array<string>[] = JSON.parse(walletService.metadata);
+      const parsedMetadata: Array<string>[] = JSON.parse(payRequest.metadata);
       const identifier: string[] | undefined = parsedMetadata.find((data: string[]) => {
         if (data[0] === 'text/identifier') return data;
       });
@@ -101,9 +101,9 @@ const parseLNURLInfo = async (data: string) => {
     } catch (error) {
       console.log(error);
     }
-  } else if (walletService.tag === 'withdrawRequest') {
+  } else if (payRequest.tag === 'withdrawRequest') {
     transfer.type = TransferTypes.LNURLW;
-    transfer.amount = walletService.maxWithdrawable! / 1000;
+    transfer.amount = payRequest.maxWithdrawable! / 1000;
   }
 
   return transfer;
@@ -122,17 +122,17 @@ export const splitHandle = (handle: string): string[] => {
 
 const parseLUD16Info = async (data: string) => {
   const [username, domain] = splitHandle(data);
-  const walletService = await getWalletService(`https://${domain}/.well-known/lnurlp/${username}`);
-  if (!walletService) return defaultTransfer;
+  const payRequest = await getPayRequest(`https://${domain}/.well-known/lnurlp/${username}`);
+  if (!payRequest) return defaultTransfer;
 
   const transfer: TransferInformation = {
     ...defaultTransfer,
     data,
     type: TransferTypes.LUD16,
-    walletService,
+    payRequest,
   };
 
-  if (walletService.minSendable == walletService.maxSendable) transfer.amount = walletService.maxSendable! / 1000;
+  if (payRequest.minSendable == payRequest.maxSendable) transfer.amount = payRequest.maxSendable! / 1000;
 
   return transfer;
 };
