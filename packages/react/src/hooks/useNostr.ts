@@ -2,9 +2,7 @@ import * as React from 'react';
 import type NostrExtensionProvider from '../types/nostr.js';
 import { type WebLNProvider as WebLNExtensionProvider } from '../types/webln.js';
 
-import NDK, { NDKNip07Signer, NDKPrivateKeySigner, NDKUser } from '@nostr-dev-kit/ndk';
-
-type SignerTypes = NDKPrivateKeySigner | NDKNip07Signer | undefined;
+import NDK from '@nostr-dev-kit/ndk';
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;
@@ -18,13 +16,8 @@ type NostrConfig = {
 
 export interface INostr {
   ndk: NDK;
-  signer: SignerTypes;
-  signerPubkey: string;
   providers: LightningProvidersType;
   connectNDK: () => Promise<boolean>;
-  connectExtension: () => void;
-  connectWithPrivateKey: (hexKey: string) => Promise<boolean>;
-  requestPublicKey: () => Promise<string>;
 }
 
 export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig): INostr => {
@@ -33,9 +26,6 @@ export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig)
       explicitRelayUrls,
     }),
   );
-
-  const [signer, setSigner] = React.useState<SignerTypes>();
-  const [signerPubkey, setSignerPubkey] = React.useState<string>('');
 
   const [providers, setProviders] = React.useState<LightningProvidersType>({
     webln: undefined,
@@ -70,40 +60,6 @@ export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig)
     }
   };
 
-  const connectWithPrivateKey = async (hexKey: string): Promise<boolean> => {
-    try {
-      const privateKeySigner = new NDKPrivateKeySigner(hexKey);
-      setSigner(privateKeySigner);
-
-      const user: NDKUser = await privateKeySigner.user();
-      if (user && user.pubkey) setSignerPubkey(user.pubkey);
-
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
-  const connectExtension = async () => {
-    if (!providers.webln) return null;
-    await providers.webln.enable();
-
-    const pubKey = await requestPublicKey();
-    if (pubKey) setSignerPubkey(pubKey);
-  };
-
-  const requestPublicKey = async () => {
-    if (!providers.nostr) return '';
-
-    try {
-      await providers.nostr.enable();
-      const _pubKey = await providers.nostr.getPublicKey();
-      return _pubKey;
-    } catch {
-      return '';
-    }
-  };
-
   React.useEffect(() => {
     loadProviders();
 
@@ -113,12 +69,7 @@ export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig)
 
   return {
     ndk,
-    signer,
     providers,
-    signerPubkey,
     connectNDK,
-    connectExtension,
-    connectWithPrivateKey,
-    requestPublicKey,
   };
 };

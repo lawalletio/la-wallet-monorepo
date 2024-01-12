@@ -3,7 +3,7 @@ import { useCurrencyConverter, type UseConverterReturns } from '../hooks/useCurr
 import { useSettings, type UseSettingsReturns } from '../hooks/useSettings.js';
 import { useUser, type UseUserReturns } from '../hooks/useUser.js';
 import { type ConfigParameter } from '../types/config.js';
-import { useNostrContext } from './NDKContext.js';
+import { useSigner } from '../hooks/useSigner.js';
 
 interface AccountContextType {
   user: UseUserReturns;
@@ -15,7 +15,7 @@ export const AccountContext = React.createContext({} as AccountContextType);
 
 export function AccountProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const { children, config } = props;
-  const { connectWithPrivateKey } = useNostrContext();
+  const { connectWithPrivateKey } = useSigner();
 
   const user: UseUserReturns = useUser({ config });
   const settings: UseSettingsReturns = useSettings();

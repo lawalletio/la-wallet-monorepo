@@ -7,6 +7,9 @@ export { type UseSettingsReturns, useSettings } from '../hooks/useSettings.js';
 export { type UseSubscriptionReturns, useSubscription } from '../hooks/useSubscription.js';
 export { type UseTokenBalanceReturns, useTokenBalance } from '../hooks/useTokenBalance.js';
 export { type UseUserReturns, useUser } from '../hooks/useUser.js';
+
+export { type UseSignerReturns, useSigner } from '../hooks/useSigner.js';
+
 export { useConfig } from '../hooks/useConfig.js';
 
 export { NDKProvider, useNostrContext, NDKContext } from '../context/NDKContext.js';
