@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { styled } from 'styled-components'
-import theme from '@/styles/theme'
+import { styled } from 'styled-components';
+import theme from '@/styles/theme';
 
 interface InputCustomProps {
-  $isSuccess?: boolean
-  $showValidate?: boolean
+  $isSuccess?: boolean;
+  $showValidate?: boolean;
 }
 
 export const Input = styled.input<InputCustomProps>`
@@ -20,12 +20,8 @@ export const Input = styled.input<InputCustomProps>`
   background-color: ${theme.colors.gray15};
   border-radius: 8px;
   border: 1px solid
-    ${props =>
-      props.$showValidate
-        ? theme.colors.gray20
-        : props.$isSuccess
-          ? theme.colors.success
-          : theme.colors.error};
+    ${(props) =>
+      props.$showValidate ? theme.colors.gray20 : props.$isSuccess ? theme.colors.success : theme.colors.error};
 
   color: ${theme.colors.text};
   font-size: 0.8em;
@@ -57,7 +53,7 @@ export const Input = styled.input<InputCustomProps>`
 
     cursor: not-allowed;
   }
-`
+`;
 
 export const InputButton = styled.div`
   display: flex;
@@ -65,7 +61,7 @@ export const InputButton = styled.div`
   height: 100%;
 
   padding-right: 10px;
-`
+`;
 
 export const InputGroup = styled.div`
   display: flex;
@@ -76,7 +72,7 @@ export const InputGroup = styled.div`
   input {
     border-radius: 8px 0 0 8px !important;
   }
-`
+`;
 
 export const InputGroupRight = styled.div`
   display: flex;
@@ -89,30 +85,29 @@ export const InputGroupRight = styled.div`
   border: 1px solid ${theme.colors.gray20};
   border-left: 0;
   border-radius: 0 8px 8px 0;
-`
+`;
 
 interface FeedbackProps {
-  $isShow: boolean
-  $isSuccess: boolean
+  $isShow: boolean;
+  $isSuccess: boolean;
 }
 
 export const Feedback = styled.div<FeedbackProps>`
-  opacity: ${props => (props.$isShow ? 1 : 0)};
+  opacity: ${(props) => (props.$isShow ? 1 : 0)};
 
   display: block;
 
   margin-top: 4px;
 
-  color: ${props =>
-    props.$isSuccess ? theme.colors.success : theme.colors.error};
+  color: ${(props) => (props.$isSuccess ? theme.colors.success : theme.colors.error)};
 
   /* font-size: 0.7em; */
-`
+`;
 
-export const InputWithLabel = styled.div``
+export const InputWithLabel = styled.div``;
 
 interface InputBoxProps {
-  $withIcon: boolean
+  $withIcon: boolean;
 }
 
 export const InputBox = styled.div<InputBoxProps>`
@@ -121,9 +116,9 @@ export const InputBox = styled.div<InputBoxProps>`
   width: 100%;
 
   input {
-    padding-right: ${props => (props.$withIcon ? '60px' : '8px')};
+    padding-right: ${(props) => (props.$withIcon ? '60px' : '8px')};
   }
-`
+`;
 
 export const InputIcon = styled.div`
   position: absolute;
@@ -141,7 +136,7 @@ export const InputIcon = styled.div`
     width: 18px;
     height: 18px;
   }
-`
+`;
 
 export const Textarea = styled.textarea<InputCustomProps>`
   width: 100%;
@@ -152,12 +147,8 @@ export const Textarea = styled.textarea<InputCustomProps>`
   background-color: ${theme.colors.gray15};
   border-radius: 8px;
   border: 1px solid
-    ${props =>
-      props.$showValidate
-        ? theme.colors.gray20
-        : props.$isSuccess
-          ? theme.colors.success
-          : theme.colors.error};
+    ${(props) =>
+      props.$showValidate ? theme.colors.gray20 : props.$isSuccess ? theme.colors.success : theme.colors.error};
 
   color: ${theme.colors.text};
   font-size: 0.8em;
@@ -182,7 +173,7 @@ export const Textarea = styled.textarea<InputCustomProps>`
   &:focus-visible {
     border-color: ${theme.colors.primary};
   }
-`
+`;
 export const Pin = styled.div`
   width: 100%;
 
@@ -212,4 +203,4 @@ export const Pin = styled.div`
       cursor: not-allowed;
     }
   }
-`
+`;

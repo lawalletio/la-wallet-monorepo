@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
 interface LinkButtonProps {
-  $background?: string
-  $color?: string
-  $isSmall?: boolean
+  $background?: string;
+  $color?: string;
+  $isSmall?: boolean;
 }
 
 export const LinkButton = styled.a<LinkButtonProps>`
@@ -13,18 +13,18 @@ export const LinkButton = styled.a<LinkButtonProps>`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  flex: ${props => (props.$isSmall ? 'inherit' : 1)};
-  min-width: ${props => (props.$isSmall ? '40px' : '50px')};
-  min-height: ${props => (props.$isSmall ? '40px' : '50px')};
+  flex: ${(props) => (props.$isSmall ? 'inherit' : 1)};
+  min-width: ${(props) => (props.$isSmall ? '40px' : '50px')};
+  min-height: ${(props) => (props.$isSmall ? '40px' : '50px')};
 
-  padding: ${props => (props.$isSmall ? '4px 8px' : '12px 8px')};
+  padding: ${(props) => (props.$isSmall ? '4px 8px' : '12px 8px')};
 
   border: none;
   border-radius: 50px;
-  background-color: ${props => props.$background};
+  background-color: ${(props) => props.$background};
 
-  color: ${props => props.$color};
-  font-size: ${props => (props.$isSmall ? '.7em' : '.8em')};
+  color: ${(props) => props.$color};
+  font-size: ${(props) => (props.$isSmall ? '.7em' : '.8em')};
   font-weight: 700;
   text-align: center;
 
@@ -34,7 +34,7 @@ export const LinkButton = styled.a<LinkButtonProps>`
   svg {
     width: 18px;
 
-    color: ${props => props.$color};
+    color: ${(props) => props.$color};
   }
 
   &:hover {
@@ -44,4 +44,4 @@ export const LinkButton = styled.a<LinkButtonProps>`
   &:active {
     opacity: 0.65;
   }
-`
+`;

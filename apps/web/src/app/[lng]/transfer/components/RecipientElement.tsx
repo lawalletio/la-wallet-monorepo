@@ -1,8 +1,8 @@
-import { Avatar, Flex, Text } from '@/components/UI'
-import { splitHandle } from '@lawallet/react/utils'
+import { Avatar, Flex, Text } from '@/components/UI';
+import { splitHandle } from '@lawallet/react/utils';
 
 const RecipientElement = ({ lud16 }: { lud16: string }) => {
-  const [username, domain] = splitHandle(lud16)
+  const [username, domain] = splitHandle(lud16);
   return (
     <Flex align="center" gap={8}>
       <Avatar>
@@ -13,7 +13,7 @@ const RecipientElement = ({ lud16 }: { lud16: string }) => {
         <Text>@{domain}</Text>
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default RecipientElement
+export default RecipientElement;

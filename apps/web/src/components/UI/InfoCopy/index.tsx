@@ -1,46 +1,41 @@
-import { copy } from '@/utils/share'
-import { useTranslation } from '@/context/TranslateContext'
-import useAlert from '@/hooks/useAlerts'
+import { copy } from '@/utils/share';
+import { useTranslation } from '@/context/TranslateContext';
+import useAlert from '@/hooks/useAlerts';
 
-import Flex from '../Flex'
-import Text from '../Text'
-import Button from '../Button'
-import Alert from '../Alert'
+import Flex from '../Flex';
+import Text from '../Text';
+import Button from '../Button';
+import Alert from '../Alert';
 
-import theme from '@/styles/theme'
-import { InfoCopy } from './style'
+import theme from '@/styles/theme';
+import { InfoCopy } from './style';
 
 interface ComponentProps {
-  title: string
-  value: string
-  onCopy?: () => void
+  title: string;
+  value: string;
+  onCopy?: () => void;
 }
 
 export default function Component(props: ComponentProps) {
-  const { title, value, onCopy = null } = props
+  const { title, value, onCopy = null } = props;
 
-  const { t } = useTranslation()
-  const { alert, showAlert } = useAlert()
+  const { t } = useTranslation();
+  const { alert, showAlert } = useAlert();
 
   const handleCopy = () => {
-    copy(value).then(res => {
+    copy(value).then((res) => {
       showAlert({
         description: res ? t('SUCCESS_COPY') : t('ERROR_COPY'),
-        type: res ? 'success' : 'error'
-      })
+        type: res ? 'success' : 'error',
+      });
 
-      if (onCopy) onCopy()
-    })
-  }
+      if (onCopy) onCopy();
+    });
+  };
 
   return (
     <>
-      <Alert
-        title={alert?.title}
-        description={alert?.description}
-        type={alert?.type}
-        isOpen={!!alert}
-      />
+      <Alert title={alert?.title} description={alert?.description} type={alert?.type} isOpen={!!alert} />
       <InfoCopy>
         <Flex align="center" gap={8} flex={1}>
           <Flex direction="column" flex={1}>
@@ -57,5 +52,5 @@ export default function Component(props: ComponentProps) {
         </Flex>
       </InfoCopy>
     </>
-  )
+  );
 }

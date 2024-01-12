@@ -1,29 +1,29 @@
-'use client'
+'use client';
 
-import { useRouter } from 'next/navigation'
-import { CaretLeftIcon } from '@bitcoin-design/bitcoin-icons-react/filled'
+import { useRouter } from 'next/navigation';
+import { CaretLeftIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import { Flex, Icon, Heading } from '@/components/UI'
-import Container from '../Container'
+import { Flex, Icon, Heading } from '@/components/UI';
+import Container from '../Container';
 
-import { Navbar, BackButton, Left, Right } from './style'
-import { ReactNode } from 'react'
-import { useTranslation } from '@/context/TranslateContext'
+import { Navbar, BackButton, Left, Right } from './style';
+import { ReactNode } from 'react';
+import { useTranslation } from '@/context/TranslateContext';
 
 interface ComponentProps {
-  children?: ReactNode
-  title?: string
-  showBackPage?: boolean
-  overrideBack?: string
+  children?: ReactNode;
+  title?: string;
+  showBackPage?: boolean;
+  overrideBack?: string;
 }
 
 export default function Component(props: ComponentProps) {
-  const { children, showBackPage = false, title, overrideBack = '' } = props
+  const { children, showBackPage = false, title, overrideBack = '' } = props;
 
-  const router = useRouter()
-  const { t } = useTranslation()
+  const router = useRouter();
+  const { t } = useTranslation();
 
-  const onlyChildren = !children
+  const onlyChildren = !children;
 
   return (
     <Navbar>
@@ -34,7 +34,7 @@ export default function Component(props: ComponentProps) {
               {showBackPage && (
                 <BackButton
                   onClick={() => {
-                    overrideBack ? router.push(overrideBack) : router.back()
+                    overrideBack ? router.push(overrideBack) : router.back();
                   }}
                 >
                   <Icon size="small">
@@ -56,5 +56,5 @@ export default function Component(props: ComponentProps) {
         </Flex>
       </Container>
     </Navbar>
-  )
+  );
 }

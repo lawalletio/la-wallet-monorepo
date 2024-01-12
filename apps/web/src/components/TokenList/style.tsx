@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
 interface TokenListProps {}
 
@@ -11,4 +11,4 @@ export const TokenList = styled.div<TokenListProps>`
     width: 100%;
     max-width: 80px;
   }
-`
+`;

@@ -1,61 +1,73 @@
-import { parseContent } from '@lawallet/utils'
-import { getUsername } from '@lawallet/utils/actions'
-import { defaultIdentity, type UserIdentity } from '@lawallet/utils/types'
-import { getPublicKey } from 'nostr-tools'
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
-import { STORAGE_IDENTITY_KEY } from '../constants/constants.js'
+import { parseContent } from '@lawallet/utils';
+import { getUsername } from '@lawallet/utils/actions';
+import { defaultIdentity, type UserIdentity } from '@lawallet/utils/types';
+import { getPublicKey } from 'nostr-tools';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
+import { useConfig } from './useConfig.js';
+import type { ConfigParameter } from '../types/config.js';
 
-export interface UserReturns {
-  identity: UserIdentity
-  setUser: Dispatch<SetStateAction<UserIdentity>>
+export interface UseIdentityReturns {
+  identity: UserIdentity;
+  setIdentity: Dispatch<SetStateAction<UserIdentity>>;
 }
 
-export const useIdentity = () => {
-  const [identity, setIdentity] = useState<UserIdentity>(defaultIdentity)
+export type UseIdentityParameters = ConfigParameter & { pubkey?: string };
+
+export const useIdentity = (params: UseIdentityParameters): UseIdentityReturns => {
+  const config = useConfig(params);
+  const [identity, setIdentity] = useState<UserIdentity>(defaultIdentity);
 
   const setDefaultIdentity = () => {
     setIdentity({
       ...defaultIdentity,
-      isReady: true
-    })
-  }
+      isReady: true,
+    });
+  };
 
-  const loadStoragedIdentity = async () => {
-    const storageIdentity = localStorage.getItem(STORAGE_IDENTITY_KEY)
-    if (!storageIdentity) return setDefaultIdentity()
+  const loadIdentityFromPubkey = async (pub: string) => {
+    const username: string = await getUsername(pub);
+    setIdentity({
+      ...identity,
+      username,
+      hexpub: pub,
+      isReady: true,
+    });
+  };
 
-    const parsedIdentity: UserIdentity = parseContent(storageIdentity)
-    if (!parsedIdentity.privateKey) return setDefaultIdentity()
+  const loadIdentityFromStorage = async () => {
+    const storageIdentity = localStorage.getItem(STORAGE_IDENTITY_KEY);
+    if (!storageIdentity) return setDefaultIdentity();
 
-    const hexpub: string = getPublicKey(parsedIdentity.privateKey)
-    const username: string = await getUsername(hexpub)
+    const parsedIdentity: UserIdentity = parseContent(storageIdentity);
+    if (!parsedIdentity.privateKey) return setDefaultIdentity();
 
-    if (
-      hexpub === parsedIdentity.hexpub &&
-      username == parsedIdentity.username
-    ) {
+    const hexpub: string = getPublicKey(parsedIdentity.privateKey);
+    const username: string = await getUsername(hexpub, config);
+
+    if (hexpub === parsedIdentity.hexpub && username == parsedIdentity.username) {
       setIdentity({
         ...parsedIdentity,
-        isReady: true
-      })
+        isReady: true,
+      });
     } else {
       setIdentity({
         ...parsedIdentity,
         hexpub,
         username,
-        isReady: true
-      })
+        isReady: true,
+      });
     }
 
-    return
-  }
+    return;
+  };
 
   useEffect(() => {
-    loadStoragedIdentity()
-  }, [])
+    params.pubkey ? loadIdentityFromPubkey(params.pubkey) : loadIdentityFromStorage();
+  }, [params.pubkey]);
 
   return {
     identity,
-    setIdentity
-  }
-}
+    setIdentity,
+  };
+};

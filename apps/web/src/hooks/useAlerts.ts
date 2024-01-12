@@ -1,34 +1,34 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-export type AlertTypes = 'success' | 'warning' | 'error'
+export type AlertTypes = 'success' | 'warning' | 'error';
 
 interface Alert {
-  title?: string
-  description: string
-  type: AlertTypes
+  title?: string;
+  description: string;
+  type: AlertTypes;
 }
 
 export interface UseAlertReturns {
-  alert: Alert | null
-  showAlert: (props: Alert) => void
+  alert: Alert | null;
+  showAlert: (props: Alert) => void;
 }
 
 const useAlert = (): UseAlertReturns => {
-  const [alert, setAlert] = useState<Alert | null>(null)
+  const [alert, setAlert] = useState<Alert | null>(null);
 
   const showAlert = ({ title, description, type }: Alert) => {
     setAlert({
       title,
       description,
-      type
-    })
+      type,
+    });
 
     setTimeout(() => {
-      setAlert(null)
-    }, 3000)
-  }
+      setAlert(null);
+    }, 3000);
+  };
 
-  return { alert, showAlert }
-}
+  return { alert, showAlert };
+};
 
-export default useAlert
+export default useAlert;

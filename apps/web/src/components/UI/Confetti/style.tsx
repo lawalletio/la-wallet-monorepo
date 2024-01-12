@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
 interface ConfettiProps {}
 
@@ -25,10 +25,6 @@ export const Confetti = styled.div<ConfettiProps>`
 
     width: 100%;
     height: 65%;
-    background: linear-gradient(
-      to top,
-      rgba(28, 28, 28, 1),
-      rgba(28, 28, 28, 0)
-    );
+    background: linear-gradient(to top, rgba(28, 28, 28, 1), rgba(28, 28, 28, 0));
   }
-`
+`;

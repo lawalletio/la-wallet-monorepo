@@ -1,14 +1,8 @@
-import React from 'react'
+import React from 'react';
 
 const EmptySvg = () => {
   return (
-    <svg
-      width="100"
-      height="101"
-      viewBox="0 0 100 101"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="100" height="101" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect y="0.5" width="100" height="100" rx="50" fill="#404040" />
       <rect x="73" y="5.5" width="24" height="24" rx="12" fill="#E95053" />
       <path
@@ -34,7 +28,7 @@ const EmptySvg = () => {
         fill="white"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default EmptySvg
+export default EmptySvg;

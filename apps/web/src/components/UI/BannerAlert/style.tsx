@@ -1,9 +1,9 @@
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
-import theme from '@/styles/theme'
+import theme from '@/styles/theme';
 
 interface BannerAlert {
-  $color: string
+  $color: string;
 }
 
 export const BannerAlert = styled.div<BannerAlert>`
@@ -33,7 +33,7 @@ export const BannerAlert = styled.div<BannerAlert>`
       width: 100%;
 
       h6 {
-        color: ${props => props.$color};
+        color: ${(props) => props.$color};
       }
 
       > div {
@@ -43,7 +43,7 @@ export const BannerAlert = styled.div<BannerAlert>`
       }
     }
   }
-`
+`;
 
 export const Asset = styled.div`
   position: absolute;
@@ -62,15 +62,11 @@ export const Asset = styled.div`
     width: 100%;
     height: 100%;
 
-    background: linear-gradient(
-      to left,
-      rgba(38, 38, 38, 0.65),
-      ${theme.colors.gray15}
-    );
+    background: linear-gradient(to left, rgba(38, 38, 38, 0.65), ${theme.colors.gray15});
   }
 
   img {
     width: 100%;
     height: 100%;
   }
-`
+`;

@@ -1,12 +1,6 @@
 export default function Component() {
   return (
-    <svg
-      width="251"
-      height="249"
-      viewBox="0 0 251 249"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="251" height="249" viewBox="0 0 251 249" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g opacity="0.53" filter="url(#filter0_f_426_1723)">
         <path
           d="M239.096 128.306C239.096 142.728 236.146 157.009 230.414 170.334C224.682 183.659 216.281 195.766 205.691 205.964C195.1 216.162 182.527 224.252 168.689 229.771C154.852 235.291 140.021 238.131 125.044 238.131C110.066 238.131 95.2351 235.291 81.3976 229.771C67.5601 224.252 54.9871 216.162 44.3964 205.964C33.8056 195.766 25.4046 183.659 19.6729 170.334C13.9413 157.009 10.9912 142.728 10.9912 128.306C10.9912 99.1781 23.0074 71.2435 44.3964 50.6472C65.7853 30.0509 94.795 18.48 125.044 18.48C140.021 18.48 154.852 21.3207 168.689 26.84C182.527 32.3592 195.1 40.4489 205.691 50.6472C216.281 60.8454 224.682 72.9525 230.414 86.2772C236.146 99.6019 239.096 113.883 239.096 128.306Z"
@@ -30,24 +24,11 @@ export default function Component() {
         fill="#F4F2F3"
       />
       <g opacity="0.409" filter="url(#filter1_f_426_1723)">
-        <path
-          d="M199.599 54.9729L112.559 105.543L57.5269 192.18L138.035 132.549L199.599 54.9729Z"
-          fill="black"
-        />
+        <path d="M199.599 54.9729L112.559 105.543L57.5269 192.18L138.035 132.549L199.599 54.9729Z" fill="black" />
       </g>
-      <path
-        d="M137.512 131.671L112.563 105.545L201.065 46.0095L137.512 131.671Z"
-        fill="#FF5150"
-      />
-      <path
-        d="M137.512 131.672L112.563 105.545L49.0103 191.207L137.512 131.672Z"
-        fill="#F1F1F1"
-      />
-      <path
-        opacity="0.243"
-        d="M49.0103 191.207L137.512 131.671L201.065 46.0095L49.0103 191.207Z"
-        fill="black"
-      />
+      <path d="M137.512 131.671L112.563 105.545L201.065 46.0095L137.512 131.671Z" fill="#FF5150" />
+      <path d="M137.512 131.672L112.563 105.545L49.0103 191.207L137.512 131.672Z" fill="#F1F1F1" />
+      <path opacity="0.243" d="M49.0103 191.207L137.512 131.671L201.065 46.0095L49.0103 191.207Z" fill="black" />
       <defs>
         <filter
           id="filter0_f_426_1723"
@@ -59,16 +40,8 @@ export default function Component() {
           colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="BackgroundImageFix"
-            result="shape"
-          />
-          <feGaussianBlur
-            stdDeviation="4.47676"
-            result="effect1_foregroundBlur_426_1723"
-          />
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+          <feGaussianBlur stdDeviation="4.47676" result="effect1_foregroundBlur_426_1723" />
         </filter>
         <filter
           id="filter1_f_426_1723"
@@ -80,16 +53,8 @@ export default function Component() {
           colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="BackgroundImageFix"
-            result="shape"
-          />
-          <feGaussianBlur
-            stdDeviation="1.27242"
-            result="effect1_foregroundBlur_426_1723"
-          />
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+          <feGaussianBlur stdDeviation="1.27242" result="effect1_foregroundBlur_426_1723" />
         </filter>
         <linearGradient
           id="paint0_linear_426_1723"
@@ -118,5 +83,5 @@ export default function Component() {
         </radialGradient>
       </defs>
     </svg>
-  )
+  );
 }

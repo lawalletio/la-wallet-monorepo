@@ -1,29 +1,41 @@
-import * as React from 'react'
+import * as React from 'react';
 import type NostrExtensionProvider from '../types/nostr.js';
-import { type WebLNProvider as WebLNExtensionProvider } from "../types/webln.js";
+import { type WebLNProvider as WebLNExtensionProvider } from '../types/webln.js';
 
 import NDK, { NDKNip07Signer, NDKPrivateKeySigner, NDKUser } from '@nostr-dev-kit/ndk';
+
+type SignerTypes = NDKPrivateKeySigner | NDKNip07Signer | undefined;
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;
   nostr: NostrExtensionProvider | undefined;
 };
 
+type NostrConfig = {
+  explicitRelayUrls: string[];
+  autoConnect?: boolean;
+};
+
 export interface INostr {
   ndk: NDK;
+  signer: SignerTypes;
+  signerPubkey: string;
   providers: LightningProvidersType;
+  connectNDK: () => Promise<boolean>;
   connectExtension: () => void;
   connectWithPrivateKey: (hexKey: string) => Promise<boolean>;
   requestPublicKey: () => Promise<string>;
-  userPubkey: string;
 }
 
-export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
-  const [ndk, setNDK] = React.useState<NDK>(new NDK({
-    explicitRelayUrls
-  }));
+export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig): INostr => {
+  const [ndk] = React.useState<NDK>(
+    new NDK({
+      explicitRelayUrls,
+    }),
+  );
 
-  const [userPubkey, setUserPubkey] = React.useState<string>("");
+  const [signer, setSigner] = React.useState<SignerTypes>();
+  const [signerPubkey, setSignerPubkey] = React.useState<string>('');
 
   const [providers, setProviders] = React.useState<LightningProvidersType>({
     webln: undefined,
@@ -49,17 +61,9 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initializeNDK = async (
-    signer: NDKNip07Signer | NDKPrivateKeySigner
-  ) => {
+  const connectNDK = async () => {
     try {
-      const ndkProvider = new NDK({
-        explicitRelayUrls,
-        signer,
-      });
-
-      setNDK(ndkProvider);
-      await ndkProvider.connect();
+      await ndk.connect();
       return true;
     } catch {
       return false;
@@ -69,12 +73,12 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
   const connectWithPrivateKey = async (hexKey: string): Promise<boolean> => {
     try {
       const privateKeySigner = new NDKPrivateKeySigner(hexKey);
-      const ndkInitialized: boolean = await initializeNDK(privateKeySigner);
+      setSigner(privateKeySigner);
 
       const user: NDKUser = await privateKeySigner.user();
-      if (user && user.pubkey) setUserPubkey(user.pubkey);
+      if (user && user.pubkey) setSignerPubkey(user.pubkey);
 
-      return ndkInitialized;
+      return true;
     } catch {
       return false;
     }
@@ -85,7 +89,7 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
     await providers.webln.enable();
 
     const pubKey = await requestPublicKey();
-    if (pubKey) setUserPubkey(pubKey);
+    if (pubKey) setSignerPubkey(pubKey);
   };
 
   const requestPublicKey = async () => {
@@ -102,15 +106,19 @@ export const useNOSTR = (explicitRelayUrls: string[]): INostr => {
 
   React.useEffect(() => {
     loadProviders();
+
+    if (autoConnect) connectNDK();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [autoConnect]);
 
   return {
     ndk,
+    signer,
     providers,
+    signerPubkey,
+    connectNDK,
     connectExtension,
     connectWithPrivateKey,
-    userPubkey,
     requestPublicKey,
   };
 };

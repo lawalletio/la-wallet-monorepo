@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 const theme = {
   colors: {
@@ -31,8 +31,8 @@ const theme = {
     error15: '#E9505315',
     // General
     background: '#1C1C1C',
-    text: '#f1f1f1'
-  }
-}
+    text: '#f1f1f1',
+  },
+};
 
-export default theme
+export default theme;

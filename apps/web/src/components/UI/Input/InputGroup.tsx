@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { ReactNode } from 'react'
-import { InputGroup } from './style'
+import { ReactNode } from 'react';
+import { InputGroup } from './style';
 
 interface InputGroupProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default function Component(props: InputGroupProps) {
-  const { children } = props
+  const { children } = props;
 
-  return <InputGroup>{children}</InputGroup>
+  return <InputGroup>{children}</InputGroup>;
 }

@@ -1,22 +1,22 @@
-import * as React from 'react'
-import { baseConfig } from '@lawallet/utils'
-import { type INostr, useNOSTR } from '../hooks/useNostr.js'
+import * as React from 'react';
+import { baseConfig } from '@lawallet/utils';
+import { type INostr, useNOSTR } from '../hooks/useNostr.js';
 import { type ConfigParameter } from '../types/config.js';
 
-export const NDKContext = React.createContext({} as INostr)
+export const NDKContext = React.createContext({} as INostr);
 
 export function NDKProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const { children, config = baseConfig } = props;
-  const value = useNOSTR(config.relaysList)
+  const value = useNOSTR({ explicitRelayUrls: config.relaysList, autoConnect: true });
 
-  return React.createElement(NDKContext.Provider, { value }, children)
+  return React.createElement(NDKContext.Provider, { value }, children);
 }
 
-export const useNostrContext = () => {
-  const context = React.useContext(NDKContext)
+export const useNostrContext = (): INostr => {
+  const context = React.useContext(NDKContext);
   if (!context) {
-    throw new Error('useNostrContext must be used within NDKProvider')
+    throw new Error('useNostrContext must be used within NDKProvider');
   }
 
-  return context
-}
+  return context;
+};

@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import { fontPrimary } from '@/styles/fonts'
+import { fontPrimary } from '@/styles/fonts';
 
-import { HeadingBox, HeadingCustom } from './style'
-import { ReactNode } from 'react'
+import { HeadingBox, HeadingCustom } from './style';
+import { ReactNode } from 'react';
 
 interface HeadingProps {
-  children: ReactNode
-  as?: string
-  align?: 'left' | 'center' | 'right'
-  color?: string
+  children: ReactNode;
+  as?: string;
+  align?: 'left' | 'center' | 'right';
+  color?: string;
 }
 
 export default function Heading(props: HeadingProps) {
-  const { children, as = 'h1', align = 'left', color } = props
+  const { children, as = 'h1', align = 'left', color } = props;
 
   return (
     <HeadingBox className={fontPrimary.className}>
@@ -21,5 +21,5 @@ export default function Heading(props: HeadingProps) {
         {children}
       </HeadingCustom>
     </HeadingBox>
-  )
+  );
 }

@@ -1,25 +1,25 @@
-import { ArrowRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled'
+import { ArrowRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import Flex from '../Flex'
-import Heading from '../Heading'
-import Text from '../Text'
-import Icon from '../Icon'
+import Flex from '../Flex';
+import Heading from '../Heading';
+import Text from '../Text';
+import Icon from '../Icon';
 
-import theme from '@/styles/theme'
-import { BannerAlert, Asset } from './style'
+import theme from '@/styles/theme';
+import { BannerAlert, Asset } from './style';
 
-import Security from './Background/Security'
-import Voucher from './Background/Voucher'
+import Security from './Background/Security';
+import Voucher from './Background/Voucher';
 
 interface ComponentProps {
-  title: string
-  description: string
-  href?: string
-  color?: 'success' | 'warning' | 'error'
+  title: string;
+  description: string;
+  href?: string;
+  color?: 'success' | 'warning' | 'error';
 }
 
 export default function Component(props: ComponentProps) {
-  const { title, description, color = 'success' } = props
+  const { title, description, color = 'success' } = props;
 
   return (
     <BannerAlert $color={theme.colors[color]}>
@@ -38,5 +38,5 @@ export default function Component(props: ComponentProps) {
         {color === 'error' && <Security />}
       </Asset>
     </BannerAlert>
-  )
+  );
 }

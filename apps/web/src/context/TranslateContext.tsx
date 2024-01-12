@@ -1,78 +1,61 @@
-import SpinnerView from '@/components/Loader/SpinnerView'
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useLayoutEffect,
-  useState
-} from 'react'
+import SpinnerView from '@/components/Loader/SpinnerView';
+import { createContext, useCallback, useContext, useLayoutEffect, useState } from 'react';
 import {
   AvailableLanguages,
   Dictionary,
   DictionaryEntry,
   LanguagesList,
   ReplacementParams,
-  defaultLocale
-} from '@lawallet/react'
+  defaultLocale,
+} from '@lawallet/react';
 
 interface IUseTranslation {
-  lng: AvailableLanguages
-  t: (key: string, params?: ReplacementParams) => string
-  changeLanguage: (lng: AvailableLanguages) => void
+  lng: AvailableLanguages;
+  t: (key: string, params?: ReplacementParams) => string;
+  changeLanguage: (lng: AvailableLanguages) => void;
 }
 
-const TranslateContext = createContext({} as IUseTranslation)
+const TranslateContext = createContext({} as IUseTranslation);
 
 async function dynamicLoadMessages(locale: AvailableLanguages) {
   try {
-    const dictionary = await import(
-      `../constants/locales/${locale}/globals.json`
-    )
+    const dictionary = await import(`../constants/locales/${locale}/globals.json`);
 
-    return dictionary
+    return dictionary;
   } catch (error: unknown) {
-    console.error(new Error(`Unable to load locale (${locale}): ${error}`))
+    console.error(new Error(`Unable to load locale (${locale}): ${error}`));
 
-    return false
+    return false;
   }
 }
 
 export const loadingMessages: Dictionary = {
   es: {
     LOADING_LANGUAGES: 'Cargando lenguajes...',
-    LOADING_ACCOUNT: 'Cargando cuenta...'
+    LOADING_ACCOUNT: 'Cargando cuenta...',
   },
   en: {
     LOADING_LANGUAGES: 'Loading languages...',
-    LOADING_ACCOUNT: 'Loading account...'
-  }
-}
+    LOADING_ACCOUNT: 'Loading account...',
+  },
+};
 
-export function TranslateProvider({
-  children,
-  lng
-}: {
-  children: React.ReactNode
-  lng: AvailableLanguages
-}) {
-  const [dictionary, setDictionary] = useState<DictionaryEntry>({})
-  const translations = useTranslate(lng, dictionary)
+export function TranslateProvider({ children, lng }: { children: React.ReactNode; lng: AvailableLanguages }) {
+  const [dictionary, setDictionary] = useState<DictionaryEntry>({});
+  const translations = useTranslate(lng, dictionary);
 
-  const loadDefaultLocale = useCallback(
-    () => dynamicLoadMessages(defaultLocale).then(res => setDictionary(res)),
-    []
-  )
+  const loadDefaultLocale = useCallback(() => dynamicLoadMessages(defaultLocale).then((res) => setDictionary(res)), []);
 
   useLayoutEffect(() => {
     dynamicLoadMessages(lng)
-      .then(res => {
-        res ? setDictionary(res) : loadDefaultLocale()
+      .then((res) => {
+        res ? setDictionary(res) : loadDefaultLocale();
       })
       .catch(() => {
-        loadDefaultLocale()
-        throw new Error('Error loading translation')
-      })
-  }, [])
+        loadDefaultLocale();
+        throw new Error('Error loading translation');
+      });
+  }, []);
 
   return (
     <TranslateContext.Provider value={translations}>
@@ -82,50 +65,45 @@ export function TranslateProvider({
         children
       )}
     </TranslateContext.Provider>
-  )
+  );
 }
 
-const useTranslate = (
-  usedLng: AvailableLanguages,
-  dictionary: DictionaryEntry
-): IUseTranslation => {
-  const [lng, setLng] = useState(
-    LanguagesList.includes(usedLng) ? usedLng : defaultLocale
-  )
+const useTranslate = (usedLng: AvailableLanguages, dictionary: DictionaryEntry): IUseTranslation => {
+  const [lng, setLng] = useState(LanguagesList.includes(usedLng) ? usedLng : defaultLocale);
 
   const t = (key: string, params?: ReplacementParams): string => {
-    let text: string = dictionary[key] ?? key
+    let text: string = dictionary[key] ?? key;
 
     if (params)
-      Object.keys(params).map(key => {
-        const strToReplace: string = `{{ ${key} }}`
+      Object.keys(params).map((key) => {
+        const strToReplace: string = `{{ ${key} }}`;
 
         if (text.includes(strToReplace)) {
-          text = text.replace(strToReplace, params[key])
+          text = text.replace(strToReplace, params[key]);
         }
-      })
+      });
 
-    return text
-  }
+    return text;
+  };
 
   const changeLanguage = (new_lng: AvailableLanguages) => {
     if (new_lng && LanguagesList.includes(new_lng)) {
-      setLng(new_lng)
+      setLng(new_lng);
 
-      const expire = new Date(Date.now() + 86400 * 365 * 1000).toUTCString()
-      document.cookie = `localeTranslation=${new_lng}; expires=${expire}; path=/`
-      window.location.reload()
+      const expire = new Date(Date.now() + 86400 * 365 * 1000).toUTCString();
+      document.cookie = `localeTranslation=${new_lng}; expires=${expire}; path=/`;
+      window.location.reload();
     }
-  }
+  };
 
-  return { lng, t, changeLanguage }
-}
+  return { lng, t, changeLanguage };
+};
 
 export const useTranslation = () => {
-  const context = useContext(TranslateContext)
+  const context = useContext(TranslateContext);
   if (!context) {
-    throw new Error('useTranslation must be used within TranslateProvider')
+    throw new Error('useTranslation must be used within TranslateProvider');
   }
 
-  return context
-}
+  return context;
+};

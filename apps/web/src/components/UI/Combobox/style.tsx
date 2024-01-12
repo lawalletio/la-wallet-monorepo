@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
-import theme from '@/styles/theme'
+import theme from '@/styles/theme';
 
 interface ComboboxProps {
-  $isSelected: boolean
+  $isSelected: boolean;
 }
 
 export const Combobox = styled.a<ComboboxProps>`
@@ -13,10 +13,9 @@ export const Combobox = styled.a<ComboboxProps>`
   width: 100%;
 
   .trigger {
-    border-color: ${props =>
-      props.$isSelected ? theme.colors.primary : theme.colors.gray20};
+    border-color: ${(props) => (props.$isSelected ? theme.colors.primary : theme.colors.gray20)};
   }
-`
+`;
 
 export const Trigger = styled.button`
   display: flex;
@@ -38,10 +37,10 @@ export const Trigger = styled.button`
   &:hover {
     border-color: ${theme.colors.gray35};
   }
-`
+`;
 
 interface ContentProps {
-  $isOpen: boolean
+  $isOpen: boolean;
 }
 
 export const Content = styled.div<ContentProps>`
@@ -50,7 +49,7 @@ export const Content = styled.div<ContentProps>`
   overflow: hidden;
   top: 100%;
 
-  display: ${props => (props.$isOpen ? 'block' : 'none')};
+  display: ${(props) => (props.$isOpen ? 'block' : 'none')};
   width: 100%;
 
   margin-top: 4px;
@@ -58,7 +57,7 @@ export const Content = styled.div<ContentProps>`
   background-color: ${theme.colors.gray15};
   border: 1px solid ${theme.colors.gray35};
   border-radius: 8px;
-`
+`;
 
 export const Group = styled.div`
   > button {
@@ -73,7 +72,7 @@ export const Group = styled.div`
       border-radius: 0 0 8px 8px;
     }
   }
-`
+`;
 
 export const Item = styled.button`
   display: flex;
@@ -100,4 +99,4 @@ export const Item = styled.button`
     outline: none;
     background-color: ${theme.colors.gray20};
   }
-`
+`;

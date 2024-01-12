@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { styled } from 'styled-components'
+import { styled } from 'styled-components';
 
 interface HomeDescriptionProps {}
 
@@ -10,4 +10,4 @@ export const HomeDescription = styled.div<HomeDescriptionProps>`
   p {
     max-width: 250px;
   }
-`
+`;

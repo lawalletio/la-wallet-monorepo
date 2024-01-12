@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import Container from '@/components/Layout/Container'
-import Navbar from '@/components/Layout/Navbar'
-import { Divider, Flex, Heading, LinkButton, Text } from '@/components/UI'
-import { useTransferContext } from '@/context/TransferContext'
-import { useTranslation } from '@/context/TranslateContext'
+import Container from '@/components/Layout/Container';
+import Navbar from '@/components/Layout/Navbar';
+import { Divider, Flex, Heading, LinkButton, Text } from '@/components/UI';
+import { useTransferContext } from '@/context/TransferContext';
+import { useTranslation } from '@/context/TranslateContext';
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
-  const { t } = useTranslation()
-  const { transferInfo } = useTransferContext()
+  const { t } = useTranslation();
+  const { transferInfo } = useTransferContext();
 
-  const router = useRouter()
-  if (!transferInfo.data) router.push('/dashboard')
+  const router = useRouter();
+  if (!transferInfo.data) router.push('/dashboard');
 
   return (
     <>
@@ -38,5 +38,5 @@ export default function Page() {
         </Container>
       </Flex>
     </>
-  )
+  );
 }
