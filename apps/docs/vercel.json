@@ -1,0 +1,10 @@
+{
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/react",
+      "destination": "/react/getting-started",
+      "permanent": true
+    }
+  ]
+}

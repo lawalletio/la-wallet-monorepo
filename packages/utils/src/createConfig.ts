@@ -16,7 +16,7 @@ export interface CreateConfigParameters {
     ledger?: string;
     urlx: string;
   };
-  relaysList?: string;
+  relaysList?: string[];
   storage?: BaseStorage;
 }
 

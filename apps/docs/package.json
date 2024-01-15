@@ -1,0 +1,19 @@
+{
+  "name": "docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "rm -r ../node_modules/.cache/twoslash & vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.23",
+    "@lawallet/react": "*",
+    "react": "^18.2.0",
+    "vite": "^4.4.9",
+    "vitepress": "1.0.0-rc.20",
+    "vitepress-plugin-shiki-twoslash": "^0.0.6",
+    "vue": "^3.3.4"
+  }
+}

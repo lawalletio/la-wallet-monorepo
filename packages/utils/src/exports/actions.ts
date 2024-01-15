@@ -17,9 +17,6 @@ export {
 
 export { broadcastEvent } from '../interceptors/publish.js';
 
-export { type CreateConfigParameters, createConfig } from '../createConfig.js';
-export { type BaseStorage, type CreateStorageParameters, createStorage } from '../createStorage.js';
-
 export {
   type TransferInformation,
   type CheckInvoiceReturns,
