@@ -10,7 +10,7 @@ import {
   formatTransferData,
   getTag,
 } from '@lawallet/react/utils';
-import { NDKEvent, NDKKind, NDKTag, NostrEvent } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKKind, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getPublicKey, nip19 } from 'nostr-tools';
 import { useEffect, useState } from 'react';

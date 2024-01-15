@@ -5,7 +5,7 @@ import { CheckIcon, SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/fi
 import { useEffect, useMemo, useState } from 'react';
 
 import { copy } from '@/utils/share';
-import { formatAddress, formatToPreference, useConfig, useSigner } from '@lawallet/react';
+import { formatAddress, formatToPreference, useConfig, useZapDeposit } from '@lawallet/react';
 
 import { useTranslation } from '@/context/TranslateContext';
 import { useNumpad } from '@/hooks/useNumpad';
@@ -28,28 +28,19 @@ import {
   Text,
 } from '@/components/UI';
 
+import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useAlert from '@/hooks/useAlerts';
 import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
-import { useSubscription, useWalletContext } from '@lawallet/react';
-import { requestInvoice } from '@lawallet/react/actions';
-import { SignEvent, buildZapRequestEvent, lnurl_encode } from '@lawallet/react/utils';
+import { useWalletContext } from '@lawallet/react';
+import { lnurl_encode } from '@lawallet/react/utils';
 import { useRouter } from 'next/navigation';
-import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
-import { NostrEvent } from '@nostr-dev-kit/ndk';
-
-type InvoiceProps = {
-  bolt11: string;
-  created_at: number;
-  loading: boolean;
-};
 
 type SheetTypes = 'amount' | 'qr' | 'finished';
 
 export default function Page() {
   const config = useConfig();
-  const { signer } = useSigner();
   const { lng, t } = useTranslation();
   const notifications = useAlert();
   const {
@@ -61,30 +52,13 @@ export default function Page() {
   } = useWalletContext();
   const numpadData = useNumpad(currency);
 
+  const { invoice, createInvoice, resetInvoice } = useZapDeposit();
   const router = useRouter();
   const errors = useErrors();
   const [showSheet, setShowSeet] = useState<boolean>(false);
   const [sheetStep, setSheetStep] = useState<SheetTypes>('amount');
 
-  const [invoice, setInvoice] = useState<InvoiceProps>({
-    bolt11: '',
-    created_at: 0,
-    loading: false,
-  });
-
-  const { events } = useSubscription({
-    filters: [
-      {
-        authors: [config.modulePubkeys.ledger, config.modulePubkeys.urlx],
-        kinds: [9735],
-        since: invoice.created_at,
-      },
-    ],
-    options: {},
-    enabled: Boolean(invoice.bolt11.length && !(sheetStep === 'finished')),
-  });
-
-  const handleClick = async () => {
+  const handleClick = () => {
     if (invoice.loading) return;
 
     const amountSats: number = numpadData.intAmount['SAT'];
@@ -100,32 +74,14 @@ export default function Page() {
       return;
     }
 
-    setInvoice({ ...invoice, loading: true });
-    const invoice_mSats: number = amountSats * 1000;
-    const zapRequestEvent: NostrEvent | undefined = await SignEvent(
-      signer!,
-      buildZapRequestEvent(identity.hexpub, invoice_mSats, config),
-    );
-    const zapRequestURI: string = encodeURI(JSON.stringify(zapRequestEvent));
-
-    requestInvoice(
-      `${config.endpoints.api}/lnurlp/${identity.npub}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}`,
-    )
-      .then((bolt11) => {
-        if (bolt11) {
-          setInvoice({
-            bolt11,
-            created_at: Math.round(Date.now() / 1000),
-            loading: false,
-          });
-
-          setSheetStep('qr');
-        } else {
-          errors.modifyError('ERROR_ON_CREATE_INVOICE');
-        }
+    createInvoice(amountSats).then((created: boolean) => {
+      if (!created) {
+        errors.modifyError('ERROR_ON_CREATE_INVOICE');
         return;
-      })
-      .catch(() => errors.modifyError('ERROR_ON_CREATE_INVOICE'));
+      }
+
+      setSheetStep('qr');
+    });
   };
 
   const handleCloseSheet = () => {
@@ -135,18 +91,9 @@ export default function Page() {
       numpadData.resetAmount();
       setShowSeet(false);
       setSheetStep('amount');
-      setInvoice({ bolt11: '', created_at: 0, loading: false });
+      resetInvoice();
     }
   };
-
-  useEffect(() => {
-    if (events.length) {
-      events.map((event) => {
-        const boltTag = event.getMatchingTags('bolt11')[0]?.[1];
-        if (boltTag === invoice.bolt11) setSheetStep('finished');
-      });
-    }
-  }, [events.length]);
 
   const handleCopy = (text: string) => {
     copy(text).then((res) => {
@@ -160,6 +107,10 @@ export default function Page() {
   useEffect(() => {
     if (errors.errorInfo.visible) errors.resetError();
   }, [numpadData.intAmount]);
+
+  useEffect(() => {
+    if (invoice.payed) setSheetStep('finished');
+  }, [invoice.payed]);
 
   useActionOnKeypress('Enter', handleClick, [numpadData.intAmount['SAT']]);
 

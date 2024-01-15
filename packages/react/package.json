@@ -16,8 +16,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "react": "^18.2.0",
     "@lawallet/utils": "*",
+    "react": "^18.2.0",
     "@nostr-dev-kit/ndk": "^2.3.2",
     "date-fns": "^3.2.0",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"

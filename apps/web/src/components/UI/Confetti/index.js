@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import ConfettiGenerator from 'confetti-js'
+import { useEffect } from 'react';
+import ConfettiGenerator from 'confetti-js';
 
-import { Confetti } from './style'
+import { Confetti } from './style';
 
 const settings = {
   target: 'confetti-box',
@@ -14,27 +14,27 @@ const settings = {
   colors: [
     [86, 182, 140],
     [253, 200, 0],
-    [233, 80, 83]
+    [233, 80, 83],
   ],
   clock: '35',
   rotate: true,
   width: '600',
   height: '600',
   start_from_edge: true,
-  respawn: false
-}
+  respawn: false,
+};
 
 export default function Component() {
   useEffect(() => {
-    const confetti = new ConfettiGenerator(settings)
-    confetti.render()
+    const confetti = new ConfettiGenerator(settings);
+    confetti.render();
 
-    return () => confetti.clear()
-  }, [])
+    return () => confetti.clear();
+  }, []);
 
   return (
     <Confetti>
       <canvas id="confetti-box"></canvas>
     </Confetti>
-  )
+  );
 }
