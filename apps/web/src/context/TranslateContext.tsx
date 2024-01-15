@@ -1,5 +1,4 @@
 import SpinnerView from '@/components/Loader/SpinnerView';
-import React, { Children, ReactNode, createContext, useCallback, useContext, useLayoutEffect, useState } from 'react';
 import {
   AvailableLanguages,
   Dictionary,
@@ -8,6 +7,7 @@ import {
   ReplacementParams,
   defaultLocale,
 } from '@lawallet/react';
+import React, { createContext, useCallback, useContext, useLayoutEffect, useState } from 'react';
 
 interface IUseTranslation {
   lng: AvailableLanguages;
@@ -57,16 +57,12 @@ export function TranslateProvider({ children, lng }: { children: React.ReactNode
       });
   }, []);
 
-  const child: ReactNode = React.useMemo(() => {
-    return children;
-  }, [children]);
-
   return (
     <TranslateContext.Provider value={translations}>
       {!Object.keys(dictionary).length ? (
         <SpinnerView loadingText={loadingMessages[lng]['LOADING_LANGUAGES']} />
       ) : (
-        child
+        children
       )}
     </TranslateContext.Provider>
   );

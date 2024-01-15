@@ -8,7 +8,6 @@ import { TranslateProvider } from '@/context/TranslateContext';
 import GlobalStyles from '@/styles/GlobalStyles';
 import { fontSecondary } from '@/styles/fonts';
 import theme from '@/styles/theme';
-import Script from 'next/script';
 import { ReactNode } from 'react';
 import { AvailableLanguages, LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
