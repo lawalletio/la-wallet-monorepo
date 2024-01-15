@@ -47,7 +47,7 @@ const Providers = (props: ProviderProps) => {
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon.ico" />
 
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_TAG_ID}`} />
+        {/* <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_TAG_ID}`} />
         <Script id="google-analytics">
           {`
           window.dataLayer = window.dataLayer || [];
@@ -56,19 +56,19 @@ const Providers = (props: ProviderProps) => {
         
           gtag('config', '${process.env.GOOGLE_TAG_ID}');
         `}
-        </Script>
+        </Script> */}
       </head>
 
       <body>
         <StyledComponentsRegistry>
           <GlobalStyles />
-          <TranslateProvider lng={params.lng}>
-            <LaWalletProvider>
-              <AuthProvider>
+          <LaWalletProvider>
+            <AuthProvider>
+              <TranslateProvider lng={params.lng}>
                 <ThemeProvider theme={theme}>{children}</ThemeProvider>
-              </AuthProvider>
-            </LaWalletProvider>
-          </TranslateProvider>
+              </TranslateProvider>
+            </AuthProvider>
+          </LaWalletProvider>
         </StyledComponentsRegistry>
       </body>
     </html>
