@@ -17,6 +17,8 @@ export {
 
 export { broadcastEvent } from '../interceptors/publish.js';
 
+export { type CreateConfigParameters, createConfig } from '../createConfig.js';
+
 export {
   type TransferInformation,
   type CheckInvoiceReturns,

@@ -2,13 +2,14 @@ import { parseContent } from '@lawallet/utils';
 import { getUsername } from '@lawallet/utils/actions';
 import { defaultIdentity, type UserIdentity } from '@lawallet/utils/types';
 import { getPublicKey, nip19 } from 'nostr-tools';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 import type { ConfigParameter } from '../types/config.js';
 import { useConfig } from './useConfig.js';
 
 export interface UseIdentityReturns {
   identity: UserIdentity;
+  setIdentity: Dispatch<SetStateAction<UserIdentity>>;
   loadIdentityFromPubkey: (pubkey: string) => void;
   loadIdentityFromPrivateKey: (privkey: string) => void;
 }
@@ -89,6 +90,7 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
 
   return {
     identity,
+    setIdentity,
     loadIdentityFromPubkey,
     loadIdentityFromPrivateKey,
   };

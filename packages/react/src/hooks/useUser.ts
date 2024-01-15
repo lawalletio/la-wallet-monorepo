@@ -9,12 +9,12 @@ export interface UseUserReturns {
   identity: UserIdentity;
   transactions: Transaction[];
   balance: TokenBalance;
-  initializeUser: (new_identity: UserIdentity) => Promise<void>;
+  initializeUser: (new_identity: UserIdentity, isNew?: boolean) => Promise<void>;
 }
 
 export const useUser = (params: UseIdentityParameters): UseUserReturns => {
   const config = useConfig(params);
-  const { identity, loadIdentityFromPrivateKey } = useIdentity(params);
+  const { identity, setIdentity, loadIdentityFromPrivateKey } = useIdentity(params);
 
   const { userTransactions: transactions } = useActivity({
     pubkey: identity.hexpub,
@@ -30,8 +30,9 @@ export const useUser = (params: UseIdentityParameters): UseUserReturns => {
     config,
   });
 
-  const initializeUser = async (new_identity: UserIdentity) => {
-    loadIdentityFromPrivateKey(new_identity.privateKey);
+  const initializeUser = async (new_identity: UserIdentity, isNew: boolean = false) => {
+    console.log(isNew);
+    isNew ? setIdentity(new_identity) : loadIdentityFromPrivateKey(new_identity.privateKey);
     localStorage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(new_identity));
     return;
   };

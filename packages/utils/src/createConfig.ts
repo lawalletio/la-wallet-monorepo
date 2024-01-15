@@ -1,3 +1,6 @@
+import { baseConfig } from './constants/constants.js';
+import type { ConfigProps } from './types/config.js';
+
 export interface CreateConfigParameters {
   endpoints?: {
     identity?: string;
@@ -13,4 +16,11 @@ export interface CreateConfigParameters {
     urlx: string;
   };
   relaysList?: string;
+}
+
+export function createConfig(parameters: CreateConfigParameters = {}): ConfigProps {
+  return {
+    ...baseConfig,
+    ...parameters,
+  } as ConfigProps;
 }

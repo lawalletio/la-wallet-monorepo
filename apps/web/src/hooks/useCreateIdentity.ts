@@ -191,7 +191,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
           const { success, identity, message } = new_identity;
 
           if (success && identity) {
-            initializeUser(identity!);
+            initializeUser(identity!, true);
 
             if (props.card) {
               buildCardActivationEvent(props.card, identity.privateKey, config)

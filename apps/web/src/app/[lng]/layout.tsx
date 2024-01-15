@@ -11,6 +11,7 @@ import theme from '@/styles/theme';
 import { ReactNode } from 'react';
 import { AvailableLanguages, LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
+import { createConfig } from '@lawallet/react/actions';
 
 interface ProviderProps {
   children: ReactNode;
@@ -20,6 +21,13 @@ interface ProviderProps {
 // Metadata
 const APP_NAME = 'LaWallet';
 const APP_DESCRIPTION = 'https://lawallet.ar/';
+
+const isDev = process.env.NODE_ENV === 'development';
+
+const config = createConfig({
+  endpoints: { identity: isDev ? 'https://debug.lawallet.ar' : 'https://lawallet.ar' },
+  federation: { domain: isDev ? 'debug.lawallet.ar' : 'lawallet.ar' },
+});
 
 const Providers = (props: ProviderProps) => {
   const { children, params } = props;
@@ -61,7 +69,7 @@ const Providers = (props: ProviderProps) => {
       <body>
         <StyledComponentsRegistry>
           <GlobalStyles />
-          <LaWalletProvider>
+          <LaWalletProvider config={config}>
             <AuthProvider lng={params.lng}>
               <ThemeProvider theme={theme}>
                 <TranslateProvider lng={params.lng}>{children}</TranslateProvider>
