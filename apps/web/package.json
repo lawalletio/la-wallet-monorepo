@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@bitcoin-design/bitcoin-icons-react": "^0.1.10",
-    "@ducanh2912/next-pwa": "10.2.2",
+    "@ducanh2912/next-pwa": "9.7.2",
     "@emotion/is-prop-valid": "1.2.1",
     "@emotion/unitless": "0.8.1",
     "@formatjs/intl-localematcher": "^0.5.2",
@@ -27,7 +27,7 @@
     "jotai": "^2.6.1",
     "lottie-react": "^2.4.0",
     "negotiator": "^0.6.3",
-    "next": "14.0.4",
+    "next": "13.5.4",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0",
     "postcss": "8.4.33",
     "qr-scanner": "^1.4.2",
