@@ -15,6 +15,8 @@ import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEve
 import { type Event, nip26 } from 'nostr-tools';
 import { useSubscription } from './useSubscription.js';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
+import type { ConfigParameter } from '../types/config.js';
+import { useConfig } from './useConfig.js';
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
@@ -33,14 +35,13 @@ export interface UseActivityReturn {
   userTransactions: Transaction[];
 }
 
-export interface UseActivityProps {
+export interface UseActivityProps extends ConfigParameter {
   pubkey: string;
   since?: number | undefined;
   until?: number | undefined;
   limit?: number;
   enabled?: boolean;
   cache?: boolean;
-  config?: ConfigProps;
 }
 
 export const options: NDKSubscriptionOptions = {
@@ -69,16 +70,9 @@ const defaultActivity = {
   idsLoaded: [],
 };
 
-export const useActivity = (props: UseActivityProps): UseActivityReturn => {
-  const {
-    pubkey,
-    enabled = true,
-    limit = 1000,
-    since = undefined,
-    until = undefined,
-    config = baseConfig,
-    cache = false,
-  } = props;
+export const useActivity = (parameters: UseActivityProps): UseActivityReturn => {
+  const { pubkey, enabled = true, limit = 1000, since = undefined, until = undefined, cache = false } = parameters;
+  const config = useConfig(parameters);
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
 

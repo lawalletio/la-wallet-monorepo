@@ -2,10 +2,11 @@ import { SignEvent, buildZapRequestEvent } from '@lawallet/utils';
 import { requestInvoice } from '@lawallet/utils/actions';
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
 import React from 'react';
-import { useSubscription } from './useSubscription.js';
-import { useSigner } from './useSigner.js';
-import { useConfig } from './useConfig.js';
 import { useWalletContext } from '../context/AccountContext.js';
+import type { ConfigParameter } from '../types/config.js';
+import { useConfig } from './useConfig.js';
+import { useSigner } from './useSigner.js';
+import { useSubscription } from './useSubscription.js';
 
 type InvoiceProps = {
   bolt11: string;
@@ -27,16 +28,18 @@ export interface UseZapDepositReturns {
   resetInvoice: () => void;
 }
 
-// interface UseLightningDepositParams {
-//   config?: ConfigProps;
+// interface UseLightningDepositParams extends ConfigParameter {
+//   sender?: {
+//     signer: SignerTypes;
+//   };
 // }
 
-export const useZapDeposit = (): UseZapDepositReturns => {
+export const useZapDeposit = (parameters: ConfigParameter = {}): UseZapDepositReturns => {
   const {
     user: { identity },
   } = useWalletContext();
 
-  const config = useConfig();
+  const config = useConfig(parameters);
   const { signer } = useSigner();
 
   const [invoice, setInvoice] = React.useState<InvoiceProps>(defaultDeposit);

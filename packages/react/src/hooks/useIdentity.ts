@@ -2,10 +2,10 @@ import { parseContent } from '@lawallet/utils';
 import { getUsername } from '@lawallet/utils/actions';
 import { defaultIdentity, type UserIdentity } from '@lawallet/utils/types';
 import { getPublicKey, nip19 } from 'nostr-tools';
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
-import { useConfig } from './useConfig.js';
 import type { ConfigParameter } from '../types/config.js';
+import { useConfig } from './useConfig.js';
 
 export interface UseIdentityReturns {
   identity: UserIdentity;
@@ -13,10 +13,12 @@ export interface UseIdentityReturns {
   loadIdentityFromPrivateKey: (privkey: string) => void;
 }
 
-export type UseIdentityParameters = ConfigParameter & { pubkey?: string };
+export interface UseIdentityParameters extends ConfigParameter {
+  pubkey?: string;
+}
 
-export const useIdentity = (params: UseIdentityParameters): UseIdentityReturns => {
-  const config = useConfig(params);
+export const useIdentity = (parameters: UseIdentityParameters): UseIdentityReturns => {
+  const config = useConfig(parameters);
   const [identity, setIdentity] = useState<UserIdentity>(defaultIdentity);
 
   const setDefaultIdentity = () => {
@@ -82,8 +84,8 @@ export const useIdentity = (params: UseIdentityParameters): UseIdentityReturns =
   };
 
   useEffect(() => {
-    params.pubkey ? loadIdentityFromPubkey(params.pubkey) : loadIdentityFromStorage();
-  }, [params.pubkey]);
+    parameters.pubkey ? loadIdentityFromPubkey(parameters.pubkey) : loadIdentityFromStorage();
+  }, [parameters.pubkey]);
 
   return {
     identity,

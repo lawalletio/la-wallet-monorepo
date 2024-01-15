@@ -5,27 +5,26 @@ import { type ConfigProps, type TokenBalance } from '@lawallet/utils/types';
 import { type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { useNostrContext } from '../context/NDKContext.js';
 import { useSubscription } from './useSubscription.js';
+import { useConfig } from './useConfig.js';
+import type { ConfigParameter } from '../types/config.js';
 
 export interface UseTokenBalanceReturns {
   balance: TokenBalance;
 }
 
-export interface UseTokenBalanceProps {
+export interface UseTokenBalanceProps extends ConfigParameter {
   pubkey: string;
   tokenId: string;
   enabled: boolean;
   closeOnEose?: boolean;
-  config?: ConfigProps;
 }
 
-export const useTokenBalance = ({
-  pubkey,
-  tokenId,
-  enabled,
-  closeOnEose = false,
-  config = baseConfig,
-}: UseTokenBalanceProps): UseTokenBalanceReturns => {
+export const useTokenBalance = (parameters: UseTokenBalanceProps): UseTokenBalanceReturns => {
+  const { pubkey, tokenId, enabled, closeOnEose = false } = parameters;
+
   const { ndk } = useNostrContext();
+  const config = useConfig(parameters);
+
   const [balance, setBalance] = React.useState<TokenBalance>({
     tokenId: tokenId,
     amount: 0,

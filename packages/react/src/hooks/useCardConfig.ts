@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import { useWalletContext } from '../context/AccountContext.js';
 import { useSubscription } from './useSubscription.js';
 import { useConfig } from './useConfig.js';
+import type { ConfigParameter } from '../types/config.js';
 
 export type CardConfigReturns = {
   cards: ICards;
@@ -35,7 +36,8 @@ export type ICards = {
   loading: boolean;
 };
 
-export const useCardConfig = (config: ConfigProps = baseConfig): CardConfigReturns => {
+export const useCardConfig = (parameters: ConfigParameter = {}): CardConfigReturns => {
+  const config = useConfig(parameters);
   const [cards, setCards] = useState<ICards>({
     data: {},
     config: {} as CardConfigPayload,
