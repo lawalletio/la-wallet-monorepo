@@ -9,7 +9,7 @@ layout: home
 hero:
   name: LaWallet
   text: Reactivity for LN apps
-  tagline: Lorem lorem lorem lorem lorem lorem lorem lorem.
+  tagline: React Hooks to interact with LaWallet
   actions:
     - theme: brand
       text: Get Started
