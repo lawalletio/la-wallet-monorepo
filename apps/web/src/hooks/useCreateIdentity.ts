@@ -1,5 +1,5 @@
 import { regexUserName } from '@/constants/constants';
-import { useSigner, useWalletContext } from '@lawallet/react';
+import { useConfig, useSigner, useWalletContext } from '@lawallet/react';
 import {
   IdentityResponse,
   claimIdentity,
@@ -55,6 +55,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
   const {
     user: { setUser },
   } = useWalletContext();
+  const config = useConfig();
   const { connectWithPrivateKey } = useSigner();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -77,7 +78,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
     if (checkExistUsername) clearTimeout(checkExistUsername);
 
     checkExistUsername = setTimeout(async () => {
-      const nameWasTaken = await existIdentity(username);
+      const nameWasTaken = await existIdentity(username, config);
 
       setAccountInfo((prev) => {
         return { ...prev, loading: false };
@@ -144,7 +145,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
             message: 'ERROR_WITH_IDENTITY_EVENT',
           };
 
-        const createdAccount: IdentityResponse = await claimIdentity(identityEvent);
+        const createdAccount: IdentityResponse = await claimIdentity(identityEvent, config);
         if (!createdAccount.success)
           return {
             success: false,
@@ -182,7 +183,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
 
     setLoading(true);
 
-    existIdentity(name)
+    existIdentity(name, config)
       .then((nameWasTaken: boolean) => {
         if (nameWasTaken) return errors.modifyError('NAME_ALREADY_TAKEN');
 
@@ -193,9 +194,9 @@ export const useCreateIdentity = (): UseIdentityReturns => {
             setUser(identity!);
 
             if (props.card) {
-              buildCardActivationEvent(props.card, identity.privateKey)
+              buildCardActivationEvent(props.card, identity.privateKey, config)
                 .then((cardEvent: NostrEvent) => {
-                  requestCardActivation(cardEvent).then(() => {
+                  requestCardActivation(cardEvent, config).then(() => {
                     router.push('/dashboard');
                   });
                 })

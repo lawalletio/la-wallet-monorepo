@@ -40,7 +40,7 @@ export default function Page() {
     if (!nonce) {
       setAccountInfo({ ...accountInfo, loading: false });
     } else {
-      validateNonce(nonce).then((isValidNonce) => {
+      validateNonce(nonce, config).then((isValidNonce) => {
         setAccountInfo({
           ...accountInfo,
           nonce,

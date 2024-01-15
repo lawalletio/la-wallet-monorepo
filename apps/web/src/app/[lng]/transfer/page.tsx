@@ -84,7 +84,7 @@ export default function Page() {
         const receiverPubkey: string = txPubkeys[1];
         if (receiverPubkey === identity.hexpub) return;
 
-        const username: string = await getUsername(receiverPubkey);
+        const username: string = await getUsername(receiverPubkey, config);
 
         if (username.length) {
           const formattedLud16: string = `${username}@${config.federation.domain}`;

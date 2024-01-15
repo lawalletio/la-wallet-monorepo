@@ -8,7 +8,7 @@ import { LAWALLET_VERSION } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
-import { useWalletContext } from '@lawallet/react';
+import { useConfig, useWalletContext } from '@lawallet/react';
 import { cardResetCaim, generateUserIdentity } from '@lawallet/react/actions';
 import { buildCardActivationEvent } from '@lawallet/react/utils';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
@@ -21,6 +21,7 @@ export default function Page() {
     user: { identity, setUser },
   } = useWalletContext();
 
+  const config = useConfig();
   const router = useRouter();
   const errors = useErrors();
   const params = useSearchParams();
@@ -35,9 +36,9 @@ export default function Page() {
     }
 
     generateUserIdentity().then((generatedIdentity) => {
-      buildCardActivationEvent(recoveryNonce, generatedIdentity.privateKey)
+      buildCardActivationEvent(recoveryNonce, generatedIdentity.privateKey, config)
         .then((cardEvent: NostrEvent) => {
-          cardResetCaim(cardEvent).then((res) => {
+          cardResetCaim(cardEvent, config).then((res) => {
             if (res.error) errors.modifyError(res.error);
 
             if (res.name) {

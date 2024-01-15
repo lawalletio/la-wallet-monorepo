@@ -8,7 +8,7 @@ import { Button, Divider, Feedback, Flex, Heading, Textarea } from '@/components
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useWalletContext } from '@lawallet/react';
+import { useConfig, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { UserIdentity } from '@lawallet/react/types';
 import { getPublicKey, nip19 } from 'nostr-tools';
@@ -18,10 +18,12 @@ export default function Page() {
   const {
     user: { setUser },
   } = useWalletContext();
+
   const [keyInput, setKeyInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   const { t } = useTranslation();
+  const config = useConfig();
   const router = useRouter();
   const errors = useErrors();
 
@@ -40,7 +42,7 @@ export default function Page() {
 
     try {
       const hexpub: string = getPublicKey(keyInput);
-      const username: string = await getUsername(hexpub);
+      const username: string = await getUsername(hexpub, config);
 
       if (!username.length) {
         errors.modifyError('NOT_FOUND_PUBKEY');

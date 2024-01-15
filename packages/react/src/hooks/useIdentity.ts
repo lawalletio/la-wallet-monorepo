@@ -27,7 +27,7 @@ export const useIdentity = (params: UseIdentityParameters): UseIdentityReturns =
   };
 
   const loadIdentityFromPubkey = async (pub: string) => {
-    const username: string = await getUsername(pub);
+    const username: string = await getUsername(pub, config);
     setIdentity({
       ...identity,
       username,

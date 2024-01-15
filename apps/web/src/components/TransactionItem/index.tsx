@@ -60,13 +60,13 @@ export default function Component({ transaction }: ComponentProps) {
 
       let username: string = '';
       if (transaction.direction === TransactionDirection.INCOMING) {
-        username = await getUsername(transaction.events[0].pubkey);
+        username = await getUsername(transaction.events[0].pubkey, config);
       } else {
         const txPubkeys: string[] = getMultipleTags(transaction.events[0].tags, 'p');
         if (txPubkeys.length < 2) return;
 
         const receiverPubkey: string = txPubkeys[1];
-        username = await getUsername(receiverPubkey);
+        username = await getUsername(receiverPubkey, config);
       }
 
       username.length

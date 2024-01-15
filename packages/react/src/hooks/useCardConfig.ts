@@ -21,6 +21,7 @@ import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk
 import { useEffect, useState } from 'react';
 import { useWalletContext } from '../context/AccountContext.js';
 import { useSubscription } from './useSubscription.js';
+import { useConfig } from './useConfig.js';
 
 export type CardConfigReturns = {
   cards: ICards;
@@ -32,16 +33,6 @@ export type ICards = {
   config: CardConfigPayload;
   loadedAt: number;
   loading: boolean;
-};
-
-const buildAndBroadcastCardConfig = (config: CardConfigPayload, privateKey: string) => {
-  buildCardConfigEvent(config, privateKey)
-    .then((configEvent) => {
-      return broadcastEvent(configEvent);
-    })
-    .catch(() => {
-      return { error: 'UNEXPECTED_ERROR' };
-    });
 };
 
 export const useCardConfig = (config: ConfigProps = baseConfig): CardConfigReturns => {
@@ -74,6 +65,16 @@ export const useCardConfig = (config: ConfigProps = baseConfig): CardConfigRetur
     },
     enabled: true,
   });
+
+  const buildAndBroadcastCardConfig = (cardConfig: CardConfigPayload, privateKey: string) => {
+    buildCardConfigEvent(cardConfig, privateKey)
+      .then((configEvent) => {
+        return broadcastEvent(configEvent, config);
+      })
+      .catch(() => {
+        return { error: 'UNEXPECTED_ERROR' };
+      });
+  };
 
   const toggleCardStatus = (uuid: string) => {
     const new_card_config = {

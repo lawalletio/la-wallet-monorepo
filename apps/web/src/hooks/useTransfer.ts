@@ -122,7 +122,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
 
   const publishTransfer = (event: NostrEvent) => {
     setStartEvent(event);
-    broadcastEvent(event).then((published) => {
+    broadcastEvent(event, config).then((published) => {
       if (!published) router.push('/transfer/error');
     });
   };
