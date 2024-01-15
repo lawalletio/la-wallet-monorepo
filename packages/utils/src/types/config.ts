@@ -1,3 +1,5 @@
+import type { BaseStorage } from '../createStorage.js';
+
 export type EndpointsType = {
   identity: string;
   api: string;
@@ -15,4 +17,5 @@ export type ConfigProps = {
     urlx: string;
   };
   relaysList: string[];
+  storage: BaseStorage;
 };

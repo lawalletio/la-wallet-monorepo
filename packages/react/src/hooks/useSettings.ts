@@ -1,6 +1,7 @@
 import { type UserConfigProps, type AvailableCurrencies, defaultUserConfig } from '../types/config.js';
 import { parseContent } from '@lawallet/utils';
 import * as React from 'react';
+import { useConfig } from './useConfig.js';
 
 export type UseSettingsReturns = {
   props: UserConfigProps;
@@ -10,12 +11,13 @@ export type UseSettingsReturns = {
 };
 
 export const useSettings = (): UseSettingsReturns => {
+  const config = useConfig();
   const [loading, setLoading] = React.useState<boolean>(true);
   const [props, setProps] = React.useState<UserConfigProps>(defaultUserConfig);
 
   const saveConfiguration = (newConfig: UserConfigProps) => {
     setProps(newConfig);
-    localStorage.setItem('config', JSON.stringify(newConfig));
+    config.storage.setItem('config', JSON.stringify(newConfig));
   };
 
   const toggleHideBalance = () =>
@@ -30,7 +32,7 @@ export const useSettings = (): UseSettingsReturns => {
       currency,
     });
   const preloadConfig = () => {
-    const storagedConfig: string | null = localStorage.getItem('config');
+    const storagedConfig: string = config.storage.getItem('config') as string;
     if (!storagedConfig) {
       setLoading(false);
       return;

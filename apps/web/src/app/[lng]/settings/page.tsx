@@ -11,13 +11,14 @@ import useErrors from '@/hooks/useErrors';
 
 import theme from '@/styles/theme';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useWalletContext } from '@lawallet/react';
+import { useConfig, useWalletContext } from '@lawallet/react';
 import { defaultIdentity } from '@lawallet/react/types';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function Page() {
+  const config = useConfig();
   const { lng, t, changeLanguage } = useTranslation();
 
   const {
@@ -29,7 +30,7 @@ export default function Page() {
   const errors = useErrors();
 
   const logoutSession = () => {
-    const cachedBackup = localStorage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`);
+    const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`);
 
     if (!cachedBackup) {
       errors.modifyError('ERROR_MADE_BACKUP');
@@ -39,7 +40,7 @@ export default function Page() {
     const confirmation: boolean = confirm(t('CONFIRM_LOGOUT'));
 
     if (confirmation) {
-      localStorage.removeItem(STORAGE_IDENTITY_KEY);
+      config.storage.removeItem(STORAGE_IDENTITY_KEY);
       initializeUser(defaultIdentity).then(() => {
         router.push('/login');
       });

@@ -59,7 +59,7 @@ export default function Page() {
       };
 
       initializeUser(identity).then(() => {
-        localStorage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+        config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
         router.push('/dashboard');
       });
     } catch (err) {
