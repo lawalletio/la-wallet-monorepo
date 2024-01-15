@@ -1,4 +1,4 @@
-import { createConfig } from '@lawallet/react/actions';
+import { createConfig } from '@lawallet/react';
 
 const isDev = process.env.NODE_ENV === 'development';
 

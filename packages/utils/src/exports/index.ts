@@ -14,6 +14,9 @@ export {
   buildZapRequestEvent,
 } from '../utils/events.js';
 
+export { type CreateConfigParameters, createConfig } from '../createConfig.js';
+export { type BaseStorage, type CreateStorageParameters, createStorage } from '../createStorage.js';
+
 export { SignEvent } from '../utils/ndk.js';
 
 export { lnurl_decode, lnurl_encode } from '../libs/lnurl.js';

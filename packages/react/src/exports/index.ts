@@ -1,3 +1,5 @@
+export * from '@lawallet/utils';
+
 export { type UseActivityReturn, useActivity } from '../hooks/useActivity.js';
 export { type CardConfigReturns, useCardConfig } from '../hooks/useCardConfig.js';
 export { type UseConverterReturns, useCurrencyConverter } from '../hooks/useCurrencyConverter.js';

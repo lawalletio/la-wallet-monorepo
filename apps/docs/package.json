@@ -1,0 +1,28 @@
+{
+  "name": "docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "rm -r ../node_modules/.cache/twoslash & vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@tanstack/query-core": "5.0.5",
+    "@tanstack/react-query": "5.0.5",
+    "@types/react": "^18.2.23",
+    "@unocss/reset": "^0.53.6",
+    "@wagmi/connectors": "latest",
+    "@wagmi/core": "latest",
+    "@lawallet/react": "*",
+    "abitype": "latest",
+    "react": "^18.2.0",
+    "unocss": "^0.53.6",
+    "viem": "2.0.0",
+    "vite": "^4.4.9",
+    "vitepress": "1.0.0-rc.20",
+    "vitepress-plugin-shiki-twoslash": "^0.0.6",
+    "vue": "^3.3.4",
+    "wagmi": "latest"
+  }
+}
