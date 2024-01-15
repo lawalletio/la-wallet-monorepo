@@ -64,9 +64,9 @@ const Providers = (props: ProviderProps) => {
           <GlobalStyles />
           <LaWalletProvider>
             <AuthProvider lng={params.lng}>
-              <TranslateProvider lng={params.lng}>
-                <ThemeProvider theme={theme}>{children}</ThemeProvider>
-              </TranslateProvider>
+              <ThemeProvider theme={theme}>
+                <TranslateProvider lng={params.lng}>{children}</TranslateProvider>
+              </ThemeProvider>
             </AuthProvider>
           </LaWalletProvider>
         </StyledComponentsRegistry>
