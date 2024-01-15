@@ -21,7 +21,7 @@ export default function Page() {
   const { lng, t, changeLanguage } = useTranslation();
 
   const {
-    user: { identity, setUser },
+    user: { identity, initializeUser },
   } = useWalletContext();
 
   const [sheetLanguage, setSheetLanguage] = useState<boolean>(false);
@@ -40,7 +40,7 @@ export default function Page() {
 
     if (confirmation) {
       localStorage.removeItem(STORAGE_IDENTITY_KEY);
-      setUser(defaultIdentity).then(() => {
+      initializeUser(defaultIdentity).then(() => {
         router.push('/login');
       });
     }

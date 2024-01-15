@@ -53,7 +53,7 @@ const defaultAccount: CreateIdentityParams = {
 
 export const useCreateIdentity = (): UseIdentityReturns => {
   const {
-    user: { setUser },
+    user: { initializeUser },
   } = useWalletContext();
   const config = useConfig();
   const { connectWithPrivateKey } = useSigner();
@@ -117,7 +117,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
 
     const generatedIdentity: UserIdentity = await generateUserIdentity();
     if (generatedIdentity) {
-      setUser(generatedIdentity);
+      initializeUser(generatedIdentity);
       router.push('/dashboard');
       setLoading(false);
     }
@@ -191,7 +191,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
           const { success, identity, message } = new_identity;
 
           if (success && identity) {
-            setUser(identity!);
+            initializeUser(identity!);
 
             if (props.card) {
               buildCardActivationEvent(props.card, identity.privateKey, config)

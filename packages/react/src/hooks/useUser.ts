@@ -9,7 +9,7 @@ export interface UseUserReturns {
   identity: UserIdentity;
   transactions: Transaction[];
   balance: TokenBalance;
-  setUser: (new_identity: UserIdentity) => Promise<void>;
+  initializeUser: (new_identity: UserIdentity) => Promise<void>;
 }
 
 export const useUser = (params: UseIdentityParameters): UseUserReturns => {
@@ -30,14 +30,14 @@ export const useUser = (params: UseIdentityParameters): UseUserReturns => {
     config,
   });
 
-  const setUser = async (new_identity: UserIdentity) => {
+  const initializeUser = async (new_identity: UserIdentity) => {
     loadIdentityFromPrivateKey(new_identity.privateKey);
     localStorage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(new_identity));
     return;
   };
 
   return {
-    setUser,
+    initializeUser,
     identity,
     transactions,
     balance,

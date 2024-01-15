@@ -18,7 +18,7 @@ import { useEffect } from 'react';
 export default function Page() {
   const { t } = useTranslation();
   const {
-    user: { identity, setUser },
+    user: { identity, initializeUser },
   } = useWalletContext();
 
   const config = useConfig();
@@ -42,7 +42,7 @@ export default function Page() {
             if (res.error) errors.modifyError(res.error);
 
             if (res.name) {
-              setUser({
+              initializeUser({
                 ...generatedIdentity,
                 username: res.name,
               }).then(() => router.push('/dashboard'));

@@ -16,7 +16,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 
 export default function Page() {
   const {
-    user: { setUser },
+    user: { initializeUser },
   } = useWalletContext();
 
   const [keyInput, setKeyInput] = useState<string>('');
@@ -58,7 +58,7 @@ export default function Page() {
         isReady: true,
       };
 
-      setUser(identity).then(() => {
+      initializeUser(identity).then(() => {
         localStorage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
         router.push('/dashboard');
       });
