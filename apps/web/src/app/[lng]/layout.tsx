@@ -8,10 +8,11 @@ import { TranslateProvider } from '@/context/TranslateContext';
 import GlobalStyles from '@/styles/GlobalStyles';
 import { fontSecondary } from '@/styles/fonts';
 import theme from '@/styles/theme';
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { AvailableLanguages, LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
 import { createConfig } from '@lawallet/react/actions';
+import { config } from '@/constants/constants';
 
 interface ProviderProps {
   children: ReactNode;
@@ -22,16 +23,8 @@ interface ProviderProps {
 const APP_NAME = 'LaWallet';
 const APP_DESCRIPTION = 'https://lawallet.ar/';
 
-const isDev = process.env.NODE_ENV === 'development';
-
-const config = createConfig({
-  endpoints: { identity: isDev ? 'https://debug.lawallet.ar' : 'https://lawallet.ar' },
-  federation: { domain: isDev ? 'debug.lawallet.ar' : 'lawallet.ar' },
-});
-
 const Providers = (props: ProviderProps) => {
   const { children, params } = props;
-
   return (
     <html lang={params.lng ?? defaultLocale} className={fontSecondary.className}>
       <head>

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { parseContent } from '@lawallet/utils';
 import { type AvailableCurrencies } from '../types/config.js';
 import { decimalsToUse, roundToDown } from '../utils/formatter.js';
+import { useConfig } from './useConfig.js';
 
 const ENDPOINT_PRICE_BTC: string = 'https://api.yadio.io/exrates/btc';
 const UPDATE_PRICES_TIME: number = 60 * 1000;
@@ -15,6 +16,7 @@ export type UseConverterReturns = {
 };
 
 export const useCurrencyConverter = (): UseConverterReturns => {
+  const config = useConfig();
   const [pricesData, setPricesData] = React.useState<PricesInfo>({
     ARS: 0,
     USD: 0,
@@ -53,7 +55,7 @@ export const useCurrencyConverter = (): UseConverterReturns => {
       const updatedPrices: PricesInfo | false = await requestUpdatedPrices();
       if (!updatedPrices) return;
 
-      localStorage.setItem('prices', JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
+      config.storage.setItem('prices', JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
 
       setPricesData(updatedPrices);
     } catch (err) {
@@ -62,7 +64,7 @@ export const useCurrencyConverter = (): UseConverterReturns => {
   };
 
   const loadPrices = () => {
-    const storagedPrices: string | null = localStorage.getItem('prices');
+    const storagedPrices: string = config.storage.getItem('prices') as string;
     if (!storagedPrices) {
       updatePrices();
       return;

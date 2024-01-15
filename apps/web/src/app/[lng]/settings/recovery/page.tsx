@@ -12,10 +12,11 @@ import { Button, Divider, Flex, InfoCopy, Text, ToggleSwitch } from '@/component
 
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import theme from '@/styles/theme';
-import { useWalletContext } from '@lawallet/react';
+import { useConfig, useWalletContext } from '@lawallet/react';
 
 export default function Page() {
   const { t } = useTranslation();
+  const config = useConfig();
   const router: AppRouterInstance = useRouter();
 
   const {
@@ -41,7 +42,7 @@ export default function Page() {
               title={t('PRIVATE_KEY')}
               value={identity.privateKey}
               onCopy={() => {
-                localStorage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+                config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
               }}
             />
             <Divider y={16} />

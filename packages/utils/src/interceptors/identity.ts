@@ -65,7 +65,7 @@ export const claimIdentity = async (event: NostrEvent, config: ConfigProps = bas
 };
 
 export const getUsername = (pubkey: string, config: ConfigProps = baseConfig) => {
-  const storagedUsername: string = localStorage.getItem(pubkey) || '';
+  const storagedUsername: string = (config.storage.getItem(pubkey) as string) || '';
   if (storagedUsername.length) return storagedUsername;
 
   return fetch(`${config.endpoints.identity}/api/pubkey/${pubkey}`)
@@ -73,7 +73,7 @@ export const getUsername = (pubkey: string, config: ConfigProps = baseConfig) =>
     .then((info) => {
       if (!info || !info.username) return '';
 
-      localStorage.setItem(pubkey, info.username);
+      config.storage.setItem(pubkey, info.username);
       return info.username;
     })
     .catch(() => '');

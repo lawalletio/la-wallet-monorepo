@@ -64,7 +64,7 @@ export default function Page() {
   }, [router]);
 
   useEffect(() => {
-    const userMadeBackup: boolean = Boolean(localStorage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`) || false);
+    const userMadeBackup: boolean = Boolean(config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`) || false);
 
     setShowBanner(!userMadeBackup ? 'backup' : 'none');
   }, []);

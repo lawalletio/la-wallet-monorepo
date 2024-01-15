@@ -265,7 +265,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
 
   const loadCachedTransactions = () => {
     if (pubkey.length) {
-      const storagedData: string = localStorage.getItem(`${CACHE_TXS_KEY}_${pubkey}`) || '';
+      const storagedData: string = (config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`) as string) || '';
 
       if (!cache || !storagedData) {
         setActivityInfo({ ...defaultActivity, loading: false });
@@ -318,7 +318,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
 
   React.useEffect(() => {
     if (cache && userTransactions.length)
-      localStorage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(userTransactions));
+      config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(userTransactions));
   }, [userTransactions]);
 
   return {

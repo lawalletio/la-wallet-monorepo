@@ -33,7 +33,7 @@ export const useUser = (params: UseIdentityParameters): UseUserReturns => {
   const initializeUser = async (new_identity: UserIdentity, isNew: boolean = false) => {
     console.log(isNew);
     isNew ? setIdentity(new_identity) : loadIdentityFromPrivateKey(new_identity.privateKey);
-    localStorage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(new_identity));
+    config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(new_identity));
     return;
   };
 

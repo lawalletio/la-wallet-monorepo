@@ -58,10 +58,10 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
   };
 
   const loadIdentityFromStorage = async () => {
-    const storageIdentity = localStorage.getItem(STORAGE_IDENTITY_KEY);
+    const storageIdentity = config.storage.getItem(STORAGE_IDENTITY_KEY);
     if (!storageIdentity) return setDefaultIdentity();
 
-    const parsedIdentity: UserIdentity = parseContent(storageIdentity);
+    const parsedIdentity: UserIdentity = parseContent(storageIdentity as string);
     if (!parsedIdentity.privateKey) return setDefaultIdentity();
 
     const hexpub: string = getPublicKey(parsedIdentity.privateKey);
