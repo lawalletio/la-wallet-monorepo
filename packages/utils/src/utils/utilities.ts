@@ -4,8 +4,8 @@ import { defaultTransfer, getPayRequest, type TransferInformation } from '../int
 import { type ConfigProps } from '../types/config.js';
 import { TransferTypes } from '../types/transaction.js';
 import { validateEmail } from './email.js';
-import bolt11 from './light-bolt11.js';
-import { lnurl_decode } from './lnurl.js';
+import bolt11 from '../libs/light-bolt11.js';
+import { lnurl_decode } from '../libs/lnurl.js';
 
 export const decodeInvoice = (invoice: string) => {
   const decodedInvoice = bolt11.decode(invoice);

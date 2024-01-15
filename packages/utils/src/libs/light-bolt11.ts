@@ -107,7 +107,7 @@ function wordsToIntBE(words: number[]) {
 function routingInfoParser(words: number[]) {
   const routes = [];
   let pubkey, shortChannelId, feeBaseMSats, feeProportionalMillionths, cltvExpiryDelta;
-  let routesBuffer: Uint8Array | undefined = bech32.fromWordsUnsafe(words);
+  let routesBuffer: Uint8Array | void = bech32.fromWordsUnsafe(words);
   while (routesBuffer && routesBuffer.length > 0) {
     pubkey = hex.encode(routesBuffer.slice(0, 33)); // 33 bytes
     shortChannelId = hex.encode(routesBuffer.slice(33, 41)); // 8 bytes

@@ -11,9 +11,9 @@
     "libs:build": "pnpm --filter @lawallet/react build && pnpm --filter @lawallet/utils build"
   },
   "devDependencies": {
-    "@lawallet/eslint-config": "*",
-    "@lawallet/typescript-config": "*",
-    "prettier": "^3.1.1",
+    "@lawallet/eslint-config": "^1.0.0",
+    "@lawallet/typescript-config": "^1.0.0",
+    "prettier": "^3.2.2",
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.9.0",

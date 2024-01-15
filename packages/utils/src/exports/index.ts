@@ -16,9 +16,9 @@ export {
 
 export { SignEvent } from '../utils/ndk.js';
 
-export { lnurl_decode, lnurl_encode } from '../utils/lnurl.js';
+export { lnurl_decode, lnurl_encode } from '../libs/lnurl.js';
 
-export { type MultiNip04Content, buildMultiNip04Event, parseMultiNip04Event } from '../utils/nip04.js';
+export { type MultiNip04Content, buildMultiNip04Event, parseMultiNip04Event } from '../libs/nip04.js';
 
 export {
   decodeInvoice,

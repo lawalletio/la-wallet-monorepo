@@ -4,7 +4,7 @@ import { baseConfig } from '../constants/constants.js';
 import { ConfigTypes, type CardConfigPayload } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
 import { type UserIdentity } from '../types/identity.js';
-import { buildMultiNip04Event } from './nip04.js';
+import { buildMultiNip04Event } from '../libs/nip04.js';
 import { nowInSeconds } from './utilities.js';
 
 export enum LaWalletKinds {

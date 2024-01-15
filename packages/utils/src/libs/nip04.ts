@@ -1,7 +1,7 @@
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
 import crypto from 'crypto';
 import { nip04 } from 'nostr-tools';
-import { nowInSeconds, parseContent } from './utilities.js';
+import { nowInSeconds, parseContent } from '../utils/utilities.js';
 
 /**
  * An interface representing the general structure of the JSON-encoded content of a Multi-NIP-04 event
