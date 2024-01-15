@@ -15,12 +15,12 @@ export interface UseTokenBalanceReturns {
 export interface UseTokenBalanceProps extends ConfigParameter {
   pubkey: string;
   tokenId: string;
-  enabled: boolean;
+  enabled?: boolean;
   closeOnEose?: boolean;
 }
 
 export const useTokenBalance = (parameters: UseTokenBalanceProps): UseTokenBalanceReturns => {
-  const { pubkey, tokenId, enabled, closeOnEose = false } = parameters;
+  const { pubkey, tokenId, enabled = true, closeOnEose = false } = parameters;
 
   const { ndk } = useNostrContext();
   const config = useConfig(parameters);
