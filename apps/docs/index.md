@@ -15,6 +15,6 @@ hero:
       text: Get Started
       link: /react/getting-started
   image:
-    src: /logo-dark.svg
-    alt: Wagmi Logo
+    src: /logo.svg
+    alt: LaWallet Logo
 ---
