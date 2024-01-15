@@ -22,6 +22,9 @@ export interface CreateConfigParameters {
 
 export function createConfig(parameters: CreateConfigParameters = {}): ConfigProps {
   const {
+    endpoints,
+    federation,
+    modulePubkeys,
     storage = createStorage({
       storage: typeof window !== 'undefined' && window.localStorage ? window.localStorage : noopStorage,
     }),
@@ -29,7 +32,18 @@ export function createConfig(parameters: CreateConfigParameters = {}): ConfigPro
 
   return {
     ...baseConfig,
-    ...parameters,
+    endpoints: {
+      ...baseConfig.endpoints,
+      ...endpoints,
+    },
+    federation: {
+      ...baseConfig.federation,
+      ...federation,
+    },
+    modulePubkeys: {
+      ...baseConfig.modulePubkeys,
+      ...modulePubkeys,
+    },
     storage,
   } as ConfigProps;
 }

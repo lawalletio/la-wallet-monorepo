@@ -1,6 +1,12 @@
 import { baseConfig } from '../constants/constants.js';
 import { getUserPubkey } from '../interceptors/identity.js';
-import { defaultTransfer, getPayRequest, type TransferInformation } from '../interceptors/transaction.js';
+import {
+  defaultTransfer,
+  getPayRequest,
+  requestInvoice,
+  type LNServiceResponse,
+  type TransferInformation,
+} from '../interceptors/transaction.js';
 import { type ConfigProps } from '../types/config.js';
 import { TransferTypes } from '../types/transaction.js';
 import { validateEmail } from './email.js';
@@ -14,6 +20,40 @@ export const decodeInvoice = (invoice: string) => {
 
 export const nowInSeconds = (): number => {
   return Math.floor(Date.now() / 1000);
+};
+
+function addQueryParameter(url: string, parameter: string) {
+  if (url.indexOf('?') === -1) {
+    return url + '?' + parameter;
+  } else {
+    return url + '&' + parameter;
+  }
+}
+
+export const claimLNURLw = async (
+  payRequest: LNServiceResponse | null,
+  npub: string,
+  config: ConfigProps = baseConfig,
+): Promise<boolean> => {
+  if (!payRequest) return false;
+
+  try {
+    const pr: string = await requestInvoice(
+      `${config.endpoints.api}/lnurlp/${npub}/callback?amount=${payRequest?.maxWithdrawable}`,
+    );
+
+    if (!pr) return false;
+
+    let urlCallback: string = payRequest!.callback;
+    urlCallback = addQueryParameter(urlCallback, `k1=${payRequest!.k1!}`);
+    urlCallback = addQueryParameter(urlCallback, `pr=${pr}`);
+
+    return fetch(urlCallback).then((res) => {
+      return res.status === 200;
+    });
+  } catch {
+    return false;
+  }
 };
 
 export const detectTransferType = (data: string): TransferTypes | false => {

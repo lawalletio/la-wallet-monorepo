@@ -1,4 +1,4 @@
-import { addQueryParameter, escapingBrackets } from '@/utils';
+import { escapingBrackets } from '@/utils';
 import { useConfig, useNostrContext, useSigner, useSubscription, useWalletContext } from '@lawallet/react';
 import { TransferInformation, broadcastEvent, defaultTransfer, requestInvoice } from '@lawallet/react/actions';
 import { TransferTypes } from '@lawallet/react/types';
@@ -7,6 +7,7 @@ import {
   LaWalletTags,
   SignEvent,
   buildTxStartEvent,
+  claimLNURLw,
   formatTransferData,
   getTag,
 } from '@lawallet/react/utils';
@@ -58,27 +59,6 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
     },
     enabled: Boolean(startEvent?.id),
   });
-
-  const claimLNURLw = (info: TransferInformation, npub: string) => {
-    const { payRequest } = info;
-
-    requestInvoice(`${config.endpoints.api}/lnurlp/${npub}/callback?amount=${payRequest?.maxWithdrawable}`)
-      .then((pr) => {
-        if (pr) {
-          let urlCallback: string = payRequest!.callback;
-          urlCallback = addQueryParameter(urlCallback, `k1=${payRequest!.k1!}`);
-          urlCallback = addQueryParameter(urlCallback, `pr=${pr}`);
-
-          fetch(urlCallback).then((res) => {
-            if (res.status !== 200) router.push('/transfer/error');
-
-            router.push('/transfer/finish');
-            return;
-          });
-        }
-      })
-      .catch(() => router.push('/transfer/error'));
-  };
 
   const prepareTransaction = async (data: string) => {
     const formattedTransferInfo: TransferInformation = await formatTransferData(data);
@@ -169,7 +149,9 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
     try {
       if (transferInfo.type === TransferTypes.LNURLW) {
         const npubKey = nip19.npubEncode(getPublicKey(privateKey));
-        claimLNURLw(transferInfo, npubKey);
+        claimLNURLw(transferInfo.payRequest, npubKey, config).then((claimed) => {
+          claimed ? router.push('/transfer/finish') : router.push('/transfer/error');
+        });
       } else if (transferInfo.type === TransferTypes.INTERNAL) {
         execInternalTransfer(transferInfo);
       } else {

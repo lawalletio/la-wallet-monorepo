@@ -28,4 +28,5 @@ export {
   formatTransferData,
   splitHandle,
   parseContent,
+  claimLNURLw,
 } from '../utils/utilities.js';

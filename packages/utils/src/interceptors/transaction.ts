@@ -1,7 +1,7 @@
 import { baseConfig } from '../constants/constants.js';
 import { type TransferTypes } from '../types/transaction.js';
 
-interface LNServiceResponse {
+export interface LNServiceResponse {
   tag: string;
   callback: string;
   metadata: string;

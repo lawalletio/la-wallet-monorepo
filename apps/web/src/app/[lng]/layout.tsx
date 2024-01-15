@@ -8,10 +8,9 @@ import { TranslateProvider } from '@/context/TranslateContext';
 import GlobalStyles from '@/styles/GlobalStyles';
 import { fontSecondary } from '@/styles/fonts';
 import theme from '@/styles/theme';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 import { AvailableLanguages, LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
-import { createConfig } from '@lawallet/react/actions';
 import { config } from '@/constants/constants';
 
 interface ProviderProps {
