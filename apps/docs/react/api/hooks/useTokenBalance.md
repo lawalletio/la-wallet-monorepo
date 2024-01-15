@@ -49,7 +49,7 @@ import { type UseTokenBalanceParameters } from '@lawallet/react';
 ::: code-group
 
 ```tsx [index.tsx]
-import { useAccount } from 'wagmi';
+import { useTokenBalance } from '@lawallet/react';
 import { config } from './config'; // [!code focus]
 
 function App() {

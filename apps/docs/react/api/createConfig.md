@@ -1,7 +1,6 @@
 <script setup>
 const docsPath = 'react'
-const packageName = 'wagmi'
-const connectorsPackageName = 'wagmi/connectors'
+const packageName = 'LaWallet'
 </script>
 
 <!--@include: @shared/createConfig.md-->

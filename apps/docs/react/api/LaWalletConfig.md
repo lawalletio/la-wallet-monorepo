@@ -1,4 +1,4 @@
-# WagmiProvider
+# LaWalletConfig
 
 React Context Provider for LaWallet.
 

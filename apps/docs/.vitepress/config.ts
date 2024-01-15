@@ -19,8 +19,8 @@ export default withTwoslash(
       ['meta', { name: 'theme-color', content: '#646cff' }],
       // Open Graph
       ['meta', { property: 'og:type', content: 'website' }],
-      ['meta', { property: 'og:image', content: 'https://wagmi.sh/og.png' }],
-      ['meta', { property: 'og:url', content: 'https://wagmi.sh' }],
+      ['meta', { property: 'og:image', content: 'https://lawallet.ar/og.png' }],
+      ['meta', { property: 'og:url', content: 'https://lawallet.ar' }],
     ],
     ignoreDeadLinks: false,
     lang: 'en-US',
@@ -32,18 +32,14 @@ export default withTwoslash(
       },
     },
     themeConfig: {
-      editLink: {
-        pattern: 'https://github.com/wevm/wagmi/edit/main/docs/:path',
-        text: 'Suggest changes to this page',
-      },
       footer: {
-        message: 'Released under the <a href="https://github.com/wevm/wagmi/blob/main/LICENSE">MIT License</a>.',
+        message: 'Released under the MIT License.',
         copyright: 'Copyright © 2024-present',
       },
       logo: {
         light: '/logo-light.svg',
         dark: '/logo-dark.svg',
-        alt: 'wagmi logo',
+        alt: 'lawallet logo',
       },
       nav: [
         { text: 'React', link: '/react/getting-started' },

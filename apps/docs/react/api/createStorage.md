@@ -1,6 +1,6 @@
 <script setup>
 const docsPath = "react"
-const packageName = 'wagmi'
+const packageName = '@lawallet/react'
 </script>
 
 <!--@include: @shared/createStorage.md-->

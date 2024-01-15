@@ -4,7 +4,7 @@ LaWallet hooks
 
 ## Manual Installation
 
-To manually add Wagmi to your project, install the required packages.
+To manually add LaWallet to your project, install the required packages.
 
 ::: code-group
 
