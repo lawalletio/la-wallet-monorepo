@@ -38,3 +38,8 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# proxy packages
+packages/react/types
+packages/react/utils
+packages/react/actions
