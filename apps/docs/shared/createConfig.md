@@ -1,6 +1,6 @@
 # createConfig
 
-Creates new [`Config`](#config) object.
+Creates new [`Config`](/react/api/glossary/types#config) object.
 
 ## Import
 
