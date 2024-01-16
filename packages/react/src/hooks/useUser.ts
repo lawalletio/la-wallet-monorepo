@@ -19,7 +19,7 @@ export const useUser = (params: UseIdentityParameters): UseUserReturns => {
   const { transactions } = useActivity({
     pubkey: identity.hexpub,
     enabled: Boolean(identity.hexpub.length),
-    cache: true,
+    storage: true,
     config,
   });
 

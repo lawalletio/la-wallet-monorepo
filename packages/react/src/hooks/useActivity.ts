@@ -24,7 +24,7 @@ export type ActivityType = {
   idsLoaded: string[];
 };
 
-export interface UseActivityReturn {
+export interface UseActivityReturns {
   transactions: Transaction[];
 }
 
@@ -34,7 +34,7 @@ export interface UseActivityProps extends ConfigParameter {
   until?: number | undefined;
   limit?: number;
   enabled?: boolean;
-  cache?: boolean;
+  storage?: boolean;
 }
 
 export const options: NDKSubscriptionOptions = {
@@ -63,8 +63,8 @@ const defaultActivity = {
   idsLoaded: [],
 };
 
-export const useActivity = (parameters: UseActivityProps): UseActivityReturn => {
-  const { pubkey, enabled = true, limit = 1000, since = undefined, until = undefined, cache = false } = parameters;
+export const useActivity = (parameters: UseActivityProps): UseActivityReturns => {
+  const { pubkey, enabled = true, limit = 1000, since = undefined, until = undefined, storage = false } = parameters;
   const config = useConfig(parameters);
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
@@ -75,7 +75,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
         authors: [pubkey],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
-        since: cache ? activityInfo.lastCached : since,
+        since: storage ? activityInfo.lastCached : since,
         until: until,
         limit: limit * 2,
       },
@@ -83,7 +83,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
         '#p': [pubkey],
         '#t': startTags,
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since: cache ? activityInfo.lastCached : since,
+        since: storage ? activityInfo.lastCached : since,
         until: until,
         limit: limit * 2,
       },
@@ -92,7 +92,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         '#p': [pubkey],
         '#t': statusTags,
-        since: cache ? activityInfo.lastCached : since,
+        since: storage ? activityInfo.lastCached : since,
         until: until,
         limit: limit * 2,
       },
@@ -260,7 +260,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
     if (pubkey.length) {
       const storagedData: string = (config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`) as string) || '';
 
-      if (!cache || !storagedData) {
+      if (!storage || !storagedData) {
         setActivityInfo({ ...defaultActivity, loading: false });
         return;
       }
@@ -284,7 +284,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
   };
 
   const transactions: Transaction[] = React.useMemo(() => {
-    if (!cache) return activityInfo.subscription.sort((a, b) => b.createdAt - a.createdAt);
+    if (!storage) return activityInfo.subscription.sort((a, b) => b.createdAt - a.createdAt);
 
     const TXsWithoutCached: Transaction[] = activityInfo.subscription.filter((tx) => {
       const cached = activityInfo.cached.find((cachedTX) => cachedTX.id === tx.id);
@@ -310,7 +310,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
   }, [pubkey]);
 
   React.useEffect(() => {
-    if (cache && transactions.length)
+    if (storage && transactions.length)
       config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(transactions));
   }, [transactions]);
 

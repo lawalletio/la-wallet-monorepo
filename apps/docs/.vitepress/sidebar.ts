@@ -17,12 +17,13 @@ export function getSidebar() {
       },
       {
         text: 'Hooks',
-        link: '/react/api/hooks',
-        items: [{ text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' }],
+        items: [
+          { text: 'useActivity', link: '/react/api/hooks/useActivity' },
+          { text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' },
+        ],
       },
       {
         text: 'Glossary',
-        link: '/react/api/glossary',
         items: [{ text: 'Types', link: '/react/api/glossary/types' }],
       },
     ],

@@ -39,7 +39,7 @@ function App() {
 ## Parameters
 
 ```ts
-import { type UseTokenBalanceParameters } from '@lawallet/react';
+import { type UseTokenBalanceReturns } from '@lawallet/react';
 ```
 
 ### pubkey
@@ -106,7 +106,6 @@ function App() {
 }
 ```
 
-<<< @/snippets/react/config.ts[config.ts]
 :::
 
 ### config
@@ -141,6 +140,6 @@ import { type UseTokenBalanceReturns } from '@lawallet/react';
 
 ### balance
 
-[`TokenBalance`](/react/api/glossary/types#TokenBalance)
+[`TokenBalance`](/react/api/glossary/types#tokenbalance)
 
 Returns the requested account and token balance information
