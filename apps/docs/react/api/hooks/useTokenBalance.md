@@ -136,3 +136,9 @@ function App() {
 ```ts
 import { type UseTokenBalanceReturns } from '@lawallet/react';
 ```
+
+### balance
+
+[`TokenBalance`](/react/api/glossary/types#TokenBalance)
+
+Returns the requested account and token balance information

@@ -20,6 +20,11 @@ export function getSidebar() {
         link: '/react/api/hooks',
         items: [{ text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' }],
       },
+      {
+        text: 'Glossary',
+        link: '/react/api/glossary',
+        items: [{ text: 'Types', link: '/react/api/glossary/types' }],
+      },
     ],
   } satisfies DefaultTheme.Sidebar;
 }
