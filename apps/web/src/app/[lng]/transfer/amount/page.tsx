@@ -15,7 +15,7 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
 import theme from '@/styles/theme';
-import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
+import { useWalletContext, decimalsToUse, formatToPreference } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 
 export default function Page() {

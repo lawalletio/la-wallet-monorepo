@@ -1,5 +1,4 @@
 import { regexUserName } from '@/constants/constants';
-import { useConfig, useSigner, useWalletContext } from '@lawallet/react';
 import {
   IdentityResponse,
   claimIdentity,
@@ -7,7 +6,14 @@ import {
   generateUserIdentity,
   requestCardActivation,
 } from '@lawallet/react/actions';
-import { SignEvent, buildCardActivationEvent, buildIdentityEvent } from '@lawallet/react/utils';
+import {
+  useConfig,
+  useSigner,
+  useWalletContext,
+  SignEvent,
+  buildCardActivationEvent,
+  buildIdentityEvent,
+} from '@lawallet/react';
 
 import { UserIdentity } from '@lawallet/react/types';
 import { NostrEvent } from '@nostr-dev-kit/ndk';

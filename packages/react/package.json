@@ -36,10 +36,6 @@
       "types": "./dist/types/exports/index.d.ts",
       "default": "./dist/esm/exports/index.js"
     },
-    "./utils": {
-      "types": "./dist/types/exports/utils.d.ts",
-      "default": "./dist/esm/exports/utils.js"
-    },
     "./actions": {
       "types": "./dist/types/exports/actions.d.ts",
       "default": "./dist/esm/exports/actions.js"
@@ -52,7 +48,6 @@
   },
   "typesVersions": {
     "*": {
-      "utils": ["./dist/types/exports/utils.d.ts"],
       "types": ["./dist/types/exports/types.d.ts"],
       "actions": ["./dist/types/exports/actions.d.ts"]
     }

@@ -23,10 +23,9 @@ import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
-import { useConfig, useWalletContext } from '@lawallet/react';
+import { useConfig, useWalletContext, getMultipleTags } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { TransactionDirection, TransactionType } from '@lawallet/react/types';
-import { getMultipleTags } from '@lawallet/react/utils';
 import { useEffect, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
 

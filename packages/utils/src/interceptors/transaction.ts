@@ -1,4 +1,3 @@
-import { baseConfig } from '../constants/constants.js';
 import { type TransferTypes } from '../types/transaction.js';
 
 export interface LNServiceResponse {
@@ -28,15 +27,6 @@ export type CheckInvoiceReturns = {
   comment: string;
   zapRequest: string;
   pubkey: string;
-};
-
-export const defaultTransfer: TransferInformation = {
-  data: '',
-  amount: 0,
-  comment: '',
-  receiverPubkey: baseConfig.modulePubkeys.urlx,
-  payRequest: null,
-  type: false,
 };
 
 export const getPayRequest = (url: string): Promise<LNServiceResponse> =>

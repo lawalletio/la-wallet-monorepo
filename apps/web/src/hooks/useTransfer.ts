@@ -1,8 +1,12 @@
 import { escapingBrackets } from '@/utils';
-import { useConfig, useNostrContext, useSigner, useSubscription, useWalletContext } from '@lawallet/react';
-import { TransferInformation, broadcastEvent, defaultTransfer, requestInvoice } from '@lawallet/react/actions';
+import { TransferInformation, broadcastEvent, requestInvoice } from '@lawallet/react/actions';
 import { TransferTypes } from '@lawallet/react/types';
 import {
+  useConfig,
+  useNostrContext,
+  useSigner,
+  useSubscription,
+  useWalletContext,
   LaWalletKinds,
   LaWalletTags,
   SignEvent,
@@ -10,7 +14,8 @@ import {
   claimLNURLw,
   formatTransferData,
   getTag,
-} from '@lawallet/react/utils';
+  defaultTransfer,
+} from '@lawallet/react';
 import { NDKEvent, NDKKind, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getPublicKey, nip19 } from 'nostr-tools';

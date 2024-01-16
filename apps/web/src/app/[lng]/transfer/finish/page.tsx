@@ -7,12 +7,10 @@ import Navbar from '@/components/Layout/Navbar';
 import { Avatar, Confetti, Divider, Flex, Heading, Icon, LinkButton, Text } from '@/components/UI';
 import { useTransferContext } from '@/context/TransferContext';
 import { useTranslation } from '@/context/TranslateContext';
-import { formatAddress, formatToPreference } from '@lawallet/react';
-import { splitHandle } from '@lawallet/react/utils';
 import { TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { useWalletContext } from '@lawallet/react';
+import { useWalletContext, splitHandle, formatAddress, formatToPreference } from '@lawallet/react';
 
 export default function Page() {
   const { lng, t } = useTranslation();

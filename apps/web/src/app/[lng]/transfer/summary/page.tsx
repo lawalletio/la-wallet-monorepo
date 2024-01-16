@@ -10,9 +10,8 @@ import { Avatar, Button, Divider, Feedback, Flex, Heading, Icon, LinkButton, Tex
 import { useTransferContext } from '@/context/TransferContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
-import { formatAddress, formatToPreference, useWalletContext } from '@lawallet/react';
+import { splitHandle, formatAddress, formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import { splitHandle } from '@lawallet/react/utils';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function Page() {

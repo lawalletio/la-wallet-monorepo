@@ -20,7 +20,6 @@ export { broadcastEvent } from '../interceptors/publish.js';
 export {
   type TransferInformation,
   type CheckInvoiceReturns,
-  defaultTransfer,
   getPayRequest,
   requestInvoice,
 } from '../interceptors/transaction.js';

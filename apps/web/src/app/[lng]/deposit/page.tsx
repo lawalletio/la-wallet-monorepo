@@ -5,7 +5,6 @@ import { CheckIcon, SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/fi
 import { useEffect, useMemo, useState } from 'react';
 
 import { copy } from '@/utils/share';
-import { formatAddress, formatToPreference, useConfig, useZapDeposit } from '@lawallet/react';
 
 import { useTranslation } from '@/context/TranslateContext';
 import { useNumpad } from '@/hooks/useNumpad';
@@ -33,8 +32,14 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useAlert from '@/hooks/useAlerts';
 import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
-import { useWalletContext } from '@lawallet/react';
-import { lnurl_encode } from '@lawallet/react/utils';
+import {
+  useWalletContext,
+  lnurl_encode,
+  formatAddress,
+  formatToPreference,
+  useConfig,
+  useZapDeposit,
+} from '@lawallet/react';
 import { useRouter } from 'next/navigation';
 
 type SheetTypes = 'amount' | 'qr' | 'finished';

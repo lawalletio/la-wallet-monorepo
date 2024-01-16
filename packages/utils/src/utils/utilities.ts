@@ -1,7 +1,6 @@
-import { baseConfig } from '../constants/constants.js';
+import { baseConfig, defaultTransfer } from '../constants/constants.js';
 import { getUserPubkey } from '../interceptors/identity.js';
 import {
-  defaultTransfer,
   getPayRequest,
   requestInvoice,
   type LNServiceResponse,

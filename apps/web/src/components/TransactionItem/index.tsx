@@ -7,10 +7,16 @@ import { Accordion, AccordionBody, Flex, Text } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 import theme from '@/styles/theme';
 import { unescapingText } from '@/utils';
-import { dateFormatter, defaultCurrency, formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
+import {
+  dateFormatter,
+  defaultCurrency,
+  formatToPreference,
+  getMultipleTags,
+  useConfig,
+  useWalletContext,
+} from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { Transaction, TransactionDirection, TransactionStatus, TransactionType } from '@lawallet/react/types';
-import { getMultipleTags } from '@lawallet/react/utils';
 import { useMemo, useState } from 'react';
 import { BtnLoader } from '../Loader/Loader';
 

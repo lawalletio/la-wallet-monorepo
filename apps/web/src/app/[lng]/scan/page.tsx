@@ -6,7 +6,7 @@ import QrScanner from '@/components/UI/Scanner/Scanner';
 import { regexURL } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { TransferTypes } from '@lawallet/react/types';
-import { detectTransferType, removeLightningStandard } from '@lawallet/react/utils';
+import { detectTransferType, removeLightningStandard } from '@lawallet/react';
 import { useRouter } from 'next/navigation';
 import NimiqQrScanner from 'qr-scanner';
 import { useEffect, useState } from 'react';

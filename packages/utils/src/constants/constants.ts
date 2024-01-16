@@ -1,4 +1,5 @@
 import { noopStorage } from '../createStorage.js';
+import type { TransferInformation } from '../interceptors/transaction.js';
 import { type ConfigProps } from '../types/config.js';
 import type { UserIdentity } from '../types/identity.js';
 import type { AvailableLanguages } from '../types/translations.js';
@@ -51,4 +52,13 @@ export const defaultIdentity: UserIdentity = {
   privateKey: '',
   npub: '',
   isReady: false,
+};
+
+export const defaultTransfer: TransferInformation = {
+  data: '',
+  amount: 0,
+  comment: '',
+  receiverPubkey: baseConfig.modulePubkeys.urlx,
+  payRequest: null,
+  type: false,
 };
