@@ -9,13 +9,18 @@ import {
 } from '../interceptors/transaction.js';
 import { type ConfigProps } from '../types/config.js';
 import { TransferTypes } from '../types/transaction.js';
-import { validateEmail } from './email.js';
 import bolt11 from '../libs/light-bolt11.js';
 import { lnurl_decode } from '../libs/lnurl.js';
 
 export const decodeInvoice = (invoice: string) => {
   const decodedInvoice = bolt11.decode(invoice);
   return decodedInvoice;
+};
+
+export const validateEmail = (email: string): RegExpMatchArray | null => {
+  return email.match(
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  );
 };
 
 export const nowInSeconds = (): number => {
