@@ -1,5 +1,5 @@
-import { type UserConfigProps, type AvailableCurrencies, defaultUserConfig } from '../types/config.js';
-import { parseContent } from '@lawallet/utils';
+import { type UserConfigProps, type AvailableCurrencies } from '@lawallet/utils/types';
+import { parseContent, defaultUserConfig } from '@lawallet/utils';
 import * as React from 'react';
 import { useConfig } from './useConfig.js';
 

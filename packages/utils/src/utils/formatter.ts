@@ -1,8 +1,7 @@
 import { format } from 'date-fns';
 import { enUS, es } from 'date-fns/locale';
-
-export type AvailableCurrencies = 'SAT' | 'USD' | 'ARS';
-export type AvailableLanguages = 'es' | 'en';
+import type { AvailableLanguages } from '../types/translations.js';
+import type { AvailableCurrencies } from '../types/userConfig.js';
 
 export const formatter = (
   minDecimals: number = 2,

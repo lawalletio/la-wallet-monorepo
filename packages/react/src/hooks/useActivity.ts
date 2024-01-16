@@ -9,7 +9,7 @@ import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEve
 import { type Event, nip26 } from 'nostr-tools';
 import { useSubscription } from './useSubscription.js';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
-import type { ConfigParameter } from '../types/config.js';
+import type { ConfigParameter } from '@lawallet/utils/types';
 import { useConfig } from './useConfig.js';
 
 export interface ActivitySubscriptionProps {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { baseConfig } from '@lawallet/utils';
 import { type INostr, useNOSTR } from '../hooks/useNostr.js';
-import { type ConfigParameter } from '../types/config.js';
+import { type ConfigParameter } from '@lawallet/utils/types';
 
 export const NDKContext = React.createContext({} as INostr);
 

@@ -1,4 +1,4 @@
-export { baseConfig } from '../constants/constants.js';
+export * from '../constants/constants.js';
 
 export {
   type GenerateIdentityReturns,

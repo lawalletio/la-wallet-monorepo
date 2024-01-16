@@ -1,10 +1,9 @@
-import { parseContent } from '@lawallet/utils';
+import { defaultIdentity, parseContent } from '@lawallet/utils';
 import { getUsername } from '@lawallet/utils/actions';
-import { defaultIdentity, type UserIdentity } from '@lawallet/utils/types';
+import type { ConfigParameter, UserIdentity } from '@lawallet/utils/types';
 import { getPublicKey, nip19 } from 'nostr-tools';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
-import type { ConfigParameter } from '../types/config.js';
 import { useConfig } from './useConfig.js';
 
 export interface UseIdentityReturns {

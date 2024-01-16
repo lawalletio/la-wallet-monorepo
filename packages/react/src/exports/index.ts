@@ -19,21 +19,3 @@ export { useConfig } from '../hooks/useConfig.js';
 export { NDKProvider, useNostrContext, NDKContext } from '../context/NDKContext.js';
 export { AccountProvider, useWalletContext } from '../context/AccountContext.js';
 export { LaWalletConfig, LaWalletProvider } from '../context/context.js';
-
-export {
-  type AvailableCurrencies,
-  type UserConfigProps,
-  defaultCurrency,
-  defaultUserConfig,
-  CurrenciesList,
-  CurrenciesMetadata,
-} from '../types/config.js';
-
-export {
-  type AvailableLanguages,
-  type Dictionary,
-  type DictionaryEntry,
-  type ReplacementParams,
-  LanguagesList,
-  defaultLocale,
-} from '../types/translations.js';

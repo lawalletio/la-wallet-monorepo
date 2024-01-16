@@ -19,3 +19,7 @@ export type ConfigProps = {
   relaysList: string[];
   storage: BaseStorage;
 };
+
+export type ConfigParameter<T extends ConfigProps = ConfigProps> = {
+  config?: ConfigProps;
+};

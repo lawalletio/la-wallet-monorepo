@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useCurrencyConverter, type UseConverterReturns } from '../hooks/useCurrencyConverter.js';
 import { useSettings, type UseSettingsReturns } from '../hooks/useSettings.js';
 import { useUser, type UseUserReturns } from '../hooks/useUser.js';
-import { type ConfigParameter } from '../types/config.js';
+import { type ConfigParameter } from '@lawallet/utils/types';
 import { useSigner } from '../hooks/useSigner.js';
 
 interface AccountContextType {

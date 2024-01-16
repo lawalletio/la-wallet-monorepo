@@ -5,11 +5,3 @@ export interface UserIdentity {
   privateKey: string;
   isReady: boolean;
 }
-
-export const defaultIdentity: UserIdentity = {
-  username: '',
-  hexpub: '',
-  privateKey: '',
-  npub: '',
-  isReady: false,
-};

@@ -3,7 +3,7 @@ import { requestInvoice } from '@lawallet/utils/actions';
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
 import React from 'react';
 import { useWalletContext } from '../context/AccountContext.js';
-import type { ConfigParameter } from '../types/config.js';
+import type { ConfigParameter } from '@lawallet/utils/types';
 import { useConfig } from './useConfig.js';
 import { useSigner } from './useSigner.js';
 import { useSubscription } from './useSubscription.js';

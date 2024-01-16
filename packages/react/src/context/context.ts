@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { baseConfig } from '@lawallet/utils';
-import { type ConfigParameter } from '../types/config.js';
+import { type ConfigParameter } from '@lawallet/utils/types';
 import { NDKProvider } from './NDKContext.js';
 import { AccountProvider } from './AccountContext.js';
 import type { ConfigProps } from '../exports/types.js';

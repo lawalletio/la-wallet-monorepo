@@ -1,5 +1,8 @@
 import { noopStorage } from '../createStorage.js';
 import { type ConfigProps } from '../types/config.js';
+import type { UserIdentity } from '../types/identity.js';
+import type { AvailableLanguages } from '../types/translations.js';
+import type { AvailableCurrencies, CurrencyMetadata, UserConfigProps } from '../types/userConfig.js';
 
 export const baseConfig: ConfigProps = {
   endpoints: {
@@ -17,4 +20,35 @@ export const baseConfig: ConfigProps = {
     urlx: 'e17feb5f2cf83546bcf7fd9c8237b05275be958bd521543c2285ffc6c2d654b3',
   },
   storage: noopStorage,
+};
+
+export const LanguagesList: AvailableLanguages[] = ['es', 'en'];
+export const defaultLocale: AvailableLanguages = 'es';
+
+export const CurrenciesMetadata: Record<AvailableCurrencies, CurrencyMetadata> = {
+  ARS: {
+    locale: 'es-AR',
+  },
+  SAT: {
+    locale: 'es-AR',
+  },
+  USD: {
+    locale: 'en-US',
+  },
+};
+
+export const CurrenciesList: AvailableCurrencies[] = ['SAT', 'USD', 'ARS'];
+export const defaultCurrency: AvailableCurrencies = 'ARS';
+
+export const defaultUserConfig: UserConfigProps = {
+  hideBalance: false,
+  currency: 'SAT',
+};
+
+export const defaultIdentity: UserIdentity = {
+  username: '',
+  hexpub: '',
+  privateKey: '',
+  npub: '',
+  isReady: false,
 };

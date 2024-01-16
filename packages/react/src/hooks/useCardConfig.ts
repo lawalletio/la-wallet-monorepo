@@ -22,7 +22,7 @@ import { useEffect, useState } from 'react';
 import { useWalletContext } from '../context/AccountContext.js';
 import { useSubscription } from './useSubscription.js';
 import { useConfig } from './useConfig.js';
-import type { ConfigParameter } from '../types/config.js';
+import type { ConfigParameter } from '@lawallet/utils/types';
 
 export type CardConfigReturns = {
   cards: ICards;

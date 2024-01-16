@@ -1,4 +1,5 @@
-import { useCurrencyConverter, AvailableCurrencies, CurrenciesList, decimalsToUse } from '@lawallet/react';
+import { useCurrencyConverter, CurrenciesList, decimalsToUse } from '@lawallet/react';
+import type { AvailableCurrencies } from '@lawallet/react/types';
 import { useEffect, useState } from 'react';
 
 type AmountType = Record<AvailableCurrencies, number>;

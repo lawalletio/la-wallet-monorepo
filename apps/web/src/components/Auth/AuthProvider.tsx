@@ -1,4 +1,5 @@
-import { AvailableLanguages, useWalletContext } from '@lawallet/react';
+import { AvailableLanguages } from '@lawallet/react/types';
+import { useWalletContext } from '@lawallet/react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import React, { useLayoutEffect, useMemo } from 'react';
 import SpinnerView from '../Loader/SpinnerView';

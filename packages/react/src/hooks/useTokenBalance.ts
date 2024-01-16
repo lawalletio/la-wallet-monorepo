@@ -6,7 +6,7 @@ import { type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk
 import { useNostrContext } from '../context/NDKContext.js';
 import { useSubscription } from './useSubscription.js';
 import { useConfig } from './useConfig.js';
-import type { ConfigParameter } from '../types/config.js';
+import type { ConfigParameter } from '@lawallet/utils/types';
 
 export interface UseTokenBalanceReturns {
   balance: TokenBalance;

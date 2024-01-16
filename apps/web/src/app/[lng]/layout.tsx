@@ -9,7 +9,8 @@ import GlobalStyles from '@/styles/GlobalStyles';
 import { fontSecondary } from '@/styles/fonts';
 import theme from '@/styles/theme';
 import { ReactNode } from 'react';
-import { AvailableLanguages, LaWalletProvider, defaultLocale } from '@lawallet/react';
+import { AvailableLanguages } from '@lawallet/react/types';
+import { LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
 import { config } from '@/constants/constants';
 

@@ -12,7 +12,7 @@ import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useConfig, useWalletContext } from '@lawallet/react';
-import { defaultIdentity } from '@lawallet/react/types';
+import { defaultIdentity } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
