@@ -5,7 +5,7 @@ description: Hook for getting balance.
 
 # useTokenBalance
 
-Hook for getting current account.
+Hook to get the balance of an account
 
 ## Import
 
@@ -40,6 +40,73 @@ function App() {
 import { type UseTokenBalanceParameters } from '@lawallet/react';
 ```
 
+### pubkey
+
+`String`
+
+- Public key of the account for which you want to consult the balance
+
+::: code-group
+
+```tsx [index.tsx]
+import { useTokenBalance } from '@lawallet/react';
+
+function App() {
+  const { balance } = useTokenBalance({
+    pubkey: '17efe7a5f1...53936f68b', // [!code focus]
+    tokenId: 'BTC',
+  });
+}
+```
+
+:::
+
+### tokenId
+
+`String`
+
+- Id of the token to be transferred
+
+::: code-group
+
+```tsx [index.tsx]
+import { useTokenBalance } from '@lawallet/react';
+
+function App() {
+  const { balance } = useTokenBalance({
+    pubkey: '17efe7a5f1...53936f68b',
+    tokenId: 'BTC', // [!code focus]
+  });
+}
+```
+
+<<< @/snippets/react/config.ts[config.ts]
+:::
+
+### enabled
+
+`Boolean | undefined`
+
+- Set this to false to disable this query from automatically running.
+- The default parameter is true.
+
+::: code-group
+
+```tsx [index.tsx]
+import { useTokenBalance } from '@lawallet/react';
+
+function App() {
+  const { balance } = useTokenBalance({
+    pubkey: '17efe7a5f1...53936f68b',
+    tokenId: 'BTC',
+    enabled: false, // [!code focus]
+  });
+}
+```
+
+<<< @/snippets/react/config.ts[config.ts]
+:::
+
 ### config
 
 `Config | undefined`
@@ -54,6 +121,8 @@ import { config } from './config'; // [!code focus]
 
 function App() {
   const { balance } = useTokenBalance({
+    pubkey: '17efe7a5f1...53936f68b',
+    tokenId: 'BTC',
     config, // [!code focus]
   });
 }
@@ -67,3 +136,9 @@ function App() {
 ```ts
 import { type UseTokenBalanceReturns } from '@lawallet/react';
 ```
+
+### balance
+
+[`TokenBalance`](/react/api/glossary/types#TokenBalance)
+
+Returns the requested account and token balance information

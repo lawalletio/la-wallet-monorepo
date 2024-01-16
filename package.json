@@ -33,9 +33,5 @@
     "apps/*",
     "packages/*",
     "config/*"
-  ],
-  "dependencies": {
-    "docs": "0.3.2-canary.0",
-    "typescript": "^5.3.3"
-  }
+  ]
 }
