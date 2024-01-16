@@ -6,7 +6,7 @@ Glossary of Types in LaWallet
 
 Type to define the balance of a token
 
-```ts [TokenBalance.ts]
+```ts [TokenBalance]
 export interface TokenBalance {
   tokenId: string;
   amount: number;
@@ -20,29 +20,9 @@ export interface TokenBalance {
 
 Type to define a transaction
 
-```ts [Transaction.ts]
-export enum TransactionStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  ERROR = 'ERROR',
-  REVERTED = 'REVERTED',
-}
+::: code-group
 
-export enum TransactionDirection {
-  INCOMING = 'INCOMING',
-  OUTGOING = 'OUTGOING',
-}
-
-export enum TransactionType {
-  CARD = 'CARD',
-  INTERNAL = 'INTERNAL',
-  LN = 'LN',
-}
-
-export type TokensAmount = {
-  [_tokenId: string]: number;
-};
-
+```ts [Transaction]
 export interface Transaction {
   id: string;
   status: TransactionStatus;
@@ -55,3 +35,35 @@ export interface Transaction {
   createdAt: number;
 }
 ```
+
+```ts [Status]
+export enum TransactionStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  ERROR = 'ERROR',
+  REVERTED = 'REVERTED',
+}
+```
+
+```ts [Direction]
+export enum TransactionDirection {
+  INCOMING = 'INCOMING',
+  OUTGOING = 'OUTGOING',
+}
+```
+
+```ts [Types]
+export enum TransactionType {
+  CARD = 'CARD',
+  INTERNAL = 'INTERNAL',
+  LN = 'LN',
+}
+```
+
+```ts [TokensAmount]
+export type TokensAmount = {
+  [_tokenId: string]: number;
+};
+```
+
+:::
