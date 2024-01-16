@@ -16,7 +16,7 @@ export const useUser = (params: UseIdentityParameters): UseUserReturns => {
   const config = useConfig(params);
   const { identity, setIdentity, loadIdentityFromPrivateKey } = useIdentity(params);
 
-  const { userTransactions: transactions } = useActivity({
+  const { transactions } = useActivity({
     pubkey: identity.hexpub,
     enabled: Boolean(identity.hexpub.length),
     cache: true,

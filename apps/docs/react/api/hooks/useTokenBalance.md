@@ -19,6 +19,7 @@ import { useTokenBalance } from '@lawallet/react';
 
 ```tsx [index.tsx]
 import { useTokenBalance } from '@lawallet/react';
+import { config } from './config';
 
 function App() {
   const userPubkey: string = '9a9787e3e31cfdc95f35d5cfc1eeaead33e693ec59789c20f63546b191e28d59';
@@ -27,6 +28,7 @@ function App() {
     pubkey: userPubkey,
     tokenId: 'BTC',
     enabled: Boolean(userPubkey.length),
+    config,
   });
 }
 ```

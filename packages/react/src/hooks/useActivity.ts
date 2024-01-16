@@ -1,12 +1,6 @@
-import { LaWalletKinds, LaWalletTags, baseConfig, getMultipleTags, getTag, parseContent } from '@lawallet/utils';
+import { LaWalletKinds, LaWalletTags, getMultipleTags, getTag, parseContent } from '@lawallet/utils';
 
-import {
-  type ConfigProps,
-  type Transaction,
-  TransactionDirection,
-  TransactionStatus,
-  TransactionType,
-} from '@lawallet/utils/types';
+import { type Transaction, TransactionDirection, TransactionStatus, TransactionType } from '@lawallet/utils/types';
 
 import * as React from 'react';
 
@@ -31,8 +25,7 @@ export type ActivityType = {
 };
 
 export interface UseActivityReturn {
-  activityInfo: ActivityType;
-  userTransactions: Transaction[];
+  transactions: Transaction[];
 }
 
 export interface UseActivityProps extends ConfigParameter {
@@ -214,13 +207,13 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
   };
 
   async function generateTransactions(events: NDKEvent[]) {
-    const userTransactions: Transaction[] = [];
+    const transactions: Transaction[] = [];
     const [startedEvents, statusEvents, refundEvents] = filterEventsByTxType(events);
 
     setActivityInfo((prev) => {
       return {
         ...prev,
-        idsLoaded: userTransactions.map((tx) => tx.id.toString()),
+        idsLoaded: transactions.map((tx) => tx.id.toString()),
         loading: true,
       };
     });
@@ -250,14 +243,14 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
         .then((transaction: Transaction | undefined) => {
           if (!transaction) return;
 
-          userTransactions.push(transaction);
+          transactions.push(transaction);
         });
     });
 
     setActivityInfo((prev) => {
       return {
         ...prev,
-        subscription: userTransactions,
+        subscription: transactions,
         loading: false,
       };
     });
@@ -290,7 +283,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
     }
   };
 
-  const userTransactions: Transaction[] = React.useMemo(() => {
+  const transactions: Transaction[] = React.useMemo(() => {
     if (!cache) return activityInfo.subscription.sort((a, b) => b.createdAt - a.createdAt);
 
     const TXsWithoutCached: Transaction[] = activityInfo.subscription.filter((tx) => {
@@ -317,12 +310,11 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturn => 
   }, [pubkey]);
 
   React.useEffect(() => {
-    if (cache && userTransactions.length)
-      config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(userTransactions));
-  }, [userTransactions]);
+    if (cache && transactions.length)
+      config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(transactions));
+  }, [transactions]);
 
   return {
-    activityInfo,
-    userTransactions,
+    transactions,
   };
 };
