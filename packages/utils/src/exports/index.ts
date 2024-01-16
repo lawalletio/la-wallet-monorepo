@@ -33,3 +33,15 @@ export {
   parseContent,
   claimLNURLw,
 } from '../utils/utilities.js';
+
+export {
+  formatter,
+  decimalsToUse,
+  roundNumber,
+  roundToDown,
+  formatAddress,
+  dateFormatter,
+  upperText,
+  lowerText,
+  formatToPreference,
+} from '../utils/formatter.js';

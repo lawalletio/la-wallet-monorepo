@@ -37,15 +37,3 @@ export {
   LanguagesList,
   defaultLocale,
 } from '../types/translations.js';
-
-export {
-  formatter,
-  decimalsToUse,
-  roundNumber,
-  roundToDown,
-  formatAddress,
-  dateFormatter,
-  upperText,
-  lowerText,
-  formatToPreference,
-} from '../utils/formatter.js';

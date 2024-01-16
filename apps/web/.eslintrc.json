@@ -25,7 +25,12 @@
   },
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
-    "prettier/prettier": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
     "space-before-function-paren": "off",
     "react/prop-types": "off",
     "no-use-before-define": "off",

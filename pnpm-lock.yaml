@@ -234,6 +234,9 @@ importers:
       bech32:
         specifier: ^2.0.0
         version: 2.0.0
+      date-fns:
+        specifier: ^3.2.0
+        version: 3.2.0
       nostr-tools:
         specifier: npm:@lawallet/nostr-tools
         version: /@lawallet/nostr-tools@1.17.0(typescript@5.3.3)
