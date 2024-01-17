@@ -21,11 +21,15 @@ export function getSidebar() {
           { text: 'useActivity', link: '/react/api/hooks/useActivity' },
           { text: 'useCardConfig', link: '/react/api/hooks/useCardConfig' },
           { text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' },
+          { text: 'useSubscription', link: '/react/api/hooks/useSubscription' },
         ],
       },
       {
         text: 'Glossary',
-        items: [{ text: 'Types', link: '/react/api/glossary/types' }],
+        items: [
+          { text: 'Types', link: '/react/api/glossary/types' },
+          { text: 'NDK Types', link: '/react/api/glossary/ndk' },
+        ],
       },
     ],
   } satisfies DefaultTheme.Sidebar;
