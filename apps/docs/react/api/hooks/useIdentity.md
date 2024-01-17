@@ -19,6 +19,7 @@ import { useIdentity } from '@lawallet/react';
 
 ```tsx [index.tsx]
 import { useIdentity } from '@lawallet/react';
+import { config } from './config';
 
 function App() {
   const { identity } = useIdentity({
