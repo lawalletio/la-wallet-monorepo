@@ -67,7 +67,7 @@ function App() {
 }
 ```
 
-### filters
+### options
 
 [`NDKSubscriptionOptions`](/react/api/glossary/ndk#ndksubscriptionoptions)
 
