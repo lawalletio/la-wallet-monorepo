@@ -306,8 +306,13 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturns =>
   }, [walletEvents]);
 
   React.useEffect(() => {
-    loadCachedTransactions();
-  }, [pubkey]);
+    if (!pubkey) {
+      setActivityInfo(defaultActivity);
+      return;
+    }
+
+    if (storage) loadCachedTransactions();
+  }, [pubkey, storage]);
 
   React.useEffect(() => {
     if (storage && transactions.length)

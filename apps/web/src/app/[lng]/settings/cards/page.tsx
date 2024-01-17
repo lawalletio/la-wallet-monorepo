@@ -17,7 +17,7 @@ export default function Page() {
     user: { identity },
   } = useWalletContext();
 
-  const { cards, toggleCardStatus } = useCardConfig({ privateKey: identity.info.privateKey });
+  const { cards, toggleCardStatus } = useCardConfig({ privateKey: identity.data.privateKey });
   const { t } = useTranslation();
 
   return (

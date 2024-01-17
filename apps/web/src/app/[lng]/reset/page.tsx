@@ -26,7 +26,7 @@ export default function Page() {
   const params = useSearchParams();
 
   useEffect(() => {
-    if (identity.info.hexpub.length) return;
+    if (identity.data.hexpub.length) return;
 
     const recoveryNonce: string = params.get('n') || '';
     if (!recoveryNonce) {

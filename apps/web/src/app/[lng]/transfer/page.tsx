@@ -81,7 +81,7 @@ export default function Page() {
         if (txPubkeys.length !== 2) return;
 
         const receiverPubkey: string = txPubkeys[1];
-        if (receiverPubkey === identity.info.hexpub) return;
+        if (receiverPubkey === identity.data.hexpub) return;
 
         const username: string = await getUsername(receiverPubkey, config);
 

@@ -51,7 +51,6 @@ export const defaultIdentity: UserIdentity = {
   hexpub: '',
   privateKey: '',
   npub: '',
-  isReady: false,
 };
 
 export const defaultTransfer: TransferInformation = {

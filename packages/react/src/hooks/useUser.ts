@@ -15,16 +15,16 @@ export const useUser = (params: UseIdentityParameters): UseUserReturns => {
   const identity = useIdentity(params);
 
   const { transactions } = useActivity({
-    pubkey: identity.info.hexpub,
-    enabled: Boolean(identity.info.hexpub.length),
+    pubkey: identity.data.hexpub,
+    enabled: Boolean(identity.data.hexpub.length),
     storage: true,
     config,
   });
 
   const { balance } = useTokenBalance({
-    pubkey: identity.info.hexpub,
+    pubkey: identity.data.hexpub,
     tokenId: 'BTC',
-    enabled: Boolean(identity.info.hexpub.length),
+    enabled: Boolean(identity.data.hexpub.length),
     config,
   });
 

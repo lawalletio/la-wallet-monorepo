@@ -21,7 +21,6 @@ export const generateUserIdentity = async (name?: string): Promise<UserIdentity>
     hexpub: identityPubKey,
     npub: nip19.npubEncode(identityPubKey),
     privateKey: privateKey,
-    isReady: true,
   };
 
   return identity;

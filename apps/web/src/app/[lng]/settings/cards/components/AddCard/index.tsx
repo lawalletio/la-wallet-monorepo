@@ -54,7 +54,7 @@ const AddNewCardModal = () => {
       loading: true,
     });
 
-    buildCardActivationEvent(newCardInfo.card, identity.info.privateKey, config)
+    buildCardActivationEvent(newCardInfo.card, identity.data.privateKey, config)
       .then((cardEvent: NostrEvent) => {
         requestCardActivation(cardEvent, config).then((cardActivated) => {
           const description: string = cardActivated ? t('ACTIVATE_SUCCESS') : t('ACTIVATE_ERROR');

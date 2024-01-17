@@ -30,7 +30,7 @@ export default function Page() {
   const errors = useErrors();
 
   const logoutSession = () => {
-    const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.info.hexpub}`);
+    const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.data.hexpub}`);
 
     if (!cachedBackup) {
       errors.modifyError('ERROR_MADE_BACKUP');

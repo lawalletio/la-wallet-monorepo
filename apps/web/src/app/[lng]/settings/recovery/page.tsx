@@ -40,9 +40,9 @@ export default function Page() {
           <Container size="small">
             <InfoCopy
               title={t('PRIVATE_KEY')}
-              value={identity.info.privateKey}
+              value={identity.data.privateKey}
               onCopy={() => {
-                config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.info.hexpub}`, '1');
+                config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.data.hexpub}`, '1');
               }}
             />
             <Divider y={16} />

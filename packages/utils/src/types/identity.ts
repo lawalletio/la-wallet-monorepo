@@ -3,5 +3,4 @@ export interface UserIdentity {
   hexpub: string;
   npub: string;
   privateKey: string;
-  isReady: boolean;
 }

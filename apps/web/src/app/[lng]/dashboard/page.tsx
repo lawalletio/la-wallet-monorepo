@@ -65,7 +65,7 @@ export default function Page() {
 
   useEffect(() => {
     const userMadeBackup: boolean = Boolean(
-      config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.info.hexpub}`) || false,
+      config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.data.hexpub}`) || false,
     );
 
     setShowBanner(!userMadeBackup ? 'backup' : 'none');
@@ -78,7 +78,7 @@ export default function Page() {
           <Flex align="center" gap={8}>
             <Avatar>
               <Text size="small">
-                {identity.info.username ? identity.info.username.substring(0, 2).toUpperCase() : 'AN'}
+                {identity.data.username ? identity.data.username.substring(0, 2).toUpperCase() : 'AN'}
               </Text>
             </Avatar>
             <Flex direction="column">
@@ -87,14 +87,14 @@ export default function Page() {
               </Text>
               <Flex
                 onClick={() => {
-                  if (identity.info.username) copy(`${identity.info.username}@${config.federation.domain}`);
+                  if (identity.data.username) copy(`${identity.data.username}@${config.federation.domain}`);
                 }}
               >
                 {loading ? (
                   <Text> -- </Text>
                 ) : (
                   <Text>
-                    {identity.info.username ? `${identity.info.username}@${config.federation.domain}` : t('ANONYMOUS')}
+                    {identity.data.username ? `${identity.data.username}@${config.federation.domain}` : t('ANONYMOUS')}
                   </Text>
                 )}
               </Flex>
