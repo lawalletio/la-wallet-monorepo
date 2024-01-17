@@ -19,6 +19,7 @@ export function getSidebar() {
         text: 'Hooks',
         items: [
           { text: 'useActivity', link: '/react/api/hooks/useActivity' },
+          { text: 'useCardConfig', link: '/react/api/hooks/useCardConfig' },
           { text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' },
         ],
       },
