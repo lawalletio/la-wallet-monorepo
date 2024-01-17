@@ -23,7 +23,7 @@ export interface INostr {
 
 export type SignerTypes = NDKPrivateKeySigner | NDKNip07Signer | undefined;
 
-export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig): INostr => {
+export const useNostr = ({ explicitRelayUrls, autoConnect = true }: NostrConfig): INostr => {
   const [ndk] = React.useState<NDK>(
     new NDK({
       explicitRelayUrls,
@@ -45,17 +45,6 @@ export const useNOSTR = ({ explicitRelayUrls, autoConnect = true }: NostrConfig)
       webln: window.webln,
       nostr: window.nostr as NostrExtensionProvider,
     });
-
-    // if (window.nostr) {
-    //   const nip07signer = new NDKNip07Signer();
-    //   const ndkProvider = new NDK({
-    //     explicitRelayUrls,
-    //     signer: nip07signer,
-    //   });
-
-    //   setNDK(ndkProvider);
-    //   await ndkProvider.connect();
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -2,7 +2,7 @@ import { SignEvent, buildZapRequestEvent } from '@lawallet/utils';
 import { requestInvoice } from '@lawallet/utils/actions';
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
 import React from 'react';
-import { useWalletContext } from '../context/AccountContext.js';
+import { useWalletContext } from '../context/WalletContext.js';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { useConfig } from './useConfig.js';
 import { useSigner } from './useSigner.js';

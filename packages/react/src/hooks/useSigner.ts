@@ -1,6 +1,6 @@
 import { NDKPrivateKeySigner, NDKNip07Signer, NDKUser } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
-import { useNostrContext } from '../context/NDKContext.js';
+import { useNostrContext } from '../context/NostrContext.js';
 import type { SignerTypes } from './useNostr.js';
 
 export type UseSignerReturns = {

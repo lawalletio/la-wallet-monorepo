@@ -5,15 +5,15 @@ import { useUser, type UseUserReturns } from '../hooks/useUser.js';
 import { type ConfigParameter } from '@lawallet/utils/types';
 import { useSigner } from '../hooks/useSigner.js';
 
-interface AccountContextType {
+interface WalletContextType {
   user: UseUserReturns;
   settings: UseSettingsReturns;
   converter: UseConverterReturns;
 }
 
-export const AccountContext = React.createContext({} as AccountContextType);
+export const WalletContext = React.createContext({} as WalletContextType);
 
-export function AccountProvider(props: React.PropsWithChildren<ConfigParameter>) {
+export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const { children, config } = props;
   const { connectWithPrivateKey } = useSigner();
 
@@ -32,13 +32,13 @@ export function AccountProvider(props: React.PropsWithChildren<ConfigParameter>)
     if (isReady && privateKey) connectWithPrivateKey(privateKey);
   }, [user.identity.isReady]);
 
-  return React.createElement(AccountContext.Provider, { value }, children);
+  return React.createElement(WalletContext.Provider, { value }, children);
 }
 
 export const useWalletContext = () => {
-  const context = React.useContext(AccountContext);
+  const context = React.useContext(WalletContext);
   if (!context) {
-    throw new Error('useWalletContext must be used within User provider');
+    throw new Error('useWalletContext must be used within WalletProvider');
   }
 
   return context;

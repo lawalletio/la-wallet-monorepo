@@ -16,6 +16,6 @@ export { type UseSignerReturns, useSigner } from '../hooks/useSigner.js';
 
 export { useConfig } from '../hooks/useConfig.js';
 
-export { NDKProvider, useNostrContext, NDKContext } from '../context/NDKContext.js';
-export { AccountProvider, useWalletContext } from '../context/AccountContext.js';
-export { LaWalletConfig, LaWalletProvider } from '../context/context.js';
+export { type NostrContext, NostrProvider, useNostrContext } from '../context/NostrContext.js';
+export { type WalletContext, WalletProvider, useWalletContext } from '../context/WalletContext.js';
+export { LaWalletConfig, LaWalletProvider } from '../context/providers.js';

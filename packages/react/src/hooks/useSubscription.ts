@@ -1,6 +1,6 @@
 import { type NDKEvent, type NDKFilter, type NDKSubscription, type NDKSubscriptionOptions } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
-import { useNostrContext } from '../context/NDKContext.js';
+import { useNostrContext } from '../context/NostrContext.js';
 
 export interface UseSubscriptionReturns {
   subscription: NDKSubscription | undefined;
