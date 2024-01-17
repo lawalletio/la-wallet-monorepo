@@ -10,8 +10,7 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useConfig, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
-import { UserIdentity } from '@lawallet/react/types';
-import { getPublicKey, nip19 } from 'nostr-tools';
+import { getPublicKey } from 'nostr-tools';
 import { ChangeEvent, useEffect, useState } from 'react';
 
 export default function Page() {
@@ -27,7 +26,7 @@ export default function Page() {
   const router = useRouter();
   const errors = useErrors();
 
-  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     errors.resetError();
     setKeyInput(e.target.value);
   };
