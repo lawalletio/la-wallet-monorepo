@@ -7,7 +7,7 @@ Glossary of Types in LaWallet
 Type to define the context configuration
 
 ```ts [Config]
-export type Config = {
+type Config = {
   endpoints: {
     identity: string;
     api: string;
@@ -26,12 +26,73 @@ export type Config = {
 };
 ```
 
+## `CardDataPayload`
+
+Type that defines the information of a card
+
+::: code-group
+
+```ts [CardDataPayload]
+type CardDataPayload = { [uuid: string]: { design: Design } };
+```
+
+```ts [Design]
+type Design = { uuid: string; name: string; description: string };
+```
+
+:::
+
+## `CardConfigPayload`
+
+Type that defines the configuration of a card
+
+::: code-group
+
+```ts [CardConfigPayload]
+type CardConfigPayload = {
+  'trusted-merchants': { pubkey: string }[];
+  cards: { [uuid: string]: CardPayload };
+};
+```
+
+```ts [CardPayload]
+type CardPayload = {
+  name: string;
+  description: string;
+  status: string;
+  limits: Limit[];
+};
+```
+
+```ts [Limit]
+type Limit = {
+  name: string;
+  description: string;
+  token: string;
+  amount: bigint;
+  delta: number;
+};
+```
+
+:::
+
+## `CardsInfo`
+
+Type that defines the information and configuration of the cards
+
+```ts [Config]
+type CardsInfo = {
+  data: CardDataPayload;
+  config: CardConfigPayload;
+};
+```
+
 ## `TokenBalance`
 
 Type to define the balance of a token
 
 ```ts [TokenBalance]
-export interface TokenBalance {
+interface TokenBalance {
   tokenId: string;
   amount: number;
   loading: boolean;
@@ -47,7 +108,7 @@ Type to define a transaction
 ::: code-group
 
 ```ts [Transaction]
-export interface Transaction {
+interface Transaction {
   id: string;
   status: TransactionStatus;
   direction: TransactionDirection;
@@ -61,7 +122,7 @@ export interface Transaction {
 ```
 
 ```ts [Status]
-export enum TransactionStatus {
+enum TransactionStatus {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',
   ERROR = 'ERROR',
@@ -70,14 +131,14 @@ export enum TransactionStatus {
 ```
 
 ```ts [Direction]
-export enum TransactionDirection {
+enum TransactionDirection {
   INCOMING = 'INCOMING',
   OUTGOING = 'OUTGOING',
 }
 ```
 
 ```ts [Types]
-export enum TransactionType {
+enum TransactionType {
   CARD = 'CARD',
   INTERNAL = 'INTERNAL',
   LN = 'LN',
@@ -85,7 +146,7 @@ export enum TransactionType {
 ```
 
 ```ts [TokensAmount]
-export type TokensAmount = {
+type TokensAmount = {
   [_tokenId: string]: number;
 };
 ```

@@ -16,6 +16,7 @@ export default withTwoslash(
           content: 'react, lightning, typescript, react hooks, open source',
         },
       ],
+      ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon.ico' }],
       ['meta', { name: 'theme-color', content: '#646cff' }],
       // Open Graph
       ['meta', { property: 'og:type', content: 'website' }],
