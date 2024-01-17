@@ -46,8 +46,6 @@ import { type useZapParameters } from '@lawallet/react';
 
 - Public key of the user to whom you want to send a zap
 
-::: code-group
-
 ```tsx [index.tsx]
 import { useZap } from '@lawallet/react';
 

@@ -9,21 +9,21 @@ type LightningProvidersType = {
   nostr: NostrExtensionProvider | undefined;
 };
 
-type NostrConfig = {
+type UseNostrParameters = {
   explicitRelayUrls: string[];
   autoConnect?: boolean;
 };
 
-export interface INostr {
+export interface UseNostrReturns {
   ndk: NDK;
   providers: LightningProvidersType;
-  connectNDK: () => Promise<boolean>;
+  connectRelays: () => Promise<boolean>;
   initializeSigner: (signer: SignerTypes) => void;
 }
 
 export type SignerTypes = NDKPrivateKeySigner | NDKNip07Signer | undefined;
 
-export const useNostr = ({ explicitRelayUrls, autoConnect = true }: NostrConfig): INostr => {
+export const useNostr = ({ explicitRelayUrls, autoConnect = true }: UseNostrParameters): UseNostrReturns => {
   const [ndk] = React.useState<NDK>(
     new NDK({
       explicitRelayUrls,
@@ -48,7 +48,7 @@ export const useNostr = ({ explicitRelayUrls, autoConnect = true }: NostrConfig)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const connectNDK = async () => {
+  const connectRelays = async () => {
     try {
       await ndk.connect();
       return true;
@@ -60,14 +60,14 @@ export const useNostr = ({ explicitRelayUrls, autoConnect = true }: NostrConfig)
   React.useEffect(() => {
     loadProviders();
 
-    if (autoConnect) connectNDK();
+    if (autoConnect) connectRelays();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoConnect]);
 
   return {
     ndk,
     providers,
-    connectNDK,
+    connectRelays,
     initializeSigner,
   };
 };
