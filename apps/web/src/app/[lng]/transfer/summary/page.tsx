@@ -39,7 +39,7 @@ export default function Page() {
 
   const [transferUsername, transferDomain] = splitHandle(transferInfo.data);
 
-  useActionOnKeypress('Enter', () => executeTransfer(identity.privateKey), [identity, transferInfo]);
+  useActionOnKeypress('Enter', () => executeTransfer(identity.info.privateKey), [identity, transferInfo]);
 
   return (
     <>
@@ -120,7 +120,7 @@ export default function Page() {
 
             <Button
               color="secondary"
-              onClick={() => executeTransfer(identity.privateKey)}
+              onClick={() => executeTransfer(identity.info.privateKey)}
               disabled={
                 !transferInfo.type ||
                 loading ||

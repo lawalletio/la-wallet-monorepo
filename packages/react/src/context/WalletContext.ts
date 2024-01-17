@@ -28,9 +28,9 @@ export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) 
   };
 
   React.useEffect(() => {
-    const { isReady, privateKey } = user.identity;
+    const { isReady, privateKey } = user.identity.info;
     if (isReady && privateKey) connectWithPrivateKey(privateKey);
-  }, [user.identity.isReady]);
+  }, [user.identity.info.isReady]);
 
   return React.createElement(WalletContext.Provider, { value }, children);
 }

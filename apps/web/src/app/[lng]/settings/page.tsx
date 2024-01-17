@@ -22,7 +22,7 @@ export default function Page() {
   const { lng, t, changeLanguage } = useTranslation();
 
   const {
-    user: { identity, initializeUser },
+    user: { identity },
   } = useWalletContext();
 
   const [sheetLanguage, setSheetLanguage] = useState<boolean>(false);
@@ -30,7 +30,7 @@ export default function Page() {
   const errors = useErrors();
 
   const logoutSession = () => {
-    const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`);
+    const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.info.hexpub}`);
 
     if (!cachedBackup) {
       errors.modifyError('ERROR_MADE_BACKUP');
@@ -41,9 +41,8 @@ export default function Page() {
 
     if (confirmation) {
       config.storage.removeItem(STORAGE_IDENTITY_KEY);
-      initializeUser(defaultIdentity).then(() => {
-        router.push('/login');
-      });
+      identity.resetIdentity();
+      router.push('/login');
     }
   };
 

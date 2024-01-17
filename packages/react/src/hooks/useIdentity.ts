@@ -2,13 +2,14 @@ import { defaultIdentity, parseContent } from '@lawallet/utils';
 import { getUsername } from '@lawallet/utils/actions';
 import type { ConfigParameter, UserIdentity } from '@lawallet/utils/types';
 import { getPublicKey, nip19 } from 'nostr-tools';
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 import { useConfig } from './useConfig.js';
 
 export interface UseIdentityReturns {
-  identity: UserIdentity;
-  setIdentity: Dispatch<SetStateAction<UserIdentity>>;
+  info: UserIdentity;
+  resetIdentity: () => void;
+  initializeCustomIdentity: (privateKey: string, username?: string) => Promise<boolean>;
   loadIdentityFromPubkey: (pubkey: string) => void;
   loadIdentityFromPrivateKey: (privkey: string) => void;
 }
@@ -19,19 +20,36 @@ export interface UseIdentityParameters extends ConfigParameter {
 
 export const useIdentity = (parameters: UseIdentityParameters): UseIdentityReturns => {
   const config = useConfig(parameters);
-  const [identity, setIdentity] = useState<UserIdentity>(defaultIdentity);
+  const [info, setInfo] = useState<UserIdentity>(defaultIdentity);
 
-  const setDefaultIdentity = () => {
-    setIdentity({
+  const resetIdentity = () => {
+    setInfo({
       ...defaultIdentity,
       isReady: true,
     });
   };
 
+  const initializeCustomIdentity = async (privateKey: string, username: string = ''): Promise<boolean> => {
+    const userPubkey = getPublicKey(privateKey);
+    const usernpub = nip19.npubEncode(userPubkey);
+
+    const identity: UserIdentity = {
+      username,
+      hexpub: userPubkey,
+      npub: usernpub,
+      privateKey,
+      isReady: true,
+    };
+
+    config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identity));
+    setInfo(identity);
+    return true;
+  };
+
   const loadIdentityFromPubkey = async (pub: string) => {
     const username: string = await getUsername(pub, config);
-    setIdentity({
-      ...identity,
+    setInfo({
+      ...info,
       username,
       hexpub: pub,
       isReady: true,
@@ -40,14 +58,14 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
 
   const loadIdentityFromPrivateKey = async (privkey: string) => {
     if (!privkey.length) {
-      setIdentity({ ...defaultIdentity, isReady: true });
+      setInfo({ ...defaultIdentity, isReady: true });
       return;
     }
 
     const pubkey: string = getPublicKey(privkey);
     const username: string = await getUsername(pubkey, config);
 
-    setIdentity({
+    setInfo({
       username,
       hexpub: pubkey,
       npub: nip19.npubEncode(pubkey),
@@ -58,21 +76,21 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
 
   const loadIdentityFromStorage = async () => {
     const storageIdentity = config.storage.getItem(STORAGE_IDENTITY_KEY);
-    if (!storageIdentity) return setDefaultIdentity();
+    if (!storageIdentity) return resetIdentity();
 
     const parsedIdentity: UserIdentity = parseContent(storageIdentity as string);
-    if (!parsedIdentity.privateKey) return setDefaultIdentity();
+    if (!parsedIdentity.privateKey) return resetIdentity();
 
     const hexpub: string = getPublicKey(parsedIdentity.privateKey);
     const username: string = await getUsername(hexpub, config);
 
     if (hexpub === parsedIdentity.hexpub && username == parsedIdentity.username) {
-      setIdentity({
+      setInfo({
         ...parsedIdentity,
         isReady: true,
       });
     } else {
-      setIdentity({
+      setInfo({
         ...parsedIdentity,
         hexpub,
         username,
@@ -88,8 +106,9 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
   }, [parameters.pubkey]);
 
   return {
-    identity,
-    setIdentity,
+    info,
+    resetIdentity,
+    initializeCustomIdentity,
     loadIdentityFromPubkey,
     loadIdentityFromPrivateKey,
   };

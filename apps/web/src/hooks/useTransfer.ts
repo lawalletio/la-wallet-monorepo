@@ -120,7 +120,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
       buildTxStartEvent({
         tokenName,
         amount,
-        senderPubkey: identity.hexpub,
+        senderPubkey: identity.info.hexpub,
         receiverPubkey,
         comment,
       }),
@@ -139,7 +139,7 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
       buildTxStartEvent({
         tokenName,
         amount,
-        senderPubkey: identity.hexpub,
+        senderPubkey: identity.info.hexpub,
         bolt11,
       }),
     );

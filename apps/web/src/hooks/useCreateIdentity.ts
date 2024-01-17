@@ -35,7 +35,7 @@ interface CreateIdentityParams extends AccountProps {
 export type CreateIdentityReturns = {
   success: boolean;
   message: string;
-  identity?: UserIdentity;
+  info?: UserIdentity;
 };
 
 export type UseIdentityReturns = {
@@ -59,7 +59,7 @@ const defaultAccount: CreateIdentityParams = {
 
 export const useCreateIdentity = (): UseIdentityReturns => {
   const {
-    user: { initializeUser },
+    user: { identity },
   } = useWalletContext();
   const config = useConfig();
   const { connectWithPrivateKey } = useSigner();
@@ -123,7 +123,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
 
     const generatedIdentity: UserIdentity = await generateUserIdentity();
     if (generatedIdentity) {
-      initializeUser(generatedIdentity);
+      identity.initializeCustomIdentity(generatedIdentity.privateKey);
       router.push('/dashboard');
       setLoading(false);
     }
@@ -161,7 +161,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
         return {
           success: true,
           message: 'ok',
-          identity: generatedIdentity,
+          info: generatedIdentity,
         };
       })
       .catch(() => {
@@ -194,13 +194,13 @@ export const useCreateIdentity = (): UseIdentityReturns => {
         if (nameWasTaken) return errors.modifyError('NAME_ALREADY_TAKEN');
 
         return createIdentity(props).then((new_identity: CreateIdentityReturns) => {
-          const { success, identity, message } = new_identity;
+          const { success, info, message } = new_identity;
 
-          if (success && identity) {
-            initializeUser(identity!, true);
+          if (success && info) {
+            identity.initializeCustomIdentity(info.privateKey, info.username);
 
             if (props.card) {
-              buildCardActivationEvent(props.card, identity.privateKey, config)
+              buildCardActivationEvent(props.card, info.privateKey, config)
                 .then((cardEvent: NostrEvent) => {
                   requestCardActivation(cardEvent, config).then(() => {
                     router.push('/dashboard');

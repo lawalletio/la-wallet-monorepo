@@ -37,9 +37,9 @@ const AuthProvider = ({ children, lng }: { children: React.ReactNode; lng: Avail
   };
 
   useLayoutEffect(() => {
-    if (identity.isReady) {
+    if (identity.info.isReady) {
       const protectedFlag = isProtectedRoute(pathname);
-      const userLogged: boolean = Boolean(identity.hexpub.length);
+      const userLogged: boolean = Boolean(identity.info.hexpub.length);
       const nonce: string = params.get('i') || '';
       const card: string = params.get('c') || '';
 
@@ -57,17 +57,17 @@ const AuthProvider = ({ children, lng }: { children: React.ReactNode; lng: Avail
           break;
       }
     }
-  }, [pathname, identity.isReady]);
+  }, [pathname, identity.info.isReady]);
 
   const hydrateApp = useMemo((): boolean => {
-    if (!identity.isReady) return false;
+    if (!identity.info.isReady) return false;
 
     const protectedFlag: boolean = isProtectedRoute(pathname);
-    if (identity.hexpub.length && protectedFlag) return true;
-    if (!identity.hexpub && !protectedFlag) return true;
+    if (identity.info.hexpub.length && protectedFlag) return true;
+    if (!identity.info.hexpub && !protectedFlag) return true;
 
     return false;
-  }, [identity.isReady, pathname]);
+  }, [identity.info.isReady, pathname]);
 
   return !hydrateApp ? <SpinnerView loadingText={loadingMessages[lng]['LOADING_ACCOUNT']} /> : children;
 };

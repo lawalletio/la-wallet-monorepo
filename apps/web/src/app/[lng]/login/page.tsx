@@ -16,7 +16,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 
 export default function Page() {
   const {
-    user: { initializeUser },
+    user: { identity },
   } = useWalletContext();
 
   const [keyInput, setKeyInput] = useState<string>('');
@@ -50,17 +50,11 @@ export default function Page() {
         return;
       }
 
-      const identity: UserIdentity = {
-        username,
-        hexpub,
-        npub: nip19.npubEncode(hexpub),
-        privateKey: keyInput,
-        isReady: true,
-      };
-
-      initializeUser(identity).then(() => {
-        config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
-        router.push('/dashboard');
+      identity.initializeCustomIdentity(keyInput, username).then((res) => {
+        if (res) {
+          config.storage.setItem(`${CACHE_BACKUP_KEY}_${hexpub}`, '1');
+          router.push('/dashboard');
+        }
       });
     } catch (err) {
       errors.modifyError('UNEXPECTED_RECEOVERY_ERROR');

@@ -64,7 +64,9 @@ export default function Page() {
   }, [router]);
 
   useEffect(() => {
-    const userMadeBackup: boolean = Boolean(config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`) || false);
+    const userMadeBackup: boolean = Boolean(
+      config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.info.hexpub}`) || false,
+    );
 
     setShowBanner(!userMadeBackup ? 'backup' : 'none');
   }, []);
@@ -75,7 +77,9 @@ export default function Page() {
         <Navbar>
           <Flex align="center" gap={8}>
             <Avatar>
-              <Text size="small">{identity.username ? identity.username.substring(0, 2).toUpperCase() : 'AN'}</Text>
+              <Text size="small">
+                {identity.info.username ? identity.info.username.substring(0, 2).toUpperCase() : 'AN'}
+              </Text>
             </Avatar>
             <Flex direction="column">
               <Text size="small" color={theme.colors.gray50}>
@@ -83,13 +87,15 @@ export default function Page() {
               </Text>
               <Flex
                 onClick={() => {
-                  if (identity.username) copy(`${identity.username}@${config.federation.domain}`);
+                  if (identity.info.username) copy(`${identity.info.username}@${config.federation.domain}`);
                 }}
               >
                 {loading ? (
                   <Text> -- </Text>
                 ) : (
-                  <Text>{identity.username ? `${identity.username}@${config.federation.domain}` : t('ANONYMOUS')}</Text>
+                  <Text>
+                    {identity.info.username ? `${identity.info.username}@${config.federation.domain}` : t('ANONYMOUS')}
+                  </Text>
                 )}
               </Flex>
             </Flex>

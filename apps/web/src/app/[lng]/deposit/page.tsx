@@ -50,7 +50,7 @@ export default function Page() {
   } = useWalletContext();
   const numpadData = useNumpad(currency);
 
-  const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.hexpub });
+  const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.info.hexpub });
   const router = useRouter();
   const errors = useErrors();
   const [showSheet, setShowSeet] = useState<boolean>(false);
@@ -83,7 +83,7 @@ export default function Page() {
   };
 
   const handleCloseSheet = () => {
-    if (sheetStep === 'finished' || !identity.username.length) {
+    if (sheetStep === 'finished' || !identity.info.username.length) {
       router.push('/dashboard');
     } else {
       numpadData.resetAmount();
@@ -116,7 +116,7 @@ export default function Page() {
     () =>
       lnurl_encode(
         `https://${config.federation.domain}/.well-known/lnurlp/${
-          identity.username ? identity.username : identity.npub
+          identity.info.username ? identity.info.username : identity.info.npub
         }`,
       ).toUpperCase(),
     [identity],
@@ -133,14 +133,14 @@ export default function Page() {
         isOpen={!!notifications.alert}
       />
 
-      {identity.username.length ? (
+      {identity.info.username.length ? (
         <>
           <Flex flex={1} justify="center" align="center">
             <QRCode
               size={300}
               borderSize={30}
               value={('lightning:' + LNURLEncoded).toUpperCase()}
-              textToCopy={`${identity.username}@${config.federation.domain}`}
+              textToCopy={`${identity.info.username}@${config.federation.domain}`}
             />
           </Flex>
           <Flex>
@@ -154,8 +154,8 @@ export default function Page() {
                   </Text>
                   <Flex>
                     <Text>
-                      {identity.username
-                        ? `${identity.username}@${config.federation.domain}`
+                      {identity.info.username
+                        ? `${identity.info.username}@${config.federation.domain}`
                         : formatAddress(LNURLEncoded, 20)}
                     </Text>
                   </Flex>
@@ -165,7 +165,9 @@ export default function Page() {
                     size="small"
                     variant="bezeled"
                     onClick={() =>
-                      handleCopy(identity.username ? `${identity.username}@${config.federation.domain}` : LNURLEncoded)
+                      handleCopy(
+                        identity.info.username ? `${identity.info.username}@${config.federation.domain}` : LNURLEncoded,
+                      )
                     }
                   >
                     {t('COPY')}
@@ -204,7 +206,7 @@ export default function Page() {
               ? t('WAITING_PAYMENT')
               : t('PAYMENT_RECEIVED')
         }
-        isOpen={showSheet || !identity.username.length}
+        isOpen={showSheet || !identity.info.username.length}
         onClose={handleCloseSheet}
       >
         {sheetStep === 'amount' && (

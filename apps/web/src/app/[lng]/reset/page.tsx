@@ -17,7 +17,7 @@ import { useEffect } from 'react';
 export default function Page() {
   const { t } = useTranslation();
   const {
-    user: { identity, initializeUser },
+    user: { identity },
   } = useWalletContext();
 
   const config = useConfig();
@@ -26,7 +26,7 @@ export default function Page() {
   const params = useSearchParams();
 
   useEffect(() => {
-    if (identity.hexpub.length) return;
+    if (identity.info.hexpub.length) return;
 
     const recoveryNonce: string = params.get('n') || '';
     if (!recoveryNonce) {
@@ -41,10 +41,9 @@ export default function Page() {
             if (res.error) errors.modifyError(res.error);
 
             if (res.name) {
-              initializeUser({
-                ...generatedIdentity,
-                username: res.name,
-              }).then(() => router.push('/dashboard'));
+              identity
+                .initializeCustomIdentity(generatedIdentity.privateKey, res.name)
+                .then(() => router.push('/dashboard'));
             } else {
               errors.modifyError('ERROR_ON_RESET_ACCOUNT');
             }

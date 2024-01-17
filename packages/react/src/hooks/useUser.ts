@@ -1,43 +1,34 @@
 import { type TokenBalance, type Transaction, type UserIdentity } from '@lawallet/utils/types';
-import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 import { useActivity } from './useActivity.js';
-import { useIdentity, type UseIdentityParameters } from './useIdentity.js';
 import { useTokenBalance } from './useTokenBalance.js';
 import { useConfig } from './useConfig.js';
+import { useIdentity, type UseIdentityParameters, type UseIdentityReturns } from './useIdentity.js';
 
 export interface UseUserReturns {
-  identity: UserIdentity;
+  identity: UseIdentityReturns;
   transactions: Transaction[];
   balance: TokenBalance;
-  initializeUser: (new_identity: UserIdentity, isNew?: boolean) => Promise<void>;
 }
 
 export const useUser = (params: UseIdentityParameters): UseUserReturns => {
   const config = useConfig(params);
-  const { identity, setIdentity, loadIdentityFromPrivateKey } = useIdentity(params);
+  const identity = useIdentity(params);
 
   const { transactions } = useActivity({
-    pubkey: identity.hexpub,
-    enabled: Boolean(identity.hexpub.length),
+    pubkey: identity.info.hexpub,
+    enabled: Boolean(identity.info.hexpub.length),
     storage: true,
     config,
   });
 
   const { balance } = useTokenBalance({
-    pubkey: identity.hexpub,
+    pubkey: identity.info.hexpub,
     tokenId: 'BTC',
-    enabled: Boolean(identity.hexpub.length),
+    enabled: Boolean(identity.info.hexpub.length),
     config,
   });
 
-  const initializeUser = async (new_identity: UserIdentity, isNew: boolean = false) => {
-    isNew ? setIdentity(new_identity) : loadIdentityFromPrivateKey(new_identity.privateKey);
-    config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(new_identity));
-    return;
-  };
-
   return {
-    initializeUser,
     identity,
     transactions,
     balance,
