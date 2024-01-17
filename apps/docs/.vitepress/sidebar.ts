@@ -28,7 +28,7 @@ export function getSidebar() {
         text: 'Glossary',
         items: [
           { text: 'Types', link: '/react/api/glossary/types' },
-          { text: 'NDK Types', link: '/react/api/glossary/ndk' },
+          { text: 'NDK', link: '/react/api/glossary/ndk' },
         ],
       },
     ],
