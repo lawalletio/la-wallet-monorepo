@@ -50,7 +50,7 @@ export default function Page() {
   } = useWalletContext();
   const numpadData = useNumpad(currency);
 
-  const { invoice, createZapInvoice, resetInvoice } = useZap();
+  const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.hexpub });
   const router = useRouter();
   const errors = useErrors();
   const [showSheet, setShowSeet] = useState<boolean>(false);
@@ -72,7 +72,7 @@ export default function Page() {
       return;
     }
 
-    createZapInvoice(identity.hexpub, amountSats).then((created: boolean) => {
+    createZapInvoice(amountSats).then((created: boolean) => {
       if (!created) {
         errors.modifyError('ERROR_ON_CREATE_INVOICE');
         return;

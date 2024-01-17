@@ -24,17 +24,15 @@ const defaultDeposit: InvoiceProps = {
 
 export interface useZapReturns {
   invoice: InvoiceProps;
-  createZapInvoice: (receiverPubkey: string, sats: number) => Promise<boolean>;
+  createZapInvoice: (sats: number) => Promise<boolean>;
   resetInvoice: () => void;
 }
 
-// interface UseLightningDepositParams extends ConfigParameter {
-//   sender?: {
-//     signer: SignerTypes;
-//   };
-// }
+interface UseZapParameters extends ConfigParameter {
+  receiverPubkey: string;
+}
 
-export const useZap = (parameters: ConfigParameter = {}): useZapReturns => {
+export const useZap = (parameters: UseZapParameters): useZapReturns => {
   const config = useConfig(parameters);
   const { signer, signerPubkey } = useSigner();
 
@@ -52,20 +50,20 @@ export const useZap = (parameters: ConfigParameter = {}): useZapReturns => {
     enabled: Boolean(invoice.bolt11.length && !invoice.payed),
   });
 
-  const createZapInvoice = async (receiverPubkey: string, sats: number) => {
+  const createZapInvoice = async (sats: number) => {
     setInvoice({ ...invoice, loading: true });
 
     try {
       const invoice_mSats: number = sats * 1000;
       const zapRequestEvent: NostrEvent | undefined = await SignEvent(
         signer!,
-        buildZapRequestEvent(signerPubkey, receiverPubkey, invoice_mSats, config),
+        buildZapRequestEvent(signerPubkey, parameters.receiverPubkey, invoice_mSats, config),
       );
 
       const zapRequestURI: string = encodeURI(JSON.stringify(zapRequestEvent));
 
       const bolt11 = await requestInvoice(
-        `${config.endpoints.api}/lnurlp/${nip19.npubEncode(receiverPubkey)}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}`,
+        `${config.endpoints.api}/lnurlp/${nip19.npubEncode(parameters.receiverPubkey)}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}`,
       );
 
       if (!bolt11) return false;
