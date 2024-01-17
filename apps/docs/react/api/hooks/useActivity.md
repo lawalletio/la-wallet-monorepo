@@ -201,6 +201,6 @@ import { type useActivityReturns } from '@lawallet/react';
 
 ### transactions
 
-[`Transaction`](/react/api/glossary/types#transaction)
+[`Transaction[]`](/react/api/glossary/types#transaction)
 
 Returns the requested transactions in Transaction format
