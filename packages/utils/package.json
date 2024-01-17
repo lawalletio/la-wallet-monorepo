@@ -12,12 +12,12 @@
   "author": "Ferpa",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.11.2",
+    "@types/node": "^20.11.5",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "@scure/base": "1.1.5",
-    "@nostr-dev-kit/ndk": "^2.3.2",
+    "@nostr-dev-kit/ndk": "^2.3.3",
     "bech32": "^2.0.0",
     "date-fns": "^3.2.0",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
