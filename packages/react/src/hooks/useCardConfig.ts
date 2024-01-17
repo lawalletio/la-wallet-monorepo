@@ -60,7 +60,7 @@ export const useCardConfig = (parameters: UseCardConfigParameters): CardConfigRe
         return broadcastEvent(configEvent, config);
       })
       .catch(() => {
-        return { error: 'UNEXPECTED_ERROR' };
+        return false;
       });
   };
 
@@ -76,7 +76,7 @@ export const useCardConfig = (parameters: UseCardConfigParameters): CardConfigRe
       },
     };
 
-    buildAndBroadcastCardConfig(new_card_config as CardConfigPayload, parameters.privateKey);
+    return buildAndBroadcastCardConfig(new_card_config as CardConfigPayload, parameters.privateKey);
   };
 
   const processReceivedEvent = async (event: NDKEvent) => {

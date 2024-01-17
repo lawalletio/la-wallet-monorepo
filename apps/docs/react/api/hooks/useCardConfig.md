@@ -95,7 +95,7 @@ Returns the requested cards info
 
 ### toggleCardStatus
 
-`function`
+`(uuid: string) => boolean`
 
 - Function to switch card status
 - It receives as a parameter the uuid (string) of the card whose status you want to change.
