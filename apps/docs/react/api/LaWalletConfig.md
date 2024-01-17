@@ -14,9 +14,17 @@ import { LaWalletConfig } from '@lawallet/react';
 <<< @/snippets/react/app.tsx[app.tsx]
 :::
 
+## Parameters
+
+```ts
+import { type ConfigParameter } from '@lawallet/react';
+```
+
 ### config
 
 [`Config`](/react/api/createConfig#config) object to inject with context.
+
+- This parameter is optional. If config is not sent, the default parameters will be used.
 
 ::: code-group
 <<< @/snippets/react/config.ts[config.ts]
