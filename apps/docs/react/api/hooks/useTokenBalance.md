@@ -39,7 +39,7 @@ function App() {
 ## Parameters
 
 ```ts
-import { type UseTokenBalanceReturns } from '@lawallet/react';
+import { type UseTokenBalanceParameters } from '@lawallet/react';
 ```
 
 ### pubkey

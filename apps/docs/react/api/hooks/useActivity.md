@@ -39,7 +39,7 @@ function App() {
 ## Parameters
 
 ```ts
-import { type UseActivityReturns } from '@lawallet/react';
+import { type UseActivityParameters } from '@lawallet/react';
 ```
 
 ### pubkey

@@ -37,7 +37,7 @@ function App() {
 ## Parameters
 
 ```ts
-import { type UseCardConfigReturns } from '@lawallet/react';
+import { type UseCardConfigParameters } from '@lawallet/react';
 ```
 
 ### privatekey

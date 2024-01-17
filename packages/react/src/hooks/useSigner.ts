@@ -6,7 +6,7 @@ import type { SignerTypes } from './useNostr.js';
 export type UseSignerReturns = {
   signer: SignerTypes;
   signerPubkey: string;
-  connectExtension: () => void;
+  connectWithExtension: () => void;
   connectWithPrivateKey: (hexKey: string) => Promise<boolean>;
 };
 
@@ -33,8 +33,8 @@ export const useSigner = () => {
     }
   };
 
-  const connectExtension = async () => {
-    if (!providers.webln) return null;
+  const connectWithExtension = async (): Promise<SignerTypes> => {
+    if (!providers.webln) return undefined;
     await providers.webln.enable();
 
     const nip07signer = new NDKNip07Signer();
@@ -42,6 +42,8 @@ export const useSigner = () => {
 
     const pubKey = await requestPublicKey();
     if (pubKey) setSignerPubkey(pubKey);
+
+    return nip07signer;
   };
 
   const requestPublicKey = async () => {
@@ -59,7 +61,7 @@ export const useSigner = () => {
   return {
     signer,
     signerPubkey,
-    connectExtension,
+    connectWithExtension,
     connectWithPrivateKey,
     requestPublicKey,
   };

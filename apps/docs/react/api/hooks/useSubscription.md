@@ -1,6 +1,6 @@
 ---
 title: useSubscription
-description: Hook for getting transactions.
+description: Hook to create a Nostr subscription.
 ---
 
 # useSubscription
@@ -39,7 +39,7 @@ function App() {
 ## Parameters
 
 ```ts
-import { type useSubscriptionReturns } from '@lawallet/react';
+import { type useSubscriptionParameters } from '@lawallet/react';
 ```
 
 ### filters
