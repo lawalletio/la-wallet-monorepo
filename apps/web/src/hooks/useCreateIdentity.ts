@@ -123,7 +123,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
 
     const generatedIdentity: UserIdentity = await generateUserIdentity();
     if (generatedIdentity) {
-      identity.initializeCustomIdentity(generatedIdentity.privateKey);
+      identity.initializeFromPrivateKey(generatedIdentity.privateKey);
       router.push('/dashboard');
       setLoading(false);
     }

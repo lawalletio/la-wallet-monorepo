@@ -9,18 +9,20 @@ import { useConfig } from './useConfig.js';
 export interface UseIdentityReturns {
   data: UserIdentity;
   isLoading: boolean;
+  initializeCustomIdentity: (privateKey: string, username: string) => Promise<boolean>;
+  initializeFromPrivateKey: (privkey: string) => Promise<boolean>;
   resetIdentity: () => void;
-  initializeCustomIdentity: (privateKey: string, username?: string) => Promise<boolean>;
-  loadIdentityFromPubkey: (pubkey: string) => void;
-  loadIdentityFromPrivateKey: (privkey: string) => void;
 }
 
 export interface UseIdentityParameters extends ConfigParameter {
-  pubkey?: string;
+  privateKey?: string;
+  storage?: boolean;
 }
 
 export const useIdentity = (parameters: UseIdentityParameters): UseIdentityReturns => {
+  const { privateKey, storage = true } = parameters;
   const config = useConfig(parameters);
+
   const [data, setData] = useState<UserIdentity>(defaultIdentity);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,54 +31,53 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
     if (isLoading) setIsLoading(false);
   };
 
+  const loadAndSaveInStorage = (identity: UserIdentity) => {
+    setIsLoading(false);
+    setData(identity);
+    if (storage) config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identity));
+  };
+
   const initializeCustomIdentity = async (privateKey: string, username: string = ''): Promise<boolean> => {
     if (!isLoading) setIsLoading(true);
 
-    const userPubkey = getPublicKey(privateKey);
-    const usernpub = nip19.npubEncode(userPubkey);
+    try {
+      const userPubkey = getPublicKey(privateKey);
+      const usernpub = nip19.npubEncode(userPubkey);
 
-    const identity: UserIdentity = {
-      username,
-      hexpub: userPubkey,
-      npub: usernpub,
-      privateKey,
-    };
+      const identity: UserIdentity = {
+        username,
+        hexpub: userPubkey,
+        npub: usernpub,
+        privateKey,
+      };
 
-    config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identity));
-    setData(identity);
-    setIsLoading(false);
-    return true;
+      loadAndSaveInStorage(identity);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const loadIdentityFromPubkey = async (pub: string) => {
-    if (!isLoading) setIsLoading(true);
-
-    const username: string = await getUsername(pub, config);
-    setData({
-      username,
-      hexpub: pub,
-      npub: nip19.npubEncode(pub),
-      privateKey: '',
-    });
-
-    setIsLoading(false);
-  };
-
-  const loadIdentityFromPrivateKey = async (privkey: string) => {
+  const initializeFromPrivateKey = async (privkey: string): Promise<boolean> => {
     if (!privkey.length) {
       resetIdentity();
-      return;
+      return false;
     }
 
-    const pubkey: string = getPublicKey(privkey);
-    const username: string = await getUsername(pubkey, config);
+    try {
+      const pubkey: string = getPublicKey(privkey);
+      const username: string = await getUsername(pubkey, config);
 
-    setData({
-      username,
-      hexpub: pubkey,
-      npub: nip19.npubEncode(pubkey),
-      privateKey: privkey,
-    });
+      loadAndSaveInStorage({
+        username,
+        hexpub: pubkey,
+        npub: nip19.npubEncode(pubkey),
+        privateKey: privkey,
+      });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const loadIdentityFromStorage = async () => {
@@ -109,15 +110,18 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
   };
 
   useEffect(() => {
-    parameters.pubkey ? loadIdentityFromPubkey(parameters.pubkey) : loadIdentityFromStorage();
-  }, [parameters.pubkey]);
+    if (storage && !privateKey) loadIdentityFromStorage();
+  }, [storage]);
+
+  useEffect(() => {
+    if (privateKey) initializeFromPrivateKey(privateKey);
+  }, [privateKey]);
 
   return {
     data,
     isLoading,
     resetIdentity,
     initializeCustomIdentity,
-    loadIdentityFromPubkey,
-    loadIdentityFromPrivateKey,
+    initializeFromPrivateKey,
   };
 };
