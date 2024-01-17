@@ -24,7 +24,7 @@ const defaultDeposit: InvoiceProps = {
 
 export interface useZapReturns {
   invoice: InvoiceProps;
-  createZapInvoice: (sats: number) => Promise<boolean>;
+  createZapInvoice: (sats: number) => Promise<string | undefined>;
   resetInvoice: () => void;
 }
 
@@ -50,7 +50,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
     enabled: Boolean(invoice.bolt11.length && !invoice.payed),
   });
 
-  const createZapInvoice = async (sats: number) => {
+  const createZapInvoice = async (sats: number): Promise<string | undefined> => {
     setInvoice({ ...invoice, loading: true });
 
     try {
@@ -66,7 +66,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
         `${config.endpoints.api}/lnurlp/${nip19.npubEncode(parameters.receiverPubkey)}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}`,
       );
 
-      if (!bolt11) return false;
+      if (!bolt11) return undefined;
 
       setInvoice({
         bolt11,
@@ -75,10 +75,10 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
         payed: false,
       });
 
-      return true;
+      return bolt11;
     } catch {
       setInvoice({ ...invoice, loading: false });
-      return false;
+      return undefined;
     }
   };
 

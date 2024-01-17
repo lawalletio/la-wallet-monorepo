@@ -72,8 +72,8 @@ export default function Page() {
       return;
     }
 
-    createZapInvoice(amountSats).then((created: boolean) => {
-      if (!created) {
+    createZapInvoice(amountSats).then((bolt11: string | undefined) => {
+      if (!bolt11) {
         errors.modifyError('ERROR_ON_CREATE_INVOICE');
         return;
       }
