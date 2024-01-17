@@ -10,7 +10,7 @@ export { type UseSubscriptionReturns, useSubscription } from '../hooks/useSubscr
 export { type UseTokenBalanceReturns, useTokenBalance } from '../hooks/useTokenBalance.js';
 export { type UseUserReturns, useUser } from '../hooks/useUser.js';
 
-export { type UseZapDepositReturns, useZapDeposit } from '../hooks/useZapDeposit.js';
+export { type useZapReturns, useZap } from '../hooks/useZap.js';
 
 export { type UseSignerReturns, useSigner } from '../hooks/useSigner.js';
 

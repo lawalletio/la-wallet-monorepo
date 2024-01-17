@@ -98,13 +98,18 @@ export const buildCardActivationEvent = async (
   return event.toNostrEvent();
 };
 
-export const buildZapRequestEvent = (pubkey: string, amount: number, config: ConfigProps = baseConfig): NostrEvent => {
+export const buildZapRequestEvent = (
+  senderPubkey: string,
+  receiverPubkey: string,
+  amount: number,
+  config: ConfigProps = baseConfig,
+): NostrEvent => {
   return {
-    pubkey,
+    pubkey: senderPubkey,
     content: '',
     kind: NDKKind.ZapRequest,
     tags: [
-      ['p', pubkey],
+      ['p', receiverPubkey],
       ['amount', amount.toString()],
       ['relays', ...config.relaysList],
     ],

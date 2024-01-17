@@ -32,14 +32,7 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useAlert from '@/hooks/useAlerts';
 import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
-import {
-  useWalletContext,
-  lnurl_encode,
-  formatAddress,
-  formatToPreference,
-  useConfig,
-  useZapDeposit,
-} from '@lawallet/react';
+import { useWalletContext, lnurl_encode, formatAddress, formatToPreference, useConfig, useZap } from '@lawallet/react';
 import { useRouter } from 'next/navigation';
 
 type SheetTypes = 'amount' | 'qr' | 'finished';
@@ -57,7 +50,7 @@ export default function Page() {
   } = useWalletContext();
   const numpadData = useNumpad(currency);
 
-  const { invoice, createInvoice, resetInvoice } = useZapDeposit();
+  const { invoice, createZapInvoice, resetInvoice } = useZap();
   const router = useRouter();
   const errors = useErrors();
   const [showSheet, setShowSeet] = useState<boolean>(false);
@@ -79,7 +72,7 @@ export default function Page() {
       return;
     }
 
-    createInvoice(amountSats).then((created: boolean) => {
+    createZapInvoice(identity.hexpub, amountSats).then((created: boolean) => {
       if (!created) {
         errors.modifyError('ERROR_ON_CREATE_INVOICE');
         return;
