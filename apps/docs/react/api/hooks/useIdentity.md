@@ -15,13 +15,21 @@ import { useIdentity } from '@lawallet/react';
 
 ## Usage
 
+::: code-group
+
 ```tsx [index.tsx]
 import { useIdentity } from '@lawallet/react';
 
 function App() {
-  const { identity } = useIdentity();
+  const { identity } = useIdentity({
+    privateKey: '17efe7a5f1...53936f68b',
+    config,
+  });
 }
 ```
+
+<<< @/snippets/react/config.ts[config.ts]
+:::
 
 ## Parameters
 
@@ -66,6 +74,29 @@ function App() {
   }, [])
 }
 ```
+
+### config
+
+`Config | undefined`
+
+[`Config`](/react/api/createConfig#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/api/LaWalletConfig).
+
+::: code-group
+
+```tsx [index.tsx]
+import { useActivity } from '@lawallet/react';
+import { config } from './config'; // [!code focus]
+
+function App() {
+  const { identity } = useIdentity({
+    privateKey: '17efe7a5f1...53936f68b',
+    config, // [!code focus]
+  });
+}
+```
+
+<<< @/snippets/react/config.ts[config.ts]
+:::
 
 ## Return Type
 

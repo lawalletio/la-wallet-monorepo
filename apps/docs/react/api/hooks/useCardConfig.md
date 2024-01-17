@@ -40,13 +40,11 @@ function App() {
 import { type UseCardConfigParameters } from '@lawallet/react';
 ```
 
-### privatekey
+### privateKey
 
 `String`
 
 - Private key of the account for which you want to consult the cards
-
-::: code-group
 
 ```tsx [index.tsx]
 import { useCardConfig } from '@lawallet/react';

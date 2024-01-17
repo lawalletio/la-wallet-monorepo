@@ -1,6 +1,6 @@
 ## `UserIdentity`
 
-Type to define the balance of a token
+Type to define the identity of a user
 
 ```ts [UserIdentity]
 interface UserIdentity {
