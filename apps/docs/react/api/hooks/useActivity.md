@@ -48,8 +48,6 @@ import { type UseActivityParameters } from '@lawallet/react';
 
 - Public key of the account for which you want to consult the transactions
 
-::: code-group
-
 ```tsx [index.tsx]
 import { useActivity } from '@lawallet/react';
 
@@ -59,8 +57,6 @@ function App() {
   });
 }
 ```
-
-:::
 
 ### since
 
