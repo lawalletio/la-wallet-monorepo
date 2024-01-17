@@ -16,7 +16,7 @@ import { LaWalletConfig } from '@lawallet/react';
 
 ### config
 
-[`Config`](/react/api/glossary/types#config) object to inject with context.
+[`Config`](/react/api/createConfig#config) object to inject with context.
 
 ::: code-group
 <<< @/snippets/react/config.ts[config.ts]

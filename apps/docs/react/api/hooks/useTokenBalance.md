@@ -112,7 +112,7 @@ function App() {
 
 `Config | undefined`
 
-[`Config`](/react/api/glossary/types#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/api/LaWalletConfig).
+[`Config`](/react/api/createConfig#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/api/LaWalletConfig).
 
 ::: code-group
 

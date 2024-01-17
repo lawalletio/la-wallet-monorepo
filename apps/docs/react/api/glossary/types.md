@@ -2,30 +2,6 @@
 
 Glossary of Types in LaWallet
 
-## `Config`
-
-Type to define the context configuration
-
-```ts [Config]
-type Config = {
-  endpoints: {
-    identity: string;
-    api: string;
-  };
-  federation: {
-    id: string;
-    domain: string;
-  };
-  modulePubkeys: {
-    card: string;
-    ledger: string;
-    urlx: string;
-  };
-  relaysList: string[];
-  storage: BaseStorage;
-};
-```
-
 ## `CardDataPayload`
 
 Type that defines the information of a card
