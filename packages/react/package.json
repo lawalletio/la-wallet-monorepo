@@ -15,9 +15,11 @@
     "@types/react": "^18.2.48",
     "typescript": "^5.3.3"
   },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
   "dependencies": {
     "@lawallet/utils": "*",
-    "react": "^18.2.0",
     "@nostr-dev-kit/ndk": "^2.3.3",
     "date-fns": "^3.2.0",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"

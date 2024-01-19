@@ -12,6 +12,7 @@ import { LaWalletConfig } from '@lawallet/react';
 
 ::: code-group
 <<< @/snippets/react/app.tsx[app.tsx]
+<<< @/snippets/react/config.ts[config.ts]
 :::
 
 ## Parameters

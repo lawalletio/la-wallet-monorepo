@@ -97,3 +97,9 @@ Returns the zap invoice information
 
 - Function to create the invoice that will invoke the zap receipt when paying it
 - Returns the invoice to be paid in bolt11 format
+
+### resetInvoice
+
+`() => void`
+
+- Reset invoice info
