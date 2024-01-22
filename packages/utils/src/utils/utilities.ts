@@ -1,11 +1,6 @@
 import { baseConfig, defaultTransfer } from '../constants/constants.js';
 import { getUserPubkey } from '../interceptors/identity.js';
-import {
-  getPayRequest,
-  requestInvoice,
-  type LNServiceResponse,
-  type TransferInformation,
-} from '../interceptors/transaction.js';
+import { getPayRequest, requestInvoice, type TransferInformation } from '../interceptors/transaction.js';
 import { type ConfigProps } from '../types/config.js';
 import { TransferTypes } from '../types/transaction.js';
 import bolt11 from '../libs/light-bolt11.js';
@@ -35,21 +30,20 @@ function addQueryParameter(url: string, parameter: string) {
 }
 
 export const claimLNURLw = async (
-  payRequest: LNServiceResponse | null,
-  npub: string,
+  toNpub: string,
+  callback: string,
+  k1: string,
+  amount: number,
   config: ConfigProps = baseConfig,
 ): Promise<boolean> => {
-  if (!payRequest) return false;
+  if (!callback || !k1 || !amount) return false;
 
   try {
-    const pr: string = await requestInvoice(
-      `${config.endpoints.api}/lnurlp/${npub}/callback?amount=${payRequest?.maxWithdrawable}`,
-    );
-
+    const pr: string = await requestInvoice(`${config.endpoints.api}/lnurlp/${toNpub}/callback?amount=${amount}`);
     if (!pr) return false;
 
-    let urlCallback: string = payRequest!.callback;
-    urlCallback = addQueryParameter(urlCallback, `k1=${payRequest!.k1!}`);
+    let urlCallback: string = callback;
+    urlCallback = addQueryParameter(urlCallback, `k1=${k1}`);
     urlCallback = addQueryParameter(urlCallback, `pr=${pr}`);
 
     return fetch(urlCallback).then((res) => {
@@ -66,7 +60,8 @@ export const detectTransferType = (data: string): TransferTypes => {
   const upperStr: string = data.toUpperCase();
   const isLUD16 = validateEmail(upperStr);
   if (isLUD16) {
-    const domain: string = upperStr.split('@')[1]!;
+    const [username, domain] = splitHandle(upperStr);
+    if (!username || !domain) return TransferTypes.NONE;
 
     return domain.toUpperCase() === baseConfig.federation.domain.toUpperCase()
       ? TransferTypes.INTERNAL
@@ -208,10 +203,9 @@ export const removeLightningStandard = (str: string) => {
 
 export const formatTransferData = async (data: string): Promise<TransferInformation> => {
   if (!data.length) return defaultTransfer;
-
   const cleanStr: string = removeLightningStandard(data);
-  const decodedTransferType: TransferTypes = detectTransferType(cleanStr);
 
+  const decodedTransferType: TransferTypes = detectTransferType(cleanStr);
   if (decodedTransferType === TransferTypes.NONE) return defaultTransfer;
 
   switch (decodedTransferType) {

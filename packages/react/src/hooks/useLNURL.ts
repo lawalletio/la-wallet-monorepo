@@ -144,7 +144,9 @@ export const useLNTransfer = (params: UseLNTransferParameters): UseLNTransferRet
 
     try {
       if (transferInfo.type === TransferTypes.LNURLW) {
-        claimLNURLw(transferInfo.payRequest, signerInfo.npub, config).then((claimed) => {
+        const { callback, maxWithdrawable, k1 } = transferInfo.payRequest!;
+
+        claimLNURLw(signerInfo.npub, callback, k1!, maxWithdrawable!, config).then((claimed) => {
           claimed ? handleSuccess() : handleError();
         });
       } else if (transferInfo.type === TransferTypes.INTERNAL) {
