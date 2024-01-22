@@ -74,14 +74,19 @@ export default function Page() {
           </ButtonSetting>
         </Flex>
 
-        <Divider y={16} />
-        <Text size="small" color={theme.colors.gray50}>
-          {t('SECURITY')}
-        </Text>
-        <Divider y={8} />
-        <Flex direction="column" gap={4}>
-          <LinkSetting href="/settings/recovery">{t('BACKUP_ACCOUNT')}</LinkSetting>
-        </Flex>
+        {Boolean(identity.data.privateKey.length) && (
+          <>
+            <Divider y={16} />
+            <Text size="small" color={theme.colors.gray50}>
+              {t('SECURITY')}
+            </Text>
+            <Divider y={8} />
+            <Flex direction="column" gap={4}>
+              <LinkSetting href="/settings/recovery">{t('BACKUP_ACCOUNT')}</LinkSetting>
+            </Flex>
+          </>
+        )}
+
         <Divider y={16} />
         <Text size="small" color={theme.colors.gray50}>
           {t('ABOUT_US')}

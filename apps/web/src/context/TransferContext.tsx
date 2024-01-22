@@ -1,4 +1,4 @@
-import { escapingBrackets, useLNURL } from '@lawallet/react';
+import { escapingBrackets, useLNTransfer } from '@lawallet/react';
 import { TransferInformation } from '@lawallet/react/actions';
 import { TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';
@@ -53,7 +53,7 @@ export function LNURLTransferProvider({ children }: { children: React.ReactNode 
     });
   };
 
-  const { isLoading, isSuccess, isError, transferInfo, execute } = useLNURL({
+  const { isLoading, isSuccess, isError, transferInfo, execute } = useLNTransfer({
     data: transfer.data,
     amount: transfer.amount,
     comment: transfer.comment,

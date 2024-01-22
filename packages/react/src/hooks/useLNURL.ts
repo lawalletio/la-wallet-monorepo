@@ -18,7 +18,7 @@ import { useConfig } from './useConfig.js';
 import { useNostrContext } from '../context/NostrContext.js';
 import { useSubscription } from './useSubscription.js';
 
-export interface UseLNURLReturns {
+export interface UseLNTransferReturns {
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
@@ -26,7 +26,7 @@ export interface UseLNURLReturns {
   execute: () => void;
 }
 
-interface UseLNURLParameters extends ConfigParameter {
+interface UseLNTransferParameters extends ConfigParameter {
   data: string;
   amount?: number;
   comment?: string;
@@ -34,7 +34,7 @@ interface UseLNURLParameters extends ConfigParameter {
 
 const tokenName = 'BTC';
 
-export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
+export const useLNTransfer = (params: UseLNTransferParameters): UseLNTransferReturns => {
   const config = useConfig(params);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
