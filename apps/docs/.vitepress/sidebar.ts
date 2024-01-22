@@ -23,7 +23,6 @@ export function getSidebar() {
           { text: 'useIdentity', link: '/react/api/hooks/useIdentity' },
           { text: 'useNostr', link: '/react/api/hooks/useNostr' },
           { text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' },
-          { text: 'useSigner', link: '/react/api/hooks/useSigner' },
           { text: 'useSubscription', link: '/react/api/hooks/useSubscription' },
           { text: 'useZap', link: '/react/api/hooks/useZap' },
         ],
