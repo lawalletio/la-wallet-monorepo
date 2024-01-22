@@ -182,18 +182,19 @@ export const useLNTransfer = (params: UseLNTransferParameters): UseLNTransferRet
   }, [events]);
 
   useEffect(() => {
-    if (params.data) prepareTransaction(params.data);
-  }, [params.data]);
+    if (transferInfo.data) prepareTransaction(params.data);
+  }, [transferInfo.data]);
 
   useEffect(() => {
     setTransferInfo((prev) => {
       return {
         ...prev,
+        data: params.data ?? prev.data,
         amount: params.amount ?? prev.amount,
         comment: params.comment ?? prev.comment,
       };
     });
-  }, [params.amount, params.comment]);
+  }, [params.data, params.amount, params.comment]);
 
   return {
     isLoading,
