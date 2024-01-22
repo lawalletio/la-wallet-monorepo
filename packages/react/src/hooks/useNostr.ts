@@ -79,16 +79,20 @@ export const useNostr = ({ explicitRelayUrls, autoConnect = true }: UseNostrPara
   };
 
   const authWithExtension = async (): Promise<SignerTypes> => {
-    if (!providers.nostr) return undefined;
-    await providers.nostr.enable();
+    try {
+      if (!providers.nostr) return undefined;
+      await providers.nostr.enable();
 
-    const nip07signer = new NDKNip07Signer();
-    initializeSigner(nip07signer);
+      const nip07signer = new NDKNip07Signer();
+      initializeSigner(nip07signer);
 
-    const user = await nip07signer.user();
-    if (user) setSignerInfo(user);
+      const user = await nip07signer.user();
+      if (user) setSignerInfo(user);
 
-    return nip07signer;
+      return nip07signer;
+    } catch {
+      return undefined;
+    }
   };
 
   React.useEffect(() => {

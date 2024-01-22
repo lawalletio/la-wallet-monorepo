@@ -112,7 +112,7 @@ Returns the `window.ln` and `window.nostr` browser instances
 
 ### authWithPrivateKey
 
-`(signer: SignerTypes): Promise<SignerTypes>`
+`(hex: string): Promise<SignerTypes>`
 [`<SignerTypes>`](/react/api/glossary/types#signertypes)
 
 - This function authenticates a signer with a private key
