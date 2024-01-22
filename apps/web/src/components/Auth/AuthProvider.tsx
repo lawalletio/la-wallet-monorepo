@@ -57,7 +57,7 @@ const AuthProvider = ({ children, lng }: { children: React.ReactNode; lng: Avail
           break;
       }
     }
-  }, [pathname, identity.isLoading]);
+  }, [pathname, identity.data.hexpub, identity.isLoading]);
 
   const hydrateApp = useMemo((): boolean => {
     if (identity.isLoading) return false;

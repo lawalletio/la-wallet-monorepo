@@ -8,7 +8,7 @@ import { Button, Divider, Feedback, Flex, Heading, Textarea } from '@/components
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useConfig, useWalletContext } from '@lawallet/react';
+import { useConfig, useNostrContext, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { getPublicKey } from 'nostr-tools';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -17,6 +17,8 @@ export default function Page() {
   const {
     user: { identity },
   } = useWalletContext();
+
+  const { authWithExtension } = useNostrContext();
 
   const [keyInput, setKeyInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -83,6 +85,8 @@ export default function Page() {
           </Feedback>
         </Flex>
       </Container>
+
+      <Button onClick={authWithExtension}>login with extension</Button>
 
       <Flex>
         <Container size="small">

@@ -12,8 +12,6 @@ export { type UseUserReturns, useUser } from '../hooks/useUser.js';
 
 export { type useZapReturns, useZap } from '../hooks/useZap.js';
 
-export { type UseSignerReturns, useSigner } from '../hooks/useSigner.js';
-
 export { useConfig } from '../hooks/useConfig.js';
 
 export { type NostrContext, NostrProvider, useNostrContext } from '../context/NostrContext.js';

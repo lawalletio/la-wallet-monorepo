@@ -8,11 +8,11 @@ import {
 } from '@lawallet/react/actions';
 import {
   useConfig,
-  useSigner,
   useWalletContext,
   SignEvent,
   buildCardActivationEvent,
   buildIdentityEvent,
+  useNostrContext,
 } from '@lawallet/react';
 
 import { UserIdentity } from '@lawallet/react/types';
@@ -62,7 +62,8 @@ export const useCreateIdentity = (): UseIdentityReturns => {
     user: { identity },
   } = useWalletContext();
   const config = useConfig();
-  const { connectWithPrivateKey } = useSigner();
+  const { authWithPrivateKey } = useNostrContext();
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const [accountInfo, setAccountInfo] = useState<CreateIdentityParams>(defaultAccount);
@@ -132,7 +133,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
   const createIdentity = async ({ nonce, name }: AccountProps): Promise<CreateIdentityReturns> => {
     const generatedIdentity: UserIdentity = await generateUserIdentity(name);
 
-    return connectWithPrivateKey(generatedIdentity.privateKey)
+    return authWithPrivateKey(generatedIdentity.privateKey)
       .then(async (tmpSigner) => {
         if (!tmpSigner)
           return {

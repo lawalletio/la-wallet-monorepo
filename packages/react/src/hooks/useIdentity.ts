@@ -15,12 +15,13 @@ export interface UseIdentityReturns {
 }
 
 export interface UseIdentityParameters extends ConfigParameter {
+  pubkey?: string;
   privateKey?: string;
   storage?: boolean;
 }
 
 export const useIdentity = (parameters: UseIdentityParameters): UseIdentityReturns => {
-  const { privateKey, storage = true } = parameters;
+  const { privateKey, pubkey, storage = true } = parameters;
   const config = useConfig(parameters);
 
   const [data, setData] = useState<UserIdentity>(defaultIdentity);
@@ -80,6 +81,16 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
     }
   };
 
+  const loadIdentityFromPubkey = async (hex: string) => {
+    const username: string = await getUsername(hex, config);
+    setData({
+      ...data,
+      hexpub: hex,
+      username,
+      npub: nip19.npubEncode(hex),
+    });
+  };
+
   const loadIdentityFromStorage = async () => {
     if (!isLoading) setIsLoading(true);
 
@@ -112,6 +123,10 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
   useEffect(() => {
     if (storage && !privateKey) loadIdentityFromStorage();
   }, [storage]);
+
+  useEffect(() => {
+    if (pubkey) loadIdentityFromPubkey(pubkey);
+  }, [pubkey]);
 
   useEffect(() => {
     if (privateKey) initializeFromPrivateKey(privateKey);

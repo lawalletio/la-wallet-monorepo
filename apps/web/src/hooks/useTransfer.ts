@@ -4,7 +4,6 @@ import { TransferTypes } from '@lawallet/react/types';
 import {
   useConfig,
   useNostrContext,
-  useSigner,
   useSubscription,
   useWalletContext,
   LaWalletKinds,
@@ -40,12 +39,11 @@ const useTransfer = ({ tokenName }: TransferProps): TransferContextType => {
   const [startEvent, setStartEvent] = useState<NostrEvent | null>(null);
   const [transferInfo, setTransferInfo] = useState<TransferInformation>(defaultTransfer);
 
-  const { ndk } = useNostrContext();
+  const { ndk, signer } = useNostrContext();
   const {
     user: { identity },
   } = useWalletContext();
 
-  const { signer } = useSigner();
   const router = useRouter();
   const params = useSearchParams();
 
