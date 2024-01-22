@@ -23,9 +23,9 @@ import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
-import { useConfig, useWalletContext, getMultipleTags } from '@lawallet/react';
+import { useConfig, useWalletContext, getMultipleTags, detectTransferType } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
-import { TransactionDirection, TransactionType } from '@lawallet/react/types';
+import { TransactionDirection, TransactionType, TransferTypes } from '@lawallet/react/types';
 import { useEffect, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
 
@@ -35,7 +35,7 @@ export default function Page() {
   const {
     user: { identity, transactions },
   } = useWalletContext();
-  const { prepareTransaction, transferInfo } = useTransferContext();
+  const { setTransactionData, transferInfo } = useTransferContext();
 
   const [lastDestinations, setLastDestinations] = useState<string[]>([]);
   const [inputText, setInputText] = useState<string>(transferInfo.data);
@@ -49,11 +49,14 @@ export default function Page() {
     setLoading(true);
 
     const cleanData: string = data.trim();
-    const prepared: boolean = await prepareTransaction(cleanData);
-    if (!prepared) {
+    const type: TransferTypes = detectTransferType(cleanData);
+    if (type === TransferTypes.NONE) {
       errors.modifyError('INVALID_RECIPIENT');
       setLoading(false);
+      return;
     }
+
+    setTransactionData(cleanData);
   };
 
   const handleContinue = async () => {
@@ -102,6 +105,9 @@ export default function Page() {
 
   useEffect(() => {
     router.prefetch('/scan');
+    router.prefetch('/transfer/summary');
+    router.prefetch('/transfer/error');
+    router.prefetch('/transfer/finish');
   }, [router]);
 
   return (

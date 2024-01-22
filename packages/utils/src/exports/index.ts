@@ -44,4 +44,7 @@ export {
   upperText,
   lowerText,
   formatToPreference,
+  escapingBrackets,
+  unescapingText,
+  extractEscappedMessage,
 } from '../utils/formatter.js';

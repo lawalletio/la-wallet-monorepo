@@ -20,6 +20,7 @@ export enum TransferTypes {
   INVOICE = 'INVOICE',
   LNURL = 'LNURL',
   LNURLW = 'LNURLW',
+  NONE = 'NONE',
 }
 
 export enum TransactionStatus {

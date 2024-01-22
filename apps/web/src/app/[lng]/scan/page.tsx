@@ -38,8 +38,8 @@ export default function Page() {
       return;
     } else {
       const cleanScan: string = removeLightningStandard(result.data);
-      const scanType: boolean | string = detectTransferType(cleanScan);
-      if (!scanType) return;
+      const scanType: TransferTypes = detectTransferType(cleanScan);
+      if (scanType === TransferTypes.NONE) return;
 
       if (scanType === TransferTypes.INVOICE) {
         router.push(`/transfer/summary?data=${result.data.toLowerCase()}`);

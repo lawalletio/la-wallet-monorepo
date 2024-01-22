@@ -11,6 +11,7 @@ import { TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useWalletContext, splitHandle, formatAddress, formatToPreference } from '@lawallet/react';
+import { extractFirstTwoChars } from '@/utils';
 
 export default function Page() {
   const { lng, t } = useTranslation();
@@ -46,7 +47,7 @@ export default function Page() {
         <Divider y={24} />
         <Flex align="center" gap={8}>
           <Avatar size="large">
-            <Text size="small">{transferUsername.substring(0, 2).toUpperCase()}</Text>
+            <Text size="small">{extractFirstTwoChars(transferUsername)}</Text>
           </Avatar>
           {transferInfo.type === TransferTypes.LNURLW || transferInfo.type === TransferTypes.INVOICE ? (
             <Text>{formatAddress(transferInfo.data, 25)}</Text>

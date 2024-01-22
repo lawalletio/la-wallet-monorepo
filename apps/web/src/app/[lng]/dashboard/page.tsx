@@ -34,6 +34,7 @@ import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { copy } from '@/utils/share';
 import Link from 'next/link';
 import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
+import { extractFirstTwoChars } from '@/utils';
 
 export default function Page() {
   const config = useConfig();
@@ -77,9 +78,7 @@ export default function Page() {
         <Navbar>
           <Flex align="center" gap={8}>
             <Avatar>
-              <Text size="small">
-                {identity.data.username ? identity.data.username.substring(0, 2).toUpperCase() : 'AN'}
-              </Text>
+              <Text size="small">{identity.data.username ? extractFirstTwoChars(identity.data.username) : 'AN'}</Text>
             </Avatar>
             <Flex direction="column">
               <Text size="small" color={theme.colors.gray50}>

@@ -60,8 +60,8 @@ export const claimLNURLw = async (
   }
 };
 
-export const detectTransferType = (data: string): TransferTypes | false => {
-  if (!data.length) return false;
+export const detectTransferType = (data: string): TransferTypes => {
+  if (!data.length) return TransferTypes.NONE;
 
   const upperStr: string = data.toUpperCase();
   const isLUD16 = validateEmail(upperStr);
@@ -76,7 +76,7 @@ export const detectTransferType = (data: string): TransferTypes | false => {
   if (upperStr.startsWith('LNURL')) return TransferTypes.LNURL;
   if (upperStr.startsWith('LNBC')) return TransferTypes.INVOICE;
 
-  if (data.length > 15) return false;
+  if (data.length > 15) return TransferTypes.NONE;
   return TransferTypes.INTERNAL;
 };
 
@@ -210,9 +210,9 @@ export const formatTransferData = async (data: string): Promise<TransferInformat
   if (!data.length) return defaultTransfer;
 
   const cleanStr: string = removeLightningStandard(data);
-  const decodedTransferType: TransferTypes | false = detectTransferType(cleanStr);
+  const decodedTransferType: TransferTypes = detectTransferType(cleanStr);
 
-  if (!decodedTransferType) return defaultTransfer;
+  if (decodedTransferType === TransferTypes.NONE) return defaultTransfer;
 
   switch (decodedTransferType) {
     case TransferTypes.INVOICE:

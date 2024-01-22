@@ -1,5 +1,7 @@
 'use client';
-import { TransferProvider } from '@/context/TransferContext';
+
+import { LNURLTransferProvider } from '@/context/TransferContext';
+
 // import type { Metadata } from 'next'
 
 // export const metadata: Metadata = {
@@ -7,5 +9,5 @@ import { TransferProvider } from '@/context/TransferContext';
 // }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <TransferProvider tokenName={'BTC'}>{children}</TransferProvider>;
+  return <LNURLTransferProvider>{children}</LNURLTransferProvider>;
 }

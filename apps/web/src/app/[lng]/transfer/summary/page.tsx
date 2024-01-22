@@ -13,12 +13,14 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import { splitHandle, formatAddress, formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { extractFirstTwoChars } from '@/utils';
 
 export default function Page() {
   const { lng, t } = useTranslation();
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
 
-  const { loading, transferInfo, executeTransfer } = useTransferContext();
+  const { isLoading, isSuccess, isError, transferInfo, execute } = useTransferContext();
   const {
     user: { identity, balance },
     settings: {
@@ -26,6 +28,8 @@ export default function Page() {
     },
     converter: { pricesData, convertCurrency },
   } = useWalletContext();
+
+  const router = useRouter();
 
   const convertedAmount: string = useMemo(() => {
     const convertedInt: number = convertCurrency(transferInfo.amount, 'SAT', currency);
@@ -37,9 +41,19 @@ export default function Page() {
     if (balance.amount < transferInfo.amount) setInsufficientBalance(true);
   }, [transferInfo.amount]);
 
+  useEffect(() => {
+    if (isSuccess) router.push('/transfer/finish');
+    if (isError) router.push('/transfer/error');
+  }, [isSuccess, isError]);
+
   const [transferUsername, transferDomain] = splitHandle(transferInfo.data);
 
-  useActionOnKeypress('Enter', () => executeTransfer(identity.data.privateKey), [identity, transferInfo]);
+  useActionOnKeypress('Enter', execute, [identity, transferInfo]);
+
+  if (transferInfo.type === TransferTypes.NONE || !transferInfo.data || !transferInfo.amount) {
+    router.push('/transfer');
+    return;
+  }
 
   return (
     <>
@@ -52,7 +66,7 @@ export default function Page() {
               <Text size="small">{t('CLAIM_THIS_INVOICE')}</Text>
             ) : (
               <Avatar size="large">
-                <Text size="small">{transferUsername.substring(0, 2).toUpperCase()}</Text>
+                <Text size="small">{extractFirstTwoChars(transferUsername)}</Text>
               </Avatar>
             )}
 
@@ -120,14 +134,14 @@ export default function Page() {
 
             <Button
               color="secondary"
-              onClick={() => executeTransfer(identity.data.privateKey)}
+              onClick={execute}
               disabled={
                 !transferInfo.type ||
-                loading ||
+                isLoading ||
                 transferInfo.expired ||
                 (transferInfo.type !== TransferTypes.LNURLW && insufficientBalance)
               }
-              loading={loading}
+              loading={isLoading}
             >
               {transferInfo.type === TransferTypes.LNURLW ? t('CLAIM') : t('TRANSFER')}
             </Button>
