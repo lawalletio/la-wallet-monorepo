@@ -10,7 +10,6 @@ import { useTranslation } from '@/context/TranslateContext';
 import { splitHandle, formatAddress, formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { extractFirstTwoChars } from '@/utils';
 
 type SummaryProps = {
@@ -26,16 +25,13 @@ export const Summary = ({ isLoading, data, type, amount, expired = false, onClic
   const { lng, t } = useTranslation();
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
 
-  // const { isLoading, isSuccess, isError, transferInfo, execute } = useTransferContext();
   const {
-    user: { identity, balance },
+    user: { balance },
     settings: {
       props: { currency },
     },
     converter: { pricesData, convertCurrency },
   } = useWalletContext();
-
-  const router = useRouter();
 
   const convertedAmount: string = useMemo(() => {
     const convertedInt: number = convertCurrency(amount, 'SAT', currency);
@@ -47,19 +43,7 @@ export const Summary = ({ isLoading, data, type, amount, expired = false, onClic
     setInsufficientBalance(balance.amount < amount);
   }, [balance.amount, amount]);
 
-  // useEffect(() => {
-  //   if (isSuccess) router.push('/transfer/finish');
-  //   if (isError) router.push('/transfer/error');
-  // }, [isSuccess, isError]);
-
   const [transferUsername, transferDomain] = splitHandle(data);
-
-  // useActionOnKeypress('Enter', execute, [identity, transferInfo]);
-
-  // if (type === TransferTypes.NONE || !data || !amount) {
-  //   router.push('/transfer');
-  //   return;
-  // }
 
   return (
     <>

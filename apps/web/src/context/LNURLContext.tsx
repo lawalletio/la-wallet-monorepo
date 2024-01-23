@@ -1,7 +1,7 @@
-import { escapingBrackets, useLNURL } from '@lawallet/react';
+import { useLNURL } from '@lawallet/react';
 import { TransferInformation } from '@lawallet/react/actions';
 import { useSearchParams } from 'next/navigation';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
 
 type LNURLTransferProps = {
   data: string;

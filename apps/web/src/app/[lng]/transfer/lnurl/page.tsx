@@ -7,12 +7,6 @@ import { TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/context/TranslateContext';
 
-type LNURLTransferProps = {
-  data: string;
-  amount: number;
-  comment: string;
-};
-
 const TransferWithLNURL = () => {
   const { t } = useTranslation();
   const { transferInfo, setAmountToPay, setComment } = useLNURLContext();
