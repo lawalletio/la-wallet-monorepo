@@ -28,7 +28,7 @@ const TransferWithInvoice = ({ params }) => {
         </>
       ) : (
         <>
-          <Navbar showBackPage={true} title={t('VALIDATE_INFO')} />
+          <Navbar showBackPage={true} title={t('VALIDATE_INFO')} overrideBack="/transfer" />
           <Summary
             isLoading={isLoading}
             data={invoiceInfo.data}

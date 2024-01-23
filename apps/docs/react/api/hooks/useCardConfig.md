@@ -1,6 +1,6 @@
 ---
 title: useCardConfig
-description: Hook for getting transactions.
+description: Hook for getting transactions
 ---
 
 # useCardConfig
