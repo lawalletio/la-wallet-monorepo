@@ -5,11 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import Container from '@/components/Layout/Container';
-import Navbar from '@/components/Layout/Navbar';
 import TokenList from '@/components/TokenList';
 import { Button, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Keyboard, Text } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
-import { useTransferContext } from '@/context/TransferContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
@@ -18,12 +16,12 @@ import theme from '@/styles/theme';
 import { useWalletContext, decimalsToUse, formatToPreference } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 
-export default function Page() {
+export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }) => {
   const { lng, t } = useTranslation();
 
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const { transferInfo, setAmountToPay, setComment } = useTransferContext();
+
   const {
     user: { balance },
     settings: {
@@ -68,7 +66,9 @@ export default function Page() {
     }
 
     setAmountToPay(satsAmount);
-    router.push(`/transfer/summary?data=${transferInfo.data}`);
+    router.push(
+      `/transfer/lnurl/summary?data=${transferInfo.data}&amount=${satsAmount}${transferInfo.comment ? `&comment=${transferInfo.comment}` : ''}`,
+    );
   };
 
   const handleChangeComment = (text: string) => {
@@ -106,8 +106,6 @@ export default function Page() {
 
   return (
     <>
-      <Navbar showBackPage={true} title={t('DEFINE_AMOUNT')} />
-
       <Container size="small">
         <Divider y={16} />
         <Flex direction="column" gap={8} flex={1} justify="center">
@@ -181,4 +179,4 @@ export default function Page() {
       </Container>
     </>
   );
-}
+};

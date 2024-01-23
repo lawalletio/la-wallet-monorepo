@@ -5,15 +5,15 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import { Avatar, Confetti, Divider, Flex, Heading, Icon, LinkButton, Text } from '@/components/UI';
-import { useTransferContext } from '@/context/TransferContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useWalletContext, splitHandle, formatAddress, formatToPreference } from '@lawallet/react';
 import { extractFirstTwoChars } from '@/utils';
+import { TransferInformation } from '@lawallet/react/actions';
 
-export default function Page() {
+export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInformation }) => {
   const { lng, t } = useTranslation();
   const {
     settings: {
@@ -21,8 +21,6 @@ export default function Page() {
     },
     converter: { pricesData, convertCurrency },
   } = useWalletContext();
-
-  const { transferInfo } = useTransferContext();
 
   const convertedAmount: string = useMemo(() => {
     const convertion: number = convertCurrency(transferInfo.amount, 'SAT', currency);
@@ -95,4 +93,4 @@ export default function Page() {
       </Flex>
     </>
   );
-}
+};

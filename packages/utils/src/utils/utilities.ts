@@ -7,8 +7,12 @@ import bolt11 from '../libs/light-bolt11.js';
 import { lnurl_decode } from '../libs/lnurl.js';
 
 export const decodeInvoice = (invoice: string) => {
-  const decodedInvoice = bolt11.decode(invoice);
-  return decodedInvoice;
+  try {
+    const decodedInvoice = bolt11.decode(invoice);
+    return decodedInvoice;
+  } catch {
+    return;
+  }
 };
 
 export const validateEmail = (email: string): RegExpMatchArray | null => {
@@ -77,8 +81,9 @@ export const detectTransferType = (data: string): TransferTypes => {
 
 const parseInvoiceInfo = (invoice: string) => {
   const decodedInvoice = decodeInvoice(invoice);
-  const invoiceAmount = decodedInvoice.sections.find((section: Record<string, string>) => section.name === 'amount');
+  if (!decodedInvoice) return defaultTransfer;
 
+  const invoiceAmount = decodedInvoice.sections.find((section: Record<string, string>) => section.name === 'amount');
   if (!invoiceAmount) return defaultTransfer;
 
   const createdAt = decodedInvoice.sections.find((section: Record<string, string>) => section.name === 'timestamp');
@@ -151,11 +156,15 @@ const parseLNURLInfo = async (data: string) => {
 export const splitHandle = (handle: string): string[] => {
   if (!handle.length) return [];
 
-  if (handle.includes('@')) {
-    const [username, domain] = handle.split('@');
-    return [username!, domain!];
-  } else {
-    return [handle, baseConfig.federation.domain];
+  try {
+    if (handle.includes('@')) {
+      const [username, domain] = handle.split('@');
+      return [username!, domain!];
+    } else {
+      return [handle, baseConfig.federation.domain];
+    }
+  } catch {
+    return [];
   }
 };
 

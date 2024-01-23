@@ -1,72 +1,56 @@
-import { type TransferInformation, broadcastEvent, requestInvoice } from '@lawallet/utils/actions';
+import { type TransferInformation, requestInvoice } from '@lawallet/utils/actions';
 import { TransferTypes, type ConfigParameter } from '@lawallet/utils/types';
-import { NDKEvent, NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { useEffect, useState } from 'react';
 
-import {
-  escapingBrackets,
-  LaWalletKinds,
-  LaWalletTags,
-  SignEvent,
-  buildTxStartEvent,
-  claimLNURLw,
-  formatTransferData,
-  getTag,
-  defaultTransfer,
-} from '@lawallet/utils';
+import { escapingBrackets, claimLNURLw, formatTransferData, defaultTransfer } from '@lawallet/utils';
 import { useConfig } from './useConfig.js';
 import { useNostrContext } from '../context/NostrContext.js';
-import { useSubscription } from './useSubscription.js';
+import { useTransfer } from './useTransfer.js';
+import type { StatusVarsTypes } from './useStatusVars.js';
 
-export interface UseLNTransferReturns {
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
+export interface UseLNURLReturns extends StatusVarsTypes {
   transferInfo: TransferInformation;
+  setAmountToPay: (amount: number) => void;
+  setComment: (comment: string) => void;
   execute: () => void;
 }
 
-interface UseLNTransferParameters extends ConfigParameter {
+interface UseLNURLParameters extends ConfigParameter {
   data: string;
   amount?: number;
   comment?: string;
+  onSuccess?: () => void;
+  onError?: () => void;
 }
 
-const tokenName = 'BTC';
-
-export const useLNTransfer = (params: UseLNTransferParameters): UseLNTransferReturns => {
+export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
   const config = useConfig(params);
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
-
-  const [startEvent, setStartEvent] = useState<NostrEvent | null>(null);
-  const [transferInfo, setTransferInfo] = useState<TransferInformation>(defaultTransfer);
-
-  const { ndk, signer, signerInfo } = useNostrContext();
-
-  const { events } = useSubscription({
-    filters: [
-      {
-        authors: [config.modulePubkeys.ledger],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since: startEvent ? startEvent.created_at - 60000 : undefined,
-        '#e': startEvent?.id ? [startEvent.id] : [],
-      },
-    ],
-    options: {
-      groupable: false,
-      groupableDelay: 0,
-    },
-    enabled: Boolean(startEvent?.id),
+  const [transferInfo, setTransferInfo] = useState<TransferInformation>({
+    ...defaultTransfer,
+    data: params.data ?? defaultTransfer.data,
+    amount: params.amount ?? defaultTransfer.amount,
+    comment: params.comment ?? defaultTransfer.comment,
   });
+
+  const {
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    handleMarkSuccess,
+    handleMarkError,
+    handleMarkLoading,
+    execInternalTransfer,
+    execOutboundTransfer,
+  } = useTransfer({ ...params, tokenName: 'BTC' });
+
+  const { signer, signerInfo } = useNostrContext();
 
   const prepareTransaction = async (data: string) => {
     const formattedTransferInfo: TransferInformation = await formatTransferData(data);
 
     switch (formattedTransferInfo.type) {
-      case false:
+      case TransferTypes.NONE:
         return false;
 
       case TransferTypes.LNURLW:
@@ -74,117 +58,65 @@ export const useLNTransfer = (params: UseLNTransferParameters): UseLNTransferRet
         break;
     }
 
-    setTransferInfo(formattedTransferInfo);
+    setTransferInfo({
+      ...formattedTransferInfo,
+      amount: formattedTransferInfo.amount > 0 ? formattedTransferInfo.amount : transferInfo.amount,
+      comment: formattedTransferInfo.comment ?? transferInfo.comment,
+    });
     return true;
   };
 
-  const handleError = () => {
-    if (isSuccess) setIsSuccess(false);
-    if (!isError) setIsError(true);
+  const setAmountToPay = (amount: number) => {
+    setTransferInfo({
+      ...transferInfo,
+      amount,
+    });
 
-    if (isLoading) setIsLoading(false);
+    // router.replace(`/transfer/lnurl?data=${LNURLInfo.data}&amount=${amount}`);
   };
 
-  const handleSuccess = () => {
-    if (isError) setIsError(false);
-    if (!isSuccess) setIsSuccess(true);
-
-    if (isLoading) setIsLoading(false);
-  };
-
-  const publishTransfer = (event: NostrEvent) => {
-    setStartEvent(event);
-    broadcastEvent(event, config).then((published) => {
-      if (!published) handleError();
+  const setComment = (comment: string) => {
+    setTransferInfo({
+      ...transferInfo,
+      comment: escapingBrackets(comment),
     });
   };
 
-  const execInternalTransfer = async (info: TransferInformation) => {
-    if (!signer || !signerInfo) return;
-
-    const { amount, receiverPubkey, comment } = info;
-
-    const txEvent: NostrEvent | undefined = await SignEvent(
-      signer,
-      buildTxStartEvent({
-        tokenName,
-        amount,
-        senderPubkey: signerInfo.pubkey,
-        receiverPubkey,
-        comment,
-      }),
-    );
-    if (txEvent) publishTransfer(txEvent);
-  };
-
-  const execOutboundTransfer = async (info: TransferInformation) => {
-    if (!signer || !signerInfo) return;
-
-    const { data, amount, payRequest, comment } = info;
-    const bolt11: string = transferInfo.payRequest
-      ? await requestInvoice(`${payRequest?.callback}?amount=${amount * 1000}&comment=${escapingBrackets(comment)}`)
-      : data;
-
-    const txEvent: NostrEvent | undefined = await SignEvent(
-      signer,
-      buildTxStartEvent({
-        tokenName,
-        amount,
-        senderPubkey: signerInfo.pubkey,
-        bolt11,
-      }),
-    );
-
-    if (txEvent) publishTransfer(txEvent);
-  };
-
-  const execute = () => {
+  const execute = async () => {
     if (isLoading || !signer || !signerInfo || !transferInfo.type || transferInfo.expired) return;
-    setIsLoading(true);
+    handleMarkLoading(true);
 
     try {
       if (transferInfo.type === TransferTypes.LNURLW) {
         const { callback, maxWithdrawable, k1 } = transferInfo.payRequest!;
 
-        claimLNURLw(signerInfo.npub, callback, k1!, maxWithdrawable!, config).then((claimed) => {
-          claimed ? handleSuccess() : handleError();
-        });
+        claimLNURLw(signerInfo.npub, callback, k1!, maxWithdrawable!, config)
+          .then((claimed) => {
+            claimed ? handleMarkSuccess() : handleMarkError();
+          })
+          .catch(() => handleMarkError());
       } else if (transferInfo.type === TransferTypes.INTERNAL) {
-        execInternalTransfer(transferInfo);
+        execInternalTransfer({
+          pubkey: transferInfo.receiverPubkey,
+          amount: transferInfo.amount,
+          comment: transferInfo.comment,
+        });
       } else {
-        execOutboundTransfer(transferInfo);
+        const bolt11: string = await requestInvoice(
+          `${transferInfo.payRequest?.callback}?amount=${
+            transferInfo.amount * 1000
+          }&comment=${escapingBrackets(transferInfo.comment)}`,
+        );
+
+        execOutboundTransfer({ bolt11, amount: transferInfo.amount });
       }
     } catch {
-      handleError();
-    }
-  };
-
-  const processStatusTransfer = async (ledgerEvent: NDKEvent) => {
-    if (startEvent) {
-      const subkind: string | undefined = getTag(ledgerEvent.tags, 't');
-      if (subkind) {
-        if (subkind.includes('error')) handleError();
-
-        if (subkind.includes('ok')) {
-          const refundEvent = await ndk.fetchEvent({
-            kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-            authors: [config.modulePubkeys.urlx],
-            '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
-            '#e': [startEvent.id!],
-          });
-
-          refundEvent ? handleError() : handleSuccess();
-        }
-      }
+      handleMarkError();
     }
   };
 
   useEffect(() => {
-    if (events.length) processStatusTransfer(events[0]!);
-  }, [events]);
-
-  useEffect(() => {
-    if (transferInfo.data) prepareTransaction(params.data);
+    if (transferInfo.data) prepareTransaction(transferInfo.data);
   }, [transferInfo.data]);
 
   useEffect(() => {
@@ -199,10 +131,13 @@ export const useLNTransfer = (params: UseLNTransferParameters): UseLNTransferRet
   }, [params.data, params.amount, params.comment]);
 
   return {
+    error,
     isLoading,
     isSuccess,
     isError,
     transferInfo,
+    setAmountToPay,
+    setComment,
     execute,
   };
 };
