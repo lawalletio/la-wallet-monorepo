@@ -6,12 +6,12 @@ import { Accordion, AccordionBody, Flex, Text } from '@/components/UI';
 
 import { useTranslation } from '@/context/TranslateContext';
 import theme from '@/styles/theme';
-import { unescapingText } from '@/utils';
 import {
   dateFormatter,
   defaultCurrency,
   formatToPreference,
   getMultipleTags,
+  unescapingText,
   useConfig,
   useWalletContext,
 } from '@lawallet/react';

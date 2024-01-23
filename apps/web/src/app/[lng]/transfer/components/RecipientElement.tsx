@@ -1,4 +1,5 @@
 import { Avatar, Flex, Text } from '@/components/UI';
+import { extractFirstTwoChars } from '@/utils';
 import { splitHandle } from '@lawallet/react';
 
 const RecipientElement = ({ lud16 }: { lud16: string }) => {
@@ -6,7 +7,7 @@ const RecipientElement = ({ lud16 }: { lud16: string }) => {
   return (
     <Flex align="center" gap={8}>
       <Avatar>
-        <Text size="small">{username.substring(0, 2).toUpperCase()}</Text>
+        <Text size="small">{extractFirstTwoChars(username)}</Text>
       </Avatar>
       <Flex align="center">
         <Text>{username}</Text>

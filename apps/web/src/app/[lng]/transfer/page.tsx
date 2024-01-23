@@ -1,7 +1,7 @@
 'use client';
 
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
@@ -18,14 +18,13 @@ import {
   Text,
 } from '@/components/UI';
 
-import { useTransferContext } from '@/context/TransferContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import theme from '@/styles/theme';
-import { useConfig, useWalletContext, getMultipleTags } from '@lawallet/react';
+import { useConfig, useWalletContext, getMultipleTags, detectTransferType } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
-import { TransactionDirection, TransactionType } from '@lawallet/react/types';
+import { TransactionDirection, TransactionType, TransferTypes } from '@lawallet/react/types';
 import { useEffect, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
 
@@ -35,10 +34,10 @@ export default function Page() {
   const {
     user: { identity, transactions },
   } = useWalletContext();
-  const { prepareTransaction, transferInfo } = useTransferContext();
 
+  const params = useSearchParams();
   const [lastDestinations, setLastDestinations] = useState<string[]>([]);
-  const [inputText, setInputText] = useState<string>(transferInfo.data);
+  const [inputText, setInputText] = useState<string>(params.get('data') ?? '');
   const [loading, setLoading] = useState<boolean>(false);
 
   const errors = useErrors();
@@ -49,10 +48,21 @@ export default function Page() {
     setLoading(true);
 
     const cleanData: string = data.trim();
-    const prepared: boolean = await prepareTransaction(cleanData);
-    if (!prepared) {
-      errors.modifyError('INVALID_RECIPIENT');
-      setLoading(false);
+    const type: TransferTypes = detectTransferType(cleanData);
+
+    switch (type) {
+      case TransferTypes.NONE:
+        errors.modifyError('INVALID_RECIPIENT');
+        setLoading(false);
+        return;
+
+      case TransferTypes.INVOICE:
+        router.push(`/transfer/invoice/${cleanData}`);
+        return;
+
+      default:
+        router.push(`/transfer/lnurl?data=${cleanData}`);
+        return;
     }
   };
 

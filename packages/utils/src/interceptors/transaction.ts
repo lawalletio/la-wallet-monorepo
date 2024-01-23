@@ -18,7 +18,7 @@ export interface TransferInformation {
   comment: string;
   receiverPubkey: string;
   payRequest: LNServiceResponse | null;
-  type: TransferTypes | false;
+  type: TransferTypes;
   expired?: boolean;
 }
 

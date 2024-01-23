@@ -14,6 +14,9 @@ export { type useZapReturns, useZap } from '../hooks/useZap.js';
 
 export { useConfig } from '../hooks/useConfig.js';
 
+export { type UseInvoiceReturns, useInvoice } from '../hooks/useInvoice.js';
+export { type UseLNURLReturns, useLNURL } from '../hooks/useLNURL.js';
+
 export { type NostrContext, NostrProvider, useNostrContext } from '../context/NostrContext.js';
 export { type WalletContext, WalletProvider, useWalletContext } from '../context/WalletContext.js';
 export { LaWalletConfig, LaWalletProvider } from '../context/providers.js';

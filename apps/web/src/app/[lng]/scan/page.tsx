@@ -38,21 +38,21 @@ export default function Page() {
       return;
     } else {
       const cleanScan: string = removeLightningStandard(result.data);
-      const scanType: boolean | string = detectTransferType(cleanScan);
-      if (!scanType) return;
+      const scanType: TransferTypes = detectTransferType(cleanScan);
+      if (scanType === TransferTypes.NONE) return;
 
       if (scanType === TransferTypes.INVOICE) {
-        router.push(`/transfer/summary?data=${result.data.toLowerCase()}`);
+        router.push(`/transfer/invoice/${result.data.toLowerCase()}`);
         return;
       }
 
-      router.push(`/transfer/amount?data=${result.data.toLowerCase()}`);
+      router.push(`/transfer/lnurl?data=${result.data.toLowerCase()}`);
     }
   };
 
   useEffect(() => {
-    router.prefetch('/transfer/summary');
-    router.prefetch('/transfer/amount');
+    router.prefetch('/transfer/lnurl');
+    router.prefetch('/transfer/invoice');
   }, [router]);
 
   return (

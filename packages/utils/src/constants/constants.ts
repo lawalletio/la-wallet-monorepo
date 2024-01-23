@@ -2,6 +2,7 @@ import { noopStorage } from '../createStorage.js';
 import type { TransferInformation } from '../interceptors/transaction.js';
 import { type ConfigProps } from '../types/config.js';
 import type { UserIdentity } from '../types/identity.js';
+import { TransferTypes } from '../types/transaction.js';
 import type { AvailableLanguages } from '../types/translations.js';
 import type { AvailableCurrencies, CurrencyMetadata, UserConfigProps } from '../types/userConfig.js';
 
@@ -59,5 +60,5 @@ export const defaultTransfer: TransferInformation = {
   comment: '',
   receiverPubkey: baseConfig.modulePubkeys.urlx,
   payRequest: null,
-  type: false,
+  type: TransferTypes.NONE,
 };
