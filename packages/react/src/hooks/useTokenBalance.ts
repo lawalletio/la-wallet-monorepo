@@ -72,7 +72,6 @@ export const useTokenBalance = (parameters: UseTokenBalanceProps): UseTokenBalan
     if (!enabled || !ndk) return;
 
     if (!pubkey.length) {
-      console.log('settle');
       setBalance({
         tokenId: tokenId,
         amount: 0,

@@ -13,6 +13,9 @@ export { type UserIdentity } from '../types/identity.js';
 export {
   type Transaction,
   type TokensAmount,
+  type TransferInformation,
+  type LNURLTransferType,
+  type InvoiceTransferType,
   TransactionType,
   TransactionDirection,
   TransactionStatus,
@@ -25,3 +28,5 @@ export {
   type DictionaryEntry,
   type ReplacementParams,
 } from '../types/translations.js';
+
+export { type DecodedInvoiceReturns } from '../types/bolt11.js';

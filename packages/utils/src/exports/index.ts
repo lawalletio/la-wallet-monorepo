@@ -28,10 +28,11 @@ export {
   nowInSeconds,
   detectTransferType,
   removeLightningStandard,
-  formatTransferData,
+  formatLNURLData,
   splitHandle,
   parseContent,
   claimLNURLw,
+  parseInvoiceInfo,
 } from '../utils/utilities.js';
 
 export {

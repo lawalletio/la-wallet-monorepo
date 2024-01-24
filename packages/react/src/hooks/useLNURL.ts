@@ -1,15 +1,15 @@
-import { type TransferInformation, requestInvoice } from '@lawallet/utils/actions';
-import { TransferTypes, type ConfigParameter } from '@lawallet/utils/types';
+import { requestInvoice } from '@lawallet/utils/actions';
+import { TransferTypes, type ConfigParameter, type LNURLTransferType } from '@lawallet/utils/types';
 import { useEffect, useState } from 'react';
 
-import { escapingBrackets, claimLNURLw, formatTransferData, defaultTransfer } from '@lawallet/utils';
+import { escapingBrackets, claimLNURLw, formatLNURLData, defaultLNURLTransfer } from '@lawallet/utils';
 import { useConfig } from './useConfig.js';
 import { useNostrContext } from '../context/NostrContext.js';
 import { useTransfer } from './useTransfer.js';
 import type { StatusVarsTypes } from './useStatusVars.js';
 
 export interface UseLNURLReturns extends StatusVarsTypes {
-  transferInfo: TransferInformation;
+  transferInfo: LNURLTransferType;
   setAmountToPay: (amount: number) => void;
   setComment: (comment: string) => void;
   execute: () => void;
@@ -25,11 +25,11 @@ interface UseLNURLParameters extends ConfigParameter {
 
 export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
   const config = useConfig(params);
-  const [transferInfo, setTransferInfo] = useState<TransferInformation>({
-    ...defaultTransfer,
-    data: params.data ?? defaultTransfer.data,
-    amount: params.amount ?? defaultTransfer.amount,
-    comment: params.comment ?? defaultTransfer.comment,
+  const [transferInfo, setTransferInfo] = useState<LNURLTransferType>({
+    ...defaultLNURLTransfer,
+    data: params.data ?? defaultLNURLTransfer.data,
+    amount: params.amount ?? defaultLNURLTransfer.amount,
+    comment: params.comment ?? defaultLNURLTransfer.comment,
   });
 
   const {
@@ -47,14 +47,14 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
   const { signer, signerInfo } = useNostrContext();
 
   const prepareTransaction = async (data: string) => {
-    const formattedTransferInfo: TransferInformation = await formatTransferData(data);
+    const formattedTransferInfo: LNURLTransferType = await formatLNURLData(data);
 
     switch (formattedTransferInfo.type) {
       case TransferTypes.NONE:
         return false;
 
       case TransferTypes.LNURLW:
-        if (!formattedTransferInfo.payRequest?.maxWithdrawable) return false;
+        if (!formattedTransferInfo.request?.maxWithdrawable) return false;
         break;
     }
 
@@ -71,8 +71,6 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
       ...transferInfo,
       amount,
     });
-
-    // router.replace(`/transfer/lnurl?data=${LNURLInfo.data}&amount=${amount}`);
   };
 
   const setComment = (comment: string) => {
@@ -83,12 +81,12 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
   };
 
   const execute = async () => {
-    if (isLoading || !signer || !signerInfo || !transferInfo.type || transferInfo.expired) return;
+    if (isLoading || !signer || !signerInfo || !transferInfo.type) return;
     handleMarkLoading(true);
 
     try {
       if (transferInfo.type === TransferTypes.LNURLW) {
-        const { callback, maxWithdrawable, k1 } = transferInfo.payRequest!;
+        const { callback, maxWithdrawable, k1 } = transferInfo.request!;
 
         claimLNURLw(signerInfo.npub, callback, k1!, maxWithdrawable!, config)
           .then((claimed) => {
@@ -103,7 +101,7 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
         });
       } else {
         const bolt11: string = await requestInvoice(
-          `${transferInfo.payRequest?.callback}?amount=${
+          `${transferInfo.request?.callback}?amount=${
             transferInfo.amount * 1000
           }&comment=${escapingBrackets(transferInfo.comment)}`,
         );

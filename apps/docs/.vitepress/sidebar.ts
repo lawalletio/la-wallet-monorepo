@@ -21,6 +21,7 @@ export function getSidebar() {
           { text: 'useActivity', link: '/react/api/hooks/useActivity' },
           { text: 'useCardConfig', link: '/react/api/hooks/useCardConfig' },
           { text: 'useIdentity', link: '/react/api/hooks/useIdentity' },
+          { text: 'useInvoice', link: '/react/api/hooks/useInvoice' },
           { text: 'useNostr', link: '/react/api/hooks/useNostr' },
           { text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' },
           { text: 'useSubscription', link: '/react/api/hooks/useSubscription' },

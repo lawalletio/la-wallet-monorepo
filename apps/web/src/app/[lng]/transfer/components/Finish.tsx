@@ -6,12 +6,11 @@ import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import { Avatar, Confetti, Divider, Flex, Heading, Icon, LinkButton, Text } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
-import { TransferTypes } from '@lawallet/react/types';
+import { TransferInformation, TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useWalletContext, splitHandle, formatAddress, formatToPreference } from '@lawallet/react';
 import { extractFirstTwoChars } from '@/utils';
-import { TransferInformation } from '@lawallet/react/actions';
 
 export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInformation }) => {
   const { lng, t } = useTranslation();

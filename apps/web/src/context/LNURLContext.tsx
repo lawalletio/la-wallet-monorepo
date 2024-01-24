@@ -1,16 +1,10 @@
 import { useLNURL } from '@lawallet/react';
-import { TransferInformation } from '@lawallet/react/actions';
+import { LNURLTransferType } from '@lawallet/react/types';
 import { useSearchParams } from 'next/navigation';
 import { createContext, useContext } from 'react';
 
-type LNURLTransferProps = {
-  data: string;
-  amount: number;
-  comment: string;
-};
-
 interface ILNURLContext {
-  transferInfo: TransferInformation;
+  transferInfo: LNURLTransferType;
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;

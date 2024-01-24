@@ -12,14 +12,15 @@
   "author": "Ferpa",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.11.5",
+    "@scure/base": "1.1.5",
+    "@noble/secp256k1": "^2.0.0",
+    "@types/node": "^20.11.6",
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@scure/base": "1.1.5",
     "@nostr-dev-kit/ndk": "^2.3.3",
     "bech32": "^2.0.0",
-    "date-fns": "^3.2.0",
+    "date-fns": "^3.3.1",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "overrides": {

@@ -1,26 +1,4 @@
-import { type TransferTypes } from '../types/transaction.js';
-
-export interface LNServiceResponse {
-  tag: string;
-  callback: string;
-  metadata: string;
-  commentAllowed: number;
-  minSendable?: number;
-  maxSendable?: number;
-  k1?: string;
-  minWithdrawable?: number;
-  maxWithdrawable?: number;
-}
-
-export interface TransferInformation {
-  data: string;
-  amount: number;
-  comment: string;
-  receiverPubkey: string;
-  payRequest: LNServiceResponse | null;
-  type: TransferTypes;
-  expired?: boolean;
-}
+import { type LNRequestResponse } from '../types/transaction.js';
 
 export type CheckInvoiceReturns = {
   handled: boolean;
@@ -29,7 +7,7 @@ export type CheckInvoiceReturns = {
   pubkey: string;
 };
 
-export const getPayRequest = (url: string): Promise<LNServiceResponse> =>
+export const getPayRequest = (url: string): Promise<LNRequestResponse> =>
   fetch(url)
     .then((res) => {
       if (res.status !== 200) return null;

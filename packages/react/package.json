@@ -11,7 +11,7 @@
   "author": "Ferpa",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.11.5",
+    "@types/node": "^20.11.6",
     "@types/react": "^18.2.48",
     "typescript": "^5.3.3"
   },
@@ -21,7 +21,6 @@
   "dependencies": {
     "@lawallet/utils": "*",
     "@nostr-dev-kit/ndk": "^2.3.3",
-    "date-fns": "^3.2.0",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "overrides": {
@@ -32,7 +31,14 @@
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
   "typings": "./dist/types/exports/index.d.ts",
-  "files": ["dist/**", "!dist/**/*.tsbuildinfo", "src/**/*.ts", "!src/**/*.test.ts", "!src/**/*.test-d.ts", "/utils"],
+  "files": [
+    "dist/**",
+    "!dist/**/*.tsbuildinfo",
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "!src/**/*.test-d.ts",
+    "/utils"
+  ],
   "exports": {
     ".": {
       "types": "./dist/types/exports/index.d.ts",
@@ -50,8 +56,12 @@
   },
   "typesVersions": {
     "*": {
-      "types": ["./dist/types/exports/types.d.ts"],
-      "actions": ["./dist/types/exports/actions.d.ts"]
+      "types": [
+        "./dist/types/exports/types.d.ts"
+      ],
+      "actions": [
+        "./dist/types/exports/actions.d.ts"
+      ]
     }
   }
 }

@@ -12,11 +12,11 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 const TransferWithInvoice = ({ params }) => {
   const { t } = useTranslation();
 
-  const { isLoading, isError, isSuccess, invoiceInfo, execute } = useInvoice({
+  const { isLoading, isError, isSuccess, parsedInvoice, executePayment } = useInvoice({
     bolt11: params.bolt11,
   });
 
-  useActionOnKeypress('Enter', execute, [invoiceInfo]);
+  useActionOnKeypress('Enter', executePayment, [parsedInvoice]);
 
   return (
     <>
@@ -24,18 +24,18 @@ const TransferWithInvoice = ({ params }) => {
         <>
           <Navbar />
 
-          {isError ? <ErrorTransfer /> : <FinishTransfer transferInfo={invoiceInfo} />}
+          {isError ? <ErrorTransfer /> : <FinishTransfer transferInfo={parsedInvoice} />}
         </>
       ) : (
         <>
           <Navbar showBackPage={true} title={t('VALIDATE_INFO')} overrideBack="/transfer" />
           <Summary
             isLoading={isLoading}
-            data={invoiceInfo.data}
+            data={parsedInvoice.data}
             type={TransferTypes.INVOICE}
-            amount={invoiceInfo.amount}
-            expired={invoiceInfo.expired}
-            onClick={execute}
+            amount={parsedInvoice.amount}
+            expired={parsedInvoice.expired}
+            onClick={executePayment}
           />
         </>
       )}
