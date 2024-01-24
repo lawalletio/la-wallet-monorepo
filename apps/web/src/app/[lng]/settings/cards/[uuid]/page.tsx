@@ -7,7 +7,7 @@ import { useTranslation } from '@/context/TranslateContext';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import LimitInput from '../components/LimitInput/LimitInput';
-import { useCardConfig, useWalletContext } from '@lawallet/react';
+import { useCards, useWalletContext } from '@lawallet/react';
 import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
 
 const defaultTXLimit: Limit = {
@@ -44,7 +44,7 @@ const page = () => {
     limits: [defaultTXLimit, defaultDailyLimit],
   });
 
-  const { cardsData, cardsConfig, loadInfo, updateCardConfig } = useCardConfig({
+  const { cardsData, cardsConfig, loadInfo, updateCardConfig } = useCards({
     privateKey: identity.data.privateKey,
   });
 

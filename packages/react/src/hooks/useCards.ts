@@ -12,7 +12,6 @@ import { broadcastEvent } from '@lawallet/utils/actions';
 import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
 import { useEffect, useMemo, useState } from 'react';
 import { useSubscription } from './useSubscription.js';
-import { useWalletContext } from '../context/WalletContext.js';
 import { getPublicKey } from 'nostr-tools';
 import { useConfig } from './useConfig.js';
 
@@ -29,11 +28,11 @@ type CardLoadingType = {
   loading: boolean;
 };
 
-export interface UseCardConfigParameters extends ConfigParameter {
+export interface UseCardsParameters extends ConfigParameter {
   privateKey: string;
 }
 
-export const useCardConfig = (parameters: UseCardConfigParameters): CardConfigReturns => {
+export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
   const pubkey = useMemo(() => getPublicKey(parameters.privateKey), [parameters.privateKey]);
   const config = useConfig(parameters);
 
@@ -43,10 +42,6 @@ export const useCardConfig = (parameters: UseCardConfigParameters): CardConfigRe
     loadedAt: 0,
     loading: true,
   });
-
-  const {
-    user: { identity },
-  } = useWalletContext();
 
   const { subscription } = useSubscription({
     filters: [

@@ -9,7 +9,7 @@ import { Divider, Flex } from '@/components/UI';
 import AddNewCardModal from './components/AddCard';
 import DebitCard from './components/DebitCard';
 import EmptyCards from './components/EmptyCards';
-import { useCardConfig, useWalletContext } from '@lawallet/react';
+import { useCards, useWalletContext } from '@lawallet/react';
 import { Design } from '@lawallet/react/types';
 
 export default function Page() {
@@ -17,7 +17,7 @@ export default function Page() {
     user: { identity },
   } = useWalletContext();
 
-  const { cardsData, cardsConfig, loadInfo, toggleCardStatus } = useCardConfig({
+  const { cardsData, cardsConfig, loadInfo, toggleCardStatus } = useCards({
     privateKey: identity.data.privateKey,
   });
 
