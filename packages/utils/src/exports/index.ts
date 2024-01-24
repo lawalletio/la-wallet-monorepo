@@ -12,6 +12,8 @@ export {
   buildCardInfoRequest,
   buildTxStartEvent,
   buildZapRequestEvent,
+  buildCardTransferAcceptEvent,
+  buildCardTransferDonationEvent,
 } from '../utils/events.js';
 
 export { type CreateConfigParameters, createConfig } from '../createConfig.js';

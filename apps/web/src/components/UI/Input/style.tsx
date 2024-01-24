@@ -66,7 +66,7 @@ export const InputButton = styled.div`
 export const InputGroup = styled.div`
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: end;
   justify-content: center;
 
   input {

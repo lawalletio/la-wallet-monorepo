@@ -19,7 +19,7 @@ export function getSidebar() {
         text: 'Hooks',
         items: [
           { text: 'useActivity', link: '/react/api/hooks/useActivity' },
-          { text: 'useCardConfig', link: '/react/api/hooks/useCardConfig' },
+          { text: 'useCards', link: '/react/api/hooks/useCards' },
           { text: 'useIdentity', link: '/react/api/hooks/useIdentity' },
           { text: 'useInvoice', link: '/react/api/hooks/useInvoice' },
           { text: 'useNostr', link: '/react/api/hooks/useNostr' },

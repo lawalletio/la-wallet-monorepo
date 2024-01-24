@@ -1,16 +1,16 @@
 ---
-title: useCardConfig
+title: useCards
 description: Hook for getting transactions
 ---
 
-# useCardConfig
+# useCards
 
 Hook to interact with the cards of an account and modify their configuration
 
 ## Import
 
 ```ts
-import { useCardConfig } from '@lawallet/react';
+import { useCards } from '@lawallet/react';
 ```
 
 ## Usage
@@ -18,13 +18,13 @@ import { useCardConfig } from '@lawallet/react';
 ::: code-group
 
 ```tsx [index.tsx]
-import { useCardConfig } from '@lawallet/react';
+import { useCards } from '@lawallet/react';
 import { config } from './config';
 
 function App() {
   const privateKey: string = '9a9787e3e31cfdc95f35d5cfc1eeaead33e693ec59789c20f63546b191e28d59';
 
-  const { cards } = useCardConfig({
+  const { cards } = useCards({
     privateKey,
     config,
   });
@@ -37,7 +37,7 @@ function App() {
 ## Parameters
 
 ```ts
-import { type UseCardConfigParameters } from '@lawallet/react';
+import { type UseCardsParameters } from '@lawallet/react';
 ```
 
 ### privateKey
@@ -47,10 +47,10 @@ import { type UseCardConfigParameters } from '@lawallet/react';
 - Private key of the account for which you want to consult the cards
 
 ```tsx [index.tsx]
-import { useCardConfig } from '@lawallet/react';
+import { useCards } from '@lawallet/react';
 
 function App() {
-  const { cards } = useCardConfig({
+  const { cards } = useCards({
     privatekey: '17efe7a5f1...53936f68b', // [!code focus]
   });
 }
@@ -65,11 +65,11 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useCardConfig } from '@lawallet/react';
+import { useCards } from '@lawallet/react';
 import { config } from './config'; // [!code focus]
 
 function App() {
-  const { transactions } = useCardConfig({
+  const { transactions } = useCards({
     pubkey: '17efe7a5f1...53936f68b',
     config, // [!code focus]
   });
@@ -82,7 +82,7 @@ function App() {
 ## Return Type
 
 ```ts
-import { type UseCardConfigReturns } from '@lawallet/react';
+import { type UseCardsReturns } from '@lawallet/react';
 ```
 
 ### cards

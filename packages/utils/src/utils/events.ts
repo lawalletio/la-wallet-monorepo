@@ -1,5 +1,5 @@
 import { NDKEvent, NDKKind, NDKPrivateKeySigner, type NDKTag, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { getEventHash, getPublicKey, getSignature, nip26, type UnsignedEvent } from 'nostr-tools';
+import { getEventHash, getPublicKey, getSignature, nip04, nip26, type UnsignedEvent } from 'nostr-tools';
 import { baseConfig } from '../constants/constants.js';
 import { ConfigTypes, type CardConfigPayload } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
@@ -209,6 +209,72 @@ export const buildCardConfigEvent = async (
   event.kind = LaWalletKinds.REGULAR;
 
   event.tags = event.tags.concat([['t', `${ConfigTypes.CONFIG.valueOf()}-change`]]);
+
+  event.id = getEventHash(event as UnsignedEvent);
+  event.sig = getSignature(event as UnsignedEvent, privateKey);
+
+  return event;
+};
+
+export const buildCardTransferDonationEvent = async (
+  uuid: string,
+  privateKey: string,
+  config: ConfigProps = baseConfig,
+) => {
+  const userPubkey: string = getPublicKey(privateKey);
+
+  const content = await nip04.encrypt(privateKey, config.modulePubkeys.card, uuid);
+
+  const event: NostrEvent = {
+    kind: LaWalletKinds.EPHEMERAL,
+    pubkey: userPubkey,
+    content,
+    created_at: nowInSeconds(),
+    tags: [
+      ['t', 'card-transfer-donation'],
+      ['p', config.modulePubkeys.card],
+    ],
+  };
+
+  event.id = getEventHash(event as UnsignedEvent);
+  event.sig = getSignature(event as UnsignedEvent, privateKey);
+
+  //return btoa(JSON.stringify(event).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''))
+  return event;
+};
+
+export const buildCardTransferAcceptEvent = async (
+  giverPubkey: string,
+  donationEvent: NostrEvent,
+  privateKey: string,
+  config: ConfigProps = baseConfig,
+) => {
+  const userPubkey: string = getPublicKey(privateKey);
+
+  const delegation = nip26.createDelegation(privateKey, {
+    pubkey: config.modulePubkeys.card,
+    kind: LaWalletKinds.REGULAR,
+    since: Math.floor(Date.now() / 1000) - 36000,
+    until: Math.floor(Date.now() / 1000) + 3600 * 24 * 30 * 12,
+  });
+
+  const event: NostrEvent = {
+    kind: LaWalletKinds.EPHEMERAL,
+    pubkey: userPubkey,
+    content: JSON.stringify({
+      delegation: {
+        conditions: delegation.cond,
+        token: delegation.sig,
+      },
+      donationEvent,
+    }),
+    created_at: nowInSeconds(),
+    tags: [
+      ['t', 'card-transfer-acceptance'],
+      ['p', config.modulePubkeys.card],
+      ['p', giverPubkey],
+    ],
+  };
 
   event.id = getEventHash(event as UnsignedEvent);
   event.sig = getSignature(event as UnsignedEvent, privateKey);

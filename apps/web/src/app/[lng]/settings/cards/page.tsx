@@ -6,19 +6,33 @@ import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import { MainLoader } from '@/components/Loader/Loader';
 import { Divider, Flex } from '@/components/UI';
-import { useCardConfig, useWalletContext } from '@lawallet/react';
-import { Design } from '@lawallet/react/types';
 import AddNewCardModal from './components/AddCard';
 import DebitCard from './components/DebitCard';
 import EmptyCards from './components/EmptyCards';
+import { useCards, useWalletContext } from '@lawallet/react';
+import { Design } from '@lawallet/react/types';
 
 export default function Page() {
   const {
     user: { identity },
   } = useWalletContext();
 
-  const { cards, toggleCardStatus } = useCardConfig({ privateKey: identity.data.privateKey });
+  const { cardsData, cardsConfig, loadInfo, toggleCardStatus } = useCards({
+    privateKey: identity.data.privateKey,
+  });
+
   const { t } = useTranslation();
+
+  const handleToggleStatus = async (uuid: string) => {
+    const toggled: boolean = await toggleCardStatus(uuid);
+    return toggled;
+    // if (toggled)
+    //   notifications.showAlert({
+    //     title: '',
+    //     description: t('TOGGLE_STATUS_CARD_SUCCESS'),
+    //     type: 'success'
+    //   })
+  };
 
   return (
     <>
@@ -26,19 +40,19 @@ export default function Page() {
 
       <Container size="small">
         <Divider y={16} />
-        {cards.loading ? (
+        {loadInfo.loading ? (
           <MainLoader />
-        ) : Object.keys(cards.data).length ? (
+        ) : Object.keys(cardsData).length ? (
           <Flex direction="column" align="center" gap={16}>
-            {Object.entries(cards.data).map(([key, value]) => {
+            {Object.entries(cardsData).map(([key, value]) => {
               return (
                 <DebitCard
                   card={{
                     uuid: key,
                     data: value as { design: Design },
-                    config: cards.config.cards?.[key],
+                    config: cardsConfig.cards?.[key],
                   }}
-                  toggleCardStatus={toggleCardStatus}
+                  toggleCardStatus={handleToggleStatus}
                   key={key}
                 />
               );
