@@ -85,15 +85,30 @@ function App() {
 import { type UseCardsReturns } from '@lawallet/react';
 ```
 
-### cards
+### cardsData
 
-[`CardsInfo`](/react/api/glossary/types#cardsinfo)
+[`CardDataPayload`](/react/api/glossary/types#cardsdatapayload)
 
-Returns the requested cards info
+Returns the requested cards data
+
+### cardsConfig
+
+[`CardConfigPayload`](/react/api/glossary/types#cardsdatapayload)
+
+Returns the requested cards config
 
 ### toggleCardStatus
 
-`(uuid: string) => boolean`
+`(uuid: string) => Promise<boolean>`
 
 - Function to switch card status
 - It receives as a parameter the uuid (string) of the card whose status you want to change.
+
+### updateCardConfig
+
+`(uuid: string, config: CardPayload) => Promise<boolean>`
+See [`CardPayload`](/react/api/glossary/types#cardpayload)
+
+-Function that changes the configuration of a card
+
+- Receives as a parameter the uuid (string) of the card whose status you want to change and the new configuration for this card (CardPayload)

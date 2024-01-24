@@ -6,7 +6,7 @@ Glossary of Types in LaWallet
 
 <!--@include: @snippets/types/CardConfigPayload.md-->
 
-<!--@include: @snippets/types/CardsInfo.md-->
+<!--@include: @snippets/types/CardPayload.md-->
 
 <!--@include: @snippets/types/DecodedInvoiceReturns.md-->
 

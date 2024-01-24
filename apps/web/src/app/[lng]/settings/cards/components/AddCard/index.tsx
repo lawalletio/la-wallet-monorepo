@@ -54,9 +54,9 @@ const AddNewCardModal = () => {
     buildCardActivationEvent(newCardInfo.card, identity.data.privateKey)
       .then((cardEvent: NostrEvent) => {
         requestCardActivation(cardEvent).then((cardActivated) => {
-          const description: string = cardActivated ? t('ACTIVATE_SUCCESS') : t('ACTIVATE_ERROR');
+          // const description: string = cardActivated ? t('ACTIVATE_SUCCESS') : t('ACTIVATE_ERROR');
 
-          const type: AlertTypes = cardActivated ? 'success' : 'error';
+          // const type: AlertTypes = cardActivated ? 'success' : 'error';
 
           // sendNotification(description, type);
           resetCardInfo();
