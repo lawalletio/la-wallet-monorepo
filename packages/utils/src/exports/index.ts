@@ -49,3 +49,5 @@ export {
   unescapingText,
   extractEscappedMessage,
 } from '../utils/formatter.js';
+
+export { createSignerWithPrivateKey } from '../createSigner.js';

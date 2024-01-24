@@ -22,6 +22,38 @@ const storage = createStorage({ storage: localStorage })
 import { type CreateStorageParameters } from '@lawallet/react'
 ```
 
+### storage
+
+`{ getItem(key: string): string | null | undefined | Promise<string | null | undefined>; setItem(key: string, value: string): void | Promise<void>; removeItem(key: string): void | Promise<void>; }`
+
+- Storage interface to use for persisting data.
+- Defaults to `localStorage`.
+- Supports synchronous and asynchronous storage methods.
+
+```ts
+import { createStorage } from '@lawallet/react';
+// Using IndexedDB via https://github.com/jakearchibald/idb-keyval // [!code focus]
+import { del, get, set } from 'idb-keyval'; // [!code focus]
+
+const storage = createStorage({
+  storage: {
+    // [!code focus]
+    async getItem(name) {
+      // [!code focus]
+      return get(name); // [!code focus]
+    }, // [!code focus]
+    async setItem(name, value) {
+      // [!code focus]
+      await set(name, value); // [!code focus]
+    }, // [!code focus]
+    async removeItem(name) {
+      // [!code focus]
+      await del(name); // [!code focus]
+    }, // [!code focus]
+  }, // [!code focus]
+});
+```
+
 ## Return Type
 
 ```ts-vue
