@@ -16,6 +16,8 @@ ignoreddoc.md
 # Testing
 coverage
 
+apps/test
+
 # Turbo
 .turbo
 

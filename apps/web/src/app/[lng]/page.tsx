@@ -18,11 +18,6 @@ export default function Page() {
   const router = useRouter();
 
   // const { handleCreateIdentity, loading } = useCreateIdentity()
-
-  useEffect(() => {
-    router.prefetch('/login');
-  }, [router]);
-
   return (
     <Container size="small">
       <Divider y={16} />

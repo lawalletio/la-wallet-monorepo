@@ -22,8 +22,8 @@ export interface UseTokenBalanceProps extends ConfigParameter {
 export const useTokenBalance = (parameters: UseTokenBalanceProps): UseTokenBalanceReturns => {
   const { pubkey, tokenId, enabled = true, closeOnEose = false } = parameters;
 
-  const { ndk } = useNostrContext();
   const config = useConfig(parameters);
+  const { ndk } = useNostrContext({ config });
 
   const [balance, setBalance] = React.useState<TokenBalance>({
     tokenId: tokenId,

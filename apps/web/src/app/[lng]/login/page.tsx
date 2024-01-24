@@ -64,10 +64,6 @@ export default function Page() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    router.prefetch('/dashboard');
-  }, [router]);
-
   useActionOnKeypress('Enter', handleRecoveryAccount, [keyInput]);
 
   return (

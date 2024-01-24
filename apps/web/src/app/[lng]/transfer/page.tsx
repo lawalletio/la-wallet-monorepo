@@ -110,10 +110,6 @@ export default function Page() {
     if (transactions.length) loadLastDestinations();
   }, [transactions.length]);
 
-  useEffect(() => {
-    router.prefetch('/scan');
-  }, [router]);
-
   return (
     <>
       <Navbar showBackPage={true} title={t('TRANSFER_MONEY')} overrideBack="/dashboard" />

@@ -2,7 +2,6 @@ import type { NDKEvent, NDKKind, NostrEvent } from '@nostr-dev-kit/ndk';
 import {
   LaWalletKinds,
   LaWalletTags,
-  SignEvent,
   buildTxStartEvent,
   getTag,
   useConfig,
@@ -38,7 +37,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
   const statusVars = useStatusVars(params);
 
   const [startEvent, setStartEvent] = useState<NostrEvent | null>(null);
-  const { ndk, signer, signerInfo } = useNostrContext();
+  const { ndk, signer, signerInfo, signEvent } = useNostrContext({ config });
 
   const { events } = useSubscription({
     filters: [
@@ -54,6 +53,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
       groupableDelay: 0,
     },
     enabled: Boolean(startEvent?.id),
+    config,
   });
 
   const publishTransfer = (event: NostrEvent): Promise<boolean> => {
@@ -67,14 +67,13 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
     });
   };
 
-  const execInternalTransfer = async (params: InternalTransferParamteres): Promise<boolean> => {
-    const { pubkey, amount, comment = '' } = params;
-    if (!signer || !signerInfo || !pubkey || !amount) return false;
+  const execInternalTransfer = async (transferParameters: InternalTransferParamteres): Promise<boolean> => {
+    const { pubkey, amount, comment = '' } = transferParameters;
+    if (!signerInfo || !pubkey || !amount) return false;
 
     statusVars.handleMarkLoading(true);
 
-    const txEvent: NostrEvent | undefined = await SignEvent(
-      signer,
+    const txEvent: NostrEvent | undefined = await signEvent(
       buildTxStartEvent({
         tokenName,
         amount,
@@ -93,8 +92,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
 
     statusVars.handleMarkLoading(true);
 
-    const txEvent: NostrEvent | undefined = await SignEvent(
-      signer,
+    const txEvent: NostrEvent | undefined = await signEvent(
       buildTxStartEvent({
         tokenName,
         amount,

@@ -9,7 +9,6 @@ import {
 import {
   useConfig,
   useWalletContext,
-  SignEvent,
   buildCardActivationEvent,
   buildIdentityEvent,
   useNostrContext,
@@ -62,7 +61,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
     user: { identity },
   } = useWalletContext();
   const config = useConfig();
-  const { authWithPrivateKey } = useNostrContext();
+  const { signEvent, authWithPrivateKey } = useNostrContext();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -141,9 +140,9 @@ export const useCreateIdentity = (): UseIdentityReturns => {
             message: 'ERROR_WITH_SIGNER',
           };
 
-        const identityEvent: NostrEvent | undefined = await SignEvent(
-          tmpSigner,
+        const identityEvent: NostrEvent | undefined = await signEvent(
           buildIdentityEvent(nonce, generatedIdentity),
+          tmpSigner,
         );
 
         if (!identityEvent)

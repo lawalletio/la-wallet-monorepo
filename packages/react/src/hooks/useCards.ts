@@ -57,6 +57,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
       cacheUsage: NDKSubscriptionCacheUsage.PARALLEL,
     },
     enabled: true,
+    config
   });
 
   const buildAndBroadcastCardConfig = (cardConfig: CardConfigPayload, privateKey: string): Promise<boolean> => {

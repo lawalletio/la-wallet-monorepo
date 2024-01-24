@@ -1,20 +1,21 @@
 import { type NDKEvent, type NDKFilter, type NDKSubscription, type NDKSubscriptionOptions } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 import { useNostrContext } from '../context/NostrContext.js';
+import type { ConfigParameter } from '../exports/types.js';
 
 export interface UseSubscriptionReturns {
   subscription: NDKSubscription | undefined;
   events: NDKEvent[];
 }
 
-export type SubscriptionProps = {
+export interface SubscriptionProps extends ConfigParameter {
   filters: NDKFilter[];
   options: NDKSubscriptionOptions;
   enabled: boolean;
-};
+}
 
-export const useSubscription = ({ filters, options, enabled }: SubscriptionProps) => {
-  const { ndk } = useNostrContext();
+export const useSubscription = ({ filters, options, enabled, config }: SubscriptionProps) => {
+  const { ndk } = useNostrContext({ config });
 
   const [subscription, setSubscription] = React.useState<NDKSubscription>();
   const [events, setEvents] = React.useState<NDKEvent[]>([]);

@@ -50,11 +50,6 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    router.prefetch('/transfer/lnurl');
-    router.prefetch('/transfer/invoice');
-  }, [router]);
-
   return (
     <>
       <Navbar showBackPage={true} title={t('SCAN_QR')} />

@@ -52,10 +52,6 @@ export default function Page() {
     }
   }, []);
 
-  useEffect(() => {
-    router.prefetch('/dashboard');
-  }, [router]);
-
   if (activeStartView)
     return (
       <StartView

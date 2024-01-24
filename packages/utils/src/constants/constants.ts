@@ -21,6 +21,7 @@ export const baseConfig: ConfigProps = {
     urlx: 'e17feb5f2cf83546bcf7fd9c8237b05275be958bd521543c2285ffc6c2d654b3',
   },
   storage: noopStorage,
+  signer: undefined,
 };
 
 export const LanguagesList: AvailableLanguages[] = ['es', 'en'];

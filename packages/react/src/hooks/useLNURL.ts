@@ -44,7 +44,7 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
     execOutboundTransfer,
   } = useTransfer({ ...params, tokenName: 'BTC' });
 
-  const { signer, signerInfo } = useNostrContext();
+  const { signer, signerInfo } = useNostrContext({ config });
 
   const prepareTransaction = async (data: string) => {
     const formattedTransferInfo: LNURLTransferType = await formatLNURLData(data);
