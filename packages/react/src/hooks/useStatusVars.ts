@@ -20,7 +20,7 @@ type UseStatusVarsParameters = {
     isLoading?: boolean;
   };
   onSuccess?: () => void;
-  onError?: (message: string) => void;
+  onError?: (message?: string) => void;
 };
 
 type InformationTypes = {

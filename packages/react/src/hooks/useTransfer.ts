@@ -29,7 +29,7 @@ interface UseTransferReturns extends UseStatusVarsReturns {
 interface UseTransferParameters extends ConfigParameter {
   tokenName: string;
   onSuccess?: () => void;
-  onError?: () => void;
+  onError?: (message?: string) => void;
 }
 
 export const useTransfer = (params: UseTransferParameters): UseTransferReturns => {

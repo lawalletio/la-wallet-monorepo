@@ -12,13 +12,13 @@ import type { StatusVarsTypes } from './useStatusVars.js';
 export interface UseInvoiceReturns extends StatusVarsTypes {
   parsedInvoice: InvoiceTransferType;
   decodedInvoice: DecodedInvoiceReturns | undefined;
-  execute: () => Promise<boolean>;
+  executePayment: () => Promise<boolean>;
 }
 
 interface UseInvoiceParameters extends ConfigParameter {
   bolt11?: string;
   onSuccess?: () => void;
-  onError?: () => void;
+  onError?: (message?: string) => void;
 }
 
 export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
@@ -38,7 +38,7 @@ export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
     setParsedInvoice(transferInfo);
   };
 
-  const execute = async () => {
+  const executePayment = async () => {
     if (!params.bolt11) return false;
     return execOutboundTransfer({ bolt11: parsedInvoice.data, amount: parsedInvoice.amount });
   };
@@ -47,5 +47,5 @@ export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
     if (params.bolt11) initializeInvoice(params.bolt11);
   }, [params.bolt11]);
 
-  return { error, isLoading, isError, isSuccess, parsedInvoice, decodedInvoice, execute };
+  return { error, isLoading, isError, isSuccess, parsedInvoice, decodedInvoice, executePayment };
 };
