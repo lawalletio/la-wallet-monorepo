@@ -12,7 +12,7 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 const TransferWithInvoice = ({ params }) => {
   const { t } = useTranslation();
 
-  const { isLoading, isError, isSuccess, parsedInvoice, decodedInvoice, execute } = useInvoice({
+  const { isLoading, isError, isSuccess, parsedInvoice, execute } = useInvoice({
     bolt11: params.bolt11,
   });
 
