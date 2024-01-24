@@ -1,10 +1,10 @@
-import { useLNURL } from '@lawallet/react';
+import { useConfig, useLNURL } from '@lawallet/react';
 import { LNURLTransferType } from '@lawallet/react/types';
 import { useSearchParams } from 'next/navigation';
 import { createContext, useContext } from 'react';
 
 interface ILNURLContext {
-  transferInfo: LNURLTransferType;
+  LNURLInfo: LNURLTransferType;
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
@@ -17,15 +17,17 @@ const LNURLContext = createContext({} as ILNURLContext);
 
 export function LNURLProvider({ children }: { children: React.ReactNode }) {
   const params = useSearchParams();
+  const config = useConfig();
 
-  const { isLoading, isError, isSuccess, transferInfo, setAmountToPay, setComment, execute } = useLNURL({
-    data: params.get('data') ?? '',
+  const { isLoading, isError, isSuccess, LNURLInfo, setAmountToPay, setComment, execute } = useLNURL({
+    lnurlOrAddress: params.get('data') ?? '',
     amount: Number(params.get('amount')) ?? 0,
     comment: params.get('comment') ?? '',
+    config,
   });
 
   const value = {
-    transferInfo,
+    LNURLInfo,
     isLoading,
     isError,
     isSuccess,

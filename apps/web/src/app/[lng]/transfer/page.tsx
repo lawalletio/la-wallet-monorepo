@@ -48,7 +48,7 @@ export default function Page() {
     setLoading(true);
 
     const cleanData: string = data.trim();
-    const type: TransferTypes = detectTransferType(cleanData);
+    const type: TransferTypes = detectTransferType(cleanData, config);
 
     switch (type) {
       case TransferTypes.NONE:

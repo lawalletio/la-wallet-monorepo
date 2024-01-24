@@ -2,7 +2,7 @@
 import Navbar from '@/components/Layout/Navbar';
 import { Button, Flex, Modal, Text } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
-import { buildCardTransferAcceptEvent, useWalletContext } from '@lawallet/react';
+import { buildCardTransferAcceptEvent, useConfig, useWalletContext } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -12,6 +12,7 @@ const page = () => {
   const [base64Event, setBase64Event] = useState<string>('');
   const { t } = useTranslation();
 
+  const config = useConfig();
   const router = useRouter();
   const params = useSearchParams();
   const {
@@ -21,8 +22,8 @@ const page = () => {
   const handleAcceptCardTransfer = () => {
     try {
       const event: NostrEvent = JSON.parse(atob(base64Event));
-      buildCardTransferAcceptEvent(event.pubkey, event, identity.data.privateKey).then((buildedEvent) => {
-        requestCardActivation(buildedEvent).then((res) => {
+      buildCardTransferAcceptEvent(event.pubkey, event, identity.data.privateKey, config).then((buildedEvent) => {
+        requestCardActivation(buildedEvent, config).then((res) => {
           if (res) router.push('/settings/cards');
         });
       });

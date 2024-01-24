@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
@@ -24,7 +24,6 @@ export default function Page() {
   const { handleCreateIdentity, accountInfo, setAccountInfo, handleChangeUsername, loading, errors } =
     useCreateIdentity();
 
-  const router = useRouter();
   const params = useSearchParams();
 
   const handleConfirm = () => {

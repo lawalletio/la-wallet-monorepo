@@ -48,6 +48,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
     ],
     options: {},
     enabled: Boolean(invoice.bolt11.length && !invoice.payed),
+    config,
   });
 
   const createZapInvoice = async (sats: number): Promise<string | undefined> => {

@@ -9,14 +9,14 @@ import { useTransfer } from './useTransfer.js';
 import type { StatusVarsTypes } from './useStatusVars.js';
 
 export interface UseLNURLReturns extends StatusVarsTypes {
-  transferInfo: LNURLTransferType;
+  LNURLInfo: LNURLTransferType;
   setAmountToPay: (amount: number) => void;
   setComment: (comment: string) => void;
   execute: () => void;
 }
 
 interface UseLNURLParameters extends ConfigParameter {
-  data: string;
+  lnurlOrAddress: string;
   amount?: number;
   comment?: string;
   onSuccess?: () => void;
@@ -25,9 +25,9 @@ interface UseLNURLParameters extends ConfigParameter {
 
 export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
   const config = useConfig(params);
-  const [transferInfo, setTransferInfo] = useState<LNURLTransferType>({
+  const [LNURLInfo, setLNURLInfo] = useState<LNURLTransferType>({
     ...defaultLNURLTransfer,
-    data: params.data ?? defaultLNURLTransfer.data,
+    data: params.lnurlOrAddress ?? defaultLNURLTransfer.data,
     amount: params.amount ?? defaultLNURLTransfer.amount,
     comment: params.comment ?? defaultLNURLTransfer.comment,
   });
@@ -47,7 +47,7 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
   const { signer, signerInfo } = useNostrContext({ config });
 
   const prepareTransaction = async (data: string) => {
-    const formattedTransferInfo: LNURLTransferType = await formatLNURLData(data);
+    const formattedTransferInfo: LNURLTransferType = await formatLNURLData(data, config);
 
     switch (formattedTransferInfo.type) {
       case TransferTypes.NONE:
@@ -58,82 +58,80 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
         break;
     }
 
-    setTransferInfo({
+    setLNURLInfo({
       ...formattedTransferInfo,
-      amount: formattedTransferInfo.amount > 0 ? formattedTransferInfo.amount : transferInfo.amount,
-      comment: formattedTransferInfo.comment ?? transferInfo.comment,
+      amount: formattedTransferInfo.amount > 0 ? formattedTransferInfo.amount : LNURLInfo.amount,
+      comment: formattedTransferInfo.comment ?? LNURLInfo.comment,
     });
     return true;
   };
 
   const setAmountToPay = (amount: number) => {
-    setTransferInfo({
-      ...transferInfo,
+    setLNURLInfo({
+      ...LNURLInfo,
       amount,
     });
   };
 
   const setComment = (comment: string) => {
-    setTransferInfo({
-      ...transferInfo,
+    setLNURLInfo({
+      ...LNURLInfo,
       comment: escapingBrackets(comment),
     });
   };
 
   const execute = async () => {
-    if (isLoading || !signer || !signerInfo || !transferInfo.type) return;
+    if (isLoading || !signer || !signerInfo || LNURLInfo.type === TransferTypes.NONE) return;
     handleMarkLoading(true);
 
     try {
-      if (transferInfo.type === TransferTypes.LNURLW) {
-        const { callback, maxWithdrawable, k1 } = transferInfo.request!;
-
+      if (LNURLInfo.type === TransferTypes.LNURLW) {
+        const { callback, maxWithdrawable, k1 } = LNURLInfo.request!;
         claimLNURLw(signerInfo.npub, callback, k1!, maxWithdrawable!, config)
           .then((claimed) => {
             claimed ? handleMarkSuccess() : handleMarkError();
           })
           .catch(() => handleMarkError());
-      } else if (transferInfo.type === TransferTypes.INTERNAL) {
+      } else if (LNURLInfo.type === TransferTypes.INTERNAL) {
         execInternalTransfer({
-          pubkey: transferInfo.receiverPubkey,
-          amount: transferInfo.amount,
-          comment: transferInfo.comment,
+          pubkey: LNURLInfo.receiverPubkey,
+          amount: LNURLInfo.amount,
+          comment: LNURLInfo.comment,
         });
       } else {
+        const { callback } = LNURLInfo.request!;
         const bolt11: string = await requestInvoice(
-          `${transferInfo.request?.callback}?amount=${
-            transferInfo.amount * 1000
-          }&comment=${escapingBrackets(transferInfo.comment)}`,
+          `${callback}?amount=${LNURLInfo.amount * 1000}&comment=${escapingBrackets(LNURLInfo.comment)}`,
         );
 
-        execOutboundTransfer({ bolt11, amount: transferInfo.amount });
+        execOutboundTransfer({ bolt11, amount: LNURLInfo.amount });
       }
-    } catch {
+    } catch (err) {
       handleMarkError();
     }
   };
 
   useEffect(() => {
-    if (transferInfo.data) prepareTransaction(transferInfo.data);
-  }, [transferInfo.data]);
+    if (LNURLInfo.data) prepareTransaction(LNURLInfo.data);
+  }, [LNURLInfo.data]);
 
   useEffect(() => {
-    setTransferInfo((prev) => {
+    setLNURLInfo((prev) => {
       return {
         ...prev,
-        data: params.data ?? prev.data,
+        data: params.lnurlOrAddress ?? prev.data,
         amount: params.amount ?? prev.amount,
         comment: params.comment ?? prev.comment,
       };
     });
-  }, [params.data, params.amount, params.comment]);
+  }, [params.lnurlOrAddress, params.amount, params.comment]);
 
   return {
     error,
     isLoading,
     isSuccess,
     isError,
-    transferInfo,
+    LNURLInfo,
     setAmountToPay,
     setComment,
     execute,

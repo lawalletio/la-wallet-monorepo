@@ -14,6 +14,7 @@ import { extractFirstTwoChars } from '@/utils';
 
 type SummaryProps = {
   isLoading: boolean;
+  isSuccess: boolean;
   data: string;
   type: string;
   amount: number;
@@ -21,7 +22,7 @@ type SummaryProps = {
   onClick: (e: ReactEventHandler<HTMLInputElement>) => void;
 };
 
-export const Summary = ({ isLoading, data, type, amount, expired = false, onClick }: SummaryProps) => {
+export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {
   const { lng, t } = useTranslation();
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
 
@@ -40,7 +41,7 @@ export const Summary = ({ isLoading, data, type, amount, expired = false, onClic
   }, [amount, pricesData, currency]);
 
   useEffect(() => {
-    setInsufficientBalance(balance.amount < amount);
+    setInsufficientBalance(!isLoading && !isSuccess && balance.amount < amount);
   }, [balance.amount, amount]);
 
   const [transferUsername, transferDomain] = splitHandle(data);

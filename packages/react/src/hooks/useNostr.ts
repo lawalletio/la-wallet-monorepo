@@ -125,7 +125,7 @@ export const useNostr = ({
   }, [autoConnect]);
 
   React.useEffect(() => {
-    initializeSigner(explicitSigner);
+    if (explicitSigner) initializeSigner(explicitSigner);
   }, [explicitSigner]);
 
   return {

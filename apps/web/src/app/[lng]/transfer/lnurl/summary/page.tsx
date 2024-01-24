@@ -11,9 +11,9 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 
 const page = () => {
   const { t } = useTranslation();
-  const { transferInfo, isSuccess, isError, execute, isLoading } = useLNURLContext();
+  const { LNURLInfo, isSuccess, isError, execute, isLoading } = useLNURLContext();
 
-  useActionOnKeypress('Enter', execute, [transferInfo]);
+  useActionOnKeypress('Enter', execute, [LNURLInfo]);
 
   return (
     <>
@@ -21,7 +21,7 @@ const page = () => {
         <>
           <Navbar />
 
-          {isError ? <ErrorTransfer /> : <FinishTransfer transferInfo={transferInfo} />}
+          {isError ? <ErrorTransfer /> : <FinishTransfer transferInfo={LNURLInfo} />}
         </>
       ) : (
         <>
@@ -29,16 +29,17 @@ const page = () => {
             showBackPage={true}
             title={t('VALIDATE_INFO')}
             overrideBack={
-              transferInfo.type === TransferTypes.LNURLW
+              LNURLInfo.type === TransferTypes.LNURLW
                 ? `/transfer`
-                : `/transfer/lnurl?data=${transferInfo.data}&amount=${transferInfo.amount}${transferInfo.comment ? `&comment=${transferInfo.comment}` : ''}`
+                : `/transfer/lnurl?data=${LNURLInfo.data}&amount=${LNURLInfo.amount}${LNURLInfo.comment ? `&comment=${LNURLInfo.comment}` : ''}`
             }
           />
           <Summary
             isLoading={isLoading}
-            data={transferInfo.data}
-            type={transferInfo.type}
-            amount={transferInfo.amount}
+            isSuccess={isSuccess}
+            data={LNURLInfo.data}
+            type={LNURLInfo.type}
+            amount={LNURLInfo.amount}
             expired={false}
             onClick={execute}
           />

@@ -2,7 +2,7 @@
 import { Button, Flex, Modal, Text } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 // import { AlertTypes } from '@/hooks/useAlerts';
-import { buildCardActivationEvent, useWalletContext } from '@lawallet/react';
+import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -25,6 +25,7 @@ const AddNewCardModal = () => {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+  const config = useConfig();
 
   const {
     user: { identity },
@@ -51,9 +52,9 @@ const AddNewCardModal = () => {
       loading: true,
     });
 
-    buildCardActivationEvent(newCardInfo.card, identity.data.privateKey)
+    buildCardActivationEvent(newCardInfo.card, identity.data.privateKey, config)
       .then((cardEvent: NostrEvent) => {
-        requestCardActivation(cardEvent).then(() => {
+        requestCardActivation(cardEvent, config).then(() => {
           // const description: string = cardActivated ? t('ACTIVATE_SUCCESS') : t('ACTIVATE_ERROR');
 
           // const type: AlertTypes = cardActivated ? 'success' : 'error';

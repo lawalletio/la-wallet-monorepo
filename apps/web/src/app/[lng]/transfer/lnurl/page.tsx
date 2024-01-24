@@ -9,19 +9,19 @@ import { useTranslation } from '@/context/TranslateContext';
 
 const TransferWithLNURL = () => {
   const { t } = useTranslation();
-  const { transferInfo, setAmountToPay, setComment } = useLNURLContext();
+  const { LNURLInfo, setAmountToPay, setComment } = useLNURLContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (transferInfo.type === TransferTypes.LNURLW && transferInfo.data && transferInfo.amount)
-      router.push(`/transfer/lnurl/summary?data=${transferInfo.data}&amount=${transferInfo.amount}`);
-  }, [transferInfo.amount]);
+    if (LNURLInfo.type === TransferTypes.LNURLW && LNURLInfo.data && LNURLInfo.amount)
+      router.push(`/transfer/lnurl/summary?data=${LNURLInfo.data}&amount=${LNURLInfo.amount}`);
+  }, [LNURLInfo.amount]);
 
   return (
     <>
       <Navbar showBackPage={true} title={t('DEFINE_AMOUNT')} overrideBack={`/transfer`} />
 
-      <SelectTransferAmount transferInfo={transferInfo} setAmountToPay={setAmountToPay} setComment={setComment} />
+      <SelectTransferAmount transferInfo={LNURLInfo} setAmountToPay={setAmountToPay} setComment={setComment} />
     </>
   );
 };

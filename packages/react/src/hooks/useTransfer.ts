@@ -74,13 +74,16 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
     statusVars.handleMarkLoading(true);
 
     const txEvent: NostrEvent | undefined = await signEvent(
-      buildTxStartEvent({
-        tokenName,
-        amount,
-        senderPubkey: signerInfo.pubkey,
-        receiverPubkey: pubkey,
-        comment,
-      }),
+      buildTxStartEvent(
+        {
+          tokenName,
+          amount,
+          senderPubkey: signerInfo.pubkey,
+          receiverPubkey: pubkey,
+          comment,
+        },
+        config,
+      ),
     );
 
     return txEvent ? publishTransfer(txEvent) : false;
@@ -93,12 +96,15 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
     statusVars.handleMarkLoading(true);
 
     const txEvent: NostrEvent | undefined = await signEvent(
-      buildTxStartEvent({
-        tokenName,
-        amount,
-        senderPubkey: signerInfo.pubkey,
-        bolt11,
-      }),
+      buildTxStartEvent(
+        {
+          tokenName,
+          amount,
+          senderPubkey: signerInfo.pubkey,
+          bolt11,
+        },
+        config,
+      ),
     );
 
     return txEvent ? publishTransfer(txEvent) : false;

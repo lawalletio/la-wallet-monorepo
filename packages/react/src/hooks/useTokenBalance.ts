@@ -44,6 +44,7 @@ export const useTokenBalance = (parameters: UseTokenBalanceProps): UseTokenBalan
       closeOnEose,
     },
     enabled: !balance.loading && enabled,
+    config,
   });
 
   const loadBalance = async () => {
