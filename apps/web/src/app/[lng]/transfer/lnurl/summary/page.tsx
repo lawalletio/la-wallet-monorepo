@@ -39,7 +39,7 @@ const page = () => {
             data={transferInfo.data}
             type={transferInfo.type}
             amount={transferInfo.amount}
-            expired={transferInfo.expired}
+            expired={false}
             onClick={execute}
           />
         </>

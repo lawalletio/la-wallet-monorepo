@@ -238,9 +238,15 @@ importers:
         specifier: npm:@lawallet/nostr-tools
         version: /@lawallet/nostr-tools@1.17.0(typescript@5.3.3)
     devDependencies:
+      '@noble/secp256k1':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@types/node':
         specifier: ^20.11.5
         version: 20.11.5
+      '@types/secp256k1':
+        specifier: ^4.0.6
+        version: 4.0.6
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -2144,7 +2150,6 @@ packages:
 
   /@noble/secp256k1@2.0.0:
     resolution: {integrity: sha512-rUGBd95e2a45rlmFTqQJYEFA4/gdIARFfuTuTqLglz0PZ6AKyzyXsEZZq7UZn8hZsvaBgpCzKKBJizT2cJERXw==}
-    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2378,6 +2383,12 @@ packages:
 
   /@types/scheduler@0.16.8:
     resolution: {integrity: sha512-WZLiwShhwLRmeV6zH+GkbOFT6Z6VklCItrDioxUnv+u4Ll+8vKeFySoFyK/0ctcRpOmwAicELfmys1sDc/Rw+A==}
+    dev: true
+
+  /@types/secp256k1@4.0.6:
+    resolution: {integrity: sha512-hHxJU6PAEUn0TP4S/ZOzuTUvJWuZ6eIKeNKb5RBpODvSl6hp1Wrw4s7ATY50rklRCScUDpHzVA/DQdSjJ3UoYQ==}
+    dependencies:
+      '@types/node': 20.11.5
     dev: true
 
   /@types/semver@7.5.6:

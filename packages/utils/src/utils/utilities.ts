@@ -1,12 +1,13 @@
-import { baseConfig, defaultTransfer } from '../constants/constants.js';
+import { baseConfig, defaultInvoiceTransfer, defaultLNURLTransfer } from '../constants/constants.js';
 import { getUserPubkey } from '../interceptors/identity.js';
-import { getPayRequest, requestInvoice, type TransferInformation } from '../interceptors/transaction.js';
+import { getPayRequest, requestInvoice } from '../interceptors/transaction.js';
 import { type ConfigProps } from '../types/config.js';
-import { TransferTypes } from '../types/transaction.js';
+import { TransferTypes, type InvoiceTransferType, type LNURLTransferType } from '../types/transaction.js';
 import bolt11 from '../libs/light-bolt11.js';
 import { lnurl_decode } from '../libs/lnurl.js';
+import type { DecodedInvoiceReturns } from '../types/bolt11.js';
 
-export const decodeInvoice = (invoice: string) => {
+export const decodeInvoice = (invoice: string): DecodedInvoiceReturns | undefined => {
   try {
     const decodedInvoice = bolt11.decode(invoice);
     return decodedInvoice;
@@ -79,25 +80,24 @@ export const detectTransferType = (data: string): TransferTypes => {
   return TransferTypes.INTERNAL;
 };
 
-const parseInvoiceInfo = (invoice: string) => {
-  const decodedInvoice = decodeInvoice(invoice);
-  if (!decodedInvoice) return defaultTransfer;
+export const parseInvoiceInfo = (decodedInvoice: DecodedInvoiceReturns) => {
+  if (!decodedInvoice || !decodedInvoice.paymentRequest) return defaultInvoiceTransfer;
 
-  const invoiceAmount = decodedInvoice.sections.find((section: Record<string, string>) => section.name === 'amount');
-  if (!invoiceAmount) return defaultTransfer;
+  const invoiceAmount: number = Number(decodedInvoice.millisatoshis);
+  if (!invoiceAmount) return defaultInvoiceTransfer;
 
-  const createdAt = decodedInvoice.sections.find((section: Record<string, string>) => section.name === 'timestamp');
+  const createdAt = decodedInvoice.timestamp;
 
-  const transfer: TransferInformation = {
-    ...defaultTransfer,
-    data: invoice.toLowerCase(),
+  const transfer: InvoiceTransferType = {
+    ...defaultInvoiceTransfer,
+    data: decodedInvoice.paymentRequest.toLowerCase(),
     type: TransferTypes.INVOICE,
-    amount: invoiceAmount.value / 1000,
+    amount: invoiceAmount / 1000,
     expired: false,
   };
 
-  if (createdAt && createdAt.value) {
-    const expirationDate: number = (createdAt.value + decodedInvoice.expiry) * 1000;
+  if (createdAt && createdAt) {
+    const expirationDate: number = (createdAt + Number(decodedInvoice.timeExpireDate)) * 1000;
     if (expirationDate < Date.now()) transfer.expired = true;
   }
 
@@ -125,16 +125,16 @@ const parseLNURLInfo = async (data: string) => {
   if (internalLUD16.length) return parseINTERNALInfo(internalLUD16);
 
   const payRequest = await getPayRequest(decodedLNURL);
-  if (!payRequest) return defaultTransfer;
+  if (!payRequest) return defaultLNURLTransfer;
 
-  const transfer: TransferInformation = {
-    ...defaultTransfer,
+  const transfer: LNURLTransferType = {
+    ...defaultLNURLTransfer,
     data,
     type: TransferTypes.LNURL,
-    payRequest,
+    request: payRequest,
   };
 
-  if (payRequest.tag === 'payRequest') {
+  if (payRequest && payRequest.tag === 'payRequest') {
     try {
       const parsedMetadata: Array<string>[] = JSON.parse(payRequest.metadata);
       const identifier: string[] | undefined = parsedMetadata.find((data: string[]) => {
@@ -171,13 +171,13 @@ export const splitHandle = (handle: string): string[] => {
 const parseLUD16Info = async (data: string) => {
   const [username, domain] = splitHandle(data);
   const payRequest = await getPayRequest(`https://${domain}/.well-known/lnurlp/${username}`);
-  if (!payRequest) return defaultTransfer;
+  if (!payRequest) return defaultLNURLTransfer;
 
-  const transfer: TransferInformation = {
-    ...defaultTransfer,
+  const transfer: LNURLTransferType = {
+    ...defaultLNURLTransfer,
     data,
     type: TransferTypes.LUD16,
-    payRequest,
+    request: payRequest,
   };
 
   if (payRequest.minSendable == payRequest.maxSendable) transfer.amount = payRequest.maxSendable! / 1000;
@@ -188,10 +188,10 @@ const parseLUD16Info = async (data: string) => {
 const parseINTERNALInfo = async (data: string) => {
   const [username] = splitHandle(data);
   const receiverPubkey: string = await getUserPubkey(username!);
-  if (!receiverPubkey) return defaultTransfer;
+  if (!receiverPubkey) return defaultLNURLTransfer;
 
-  const transfer: TransferInformation = {
-    ...defaultTransfer,
+  const transfer: LNURLTransferType = {
+    ...defaultLNURLTransfer,
     data,
     type: TransferTypes.INTERNAL,
     receiverPubkey,
@@ -210,16 +210,16 @@ export const removeLightningStandard = (str: string) => {
       : lowStr;
 };
 
-export const formatTransferData = async (data: string): Promise<TransferInformation> => {
-  if (!data.length) return defaultTransfer;
+export const formatLNURLData = async (data: string): Promise<LNURLTransferType> => {
+  if (!data.length) return defaultLNURLTransfer;
   const cleanStr: string = removeLightningStandard(data);
 
   const decodedTransferType: TransferTypes = detectTransferType(cleanStr);
-  if (decodedTransferType === TransferTypes.NONE) return defaultTransfer;
+  if (decodedTransferType === TransferTypes.NONE) return defaultLNURLTransfer;
 
   switch (decodedTransferType) {
     case TransferTypes.INVOICE:
-      return parseInvoiceInfo(cleanStr);
+      return defaultLNURLTransfer;
 
     case TransferTypes.LNURL:
       return parseLNURLInfo(cleanStr);

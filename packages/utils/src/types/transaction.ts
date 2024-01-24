@@ -44,3 +44,31 @@ export enum TransactionType {
 export type TokensAmount = {
   [_tokenId: string]: number;
 };
+
+export interface LNRequestResponse {
+  tag: string;
+  callback: string;
+  metadata: string;
+  commentAllowed: number;
+  minSendable?: number;
+  maxSendable?: number;
+  k1?: string;
+  minWithdrawable?: number;
+  maxWithdrawable?: number;
+}
+
+export interface TransferInformation {
+  data: string;
+  amount: number;
+  type: TransferTypes;
+}
+
+export interface LNURLTransferType extends TransferInformation {
+  comment: string;
+  receiverPubkey: string;
+  request: LNRequestResponse | null;
+}
+
+export interface InvoiceTransferType extends TransferInformation {
+  expired: boolean;
+}

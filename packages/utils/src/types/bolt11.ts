@@ -1,4 +1,4 @@
-type RoutingInfo = Array<{
+export type RoutingInfo = Array<{
   pubkey: string;
   short_channel_id: string;
   fee_base_msat: number;
@@ -10,28 +10,33 @@ type FallbackAddress = {
   address: string;
   addressHash: string;
 };
+
+export type FeatureBitOrder =
+  | 'option_data_loss_protect'
+  | 'initial_routing_sync'
+  | 'option_upfront_shutdown_script'
+  | 'gossip_queries'
+  | 'var_onion_optin'
+  | 'gossip_queries_ex'
+  | 'option_static_remotekey'
+  | 'payment_secret'
+  | 'basic_mpp'
+  | 'option_support_large_channel';
+
 export type FeatureBits = {
   word_length: number;
-  option_data_loss_protect?: Feature;
-  initial_routing_sync?: Feature;
-  option_upfront_shutdown_script?: Feature;
-  gossip_queries?: Feature;
-  var_onion_optin?: Feature;
-  gossip_queries_ex?: Feature;
-  option_static_remotekey?: Feature;
-  payment_secret?: Feature;
-  basic_mpp?: Feature;
-  option_support_large_channel?: Feature;
   extra_bits?: {
     start_bit: number;
     bits: boolean[];
     has_required?: boolean;
   };
-};
+} & Record<FeatureBitOrder, Feature>;
+
 type Feature = {
   required?: boolean;
   supported?: boolean;
 };
+
 export type Network = {
   [index: string]: any;
   bech32: string;
@@ -39,6 +44,7 @@ export type Network = {
   scriptHash: number;
   validWitnessVersions: number[];
 };
+
 type UnknownTag = {
   tagCode: number;
   words: string;
@@ -59,6 +65,12 @@ export declare type TagsObject = {
   feature_bits?: FeatureBits;
   unknownTags?: UnknownTag[];
 };
+
+export type TagsType = Array<{
+  tagName: string;
+  data: TagData;
+}>;
+
 export declare type PaymentRequestObject = {
   paymentRequest?: string;
   complete?: boolean;
@@ -74,8 +86,7 @@ export declare type PaymentRequestObject = {
   payeeNodeKey?: string;
   signature?: string;
   recoveryFlag?: number;
-  tags: Array<{
-    tagName: string;
-    data: TagData;
-  }>;
+  tags: TagsType;
 };
+
+export type DecodedInvoiceReturns = PaymentRequestObject & { tagsObject: TagsObject };

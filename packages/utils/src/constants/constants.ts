@@ -1,8 +1,7 @@
 import { noopStorage } from '../createStorage.js';
-import type { TransferInformation } from '../interceptors/transaction.js';
 import { type ConfigProps } from '../types/config.js';
 import type { UserIdentity } from '../types/identity.js';
-import { TransferTypes } from '../types/transaction.js';
+import { TransferTypes, type InvoiceTransferType, type LNURLTransferType } from '../types/transaction.js';
 import type { AvailableLanguages } from '../types/translations.js';
 import type { AvailableCurrencies, CurrencyMetadata, UserConfigProps } from '../types/userConfig.js';
 
@@ -54,11 +53,18 @@ export const defaultIdentity: UserIdentity = {
   npub: '',
 };
 
-export const defaultTransfer: TransferInformation = {
+export const defaultInvoiceTransfer: InvoiceTransferType = {
+  data: '',
+  amount: 0,
+  type: TransferTypes.NONE,
+  expired: false,
+};
+
+export const defaultLNURLTransfer: LNURLTransferType = {
   data: '',
   amount: 0,
   comment: '',
   receiverPubkey: baseConfig.modulePubkeys.urlx,
-  payRequest: null,
   type: TransferTypes.NONE,
+  request: null,
 };
