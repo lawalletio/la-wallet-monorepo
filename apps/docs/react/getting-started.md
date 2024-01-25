@@ -57,14 +57,16 @@ Now that everything is set up
 
 ```tsx [UserBalance.tsx]
 import { useTokenBalance } from '@lawallet/react';
+import { config } from './config';
 
 function UserBalance() {
-  const userPubkey: string = '9a9787e3e31cfdc95f35d5cfc1eeaead33e693ec59789c20f63546b191e28d59';
+  const userPubkey: string = '9a9787e3e31cfdc95f35d5...9789c20f63546b191e28d59';
 
   const { balance } = useTokenBalance({
     pubkey: userPubkey,
     tokenId: 'BTC',
     enabled: Boolean(userPubkey.length),
+    config,
   });
 
   return <div>Balance BTC: {balance}</div>;

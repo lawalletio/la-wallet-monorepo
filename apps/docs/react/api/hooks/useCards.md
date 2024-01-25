@@ -22,7 +22,7 @@ import { useCards } from '@lawallet/react';
 import { config } from './config';
 
 function App() {
-  const privateKey: string = '9a9787e3e31cfdc95f35d5cfc1eeaead33e693ec59789c20f63546b191e28d59';
+  const privateKey: string = '9a9787e3e31cfdc95f35...789c20f63546b191e28d59';
 
   const { cards } = useCards({
     privateKey,

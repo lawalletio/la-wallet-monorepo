@@ -15,11 +15,13 @@ import { useSubscription } from '@lawallet/react';
 
 ## Usage
 
+::: code-group
+
 ```tsx [index.tsx]
 import { useSubscription } from '@lawallet/react';
 
 function App() {
-  const userPubkey: string = '9a9787e3e31cfdc95f35d5cfc1eeaead33e693ec59789c20f63546b191e28d59';
+  const userPubkey: string = '9a9787e3e31c...20f63546b191e28d59';
 
   const { subscription, events } = useSubscription({
     filters: {
@@ -31,10 +33,14 @@ function App() {
     options: {
       closeOnEose: true
     },
-    enabled: true
+    enabled: true,
+    config
   });
 }
 ```
+
+<<< @/snippets/react/config.ts[config.ts]
+:::
 
 ## Parameters
 
