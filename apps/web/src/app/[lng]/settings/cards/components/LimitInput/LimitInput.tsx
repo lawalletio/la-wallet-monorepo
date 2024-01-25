@@ -1,11 +1,9 @@
 import { InputGroup, InputGroupRight, InputWithLabel, Text } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
-import { useWalletContext } from '@lawallet/react';
 import React from 'react';
 
-const LimitInput = ({ amount, onChange }) => {
+const LimitInput = ({ amount, currency, onChange }) => {
   const { t } = useTranslation();
-  const { settings, converter } = useWalletContext();
 
   return (
     <InputGroup>
@@ -15,11 +13,11 @@ const LimitInput = ({ amount, onChange }) => {
         name="max-amount"
         label={t('MAX_AMOUNT')}
         placeholder="0"
-        value={String(converter.convertCurrency(amount, 'SAT', settings.props.currency))}
+        value={amount}
       />
 
       <InputGroupRight>
-        <Text size="small">{settings.props.currency}</Text>
+        <Text size="small">{currency}</Text>
       </InputGroupRight>
     </InputGroup>
   );

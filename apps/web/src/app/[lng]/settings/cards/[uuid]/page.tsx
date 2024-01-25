@@ -26,11 +26,11 @@ const defaultDailyLimit: Limit = {
   delta: 86400,
 };
 
-type LimtisConfigOptions = 'tx' | 'daily';
+type LimitsConfigOptions = 'tx' | 'daily';
 
 const page = () => {
   const { t } = useTranslation();
-  const [showLimit, setShowLimit] = useState<LimtisConfigOptions>('tx');
+  const [showLimit, setShowLimit] = useState<LimitsConfigOptions>('tx');
   const {
     user: { identity },
     settings,
@@ -48,6 +48,11 @@ const page = () => {
     config,
   });
 
+  const [configLimits, setConfigLimits] = useState<Record<LimitsConfigOptions, number>>({
+    tx: 0,
+    daily: 0,
+  });
+
   const [newConfig, setNewConfig] = useState<CardPayload>({
     name: '',
     description: '',
@@ -57,16 +62,17 @@ const page = () => {
 
   const handleChangeLimit = (e: ChangeEvent<HTMLInputElement>) => {
     const inputAmount: number = !e.target.value ? 0 : parseFloat(e.target.value);
-    const newValue = converter.convertCurrency(inputAmount, settings.props.currency, 'SAT') * 1000;
-
-    const newLimits: Limit[] = newConfig.limits.slice();
-
-    newLimits[showLimit === 'tx' ? 0 : 1].amount = BigInt(newValue).toString();
-
-    setNewConfig({
-      ...newConfig,
-      limits: newLimits,
+    setConfigLimits({
+      ...configLimits,
+      [showLimit]: inputAmount,
     });
+    // const newValue = converter.convertCurrency(inputAmount, settings.props.currency, 'SAT') * 1000;
+    // const newLimits: Limit[] = newConfig.limits.slice();
+    // newLimits[showLimit === 'tx' ? 0 : 1].amount = BigInt(newValue).toString();
+    // setNewConfig({
+    //   ...newConfig,
+    //   limits: newLimits,
+    // });
   };
 
   const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +94,21 @@ const page = () => {
   };
 
   const handleSaveConfig = async () => {
-    const updated: boolean = await updateCardConfig(uuid, newConfig);
+    const updated: boolean = await updateCardConfig(uuid, {
+      ...newConfig,
+      limits: [
+        {
+          ...newConfig.limits[0],
+          amount: BigInt(converter.convertCurrency(configLimits.tx, settings.props.currency, 'SAT') * 1000).toString(),
+        },
+        {
+          ...newConfig.limits[1],
+          amount: BigInt(
+            converter.convertCurrency(configLimits.daily, settings.props.currency, 'SAT') * 1000,
+          ).toString(),
+        },
+      ],
+    });
     if (updated) router.push('/settings/cards');
   };
 
@@ -104,11 +124,18 @@ const page = () => {
       if (limit.delta === defaultDailyLimit.delta) return limit;
     });
 
-    setNewConfig({
+    const preloadConfig = {
       name,
       description,
       status,
       limits: [txLimit ?? defaultTXLimit, dailyLimit ?? defaultDailyLimit],
+    };
+
+    setNewConfig(preloadConfig);
+
+    setConfigLimits({
+      tx: converter.convertCurrency(Number(preloadConfig.limits[0].amount) / 1000, 'SAT', settings.props.currency),
+      daily: converter.convertCurrency(Number(preloadConfig.limits[1].amount) / 1000, 'SAT', settings.props.currency),
     });
   }, [cardsConfig.cards]);
 
@@ -174,7 +201,8 @@ const page = () => {
 
           <LimitInput
             onChange={handleChangeLimit}
-            amount={Number(newConfig.limits[showLimit === 'tx' ? 0 : 1].amount) / 1000}
+            amount={configLimits[showLimit]}
+            currency={settings.props.currency}
           />
 
           <Divider y={24} />
