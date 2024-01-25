@@ -38,6 +38,15 @@ const page = () => {
   } = useWalletContext();
 
   const config = useConfig();
+  const router = useRouter();
+  const params = useParams();
+
+  const uuid: string = useMemo(() => params.uuid as string, []);
+
+  const { cardsData, cardsConfig, loadInfo, updateCardConfig } = useCards({
+    privateKey: identity.data.privateKey,
+    config,
+  });
 
   const [newConfig, setNewConfig] = useState<CardPayload>({
     name: '',
@@ -46,24 +55,13 @@ const page = () => {
     limits: [defaultTXLimit, defaultDailyLimit],
   });
 
-  const { cardsData, cardsConfig, loadInfo, updateCardConfig } = useCards({
-    privateKey: identity.data.privateKey,
-    config,
-  });
-
-  const router = useRouter();
-  const params = useParams();
-
-  const uuid: string = useMemo(() => params.uuid as string, []);
-
   const handleChangeLimit = (e: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value.replaceAll(',', '').replaceAll('.', '');
-    const newAmount = !inputValue ? 0 : parseInt(inputValue);
+    const inputAmount: number = !e.target.value ? 0 : parseFloat(e.target.value);
+    const newValue = converter.convertCurrency(inputAmount, settings.props.currency, 'SAT') * 1000;
 
     const newLimits: Limit[] = newConfig.limits.slice();
-    newLimits[showLimit === 'tx' ? 0 : 1].amount = BigInt(
-      converter.convertCurrency(newAmount * 1000, settings.props.currency, 'SAT'),
-    ).toString();
+
+    newLimits[showLimit === 'tx' ? 0 : 1].amount = BigInt(newValue).toString();
 
     setNewConfig({
       ...newConfig,

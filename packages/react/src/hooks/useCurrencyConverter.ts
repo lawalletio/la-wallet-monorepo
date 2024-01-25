@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { parseContent, decimalsToUse, roundToDown } from '@lawallet/utils';
+import { decimalsToUse, parseContent, roundToDown } from '@lawallet/utils';
 import { type AvailableCurrencies } from '@lawallet/utils/types';
+import * as React from 'react';
 import { useConfig } from './useConfig.js';
 
 const ENDPOINT_PRICE_BTC: string = 'https://api.yadio.io/exrates/btc';

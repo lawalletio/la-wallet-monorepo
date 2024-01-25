@@ -1,16 +1,13 @@
 import { LaWalletKinds, LaWalletTags, getMultipleTags, getTag, parseContent } from '@lawallet/utils';
-
-import { type Transaction, TransactionDirection, TransactionStatus, TransactionType } from '@lawallet/utils/types';
-
+import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
+import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 
-import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
-
-import { type Event, nip26 } from 'nostr-tools';
-import { useSubscription } from './useSubscription.js';
-import { CACHE_TXS_KEY } from '../constants/constants.js';
 import type { ConfigParameter } from '@lawallet/utils/types';
+import { nip26, type Event } from 'nostr-tools';
+import { CACHE_TXS_KEY } from '../constants/constants.js';
 import { useConfig } from './useConfig.js';
+import { useSubscription } from './useSubscription.js';
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
