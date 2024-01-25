@@ -6,15 +6,16 @@ import QrScanner from '@/components/UI/Scanner/Scanner';
 import { regexURL } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { TransferTypes } from '@lawallet/react/types';
-import { detectTransferType, removeLightningStandard } from '@lawallet/react';
+import { detectTransferType, removeLightningStandard, useConfig } from '@lawallet/react';
 import { useRouter } from 'next/navigation';
 import NimiqQrScanner from 'qr-scanner';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function Page() {
   const [urlScanned, setUrlScanned] = useState<string>('');
   const { t } = useTranslation();
   const router = useRouter();
+  const config = useConfig();
 
   const handleScanURL = (str: string) => {
     const url = new URL(str);
@@ -38,7 +39,7 @@ export default function Page() {
       return;
     } else {
       const cleanScan: string = removeLightningStandard(result.data);
-      const scanType: TransferTypes = detectTransferType(cleanScan);
+      const scanType: TransferTypes = detectTransferType(cleanScan, config);
       if (scanType === TransferTypes.NONE) return;
 
       if (scanType === TransferTypes.INVOICE) {
@@ -49,11 +50,6 @@ export default function Page() {
       router.push(`/transfer/lnurl?data=${result.data.toLowerCase()}`);
     }
   };
-
-  useEffect(() => {
-    router.prefetch('/transfer/lnurl');
-    router.prefetch('/transfer/invoice');
-  }, [router]);
 
   return (
     <>

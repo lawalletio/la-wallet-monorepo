@@ -9,19 +9,20 @@ import { Avatar, Button, Divider, Feedback, Flex, Heading, Icon, LinkButton, Tex
 import { useTranslation } from '@/context/TranslateContext';
 import { splitHandle, formatAddress, formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import { useEffect, useMemo, useState } from 'react';
+import { ReactEventHandler, useEffect, useMemo, useState } from 'react';
 import { extractFirstTwoChars } from '@/utils';
 
 type SummaryProps = {
   isLoading: boolean;
+  isSuccess: boolean;
   data: string;
   type: string;
   amount: number;
   expired?: boolean;
-  onClick: (e: any) => void;
+  onClick: (e: ReactEventHandler<HTMLInputElement>) => void;
 };
 
-export const Summary = ({ isLoading, data, type, amount, expired = false, onClick }: SummaryProps) => {
+export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {
   const { lng, t } = useTranslation();
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
 
@@ -40,7 +41,7 @@ export const Summary = ({ isLoading, data, type, amount, expired = false, onClic
   }, [amount, pricesData, currency]);
 
   useEffect(() => {
-    setInsufficientBalance(balance.amount < amount);
+    setInsufficientBalance(!isLoading && !isSuccess && balance.amount < amount);
   }, [balance.amount, amount]);
 
   const [transferUsername, transferDomain] = splitHandle(data);

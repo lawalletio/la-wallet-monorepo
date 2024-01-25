@@ -1,7 +1,7 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { useTranslation } from '@/context/TranslateContext';
-import { useInvoice } from '@lawallet/react';
+import { useConfig, useInvoice } from '@lawallet/react';
 import React from 'react';
 import { Summary } from '../../components/Summary';
 import { TransferTypes } from '@lawallet/react/types';
@@ -11,9 +11,11 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 
 const TransferWithInvoice = ({ params }) => {
   const { t } = useTranslation();
+  const config = useConfig();
 
   const { isLoading, isError, isSuccess, parsedInvoice, executePayment } = useInvoice({
     bolt11: params.bolt11,
+    config,
   });
 
   useActionOnKeypress('Enter', executePayment, [parsedInvoice]);
@@ -31,6 +33,7 @@ const TransferWithInvoice = ({ params }) => {
           <Navbar showBackPage={true} title={t('VALIDATE_INFO')} overrideBack="/transfer" />
           <Summary
             isLoading={isLoading}
+            isSuccess={isSuccess}
             data={parsedInvoice.data}
             type={TransferTypes.INVOICE}
             amount={parsedInvoice.amount}

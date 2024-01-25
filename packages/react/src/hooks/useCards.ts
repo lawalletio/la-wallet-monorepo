@@ -57,10 +57,11 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
       cacheUsage: NDKSubscriptionCacheUsage.PARALLEL,
     },
     enabled: true,
+    config,
   });
 
   const buildAndBroadcastCardConfig = (cardConfig: CardConfigPayload, privateKey: string): Promise<boolean> => {
-    return buildCardConfigEvent(cardConfig, privateKey)
+    return buildCardConfigEvent(cardConfig, privateKey, config)
       .then((configEvent) => {
         return broadcastEvent(configEvent, config);
       })

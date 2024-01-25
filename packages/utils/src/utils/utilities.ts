@@ -59,16 +59,16 @@ export const claimLNURLw = async (
   }
 };
 
-export const detectTransferType = (data: string): TransferTypes => {
+export const detectTransferType = (data: string, config: ConfigProps = baseConfig): TransferTypes => {
   if (!data.length) return TransferTypes.NONE;
 
   const upperStr: string = data.toUpperCase();
   const isLUD16 = validateEmail(upperStr);
   if (isLUD16) {
-    const [username, domain] = splitHandle(upperStr);
+    const [username, domain] = splitHandle(upperStr, config);
     if (!username || !domain) return TransferTypes.NONE;
 
-    return domain.toUpperCase() === baseConfig.federation.domain.toUpperCase()
+    return domain.toUpperCase() === config.federation.domain.toUpperCase()
       ? TransferTypes.INTERNAL
       : TransferTypes.LUD16;
   }
@@ -114,14 +114,15 @@ const removeHttpOrHttps = (str: string) => {
 const isInternalLNURL = (decodedLNURL: string, config: ConfigProps = baseConfig): string => {
   const urlWithoutHttp: string = removeHttpOrHttps(decodedLNURL);
   const [domain, , , username] = urlWithoutHttp.split('/');
-  if (domain === config.federation.domain && username) return `${username}@${domain}`;
+  if (username && domain && domain.toUpperCase() === config.federation.domain.toUpperCase())
+    return `${username}@${domain}`;
 
   return '';
 };
 
-const parseLNURLInfo = async (data: string) => {
+const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig) => {
   const decodedLNURL = lnurl_decode(data);
-  const internalLUD16: string = isInternalLNURL(decodedLNURL);
+  const internalLUD16: string = isInternalLNURL(decodedLNURL, config);
   if (internalLUD16.length) return parseINTERNALInfo(internalLUD16);
 
   const payRequest = await getPayRequest(decodedLNURL);
@@ -153,7 +154,7 @@ const parseLNURLInfo = async (data: string) => {
   return transfer;
 };
 
-export const splitHandle = (handle: string): string[] => {
+export const splitHandle = (handle: string, config: ConfigProps = baseConfig): string[] => {
   if (!handle.length) return [];
 
   try {
@@ -161,15 +162,15 @@ export const splitHandle = (handle: string): string[] => {
       const [username, domain] = handle.split('@');
       return [username!, domain!];
     } else {
-      return [handle, baseConfig.federation.domain];
+      return [handle, config.federation.domain];
     }
   } catch {
     return [];
   }
 };
 
-const parseLUD16Info = async (data: string) => {
-  const [username, domain] = splitHandle(data);
+const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig) => {
+  const [username, domain] = splitHandle(data, config);
   const payRequest = await getPayRequest(`https://${domain}/.well-known/lnurlp/${username}`);
   if (!payRequest) return defaultLNURLTransfer;
 
@@ -185,9 +186,9 @@ const parseLUD16Info = async (data: string) => {
   return transfer;
 };
 
-const parseINTERNALInfo = async (data: string) => {
-  const [username] = splitHandle(data);
-  const receiverPubkey: string = await getUserPubkey(username!);
+const parseINTERNALInfo = async (data: string, config: ConfigProps = baseConfig) => {
+  const [username] = splitHandle(data, config);
+  const receiverPubkey: string = await getUserPubkey(username!, config);
   if (!receiverPubkey) return defaultLNURLTransfer;
 
   const transfer: LNURLTransferType = {
@@ -210,11 +211,11 @@ export const removeLightningStandard = (str: string) => {
       : lowStr;
 };
 
-export const formatLNURLData = async (data: string): Promise<LNURLTransferType> => {
+export const formatLNURLData = async (data: string, config: ConfigProps = baseConfig): Promise<LNURLTransferType> => {
   if (!data.length) return defaultLNURLTransfer;
   const cleanStr: string = removeLightningStandard(data);
 
-  const decodedTransferType: TransferTypes = detectTransferType(cleanStr);
+  const decodedTransferType: TransferTypes = detectTransferType(cleanStr, config);
   if (decodedTransferType === TransferTypes.NONE) return defaultLNURLTransfer;
 
   switch (decodedTransferType) {
@@ -222,13 +223,13 @@ export const formatLNURLData = async (data: string): Promise<LNURLTransferType> 
       return defaultLNURLTransfer;
 
     case TransferTypes.LNURL:
-      return parseLNURLInfo(cleanStr);
+      return parseLNURLInfo(cleanStr, config);
 
     case TransferTypes.LUD16:
-      return parseLUD16Info(cleanStr);
+      return parseLUD16Info(cleanStr, config);
 
     default:
-      return parseINTERNALInfo(cleanStr);
+      return parseINTERNALInfo(cleanStr, config);
   }
 };
 

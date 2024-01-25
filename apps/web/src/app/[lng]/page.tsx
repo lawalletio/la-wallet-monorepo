@@ -11,18 +11,12 @@ import { useTranslation } from '@/context/TranslateContext';
 import theme from '@/styles/theme';
 import { Flex } from '@unllamas/components';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 export default function Page() {
   const { t } = useTranslation();
   const router = useRouter();
 
   // const { handleCreateIdentity, loading } = useCreateIdentity()
-
-  useEffect(() => {
-    router.prefetch('/login');
-  }, [router]);
-
   return (
     <Container size="small">
       <Divider y={16} />

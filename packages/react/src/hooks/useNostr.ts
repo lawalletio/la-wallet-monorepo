@@ -2,7 +2,14 @@ import * as React from 'react';
 import type NostrExtensionProvider from '../types/nostr.js';
 import { type WebLNProvider as WebLNExtensionProvider } from '../types/webln.js';
 
-import NDK, { NDKNip07Signer, NDKPrivateKeySigner, NDKUser, type NDKSigner } from '@nostr-dev-kit/ndk';
+import NDK, {
+  NDKNip07Signer,
+  NDKPrivateKeySigner,
+  NDKUser,
+  type NDKSigner,
+  type NostrEvent,
+  NDKEvent,
+} from '@nostr-dev-kit/ndk';
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;
@@ -11,6 +18,7 @@ type LightningProvidersType = {
 
 type UseNostrParameters = {
   explicitRelayUrls: string[];
+  explicitSigner?: NDKSigner;
   autoConnect?: boolean;
 };
 
@@ -21,13 +29,18 @@ export interface UseNostrReturns {
   providers: LightningProvidersType;
   connectRelays: () => Promise<boolean>;
   initializeSigner: (signer: SignerTypes) => void;
+  signEvent: (event: NostrEvent, signer?: SignerTypes) => Promise<NostrEvent>;
   authWithPrivateKey: (hexKey: string) => Promise<SignerTypes>;
   authWithExtension: () => Promise<SignerTypes>;
 }
 
 export type SignerTypes = NDKSigner | undefined;
 
-export const useNostr = ({ explicitRelayUrls, autoConnect = true }: UseNostrParameters): UseNostrReturns => {
+export const useNostr = ({
+  explicitRelayUrls,
+  autoConnect = true,
+  explicitSigner = undefined,
+}: UseNostrParameters): UseNostrReturns => {
   const [ndk] = React.useState<NDK>(
     new NDK({
       explicitRelayUrls,
@@ -42,9 +55,12 @@ export const useNostr = ({ explicitRelayUrls, autoConnect = true }: UseNostrPara
     nostr: undefined,
   });
 
-  const initializeSigner = (signer: SignerTypes) => {
+  const initializeSigner = async (signer: SignerTypes) => {
     if (!signer) return;
     ndk.signer = signer;
+
+    const user: NDKUser = await signer.user();
+    if (user && user.pubkey) setSignerInfo(user);
   };
 
   const loadProviders = React.useCallback(async () => {
@@ -69,9 +85,6 @@ export const useNostr = ({ explicitRelayUrls, autoConnect = true }: UseNostrPara
       const privateKeySigner = new NDKPrivateKeySigner(hexKey);
       initializeSigner(privateKeySigner);
 
-      const user: NDKUser = await privateKeySigner.user();
-      if (user && user.pubkey) setSignerInfo(user);
-
       return privateKeySigner;
     } catch {
       return undefined;
@@ -86,13 +99,22 @@ export const useNostr = ({ explicitRelayUrls, autoConnect = true }: UseNostrPara
       const nip07signer = new NDKNip07Signer();
       initializeSigner(nip07signer);
 
-      const user = await nip07signer.user();
-      if (user) setSignerInfo(user);
-
       return nip07signer;
     } catch {
       return undefined;
     }
+  };
+
+  const signEvent = async (event: NostrEvent, explicitSigner?: SignerTypes): Promise<NostrEvent> => {
+    if (!ndk.signer && !explicitSigner) {
+      throw new Error('You need to initialize a signer to sign an event');
+    }
+
+    const ndkProvider = explicitSigner ? new NDK({ signer: explicitSigner }) : ndk;
+    const eventToSign: NDKEvent = new NDKEvent(ndkProvider, event);
+
+    await eventToSign.sign();
+    return eventToSign.toNostrEvent();
   };
 
   React.useEffect(() => {
@@ -102,6 +124,10 @@ export const useNostr = ({ explicitRelayUrls, autoConnect = true }: UseNostrPara
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoConnect]);
 
+  React.useEffect(() => {
+    if (explicitSigner) initializeSigner(explicitSigner);
+  }, [explicitSigner]);
+
   return {
     ndk,
     signer,
@@ -109,6 +135,7 @@ export const useNostr = ({ explicitRelayUrls, autoConnect = true }: UseNostrPara
     providers,
     connectRelays,
     initializeSigner,
+    signEvent,
     authWithExtension,
     authWithPrivateKey,
   };

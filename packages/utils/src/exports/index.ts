@@ -19,8 +19,6 @@ export {
 export { type CreateConfigParameters, createConfig } from '../createConfig.js';
 export { type BaseStorage, type CreateStorageParameters, createStorage } from '../createStorage.js';
 
-export { SignEvent } from '../utils/ndk.js';
-
 export { lnurl_decode, lnurl_encode } from '../libs/lnurl.js';
 
 export { type MultiNip04Content, buildMultiNip04Event, parseMultiNip04Event } from '../libs/nip04.js';
@@ -51,3 +49,5 @@ export {
   unescapingText,
   extractEscappedMessage,
 } from '../utils/formatter.js';
+
+export { createSignerWithPrivateKey } from '../createSigner.js';

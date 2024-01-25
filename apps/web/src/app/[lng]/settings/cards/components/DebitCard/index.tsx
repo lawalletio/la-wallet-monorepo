@@ -10,7 +10,7 @@ import Pause from '@/components/Icons/Pause';
 import Play from '@/components/Icons/Play';
 import { useTranslation } from '@/context/TranslateContext';
 import { CardPayload, CardStatus, Design } from '@lawallet/react/types';
-import { buildCardTransferDonationEvent, useWalletContext } from '@lawallet/react';
+import { buildCardTransferDonationEvent, useConfig, useWalletContext } from '@lawallet/react';
 
 interface ComponentProps {
   card: {
@@ -23,6 +23,7 @@ interface ComponentProps {
 
 export default function Component(props: ComponentProps) {
   const { card, toggleCardStatus } = props;
+  const config = useConfig();
   const { t } = useTranslation();
   const [handleSelected, setHandleSelected] = useState(false);
 
@@ -44,7 +45,7 @@ export default function Component(props: ComponentProps) {
   };
 
   const handleDonateCard = async () => {
-    const transferDonationEvent = await buildCardTransferDonationEvent(card.uuid, identity.data.privateKey);
+    const transferDonationEvent = await buildCardTransferDonationEvent(card.uuid, identity.data.privateKey, config);
 
     const encodedDonationEvent: string = btoa(JSON.stringify(transferDonationEvent))
       .replace(/\+/g, '-')

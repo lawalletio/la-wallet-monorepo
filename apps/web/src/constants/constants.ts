@@ -11,7 +11,7 @@ export const MAX_INVOICE_AMOUNT = 10 ** 7;
 
 export const config = createConfig({
   endpoints: { identity: isDev ? 'https://debug.lawallet.ar' : 'https://lawallet.ar' },
-  federation: { domain: isDev ? 'debug.lawallet.ar' : 'lawallet.ar' },
+  federation: { id: 'debug.lawallet.ar', domain: isDev ? 'debug.lawallet.ar' : 'lawallet.ar' },
 });
 
 export const regexUserName: RegExp = /^[A-Za-z0123456789]+$/;

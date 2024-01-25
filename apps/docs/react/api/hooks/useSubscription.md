@@ -75,6 +75,7 @@ function App() {
 
 ```tsx [index.tsx]
 import { useSubscription } from '@lawallet/react';
+import { config } from './config';
 
 function App() {
   const { subscription, events } = useSubscription({
@@ -87,7 +88,8 @@ function App() {
     options: { // [!code focus]
       closeOnEose: true // [!code focus]
     }, // [!code focus]
-    enabled: true
+    enabled: true,
+    config
   });
 }
 ```
@@ -117,6 +119,35 @@ function App() {
   });
 }
 ```
+
+### config
+
+`Config | undefined`
+
+[`Config`](/react/api/createConfig#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/api/LaWalletConfig).
+
+::: code-group
+
+```tsx [index.tsx]
+import { useCards } from '@lawallet/react';
+import { config } from './config'; // [!code focus]
+
+function App() {
+  const { transactions } =useSubscription({
+    filters: {
+      [
+        authors: ['9a9787e...e28d59']
+        kinds: [1],
+      ]
+    },
+    enabled: true,
+    config // [!code focus]
+  });
+}
+```
+
+<<< @/snippets/react/config.ts[config.ts]
+:::
 
 ## Return Type
 

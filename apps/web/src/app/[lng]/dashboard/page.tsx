@@ -58,13 +58,6 @@ export default function Page() {
   }, [balance, pricesData, currency]);
 
   useEffect(() => {
-    router.prefetch('/deposit');
-    router.prefetch('/transfer');
-    router.prefetch('/settings');
-    router.prefetch('/scan');
-  }, [router]);
-
-  useEffect(() => {
     const userMadeBackup: boolean = Boolean(
       config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.data.hexpub}`) || false,
     );

@@ -1,4 +1,6 @@
-import { createConfig } from '@lawallet/react';
+import { createConfig, createSignerWithPrivateKey } from '@lawallet/react';
+
+const signer = createSignerWithPrivateKey('5caa3cd87cf1ad069bcf90065f8e3c60e18a4fca7b6070a44ec7223877504c84');
 
 export const config = createConfig({
   endpoints: {
@@ -15,4 +17,5 @@ export const config = createConfig({
     urlx: 'e17feb5f2cf83546bcf7fd9c8237b05275be958bd521543c2285ffc6c2d654b3',
   },
   relaysList: ['wss://relay.damus.io', 'wss://relay.lawallet.ar'],
+  signer,
 });

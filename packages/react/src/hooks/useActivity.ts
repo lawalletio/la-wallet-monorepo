@@ -99,6 +99,7 @@ export const useActivity = (parameters: UseActivityProps): UseActivityReturns =>
     ],
     options,
     enabled: enabled && !activityInfo.loading,
+    config,
   });
 
   const formatStartTransaction = async (event: NDKEvent) => {

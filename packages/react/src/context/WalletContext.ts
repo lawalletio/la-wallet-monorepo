@@ -4,6 +4,7 @@ import { useSettings, type UseSettingsReturns } from '../hooks/useSettings.js';
 import { useUser, type UseUserReturns } from '../hooks/useUser.js';
 import { type ConfigParameter } from '@lawallet/utils/types';
 import { useNostrContext } from './NostrContext.js';
+import { useConfig } from '../hooks/useConfig.js';
 
 interface WalletContextType {
   user: UseUserReturns;
@@ -14,8 +15,8 @@ interface WalletContextType {
 export const WalletContext = React.createContext({} as WalletContextType);
 
 export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) {
-  const { children, config } = props;
-  const { signerInfo, authWithPrivateKey } = useNostrContext();
+  const config = useConfig(props);
+  const { signerInfo, authWithPrivateKey } = useNostrContext({ config });
 
   const user: UseUserReturns = useUser({ pubkey: signerInfo?.pubkey ?? '', config });
   const settings: UseSettingsReturns = useSettings();
@@ -36,7 +37,7 @@ export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) 
     if (!isLoading && privateKey) authWithPrivateKey(privateKey);
   }, [user.identity.data.privateKey]);
 
-  return React.createElement(WalletContext.Provider, { value }, children);
+  return React.createElement(WalletContext.Provider, { value }, props.children);
 }
 
 export const useWalletContext = () => {

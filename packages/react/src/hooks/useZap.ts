@@ -1,4 +1,4 @@
-import { SignEvent, buildZapRequestEvent } from '@lawallet/utils';
+import { buildZapRequestEvent } from '@lawallet/utils';
 import { requestInvoice } from '@lawallet/utils/actions';
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
 import React from 'react';
@@ -34,7 +34,7 @@ interface UseZapParameters extends ConfigParameter {
 
 export const useZap = (parameters: UseZapParameters): useZapReturns => {
   const config = useConfig(parameters);
-  const { signer, signerInfo } = useNostrContext();
+  const { signEvent, signerInfo } = useNostrContext({ config });
 
   const [invoice, setInvoice] = React.useState<InvoiceProps>(defaultDeposit);
 
@@ -48,6 +48,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
     ],
     options: {},
     enabled: Boolean(invoice.bolt11.length && !invoice.payed),
+    config,
   });
 
   const createZapInvoice = async (sats: number): Promise<string | undefined> => {
@@ -56,8 +57,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
 
     try {
       const invoice_mSats: number = sats * 1000;
-      const zapRequestEvent: NostrEvent | undefined = await SignEvent(
-        signer!,
+      const zapRequestEvent: NostrEvent | undefined = await signEvent(
         buildZapRequestEvent(signerInfo.pubkey, parameters.receiverPubkey, invoice_mSats, config),
       );
 
