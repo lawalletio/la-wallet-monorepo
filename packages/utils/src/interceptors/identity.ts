@@ -64,7 +64,7 @@ export const claimIdentity = async (event: NostrEvent, config: ConfigProps = bas
 };
 
 export const getUsername = (pubkey: string, config: ConfigProps = baseConfig) => {
-  const storagedUsername: string = (config.storage.getItem(pubkey) as string) || '';
+  const storagedUsername: string = (config.storage.getItem(`${config.federation.id}_${pubkey}`) as string) || '';
   if (storagedUsername.length) return storagedUsername;
 
   return fetch(`${config.endpoints.identity}/api/pubkey/${pubkey}`)
@@ -72,7 +72,7 @@ export const getUsername = (pubkey: string, config: ConfigProps = baseConfig) =>
     .then((info) => {
       if (!info || !info.username) return '';
 
-      config.storage.setItem(pubkey, info.username);
+      config.storage.setItem(`${config.federation.id}_${pubkey}`, info.username);
       return info.username;
     })
     .catch(() => '');

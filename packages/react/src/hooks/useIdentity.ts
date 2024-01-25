@@ -103,20 +103,13 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
     const hexpub: string = getPublicKey(parsedIdentity.privateKey);
     const username: string = await getUsername(hexpub, config);
 
-    if (hexpub === parsedIdentity.hexpub && username == parsedIdentity.username) {
-      setData({
-        ...parsedIdentity,
-      });
-    } else {
-      setData({
-        ...parsedIdentity,
-        hexpub,
-        username,
-      });
-    }
+    setData({
+      ...parsedIdentity,
+      username,
+      hexpub: hexpub !== parsedIdentity.hexpub ? hexpub : parsedIdentity.hexpub,
+    });
 
     setIsLoading(false);
-
     return;
   };
 
