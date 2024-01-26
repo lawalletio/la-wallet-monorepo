@@ -107,7 +107,7 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
         execOutboundTransfer({ bolt11, amount: LNURLInfo.amount });
       }
     } catch (err) {
-      handleMarkError();
+      handleMarkError((err as Error).message);
     }
   };
 

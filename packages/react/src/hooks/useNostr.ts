@@ -75,8 +75,8 @@ export const useNostr = ({
     try {
       await ndk.connect();
       return true;
-    } catch {
-      return false;
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -86,8 +86,8 @@ export const useNostr = ({
       initializeSigner(privateKeySigner);
 
       return privateKeySigner;
-    } catch {
-      return undefined;
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -100,8 +100,8 @@ export const useNostr = ({
       initializeSigner(nip07signer);
 
       return nip07signer;
-    } catch {
-      return undefined;
+    } catch (err) {
+      throw err;
     }
   };
 
