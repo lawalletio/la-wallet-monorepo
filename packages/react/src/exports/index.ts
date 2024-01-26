@@ -7,7 +7,7 @@ export { type UseIdentityReturns, type CreateIdentityReturns, useIdentity } from
 
 export { type UseSettingsReturns, useSettings } from '../hooks/useSettings.js';
 export { type UseSubscriptionReturns, useSubscription } from '../hooks/useSubscription.js';
-export { type UseTokenBalanceReturns, useTokenBalance } from '../hooks/useTokenBalance.js';
+export { type UseBalanceReturns, useBalance } from '../hooks/useBalance.js';
 export { type UseAccountReturns, useAccount } from '../hooks/useAccount.js';
 
 export { type useZapReturns, useZap } from '../hooks/useZap.js';

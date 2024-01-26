@@ -8,18 +8,18 @@ import { useSubscription } from './useSubscription.js';
 import { useConfig } from './useConfig.js';
 import type { ConfigParameter } from '@lawallet/utils/types';
 
-export interface UseTokenBalanceReturns {
+export interface UseBalanceReturns {
   balance: TokenBalance;
 }
 
-export interface UseTokenBalanceProps extends ConfigParameter {
+export interface UseBalanceProps extends ConfigParameter {
   pubkey: string;
   tokenId: string;
   enabled?: boolean;
   closeOnEose?: boolean;
 }
 
-export const useTokenBalance = (parameters: UseTokenBalanceProps): UseTokenBalanceReturns => {
+export const useBalance = (parameters: UseBalanceProps): UseBalanceReturns => {
   const { pubkey, tokenId, enabled = true, closeOnEose = false } = parameters;
 
   const config = useConfig(parameters);

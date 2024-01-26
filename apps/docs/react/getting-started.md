@@ -56,13 +56,13 @@ Now that everything is set up
 ::: code-group
 
 ```tsx [UserBalance.tsx]
-import { useTokenBalance } from '@lawallet/react';
+import { useBalance } from '@lawallet/react';
 import { config } from './config';
 
 function UserBalance() {
   const userPubkey: string = '9a9787e3e31cfdc95f35d5...9789c20f63546b191e28d59';
 
-  const { balance } = useTokenBalance({
+  const { balance } = useBalance({
     pubkey: userPubkey,
     tokenId: 'BTC',
     enabled: Boolean(userPubkey.length),

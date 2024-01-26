@@ -1,16 +1,16 @@
 ---
-title: useTokenBalance
+title: useBalance
 description: Hook for getting balance.
 ---
 
-# useTokenBalance
+# useBalance
 
 Hook to get the balance of an account
 
 ## Import
 
 ```ts
-import { useTokenBalance } from '@lawallet/react';
+import { useBalance } from '@lawallet/react';
 ```
 
 ## Usage
@@ -18,13 +18,13 @@ import { useTokenBalance } from '@lawallet/react';
 ::: code-group
 
 ```tsx [index.tsx]
-import { useTokenBalance } from '@lawallet/react';
+import { useBalance } from '@lawallet/react';
 import { config } from './config';
 
 function App() {
   const userPubkey: string = '9a9787e3e31cfdc95f3...ec59789c20f63546b191e28d59';
 
-  const { balance } = useTokenBalance({
+  const { balance } = useBalance({
     pubkey: userPubkey,
     tokenId: 'BTC',
     enabled: Boolean(userPubkey.length),
@@ -39,7 +39,7 @@ function App() {
 ## Parameters
 
 ```ts
-import { type UseTokenBalanceParameters } from '@lawallet/react';
+import { type UseBalanceParameters } from '@lawallet/react';
 ```
 
 ### pubkey
@@ -51,10 +51,10 @@ import { type UseTokenBalanceParameters } from '@lawallet/react';
 ::: code-group
 
 ```tsx [index.tsx]
-import { useTokenBalance } from '@lawallet/react';
+import { useBalance } from '@lawallet/react';
 
 function App() {
-  const { balance } = useTokenBalance({
+  const { balance } = useBalance({
     pubkey: '17efe7a5f1...53936f68b', // [!code focus]
     tokenId: 'BTC',
   });
@@ -72,10 +72,10 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useTokenBalance } from '@lawallet/react';
+import { useBalance } from '@lawallet/react';
 
 function App() {
-  const { balance } = useTokenBalance({
+  const { balance } = useBalance({
     pubkey: '17efe7a5f1...53936f68b',
     tokenId: 'BTC', // [!code focus]
   });
@@ -95,10 +95,10 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useTokenBalance } from '@lawallet/react';
+import { useBalance } from '@lawallet/react';
 
 function App() {
-  const { balance } = useTokenBalance({
+  const { balance } = useBalance({
     pubkey: '17efe7a5f1...53936f68b',
     tokenId: 'BTC',
     enabled: false, // [!code focus]
@@ -117,11 +117,11 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useTokenBalance } from '@lawallet/react';
+import { useBalance } from '@lawallet/react';
 import { config } from './config'; // [!code focus]
 
 function App() {
-  const { balance } = useTokenBalance({
+  const { balance } = useBalance({
     pubkey: '17efe7a5f1...53936f68b',
     tokenId: 'BTC',
     config, // [!code focus]
@@ -135,7 +135,7 @@ function App() {
 ## Return Type
 
 ```ts
-import { type UseTokenBalanceReturns } from '@lawallet/react';
+import { type UseBalanceReturns } from '@lawallet/react';
 ```
 
 ### balance
