@@ -131,6 +131,13 @@ Returns a boolean that identifies whether the identity is being loaded
 - Set an identity with the defined username
 - Returns a boolean variable that validates whether it was executed correctly
 
+### createIdentity
+
+`({ nonce: string, name: string }) => Promise<CreateIdentityReturns>`
+
+- Function that creates a new identity
+- Returns an object of type [`CreateIdentityReturns`](/react/api/glossary/types#createidentityreturns)
+
 ### resetIdentity
 
 `() => void`

@@ -8,6 +8,8 @@ Glossary of Types in LaWallet
 
 <!--@include: @snippets/types/CardPayload.md-->
 
+<!--@include: @snippets/types/CreateIdentityReturns.md-->
+
 <!--@include: @snippets/types/DecodedInvoiceReturns.md-->
 
 <!--@include: @snippets/types/InvoiceProps.md-->
