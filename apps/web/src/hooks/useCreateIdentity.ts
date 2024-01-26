@@ -181,9 +181,9 @@ export const useCreateIdentity = (): UseIdentityReturns => {
       return;
     }
 
-    if (!name.length) return errors.modifyError('EMPTY_USERNAME');
-    if (name.length < 3) return errors.modifyError('MIN_LENGTH_USERNAME');
-    if (name.length > 15) return errors.modifyError('MAX_LENGTH_USERNAME');
+    if (!name.length) return errors.modifyError('EMPTY_NAME');
+    if (name.length < 3) return errors.modifyError('MIN_LENGTH_NAME', { length: '3' });
+    if (name.length > 15) return errors.modifyError('MAX_LENGTH_NAME', { length: '15' });
 
     if (!regexUserName.test(name)) return errors.modifyError('INVALID_USERNAME');
 

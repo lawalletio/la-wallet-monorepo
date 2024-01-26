@@ -2,13 +2,16 @@
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import { MainLoader } from '@/components/Loader/Loader';
-import { Button, ButtonGroup, Divider, Flex, Heading, InputWithLabel } from '@/components/UI';
+import { Button, ButtonGroup, Divider, Feedback, Flex, Heading, InputWithLabel } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import LimitInput from '../components/LimitInput/LimitInput';
 import { useCards, useConfig, useWalletContext } from '@lawallet/react';
 import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
+import useErrors from '@/hooks/useErrors';
+import { regexComment, regexUserName } from '@/constants/constants';
+import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 
 const defaultTXLimit: Limit = {
   name: 'Transactional limit',
@@ -28,6 +31,9 @@ const defaultDailyLimit: Limit = {
 
 type LimitsConfigOptions = 'tx' | 'daily';
 
+const NAME_MAX_LENGTH = 20;
+const DESC_MAX_LENGTH = 64;
+
 const page = () => {
   const { t } = useTranslation();
   const [showLimit, setShowLimit] = useState<LimitsConfigOptions>('tx');
@@ -37,6 +43,7 @@ const page = () => {
     converter,
   } = useWalletContext();
 
+  const errors = useErrors();
   const config = useConfig();
   const router = useRouter();
   const params = useParams();
@@ -66,16 +73,10 @@ const page = () => {
       ...configLimits,
       [showLimit]: inputAmount,
     });
-    // const newValue = converter.convertCurrency(inputAmount, settings.props.currency, 'SAT') * 1000;
-    // const newLimits: Limit[] = newConfig.limits.slice();
-    // newLimits[showLimit === 'tx' ? 0 : 1].amount = BigInt(newValue).toString();
-    // setNewConfig({
-    //   ...newConfig,
-    //   limits: newLimits,
-    // });
   };
 
   const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+    errors.resetError();
     const name: string = e.target.value;
 
     setNewConfig({
@@ -85,6 +86,7 @@ const page = () => {
   };
 
   const handleChangeDesc = (e: ChangeEvent<HTMLInputElement>) => {
+    errors.resetError();
     const description: string = e.target.value;
 
     setNewConfig({
@@ -94,6 +96,15 @@ const page = () => {
   };
 
   const handleSaveConfig = async () => {
+    if (!newConfig.name.length) return errors.modifyError('EMPTY_NAME');
+    if (newConfig.name.length > NAME_MAX_LENGTH)
+      return errors.modifyError('MAX_LENGTH_NAME', { length: `${NAME_MAX_LENGTH}` });
+    if (!regexUserName.test(newConfig.name)) return errors.modifyError('INVALID_USERNAME');
+
+    if (newConfig.description.length > DESC_MAX_LENGTH)
+      return errors.modifyError('MAX_LENGTH_DESC', { length: `${DESC_MAX_LENGTH}` });
+    if (!regexComment.test(newConfig.description)) return errors.modifyError('INVALID_USERNAME');
+
     const updated: boolean = await updateCardConfig(uuid, {
       ...newConfig,
       limits: [
@@ -139,6 +150,8 @@ const page = () => {
     });
   }, [cardsConfig.cards]);
 
+  useActionOnKeypress('Enter', handleSaveConfig, [newConfig]);
+
   if (!loadInfo.loading && !cardsData?.[uuid]) return null;
 
   return (
@@ -157,6 +170,10 @@ const page = () => {
 
           <InputWithLabel
             onChange={handleChangeName}
+            isError={
+              errors.isExactError('EMPTY_NAME') ||
+              errors.isExactError('MAX_LENGTH_NAME', { length: `${NAME_MAX_LENGTH}` })
+            }
             name="card-name"
             label={t('NAME')}
             placeholder={t('NAME')}
@@ -167,11 +184,20 @@ const page = () => {
 
           <InputWithLabel
             onChange={handleChangeDesc}
+            isError={errors.isExactError('MAX_LENGTH_DESC', { length: `${DESC_MAX_LENGTH}` })}
             name="card-desc"
             label={t('DESCRIPTION')}
             placeholder={t('DESCRIPTION')}
             value={newConfig.description}
           />
+
+          <Divider y={12} />
+
+          <Flex align="center">
+            <Feedback show={errors.errorInfo.visible} status={errors.errorInfo.visible ? 'error' : undefined}>
+              {errors.errorInfo.text}
+            </Feedback>
+          </Flex>
 
           <Divider y={24} />
 

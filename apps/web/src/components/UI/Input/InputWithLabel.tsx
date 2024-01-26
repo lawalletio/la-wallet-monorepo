@@ -8,6 +8,8 @@ interface InputWithLabelProps {
   label: string;
   name: string;
   placeholder: string;
+  status?: 'success' | 'error';
+  isError?: boolean;
   type?: 'text' | 'password' | 'number';
   value?: string;
   onChange?: (e: any) => void;
@@ -16,12 +18,12 @@ interface InputWithLabelProps {
 }
 
 export default function Component(props: InputWithLabelProps) {
-  const { label, name, value = '' } = props;
+  const { label, name, isError = false, status = undefined, value = '' } = props;
 
   return (
     <Flex direction="column" gap={8}>
       <Label htmlFor={name}>{label}</Label>
-      <Input id={name} value={value} {...props} />
+      <Input id={name} isError={isError} status={isError ? 'error' : status} value={value} {...props} />
     </Flex>
   );
 }
