@@ -56,12 +56,12 @@ function App() {
 ```tsx [index.tsx]
 import { useTransactions, createSignerWithPrivateKey } from '@lawallet/react';
 
-const signer = createSignerWithPrivateKey('5caa3cd87cf1ad069bcf90065f8e3c60e18a4fca7b6070a44ec7223877504c84');
+const signer = createSignerWithPrivateKey('5caa3cd87cf1ad069bc...7b6070a44ec7223877504c84');
 
 function App() {
   const { ndk, connectRelays } = useNostr({
-    explicitRelayUrls: ['wss://relay.lawallet.ar'], // [!code focus]
-    explicitSigner: signer,
+    explicitRelayUrls: ['wss://relay.lawallet.ar'],
+    explicitSigner: signer, // [!code focus]
   });
 }
 ```
