@@ -3,7 +3,7 @@ export * from '@lawallet/utils';
 export { type UseActivityReturns, useActivity } from '../hooks/useActivity.js';
 export { type CardConfigReturns, useCards } from '../hooks/useCards.js';
 export { type UseConverterReturns, useCurrencyConverter } from '../hooks/useCurrencyConverter.js';
-export { type UseIdentityReturns, useIdentity } from '../hooks/useIdentity.js';
+export { type UseIdentityReturns, type CreateIdentityReturns, useIdentity } from '../hooks/useIdentity.js';
 
 export { type UseSettingsReturns, useSettings } from '../hooks/useSettings.js';
 export { type UseSubscriptionReturns, useSubscription } from '../hooks/useSubscription.js';

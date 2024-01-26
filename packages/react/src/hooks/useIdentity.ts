@@ -1,18 +1,31 @@
-import { defaultIdentity, parseContent } from '@lawallet/utils';
-import { getUsername } from '@lawallet/utils/actions';
+import { buildIdentityEvent, defaultIdentity, parseContent } from '@lawallet/utils';
+import { claimIdentity, generateUserIdentity, getUsername, type IdentityResponse } from '@lawallet/utils/actions';
 import type { ConfigParameter, UserIdentity } from '@lawallet/utils/types';
 import { getPublicKey, nip19 } from 'nostr-tools';
 import { useEffect, useState } from 'react';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 import { useConfig } from './useConfig.js';
+import NDK, { NDKEvent, NDKPrivateKeySigner, type NostrEvent } from '@nostr-dev-kit/ndk';
 
 export interface UseIdentityReturns {
   data: UserIdentity;
   isLoading: boolean;
+  createIdentity: (props: CreateIdentityProps) => Promise<CreateIdentityReturns>;
   initializeCustomIdentity: (privateKey: string, username: string) => Promise<boolean>;
   initializeFromPrivateKey: (privkey: string) => Promise<boolean>;
   resetIdentity: () => void;
 }
+
+export type CreateIdentityProps = {
+  nonce: string;
+  name: string;
+};
+
+export type CreateIdentityReturns = {
+  success: boolean;
+  message: string;
+  newIdentity?: UserIdentity;
+};
 
 export interface UseIdentityParameters extends ConfigParameter {
   pubkey?: string;
@@ -113,6 +126,50 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
     return;
   };
 
+  const createIdentity = async ({ nonce, name }: CreateIdentityProps): Promise<CreateIdentityReturns> => {
+    const generatedIdentity: UserIdentity = await generateUserIdentity(name);
+    const signer = new NDKPrivateKeySigner(generatedIdentity.privateKey);
+
+    if (!signer)
+      return {
+        success: false,
+        message: 'ERROR_WITH_SIGNER',
+      };
+
+    try {
+      const ndk = new NDK({ signer });
+      const eventToSign: NDKEvent = new NDKEvent(ndk, buildIdentityEvent(nonce, generatedIdentity));
+      await eventToSign.sign();
+
+      const identityEvent: NostrEvent | undefined = await eventToSign.toNostrEvent();
+
+      if (!identityEvent)
+        return {
+          success: false,
+          message: 'ERROR_WITH_IDENTITY_EVENT',
+        };
+
+      const createdAccount: IdentityResponse = await claimIdentity(identityEvent, config);
+
+      if (!createdAccount.success)
+        return {
+          success: false,
+          message: createdAccount.reason!,
+        };
+
+      return {
+        success: true,
+        message: 'ok',
+        newIdentity: generatedIdentity,
+      };
+    } catch {
+      return {
+        success: false,
+        message: 'ERROR_ON_CREATE_ACCOUNT',
+      };
+    }
+  };
+
   useEffect(() => {
     if (storage && !privateKey) loadIdentityFromStorage();
   }, [storage]);
@@ -128,6 +185,7 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
   return {
     data,
     isLoading,
+    createIdentity,
     resetIdentity,
     initializeCustomIdentity,
     initializeFromPrivateKey,
