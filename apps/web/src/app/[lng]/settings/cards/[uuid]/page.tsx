@@ -38,7 +38,7 @@ const page = () => {
   const { t } = useTranslation();
   const [showLimit, setShowLimit] = useState<LimitsConfigOptions>('tx');
   const {
-    user: { identity },
+    account: { identity },
     settings,
     converter,
   } = useWalletContext();

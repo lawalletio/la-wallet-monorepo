@@ -1,16 +1,16 @@
 ---
-title: useActivity
+title: useTransactions
 description: Hook for getting transactions.
 ---
 
-# useActivity
+# useTransactions
 
 Hook to get the transactions of an account
 
 ## Import
 
 ```ts
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 ```
 
 ## Usage
@@ -18,13 +18,13 @@ import { useActivity } from '@lawallet/react';
 ::: code-group
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 import { config } from './config';
 
 function App() {
   const userPubkey: string = '9a9787e3e31cfdc95f35d5cfc1eeaead33e693ec59789c20f63546b191e28d59';
 
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: userPubkey,
     enabled: Boolean(userPubkey.length),
     limit: 100,
@@ -39,7 +39,7 @@ function App() {
 ## Parameters
 
 ```ts
-import { type UseActivityParameters } from '@lawallet/react';
+import { type UseTransactionsParameters } from '@lawallet/react';
 ```
 
 ### pubkey
@@ -49,10 +49,10 @@ import { type UseActivityParameters } from '@lawallet/react';
 - Public key of the account for which you want to consult the transactions
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: '17efe7a5f1...53936f68b', // [!code focus]
   });
 }
@@ -67,10 +67,10 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     since: Math.floor(Date.now() / 1000), // [!code focus]
   });
@@ -88,10 +88,10 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     until: Math.floor(Date.now() / 1000), // [!code focus]
   });
@@ -110,10 +110,10 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     limit: 250, // [!code focus]
   });
@@ -132,10 +132,10 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     storage: true, // [!code focus]
   });
@@ -154,10 +154,10 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     enabled: false, // [!code focus]
   });
@@ -175,11 +175,11 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 import { config } from './config'; // [!code focus]
 
 function App() {
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     config, // [!code focus]
   });
@@ -192,7 +192,7 @@ function App() {
 ## Return Type
 
 ```ts
-import { type useActivityReturns } from '@lawallet/react';
+import { type useTransactionsReturns } from '@lawallet/react';
 ```
 
 ### transactions

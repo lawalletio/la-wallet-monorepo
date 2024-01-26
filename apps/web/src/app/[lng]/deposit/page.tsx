@@ -42,7 +42,7 @@ export default function Page() {
   const { lng, t } = useTranslation();
   const notifications = useAlert();
   const {
-    user: { identity },
+    account: { identity },
     settings: {
       props: { currency },
     },

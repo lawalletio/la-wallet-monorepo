@@ -32,7 +32,7 @@ export default function Page() {
   const config = useConfig();
   const { t } = useTranslation();
   const {
-    user: { identity, transactions },
+    account: { identity, transactions },
   } = useWalletContext();
 
   const params = useSearchParams();

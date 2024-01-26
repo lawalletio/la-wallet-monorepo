@@ -20,7 +20,7 @@ export default function Page() {
   const router: AppRouterInstance = useRouter();
 
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
   const [switchOne, setSwitchOne] = useState<boolean>(false);
   const [switchTwo, setSwitchTwo] = useState<boolean>(false);

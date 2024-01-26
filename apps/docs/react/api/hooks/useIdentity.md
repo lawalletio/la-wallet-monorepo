@@ -85,7 +85,7 @@ function App() {
 ::: code-group
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useIdentity } from '@lawallet/react';
 import { config } from './config'; // [!code focus]
 
 function App() {

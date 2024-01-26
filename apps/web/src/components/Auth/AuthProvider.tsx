@@ -19,7 +19,7 @@ const protectedRoutes: string[] = [
 
 const AuthProvider = ({ children, lng }: { children: React.ReactNode; lng: AvailableLanguages }) => {
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   const router = useRouter();

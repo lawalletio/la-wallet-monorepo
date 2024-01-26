@@ -1,6 +1,6 @@
 export * from '@lawallet/utils';
 
-export { type UseActivityReturns, useActivity } from '../hooks/useActivity.js';
+export { type UseTransactionsReturns, useTransactions } from '../hooks/useTransactions.js';
 export { type CardConfigReturns, useCards } from '../hooks/useCards.js';
 export { type UseConverterReturns, useCurrencyConverter } from '../hooks/useCurrencyConverter.js';
 export { type UseIdentityReturns, type CreateIdentityReturns, useIdentity } from '../hooks/useIdentity.js';
@@ -8,7 +8,7 @@ export { type UseIdentityReturns, type CreateIdentityReturns, useIdentity } from
 export { type UseSettingsReturns, useSettings } from '../hooks/useSettings.js';
 export { type UseSubscriptionReturns, useSubscription } from '../hooks/useSubscription.js';
 export { type UseTokenBalanceReturns, useTokenBalance } from '../hooks/useTokenBalance.js';
-export { type UseUserReturns, useUser } from '../hooks/useUser.js';
+export { type UseAccountReturns, useAccount } from '../hooks/useAccount.js';
 
 export { type useZapReturns, useZap } from '../hooks/useZap.js';
 

@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { useCurrencyConverter, type UseConverterReturns } from '../hooks/useCurrencyConverter.js';
 import { useSettings, type UseSettingsReturns } from '../hooks/useSettings.js';
-import { useUser, type UseUserReturns } from '../hooks/useUser.js';
+import { useAccount, type UseAccountReturns } from '../hooks/useAccount.js';
 import { type ConfigParameter } from '@lawallet/utils/types';
 import { useNostrContext } from './NostrContext.js';
 import { useConfig } from '../hooks/useConfig.js';
 
 interface WalletContextType {
-  user: UseUserReturns;
+  account: UseAccountReturns;
   settings: UseSettingsReturns;
   converter: UseConverterReturns;
 }
@@ -18,12 +18,12 @@ export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) 
   const config = useConfig(props);
   const { signerInfo, authWithPrivateKey } = useNostrContext({ config });
 
-  const user: UseUserReturns = useUser({ pubkey: signerInfo?.pubkey ?? '', config });
+  const account: UseAccountReturns = useAccount({ pubkey: signerInfo?.pubkey ?? '', config });
   const settings: UseSettingsReturns = useSettings();
   const converter: UseConverterReturns = useCurrencyConverter();
 
   const value = {
-    user,
+    account,
     settings,
     converter,
   };
@@ -32,10 +32,10 @@ export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) 
     const {
       data: { privateKey },
       isLoading,
-    } = user.identity;
+    } = account.identity;
 
     if (!isLoading && privateKey) authWithPrivateKey(privateKey);
-  }, [user.identity.data.privateKey]);
+  }, [account.identity.data.privateKey]);
 
   return React.createElement(WalletContext.Provider, { value }, props.children);
 }

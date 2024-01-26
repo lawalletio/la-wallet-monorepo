@@ -43,7 +43,7 @@ export default function Page() {
 
   const router = useRouter();
   const {
-    user: { identity, balance, transactions },
+    account: { identity, balance, transactions },
     settings: {
       loading,
       toggleHideBalance,

@@ -28,7 +28,7 @@ export default function Component(props: ComponentProps) {
   const [handleSelected, setHandleSelected] = useState(false);
 
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   // ActionSheet

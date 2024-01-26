@@ -21,7 +21,7 @@ export default function Page() {
   const { lng, t, changeLanguage } = useTranslation();
 
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   const [sheetLanguage, setSheetLanguage] = useState<boolean>(false);

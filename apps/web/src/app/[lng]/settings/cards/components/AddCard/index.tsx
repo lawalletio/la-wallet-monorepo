@@ -28,7 +28,7 @@ const AddNewCardModal = () => {
   const config = useConfig();
 
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   const resetCardInfo = () => {

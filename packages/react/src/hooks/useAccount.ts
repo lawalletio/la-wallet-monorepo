@@ -1,20 +1,20 @@
-import { type TokenBalance, type Transaction, type UserIdentity } from '@lawallet/utils/types';
-import { useActivity } from './useActivity.js';
+import { type TokenBalance, type Transaction } from '@lawallet/utils/types';
+import { useTransactions } from './useTransactions.js';
 import { useTokenBalance } from './useTokenBalance.js';
 import { useConfig } from './useConfig.js';
 import { useIdentity, type UseIdentityParameters, type UseIdentityReturns } from './useIdentity.js';
 
-export interface UseUserReturns {
+export interface UseAccountReturns {
   identity: UseIdentityReturns;
   transactions: Transaction[];
   balance: TokenBalance;
 }
 
-export const useUser = (params: UseIdentityParameters): UseUserReturns => {
+export const useAccount = (params: UseIdentityParameters): UseAccountReturns => {
   const config = useConfig(params);
   const identity = useIdentity(params);
 
-  const { transactions } = useActivity({
+  const { transactions } = useTransactions({
     pubkey: identity.data.hexpub,
     enabled: Boolean(identity.data.hexpub.length),
     storage: true,

@@ -18,14 +18,15 @@ export function getSidebar() {
       {
         text: 'Hooks',
         items: [
-          { text: 'useActivity', link: '/react/api/hooks/useActivity' },
+          { text: 'useAccount', link: '/react/api/hooks/useAccount' },
           { text: 'useCards', link: '/react/api/hooks/useCards' },
           { text: 'useIdentity', link: '/react/api/hooks/useIdentity' },
           { text: 'useInvoice', link: '/react/api/hooks/useInvoice' },
           { text: 'useLNURL', link: '/react/api/hooks/useLNURL' },
           { text: 'useNostr', link: '/react/api/hooks/useNostr' },
-          { text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' },
           { text: 'useSubscription', link: '/react/api/hooks/useSubscription' },
+          { text: 'useTokenBalance', link: '/react/api/hooks/useTokenBalance' },
+          { text: 'useTransactions', link: '/react/api/hooks/useTransactions' },
           { text: 'useZap', link: '/react/api/hooks/useZap' },
         ],
       },

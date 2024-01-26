@@ -14,7 +14,7 @@ import { Design } from '@lawallet/react/types';
 
 export default function Page() {
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   const config = useConfig();

@@ -17,7 +17,7 @@ import { useEffect } from 'react';
 export default function Page() {
   const { t } = useTranslation();
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   const config = useConfig();

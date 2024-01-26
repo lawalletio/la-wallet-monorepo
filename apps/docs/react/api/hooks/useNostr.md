@@ -38,7 +38,7 @@ import { type UseNostrParameters } from '@lawallet/react';
 - Array of relay links to connect
 
 ```tsx [index.tsx]
-import { useActivity } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 
 function App() {
   const { ndk, connectRelays } = useNostr({
@@ -54,7 +54,7 @@ function App() {
 - Initialize an explicit signer to sign events
 
 ```tsx [index.tsx]
-import { useActivity, createSignerWithPrivateKey } from '@lawallet/react';
+import { useTransactions, createSignerWithPrivateKey } from '@lawallet/react';
 
 const signer = createSignerWithPrivateKey('5caa3cd87cf1ad069bcf90065f8e3c60e18a4fca7b6070a44ec7223877504c84');
 

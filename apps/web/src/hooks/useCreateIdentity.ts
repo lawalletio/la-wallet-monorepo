@@ -40,7 +40,7 @@ const defaultAccount: CreateIdentityParams = {
 
 export const useCreateIdentity = (): UseIdentityReturns => {
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   const config = useConfig();

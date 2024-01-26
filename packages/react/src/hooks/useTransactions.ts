@@ -21,11 +21,11 @@ export type ActivityType = {
   idsLoaded: string[];
 };
 
-export interface UseActivityReturns {
+export interface UseTransactionsReturns {
   transactions: Transaction[];
 }
 
-export interface UseActivityProps extends ConfigParameter {
+export interface UseTransactionsProps extends ConfigParameter {
   pubkey: string;
   since?: number | undefined;
   until?: number | undefined;
@@ -60,7 +60,7 @@ const defaultActivity = {
   idsLoaded: [],
 };
 
-export const useActivity = (parameters: UseActivityProps): UseActivityReturns => {
+export const useTransactions = (parameters: UseTransactionsProps): UseTransactionsReturns => {
   const { pubkey, enabled = true, limit = 1000, since = undefined, until = undefined, storage = false } = parameters;
   const config = useConfig(parameters);
 

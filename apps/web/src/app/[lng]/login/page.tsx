@@ -15,7 +15,7 @@ import { ChangeEvent, useState } from 'react';
 
 export default function Page() {
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   const [keyInput, setKeyInput] = useState<string>('');

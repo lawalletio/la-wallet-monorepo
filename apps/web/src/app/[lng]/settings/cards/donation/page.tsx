@@ -16,7 +16,7 @@ const page = () => {
   const router = useRouter();
   const params = useSearchParams();
   const {
-    user: { identity },
+    account: { identity },
   } = useWalletContext();
 
   const handleAcceptCardTransfer = () => {

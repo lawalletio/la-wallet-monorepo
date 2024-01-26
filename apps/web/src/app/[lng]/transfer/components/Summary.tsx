@@ -27,7 +27,7 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
 
   const {
-    user: { balance },
+    account: { balance },
     settings: {
       props: { currency },
     },

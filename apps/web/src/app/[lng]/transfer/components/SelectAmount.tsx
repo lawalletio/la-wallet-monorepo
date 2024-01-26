@@ -23,7 +23,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
-    user: { balance },
+    account: { balance },
     settings: {
       props: { currency: userCurrency, hideBalance },
     },

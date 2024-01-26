@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 export default function Page() {
   const { t } = useTranslation();
   const {
-    user: { transactions },
+    account: { transactions },
   } = useWalletContext();
   const router = useRouter();
 
