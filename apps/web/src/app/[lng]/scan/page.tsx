@@ -1,8 +1,9 @@
 'use client';
 
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Flex, Modal, Text } from '@/components/UI';
+import { Button, Flex, Text } from '@lawallet/ui';
 import QrScanner from '@/components/UI/Scanner/Scanner';
+import { Modal } from '@/components/UI';
 import { regexURL } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { TransferTypes } from '@lawallet/react/types';

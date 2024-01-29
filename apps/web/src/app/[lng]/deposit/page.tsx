@@ -12,26 +12,14 @@ import { useNumpad } from '@/hooks/useNumpad';
 import Container from '@/components/Layout/Container';
 import { BtnLoader } from '@/components/Loader/Loader';
 import TokenList from '@/components/TokenList';
-import {
-  Alert,
-  Button,
-  Confetti,
-  Divider,
-  Feedback,
-  Flex,
-  Heading,
-  Icon,
-  Keyboard,
-  QRCode,
-  Sheet,
-  Text,
-} from '@/components/UI';
+
+import { Alert, Button, Divider, Feedback, Flex, Heading, Icon, Sheet, Text, theme } from '@lawallet/ui';
+import { Confetti, Keyboard, QRCode } from '@/components/UI';
 
 import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useAlert from '@/hooks/useAlerts';
 import useErrors from '@/hooks/useErrors';
-import theme from '@/styles/theme';
 import { useWalletContext, lnurl_encode, formatAddress, formatToPreference, useConfig, useZap } from '@lawallet/react';
 import { useRouter } from 'next/navigation';
 
@@ -128,7 +116,7 @@ export default function Page() {
 
       <Alert
         title={notifications.alert?.title}
-        description={notifications.alert?.description}
+        description={notifications.alert?.description ?? ''}
         type={notifications.alert?.type}
         isOpen={!!notifications.alert}
       />

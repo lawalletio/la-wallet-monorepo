@@ -1,7 +1,7 @@
 'use client';
 
 import Container from '@/components/Layout/Container';
-import { Button, Flex } from '@/components/UI';
+import { Button, Flex } from '@lawallet/ui';
 
 import { TokenList } from './style';
 import { useWalletContext, CurrenciesList } from '@lawallet/react';

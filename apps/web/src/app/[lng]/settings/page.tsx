@@ -3,13 +3,11 @@
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
-import { Button, Divider, Feedback, Flex, Icon, LinkSetting, Sheet, Text } from '@/components/UI';
-import { ButtonSetting } from '@/components/UI/ButtonSetting/style';
+import { Button, Divider, Feedback, Flex, Icon, LinkSetting, Sheet, Text, ButtonSetting, theme } from '@lawallet/ui';
 import { CACHE_BACKUP_KEY, LAWALLET_VERSION, STORAGE_IDENTITY_KEY } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
 
-import theme from '@/styles/theme';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useConfig, useWalletContext } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';

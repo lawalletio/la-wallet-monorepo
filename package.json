@@ -9,7 +9,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
-    "libs:build": "pnpm --filter @lawallet/utils build && pnpm --filter @lawallet/react build",
+    "libs:build": "pnpm --filter @lawallet/utils build && pnpm --filter @lawallet/react build && pnpm --filter @lawallet/ui build",
     "docs:dev": "pnpm --filter docs dev"
   },
   "devDependencies": {

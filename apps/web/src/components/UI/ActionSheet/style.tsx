@@ -1,8 +1,7 @@
 import { styled } from 'styled-components';
 
 import { ActionSheetPrimitiveProps } from './types';
-
-import theme from '@/styles/theme';
+import { theme } from '@lawallet/ui';
 
 export const ActionSheetPrimitive = styled.div<ActionSheetPrimitiveProps>`
   position: fixed;

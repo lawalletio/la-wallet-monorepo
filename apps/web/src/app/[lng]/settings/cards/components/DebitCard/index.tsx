@@ -3,7 +3,8 @@ import { GearIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import Card from '@/components/Card';
 
-import { Button, Flex, ActionSheet, LinkButton, QRCode, Divider } from '@/components/UI';
+import { Button, Flex, LinkButton, Divider } from '@lawallet/ui';
+import { ActionSheet, QRCode } from '@/components/UI';
 import { CardImage, ConfigCard } from './style';
 
 import Pause from '@/components/Icons/Pause';

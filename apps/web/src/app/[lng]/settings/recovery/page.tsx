@@ -8,10 +8,10 @@ import { useTranslation } from '@/context/TranslateContext';
 
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Divider, Flex, InfoCopy, Text, ToggleSwitch } from '@/components/UI';
+import { Button, Divider, Flex, Text, theme } from '@lawallet/ui';
+import { InfoCopy, ToggleSwitch } from '@/components/UI';
 
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
-import theme from '@/styles/theme';
 import { useConfig, useWalletContext } from '@lawallet/react';
 
 export default function Page() {

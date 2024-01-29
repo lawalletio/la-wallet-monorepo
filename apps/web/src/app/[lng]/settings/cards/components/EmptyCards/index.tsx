@@ -1,7 +1,6 @@
 import Container from '@/components/Layout/Container';
-import { Flex, Text } from '@/components/UI';
+import { Flex, Text, theme } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
-import theme from '@/styles/theme';
 import EmptySvg from './EmptySvg';
 
 const EmptyCards = () => {

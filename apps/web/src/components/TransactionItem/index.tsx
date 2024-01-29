@@ -2,10 +2,9 @@
 
 import { CreditCardIcon, LightningIcon, TransferIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import { Accordion, AccordionBody, Flex, Text } from '@/components/UI';
+import { Accordion, AccordionBody, Flex, Text, theme } from '@lawallet/ui';
 
 import { useTranslation } from '@/context/TranslateContext';
-import theme from '@/styles/theme';
 import {
   dateFormatter,
   defaultCurrency,

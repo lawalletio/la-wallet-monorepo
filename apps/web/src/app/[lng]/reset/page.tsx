@@ -3,13 +3,12 @@ import Container from '@/components/Layout/Container';
 import { Loader } from '@/components/Loader/Loader';
 import Logo from '@/components/Logo';
 
-import { Feedback, Flex, Heading, Text } from '@/components/UI';
 import { LAWALLET_VERSION } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
-import theme from '@/styles/theme';
-import { useConfig, useWalletContext, buildCardActivationEvent } from '@lawallet/react';
+import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';
 import { cardResetCaim, generateUserIdentity } from '@lawallet/react/actions';
+import { Feedback, Flex, Heading, Text, theme } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';

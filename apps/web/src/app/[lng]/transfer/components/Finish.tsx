@@ -4,7 +4,8 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
-import { Avatar, Confetti, Divider, Flex, Heading, Icon, LinkButton, Text } from '@/components/UI';
+import { Avatar, Divider, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
+import { Confetti } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 import { TransferInformation, TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';

@@ -1,4 +1,4 @@
-import { InputGroup, InputGroupRight, InputWithLabel, Text } from '@/components/UI';
+import { InputGroup, InputGroupRight, InputWithLabel, Text } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 import React from 'react';
 

@@ -2,12 +2,8 @@ import { copy } from '@/utils/share';
 import { useTranslation } from '@/context/TranslateContext';
 import useAlert from '@/hooks/useAlerts';
 
-import Flex from '../Flex';
-import Text from '../Text';
-import Button from '../Button';
-import Alert from '../Alert';
+import { Flex, Text, Button, Alert, theme } from '@lawallet/ui';
 
-import theme from '@/styles/theme';
 import { InfoCopy } from './style';
 
 interface ComponentProps {
@@ -35,7 +31,7 @@ export default function Component(props: ComponentProps) {
 
   return (
     <>
-      <Alert title={alert?.title} description={alert?.description} type={alert?.type} isOpen={!!alert} />
+      <Alert title={alert?.title} description={alert?.description ?? ''} type={alert?.type} isOpen={!!alert} />
       <InfoCopy>
         <Flex align="center" gap={8} flex={1}>
           <Flex direction="column" flex={1}>

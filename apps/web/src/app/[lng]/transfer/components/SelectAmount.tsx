@@ -6,13 +6,13 @@ import { useEffect, useMemo, useState } from 'react';
 
 import Container from '@/components/Layout/Container';
 import TokenList from '@/components/TokenList';
-import { Button, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Keyboard, Text } from '@/components/UI';
+import { Button, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
+import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
-import theme from '@/styles/theme';
 import { useWalletContext, decimalsToUse, formatToPreference } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 

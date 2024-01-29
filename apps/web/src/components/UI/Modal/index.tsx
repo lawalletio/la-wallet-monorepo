@@ -3,12 +3,9 @@
 import { useState, useEffect, ReactNode } from 'react';
 import { CrossIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import Flex from '../Flex';
-import Button from '../Button';
-import Icon from '../Icon';
-
 import { Modal, ModalContent } from './style';
-import Heading from '../Heading';
+
+import { Flex, Button, Icon, Heading } from '@lawallet/ui';
 
 interface ComponentProps {
   children: ReactNode;

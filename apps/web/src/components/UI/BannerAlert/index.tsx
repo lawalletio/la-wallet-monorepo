@@ -1,11 +1,7 @@
 import { ArrowRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import Flex from '../Flex';
-import Heading from '../Heading';
-import Text from '../Text';
-import Icon from '../Icon';
+import { Flex, Heading, Text, Icon, theme } from '@lawallet/ui';
 
-import theme from '@/styles/theme';
 import { BannerAlert, Asset } from './style';
 
 import Security from './Background/Security';

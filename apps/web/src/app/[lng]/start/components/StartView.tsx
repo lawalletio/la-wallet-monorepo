@@ -1,10 +1,10 @@
 'use client';
-import { Divider, Flex, Text, Button, CardAlert, Feedback } from '@/components/UI';
+import { Divider, Flex, Text, Button, Feedback, theme } from '@lawallet/ui';
+import { CardAlert } from '@/components/UI';
 import Container from '@/components/Layout/Container';
 import Logo from '@/components/Logo';
 import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
 
-import theme from '@/styles/theme';
 import { useEffect, useState } from 'react';
 import { checkIOS } from '@/utils';
 import { useTranslation } from '@/context/TranslateContext';

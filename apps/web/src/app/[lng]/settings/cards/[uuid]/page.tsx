@@ -2,7 +2,8 @@
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import { MainLoader } from '@/components/Loader/Loader';
-import { Button, ButtonGroup, Divider, Feedback, Flex, Heading, InputWithLabel } from '@/components/UI';
+import { Button, Divider, Feedback, Flex, Heading, InputWithLabel } from '@lawallet/ui';
+import { ButtonGroup } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
@@ -155,10 +156,10 @@ const page = () => {
 
           <InputWithLabel
             onChange={handleChangeName}
-            isError={
-              errors.isExactError('EMPTY_NAME') ||
-              errors.isExactError('MAX_LENGTH_NAME', { length: `${NAME_MAX_LENGTH}` })
-            }
+            // isError={
+            //   errors.isExactError('EMPTY_NAME') ||
+            //   errors.isExactError('MAX_LENGTH_NAME', { length: `${NAME_MAX_LENGTH}` })
+            // }
             name="card-name"
             label={t('NAME')}
             placeholder={t('NAME')}
@@ -169,7 +170,7 @@ const page = () => {
 
           <InputWithLabel
             onChange={handleChangeDesc}
-            isError={errors.isExactError('MAX_LENGTH_DESC', { length: `${DESC_MAX_LENGTH}` })}
+            // isError={errors.isExactError('MAX_LENGTH_DESC', { length: `${DESC_MAX_LENGTH}` })}
             name="card-desc"
             label={t('DESCRIPTION')}
             placeholder={t('DESCRIPTION')}

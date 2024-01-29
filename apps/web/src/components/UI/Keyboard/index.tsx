@@ -1,6 +1,6 @@
 import { ClearCharacterIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import { Flex, Button } from '@/components/UI';
+import { Flex, Button } from '@lawallet/ui';
 import { IUseNumpad } from '@/hooks/useNumpad';
 import { useEffect } from 'react';
 

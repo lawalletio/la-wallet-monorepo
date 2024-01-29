@@ -1,6 +1,5 @@
+import { theme } from '@lawallet/ui';
 import { styled } from 'styled-components';
-
-import theme from '@/styles/theme';
 
 export const ToggleSwitch = styled.div`
   display: flex;

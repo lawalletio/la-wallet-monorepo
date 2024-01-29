@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Divider, Feedback, Flex, Heading, Textarea } from '@/components/UI';
+import { Button, Divider, Feedback, Flex, Heading, Textarea } from '@lawallet/ui';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';

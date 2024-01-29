@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
-
-import Flex from '../Flex';
-import Button from '../Button';
-import Text from '../Text';
-
+import { Flex, Button, Text } from '@lawallet/ui';
 import { ActionSheetProps } from './types';
 
 import { ActionSheetPrimitive, ActionSheetContent, ActionSheetWrapper, ActionSheetHeader } from './style';

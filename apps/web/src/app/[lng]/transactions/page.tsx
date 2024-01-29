@@ -4,7 +4,7 @@ import Container from '@/components/Layout/Container';
 import Footer from '@/components/Layout/Footer';
 import Navbar from '@/components/Layout/Navbar';
 import TransactionItem from '@/components/TransactionItem';
-import { Button, Divider, Flex } from '@/components/UI';
+import { Button, Divider, Flex } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 import { useWalletContext } from '@lawallet/react';
 import { useRouter } from 'next/navigation';

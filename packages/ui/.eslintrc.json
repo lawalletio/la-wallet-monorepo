@@ -1,0 +1,70 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": ["standard-with-typescript", "plugin:react/recommended", "plugin:react/jsx-runtime"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    // Typescript
+    "project": ["tsconfig.json"],
+    "createDefaultProgram": true
+  },
+  "plugins": ["react"],
+  "rules": {
+    "no-console": "warn",
+    "react/prop-types": "off",
+    "react/self-closing-comp": "warn",
+    "react/react-in-jsx-scope": "off",
+    // Typescript
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "padding-line-between-statements": [
+      "error",
+      {
+        "blankLine": "always",
+        "prev": "*",
+        "next": "return"
+      },
+      {
+        "blankLine": "always",
+        "prev": ["const", "let", "var"],
+        "next": "*"
+      },
+      {
+        "blankLine": "any",
+        "prev": ["const", "let", "var"],
+        "next": ["const", "let", "var"]
+      }
+    ],
+    // Auto order
+    "import/order": [
+      "warn",
+      {
+        "pathGroups": [
+          {
+            "pattern": "~/**",
+            "group": "external",
+            "position": "after"
+          }
+        ],
+        "newlines-between": "always-and-inside-groups"
+      }
+    ],
+    "react/jsx-sort-props": [
+      "warn",
+      {
+        "callbacksLast": true,
+        "shorthandFirst": true,
+        "noSortAlphabetically": false,
+        "reservedFirst": true
+      }
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

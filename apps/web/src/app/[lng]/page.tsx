@@ -2,14 +2,10 @@
 
 import Container from '@/components/Layout/Container';
 import Logo from '@/components/Logo';
-import { Button, Divider, Text } from '@/components/UI';
+import { Button, Divider, Flex, Text, theme } from '@lawallet/ui';
 import { LAWALLET_VERSION } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 
-// import { useCreateIdentity } from '@/hooks/useCreateIdentity'
-
-import theme from '@/styles/theme';
-import { Flex } from '@unllamas/components';
 import { useRouter } from 'next/navigation';
 
 export default function Page() {

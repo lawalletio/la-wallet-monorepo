@@ -1,5 +1,6 @@
 'use client';
-import { Button, Flex, Modal, Text } from '@/components/UI';
+import { Button, Flex, Text } from '@lawallet/ui';
+import { Modal } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 // import { AlertTypes } from '@/hooks/useAlerts';
 import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';

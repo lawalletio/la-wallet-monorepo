@@ -5,13 +5,11 @@ import ReactQRCode from 'react-qr-code';
 
 import { copy } from '@/utils/share';
 
-import Text from '../Text';
+import { Text, Alert, theme } from '@lawallet/ui';
 
 import { useTranslation } from '@/context/TranslateContext';
-import theme from '@/styles/theme';
 import { QRCode, Toast } from './style';
 import useAlert from '@/hooks/useAlerts';
-import { Alert } from '..';
 
 interface ComponentProps {
   value: string;
@@ -40,7 +38,7 @@ export default function Component({ value, size = 150, borderSize = 40, showCopy
     <>
       <Alert
         title={notifications.alert?.title}
-        description={notifications.alert?.description}
+        description={notifications.alert?.description ?? ''}
         type={notifications.alert?.type}
         isOpen={!!notifications.alert}
       />

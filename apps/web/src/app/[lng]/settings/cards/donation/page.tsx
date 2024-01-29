@@ -1,6 +1,7 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Flex, Modal, Text } from '@/components/UI';
+import { Button, Flex, Text } from '@lawallet/ui';
+import { Modal } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 import { buildCardTransferAcceptEvent, useConfig, useWalletContext } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';

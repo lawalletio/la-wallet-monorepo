@@ -4,12 +4,12 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import HeroCard from '@/components/HeroCard';
 import Container from '@/components/Layout/Container';
-import { Avatar, Button, Divider, Feedback, Flex, Heading, Icon, LinkButton, Text } from '@/components/UI';
+import { Avatar, Button, Divider, Feedback, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 
 import { useTranslation } from '@/context/TranslateContext';
 import { splitHandle, formatAddress, formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import { ReactEventHandler, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { extractFirstTwoChars } from '@/utils';
 
 type SummaryProps = {
@@ -19,7 +19,7 @@ type SummaryProps = {
   type: string;
   amount: number;
   expired?: boolean;
-  onClick: (e: ReactEventHandler<HTMLInputElement>) => void;
+  onClick: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
 export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {

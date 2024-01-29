@@ -1,7 +1,5 @@
-import Heading from '../Heading';
-import Text from '../Text';
-import Flex from '../Flex';
 import SafariLogo from '../SafariLogo';
+import { Heading, Text, Flex } from '@lawallet/ui';
 
 import { CardAlertiPhone } from './style';
 import { ReactNode } from 'react';

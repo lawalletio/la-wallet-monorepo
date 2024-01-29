@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
-import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
+import { ServerStyleSheet } from 'styled-components';
+import { Provider } from '@lawallet/ui';
+import GlobalStyles from '@/styles/GlobalStyles';
 
 export default function StyledComponentsRegistry({ children }) {
   // Only create stylesheet once with lazy initial state
@@ -17,5 +19,5 @@ export default function StyledComponentsRegistry({ children }) {
 
   if (typeof window !== 'undefined') return <React.Fragment>{children}</React.Fragment>;
 
-  return <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>{children}</StyleSheetManager>;
+  return <Provider sheet={styledComponentsStyleSheet.instance}>{children}</Provider>;
 }

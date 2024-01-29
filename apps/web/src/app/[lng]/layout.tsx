@@ -1,13 +1,8 @@
 'use client';
-
-import { ThemeProvider } from 'styled-components';
-
 import StyledComponentsRegistry from '@/utils/registry';
 
 import { TranslateProvider } from '@/context/TranslateContext';
-import GlobalStyles from '@/styles/GlobalStyles';
 import { fontSecondary } from '@/styles/fonts';
-import theme from '@/styles/theme';
 import { ReactNode } from 'react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import { LaWalletProvider, defaultLocale } from '@lawallet/react';
@@ -61,12 +56,9 @@ const Providers = (props: ProviderProps) => {
 
       <body>
         <StyledComponentsRegistry>
-          <GlobalStyles />
           <LaWalletProvider config={config}>
             <AuthProvider lng={params.lng}>
-              <ThemeProvider theme={theme}>
-                <TranslateProvider lng={params.lng}>{children}</TranslateProvider>
-              </ThemeProvider>
+              <TranslateProvider lng={params.lng}>{children}</TranslateProvider>
             </AuthProvider>
           </LaWalletProvider>
         </StyledComponentsRegistry>

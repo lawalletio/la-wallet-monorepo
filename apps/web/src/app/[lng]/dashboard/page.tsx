@@ -18,9 +18,8 @@ import Navbar from '@/components/Layout/Navbar';
 import TokenList from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
 import ButtonCTA from '@/components/ButtonCTA';
-import { Avatar, BannerAlert, Button, Divider, Flex, Heading, Icon, Text } from '@/components/UI';
-
-import theme from '@/styles/theme';
+import { Avatar, Button, Divider, Flex, Heading, Icon, Text, theme } from '@lawallet/ui';
+import { BannerAlert } from '@/components/UI';
 
 // Harcode data
 import { useTranslation } from '@/context/TranslateContext';
@@ -77,11 +76,7 @@ export default function Page() {
               <Text size="small" color={theme.colors.gray50}>
                 {t('HELLO')},
               </Text>
-              <Flex
-                onClick={() => {
-                  if (identity.data.username) copy(`${identity.data.username}@${config.federation.domain}`);
-                }}
-              >
+              <Flex>
                 {loading ? (
                   <Text> -- </Text>
                 ) : (

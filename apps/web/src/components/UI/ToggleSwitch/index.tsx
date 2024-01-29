@@ -2,7 +2,7 @@
 
 import { useId, useState } from 'react';
 
-import Text from '../Text';
+import { Text } from '@lawallet/ui';
 
 import { ToggleSwitch } from './style';
 
