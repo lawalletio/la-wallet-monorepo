@@ -27,3 +27,4 @@ export * from './ActionSheet';
 // Layout
 export * from './Layout/Container';
 export * from './Layout/HeroCard';
+export * from './Layout/Footer';

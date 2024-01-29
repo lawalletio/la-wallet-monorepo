@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 
 interface FooterProps {}
 
-export const Footer = styled.div<FooterProps>`
+export const StyledFooter = styled.div<FooterProps>`
   position: fixed;
   bottom: 0;
 

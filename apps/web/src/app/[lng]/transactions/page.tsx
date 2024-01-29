@@ -1,9 +1,8 @@
 'use client';
 
-import Footer from '@/components/Layout/Footer';
 import Navbar from '@/components/Layout/Navbar';
 import TransactionItem from '@/components/TransactionItem';
-import { Button, Container, Divider, Flex } from '@lawallet/ui';
+import { Button, Container, Divider, Flex, Footer } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 import { useWalletContext } from '@lawallet/react';
 import { useRouter } from 'next/navigation';
