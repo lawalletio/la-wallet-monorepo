@@ -9,11 +9,10 @@ import { copy } from '@/utils/share';
 import { useTranslation } from '@/context/TranslateContext';
 import { useNumpad } from '@/hooks/useNumpad';
 
-import Container from '@/components/Layout/Container';
 import { BtnLoader } from '@/components/Loader/Loader';
 import TokenList from '@/components/TokenList';
 
-import { Alert, Button, Divider, Feedback, Flex, Heading, Icon, Sheet, Text, theme } from '@lawallet/ui';
+import { Alert, Button, Container, Divider, Feedback, Flex, Heading, Icon, Sheet, Text, theme } from '@lawallet/ui';
 import { Confetti, Keyboard, QRCode } from '@/components/UI';
 
 import { MAX_INVOICE_AMOUNT } from '@/constants/constants';

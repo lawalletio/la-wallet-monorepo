@@ -3,10 +3,10 @@
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import {
   Button,
+  Container,
   Divider,
   Feedback,
   Flex,

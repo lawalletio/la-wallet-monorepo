@@ -1,5 +1,4 @@
-import Container from '@/components/Layout/Container';
-import { Flex, Text, theme } from '@lawallet/ui';
+import { Container, Flex, Text, theme } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 import EmptySvg from './EmptySvg';
 

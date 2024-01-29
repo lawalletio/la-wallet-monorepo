@@ -1,7 +1,6 @@
 'use client';
 
-import Container from '@/components/Layout/Container';
-import { Divider, Flex, Heading, LinkButton, Text } from '@lawallet/ui';
+import { Divider, Container, Flex, Heading, LinkButton, Text } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 
 export const ErrorTransfer = () => {

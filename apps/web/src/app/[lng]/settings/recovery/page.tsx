@@ -6,9 +6,8 @@ import { useState } from 'react';
 
 import { useTranslation } from '@/context/TranslateContext';
 
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Divider, Flex, Text, theme } from '@lawallet/ui';
+import { Button, Container, Divider, Flex, Text, theme } from '@lawallet/ui';
 import { InfoCopy, ToggleSwitch } from '@/components/UI';
 
 import { CACHE_BACKUP_KEY } from '@/constants/constants';

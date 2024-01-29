@@ -1,7 +1,6 @@
 'use client';
 
-import Container from '../Container';
-import { Divider } from '@lawallet/ui';
+import { Container, Divider } from '@lawallet/ui';
 
 import { Footer } from './style';
 import { ReactNode } from 'react';

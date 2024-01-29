@@ -1,8 +1,7 @@
 'use client';
 
-import Container from '@/components/Layout/Container';
 import Logo from '@/components/Logo';
-import { Button, Divider, Flex, Text, theme } from '@lawallet/ui';
+import { Button, Divider, Container, Flex, Text, theme } from '@lawallet/ui';
 import { LAWALLET_VERSION } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 

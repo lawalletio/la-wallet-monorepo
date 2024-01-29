@@ -2,9 +2,19 @@
 
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import HeroCard from '@/components/HeroCard';
-import Container from '@/components/Layout/Container';
-import { Avatar, Button, Divider, Feedback, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
+import {
+  Avatar,
+  Button,
+  Container,
+  HeroCard,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  Icon,
+  LinkButton,
+  Text,
+} from '@lawallet/ui';
 
 import { useTranslation } from '@/context/TranslateContext';
 import { splitHandle, formatAddress, formatToPreference, useWalletContext } from '@lawallet/react';

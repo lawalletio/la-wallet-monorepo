@@ -4,9 +4,8 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-import Container from '@/components/Layout/Container';
 import TokenList from '@/components/TokenList';
-import { Button, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
+import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
 import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';

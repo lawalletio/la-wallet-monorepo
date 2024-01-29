@@ -12,13 +12,11 @@ import {
 } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useEffect, useMemo, useState } from 'react';
 
-import HeroCard from '@/components/HeroCard';
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import TokenList from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
 import ButtonCTA from '@/components/ButtonCTA';
-import { Avatar, Button, Divider, Flex, Heading, Icon, Text, theme } from '@lawallet/ui';
+import { Avatar, Button, Container, HeroCard, Divider, Flex, Heading, Icon, Text, theme } from '@lawallet/ui';
 import { BannerAlert } from '@/components/UI';
 
 // Harcode data

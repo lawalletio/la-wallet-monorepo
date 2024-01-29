@@ -2,11 +2,21 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 
 import StartView from '@/app/[lng]/start/components/StartView';
-import { Button, Divider, Feedback, Flex, Heading, Input, InputGroup, InputGroupRight, Text } from '@lawallet/ui';
+import {
+  Button,
+  Container,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  Input,
+  InputGroup,
+  InputGroupRight,
+  Text,
+} from '@lawallet/ui';
 
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';

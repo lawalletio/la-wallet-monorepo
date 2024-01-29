@@ -2,10 +2,9 @@
 
 import { useTranslation } from '@/context/TranslateContext';
 
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import { MainLoader } from '@/components/Loader/Loader';
-import { Divider, Flex } from '@lawallet/ui';
+import { Container, Divider, Flex } from '@lawallet/ui';
 import AddNewCardModal from './components/AddCard';
 import DebitCard from './components/DebitCard';
 import EmptyCards from './components/EmptyCards';
