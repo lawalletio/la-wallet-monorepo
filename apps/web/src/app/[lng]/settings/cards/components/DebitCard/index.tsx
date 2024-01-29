@@ -3,8 +3,8 @@ import { GearIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import Card from '@/components/Card';
 
-import { Button, Flex, LinkButton, Divider } from '@lawallet/ui';
-import { ActionSheet, QRCode } from '@/components/UI';
+import { ActionSheet, Button, Flex, LinkButton, Divider } from '@lawallet/ui';
+import { QRCode } from '@/components/UI';
 import { CardImage, ConfigCard } from './style';
 
 import Pause from '@/components/Icons/Pause';
@@ -107,6 +107,7 @@ export default function Component(props: ComponentProps) {
         onClose={handleCloseActions}
         title={card.config?.name || card.data.design.name}
         description={card.config?.description || card.data.design.name}
+        cancelText={t('CANCEL')}
       >
         <LinkButton variant="bezeledGray" href={`/settings/cards/${card?.uuid}`}>
           {t('SETTINGS')}
@@ -121,6 +122,7 @@ export default function Component(props: ComponentProps) {
         isOpen={!showConfiguration && showTransfer}
         onClose={handleCloseActions}
         title={t('TRANSFER')}
+        cancelText={t('CANCEL')}
         description={
           qrInfo.visible
             ? t('SCAN_CODE_FOR_TRANSFER_CARD', {

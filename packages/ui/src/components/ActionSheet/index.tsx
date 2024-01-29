@@ -1,11 +1,12 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
-import { Flex, Button, Text } from '@lawallet/ui';
+import { Flex, Button, Text } from '../index';
 import { ActionSheetProps } from './types';
 
 import { ActionSheetPrimitive, ActionSheetContent, ActionSheetWrapper, ActionSheetHeader } from './style';
 
-export default function ActionSheet(props: ActionSheetProps) {
-  const { children, isOpen, onClose, title, description } = props;
+export function ActionSheet(props: ActionSheetProps) {
+  const { children, isOpen, onClose, title, description, cancelText } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -38,7 +39,7 @@ export default function ActionSheet(props: ActionSheetProps) {
         </ActionSheetContent>
         <Flex>
           <Button variant="bezeledGray" onClick={handleClose}>
-            Cancelar
+            {cancelText}
           </Button>
         </Flex>
       </ActionSheetWrapper>

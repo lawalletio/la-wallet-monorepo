@@ -6,6 +6,7 @@ export interface ActionSheetProps {
   onClose: () => void;
   title?: string;
   description: string;
+  cancelText: string;
 }
 
 export interface ActionSheetPrimitiveProps {

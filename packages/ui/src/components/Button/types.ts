@@ -25,3 +25,9 @@ export interface BaseButtonProps {
   $color?: string;
   $isSmall?: boolean;
 }
+
+export interface ButtonCustomProps {
+  $background?: string;
+  $color?: string;
+  $isSmall?: boolean;
+}
