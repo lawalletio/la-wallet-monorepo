@@ -22,7 +22,7 @@ export default function Page() {
     const cardParameter = url.searchParams.get('c');
 
     if (cardParameter) {
-      router.push(`/settings/cards?c=${cardParameter}`);
+      router.push(`/cards?c=${cardParameter}`);
       return;
     } else {
       setUrlScanned(str);

@@ -36,11 +36,8 @@ const DESC_MAX_LENGTH = 64;
 
 const page = () => {
   const { t } = useTranslation();
-  const [showLimit, setShowLimit] = useState<LimitsConfigOptions>('tx');
   const {
     account: { identity },
-    settings,
-    converter,
   } = useWalletContext();
 
   const errors = useErrors();
@@ -55,23 +52,30 @@ const page = () => {
     config,
   });
 
-  const [configLimits, setConfigLimits] = useState<Record<LimitsConfigOptions, number>>({
-    tx: 0,
-    daily: 0,
-  });
-
   const [newConfig, setNewConfig] = useState<CardPayload>({
     name: '',
     description: '',
     status: CardStatus.ENABLED,
-    limits: [defaultTXLimit, defaultDailyLimit],
+    limits: [],
   });
+
+  const selectedLimit: LimitsConfigOptions = useMemo(() => {
+    if (!newConfig.limits.length) return 'tx';
+
+    const limitDelta: number = newConfig.limits[0].delta;
+    return limitDelta === defaultTXLimit.delta ? 'tx' : 'daily';
+  }, [newConfig.limits]);
 
   const handleChangeLimit = (e: ChangeEvent<HTMLInputElement>) => {
     const inputAmount: number = !e.target.value ? 0 : parseFloat(e.target.value);
-    setConfigLimits({
-      ...configLimits,
-      [showLimit]: inputAmount,
+
+    setNewConfig({
+      ...newConfig,
+      limits: [
+        selectedLimit === 'tx'
+          ? { ...defaultTXLimit, amount: BigInt(inputAmount).toString() }
+          : { ...defaultDailyLimit, amount: BigInt(inputAmount).toString() },
+      ],
     });
   };
 
@@ -105,21 +109,7 @@ const page = () => {
       return errors.modifyError('MAX_LENGTH_DESC', { length: `${DESC_MAX_LENGTH}` });
     if (!regexComment.test(newConfig.description)) return errors.modifyError('INVALID_USERNAME');
 
-    const updated: boolean = await updateCardConfig(uuid, {
-      ...newConfig,
-      limits: [
-        {
-          ...newConfig.limits[0],
-          amount: BigInt(converter.convertCurrency(configLimits.tx, settings.props.currency, 'SAT') * 1000).toString(),
-        },
-        {
-          ...newConfig.limits[1],
-          amount: BigInt(
-            converter.convertCurrency(configLimits.daily, settings.props.currency, 'SAT') * 1000,
-          ).toString(),
-        },
-      ],
-    });
+    const updated: boolean = await updateCardConfig(uuid, newConfig);
     if (updated) router.push('/settings/cards');
   };
 
@@ -135,19 +125,14 @@ const page = () => {
       if (limit.delta === defaultDailyLimit.delta) return limit;
     });
 
-    const preloadConfig = {
+    const preloadConfig: CardPayload = {
       name,
       description,
       status,
-      limits: [txLimit ?? defaultTXLimit, dailyLimit ?? defaultDailyLimit],
+      limits: txLimit ? [txLimit] : dailyLimit ? [dailyLimit] : [defaultTXLimit],
     };
 
     setNewConfig(preloadConfig);
-
-    setConfigLimits({
-      tx: converter.convertCurrency(Number(preloadConfig.limits[0].amount) / 1000, 'SAT', settings.props.currency),
-      daily: converter.convertCurrency(Number(preloadConfig.limits[1].amount) / 1000, 'SAT', settings.props.currency),
-    });
   }, [cardsConfig.cards]);
 
   useActionOnKeypress('Enter', handleSaveConfig, [newConfig]);
@@ -206,16 +191,26 @@ const page = () => {
 
             <ButtonGroup>
               <Button
-                variant={showLimit === 'tx' ? 'filled' : 'borderless'}
-                onClick={() => setShowLimit('tx')}
+                variant={selectedLimit === 'tx' ? 'filled' : 'borderless'}
+                onClick={() => {
+                  setNewConfig({
+                    ...newConfig,
+                    limits: [{ ...defaultTXLimit, amount: newConfig.limits[0].amount }],
+                  });
+                }}
                 size="small"
               >
                 {t('UNIQUE')}
               </Button>
 
               <Button
-                variant={showLimit === 'daily' ? 'filled' : 'borderless'}
-                onClick={() => setShowLimit('daily')}
+                variant={selectedLimit === 'daily' ? 'filled' : 'borderless'}
+                onClick={() => {
+                  setNewConfig({
+                    ...newConfig,
+                    limits: [{ ...defaultDailyLimit, amount: newConfig.limits[0].amount }],
+                  });
+                }}
                 size="small"
               >
                 {t('DAILY')}
@@ -227,8 +222,8 @@ const page = () => {
 
           <LimitInput
             onChange={handleChangeLimit}
-            amount={configLimits[showLimit]}
-            currency={settings.props.currency}
+            amount={newConfig.limits.length ? newConfig.limits[0].amount : 0}
+            currency={'SAT'}
           />
 
           <Divider y={24} />

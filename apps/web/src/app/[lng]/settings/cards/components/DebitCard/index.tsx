@@ -53,7 +53,7 @@ export default function Component(props: ComponentProps) {
       .replace(/=+$/, '');
 
     setQrInfo({
-      value: `https://app.lawallet.ar/settings/cards/donation?event=${encodedDonationEvent}`,
+      value: `https://app.lawallet.ar/cards/donation?event=${encodedDonationEvent}`,
       visible: true,
     });
   };
