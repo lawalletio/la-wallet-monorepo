@@ -1,6 +1,6 @@
 ---
-description: Lorem lorem lorem lorem lorem lorem lorem lorem.
-title: 'LaWallet | Reactivity for LN apps'
+description: React Hooks to interact with LaWallet
+title: 'LaWallet | Reactivity for LW apps'
 titleTemplate: false
 
 # https://vitepress.dev/reference/default-theme-home-page
@@ -8,7 +8,7 @@ layout: home
 
 hero:
   name: LaWallet
-  text: Reactivity for LN apps
+  text: Reactivity for LW apps
   tagline: React Hooks to interact with LaWallet
   actions:
     - theme: brand

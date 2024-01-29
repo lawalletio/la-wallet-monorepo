@@ -84,11 +84,37 @@ function App() {
 
 - Function to execute when the invoice payment is successful.
 
+```tsx [index.tsx]
+import { useInvoice } from '@lawallet/react';
+
+function App() {
+  const { decodedInvoice, executePayment } = useInvoice({
+    bolt11: 'lnbc1...',
+    onSuccess: () => {
+      console.log('successful invoice payment'); // [!code focus]
+    },
+  });
+}
+```
+
 ### onError
 
 `undefined | (message?: string) => void`
 
 - Function to execute when the invoice payment has an error.
+
+```tsx [index.tsx]
+import { useInvoice } from '@lawallet/react';
+
+function App() {
+  const { decodedInvoice, executePayment } = useInvoice({
+    bolt11: 'lnbc1...',
+    onError: () => {
+      console.log('invoice payment error'); // [!code focus]
+    },
+  });
+}
+```
 
 ## Return Type
 

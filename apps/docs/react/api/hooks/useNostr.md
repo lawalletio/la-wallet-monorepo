@@ -102,11 +102,11 @@ Returns an instance of the NDK
 
 ### signer
 
-Returns an instance of the NDKSigner(/react/api/glossary/ndk#ndksigner)
+Returns an instance of the [`NDKSigner`](/react/api/glossary/ndk#ndksigner)
 
 ### signerInfo
 
-Returns an instance of the NDKUser(/react/api/glossary/ndk#ndkuser)
+Returns an instance of the [`NDKUser`](/react/api/glossary/ndk#ndkuser)
 
 ### providers
 
