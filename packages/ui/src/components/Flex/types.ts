@@ -11,9 +11,9 @@ export interface FlexProps {
 }
 
 export interface FlexPrimitiveProps {
-  customGap?: string;
-  customDirection: 'row' | 'column';
-  customFlex?: 0 | 1 | 'initial';
-  customJustify?: 'start' | 'end' | 'space-between' | 'center';
-  customAlign?: 'start' | 'center' | 'end';
+  $customGap?: string;
+  $customDirection: 'row' | 'column';
+  $customFlex?: 0 | 1 | 'initial';
+  $customJustify?: 'start' | 'end' | 'space-between' | 'center';
+  $customAlign?: 'start' | 'center' | 'end';
 }
