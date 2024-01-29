@@ -1,8 +1,7 @@
 import React, { ReactNode } from 'react';
-import { ThemeProvider, StyleSheetManager, ExecutionProps } from 'styled-components';
+import { ThemeProvider, StyleSheetManager } from 'styled-components';
 
 import { theme } from './theme';
-import { GlobalStyle } from './style';
 
 interface ProviderProps {
   children: ReactNode;
@@ -14,7 +13,8 @@ export function Provider(props: ProviderProps) {
 
   return (
     <StyleSheetManager sheet={sheet}>
-      <GlobalStyle />
+      {/* <GlobalStyle /> */}
+
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </StyleSheetManager>
   );

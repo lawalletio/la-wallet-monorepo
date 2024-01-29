@@ -19,5 +19,10 @@ export default function StyledComponentsRegistry({ children }) {
 
   if (typeof window !== 'undefined') return <React.Fragment>{children}</React.Fragment>;
 
-  return <Provider sheet={styledComponentsStyleSheet.instance}>{children}</Provider>;
+  return (
+    <Provider sheet={styledComponentsStyleSheet.instance}>
+      <GlobalStyles />
+      {children}
+    </Provider>
+  );
 }
