@@ -1,5 +1,5 @@
+import { bech32 } from '@scure/base';
 import assert from 'assert';
-import { bech32 } from 'bech32';
 
 const rules = {
   prefix: 'lnurl',
