@@ -5,11 +5,11 @@ import ReactQRCode from 'react-qr-code';
 
 import { copy } from '@/utils/share';
 
-import { Text, Alert, theme } from '@lawallet/ui';
+import { Text, theme } from '@lawallet/ui';
 
+import { useNotifications } from '@/context/NotificationsContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { QRCode, Toast } from './style';
-import useAlert from '@/hooks/useAlerts';
 
 interface ComponentProps {
   value: string;
@@ -22,7 +22,7 @@ interface ComponentProps {
 export default function Component({ value, size = 150, borderSize = 40, showCopy = true, textToCopy }: ComponentProps) {
   const [showToast, setShowToast] = useState(true);
   const { t } = useTranslation();
-  const notifications = useAlert();
+  const notifications = useNotifications();
 
   const handleCopy = (text: string) => {
     copy(text).then((res) => {
@@ -36,13 +36,6 @@ export default function Component({ value, size = 150, borderSize = 40, showCopy
 
   return (
     <>
-      <Alert
-        title={notifications.alert?.title}
-        description={notifications.alert?.description ?? ''}
-        type={notifications.alert?.type}
-        isOpen={!!notifications.alert}
-      />
-
       <QRCode
         size={size + borderSize}
         onClick={() => {

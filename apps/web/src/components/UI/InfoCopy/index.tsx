@@ -1,9 +1,9 @@
-import { copy } from '@/utils/share';
 import { useTranslation } from '@/context/TranslateContext';
-import useAlert from '@/hooks/useAlerts';
+import { copy } from '@/utils/share';
 
-import { Flex, Text, Button, Alert, theme } from '@lawallet/ui';
+import { Button, Flex, Text, theme } from '@lawallet/ui';
 
+import { useNotifications } from '@/context/NotificationsContext';
 import { InfoCopy } from './style';
 
 interface ComponentProps {
@@ -16,11 +16,11 @@ export default function Component(props: ComponentProps) {
   const { title, value, onCopy = null } = props;
 
   const { t } = useTranslation();
-  const { alert, showAlert } = useAlert();
+  const notifications = useNotifications();
 
   const handleCopy = () => {
     copy(value).then((res) => {
-      showAlert({
+      notifications.showAlert({
         description: res ? t('SUCCESS_COPY') : t('ERROR_COPY'),
         type: res ? 'success' : 'error',
       });
@@ -31,7 +31,6 @@ export default function Component(props: ComponentProps) {
 
   return (
     <>
-      <Alert title={alert?.title} description={alert?.description ?? ''} type={alert?.type} isOpen={!!alert} />
       <InfoCopy>
         <Flex align="center" gap={8} flex={1}>
           <Flex direction="column" flex={1}>
