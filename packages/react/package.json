@@ -11,7 +11,7 @@
   "author": "Ferpa",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.11.6",
+    "@types/node": "^20.11.10",
     "@types/react": "^18.2.48",
     "typescript": "^5.3.3"
   },
