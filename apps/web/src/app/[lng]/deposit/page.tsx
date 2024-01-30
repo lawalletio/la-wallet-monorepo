@@ -12,14 +12,14 @@ import { useNumpad } from '@/hooks/useNumpad';
 import { BtnLoader } from '@/components/Loader/Loader';
 import TokenList from '@/components/TokenList';
 
-import { Alert, Button, Container, Divider, Feedback, Flex, Heading, Icon, Sheet, Text, theme } from '@lawallet/ui';
 import { Confetti, Keyboard, QRCode } from '@/components/UI';
+import { Button, Container, Divider, Feedback, Flex, Heading, Icon, Sheet, Text, theme } from '@lawallet/ui';
 
 import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
+import { useNotifications } from '@/context/NotificationsContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
-import useAlert from '@/hooks/useAlerts';
 import useErrors from '@/hooks/useErrors';
-import { useWalletContext, lnurl_encode, formatAddress, formatToPreference, useConfig, useZap } from '@lawallet/react';
+import { formatAddress, formatToPreference, lnurl_encode, useConfig, useWalletContext, useZap } from '@lawallet/react';
 import { useRouter } from 'next/navigation';
 
 type SheetTypes = 'amount' | 'qr' | 'finished';
@@ -27,7 +27,7 @@ type SheetTypes = 'amount' | 'qr' | 'finished';
 export default function Page() {
   const config = useConfig();
   const { lng, t } = useTranslation();
-  const notifications = useAlert();
+  const notifications = useNotifications();
   const {
     account: { identity },
     settings: {
@@ -112,13 +112,6 @@ export default function Page() {
   return (
     <>
       <Navbar showBackPage={true} title={t('DEPOSIT')} />
-
-      <Alert
-        title={notifications.alert?.title}
-        description={notifications.alert?.description ?? ''}
-        type={notifications.alert?.type}
-        isOpen={!!notifications.alert}
-      />
 
       {identity.data.username.length ? (
         <>

@@ -8,6 +8,7 @@ import { AvailableLanguages } from '@lawallet/react/types';
 import { LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
 import { config } from '@/constants/constants';
+import { NotificationsProvider } from '@/context/NotificationsContext';
 
 interface ProviderProps {
   children: ReactNode;
@@ -58,7 +59,9 @@ const Providers = (props: ProviderProps) => {
         <StyledComponentsRegistry>
           <LaWalletProvider config={config}>
             <AuthProvider lng={params.lng}>
-              <TranslateProvider lng={params.lng}>{children}</TranslateProvider>
+              <TranslateProvider lng={params.lng}>
+                <NotificationsProvider>{children}</NotificationsProvider>
+              </TranslateProvider>
             </AuthProvider>
           </LaWalletProvider>
         </StyledComponentsRegistry>

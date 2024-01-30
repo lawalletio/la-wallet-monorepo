@@ -10,12 +10,14 @@ import DebitCard from './components/DebitCard';
 import EmptyCards from './components/EmptyCards';
 import { useCards, useConfig, useWalletContext } from '@lawallet/react';
 import { Design } from '@lawallet/react/types';
+import { useNotifications } from '@/context/NotificationsContext';
 
 export default function Page() {
   const {
     account: { identity },
   } = useWalletContext();
 
+  const notifications = useNotifications();
   const config = useConfig();
 
   const { cardsData, cardsConfig, loadInfo, toggleCardStatus } = useCards({
@@ -27,13 +29,14 @@ export default function Page() {
 
   const handleToggleStatus = async (uuid: string) => {
     const toggled: boolean = await toggleCardStatus(uuid);
+    if (toggled)
+      notifications.showAlert({
+        title: '',
+        description: t('TOGGLE_STATUS_CARD_SUCCESS'),
+        type: 'success',
+      });
+
     return toggled;
-    // if (toggled)
-    //   notifications.showAlert({
-    //     title: '',
-    //     description: t('TOGGLE_STATUS_CARD_SUCCESS'),
-    //     type: 'success'
-    //   })
   };
 
   return (
