@@ -28,7 +28,7 @@ import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import { BtnLoader } from '@/components/Loader/Loader';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
-// import { copy } from '@/utils/share';
+import { copy } from '@/utils/share';
 import Link from 'next/link';
 import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
 import { extractFirstTwoChars } from '@/utils';
@@ -74,7 +74,11 @@ export default function Page() {
               <Text size="small" color={theme.colors.gray50}>
                 {t('HELLO')},
               </Text>
-              <Flex>
+              <Flex
+                onClick={() => {
+                  if (identity.data.username) copy(`${identity.data.username}@${config.federation.domain}`);
+                }}
+              >
                 {loading ? (
                   <Text> -- </Text>
                 ) : (

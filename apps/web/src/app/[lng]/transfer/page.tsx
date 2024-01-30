@@ -158,7 +158,7 @@ export default function Page() {
 
               {lastDestinations.slice(0, 5).map((lud16) => {
                 return (
-                  <Flex key={lud16} direction="column">
+                  <Flex key={lud16} onClick={() => initializeTransfer(lud16)} direction="column">
                     <Divider y={8} />
                     <Flex align="center">
                       <RecipientElement lud16={lud16} />

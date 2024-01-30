@@ -4,7 +4,7 @@ import { FlexProps } from './types';
 import { FlexPrimitive } from './style';
 
 export function Flex(props: FlexProps): JSX.Element {
-  const { children, gap = 0, direction = 'row', flex = 'initial', justify = 'start', align = 'start' } = props;
+  const { children, gap = 0, onClick, direction = 'row', flex = 'initial', justify = 'start', align = 'start' } = props;
 
   return (
     <FlexPrimitive
@@ -13,6 +13,7 @@ export function Flex(props: FlexProps): JSX.Element {
       $customFlex={flex}
       $customJustify={justify}
       $customAlign={align}
+      onClick={onClick}
     >
       {children}
     </FlexPrimitive>

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 export interface FlexProps {
   children?: ReactNode;
@@ -7,7 +7,7 @@ export interface FlexProps {
   flex?: 0 | 1 | 'initial';
   justify?: 'start' | 'end' | 'space-between' | 'center';
   align?: 'start' | 'center' | 'end';
-  // onClick?: (e: any) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 export interface FlexPrimitiveProps {
