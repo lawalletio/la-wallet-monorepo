@@ -22,7 +22,7 @@ import {
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useConfig, useWalletContext, getMultipleTags, detectTransferType } from '@lawallet/react';
+import { useConfig, useWalletContext, getMultipleTags, detectTransferType, formatLNURLData } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { TransactionDirection, TransactionType, TransferTypes } from '@lawallet/react/types';
 import { useEffect, useState } from 'react';
@@ -61,6 +61,13 @@ export default function Page() {
         return;
 
       default:
+        const formattedLNURLData = await formatLNURLData(cleanData);
+        if (formattedLNURLData.type === TransferTypes.NONE) {
+          errors.modifyError('INVALID_RECIPIENT');
+          setLoading(false);
+          return;
+        }
+
         router.push(`/transfer/lnurl?data=${cleanData}`);
         return;
     }
