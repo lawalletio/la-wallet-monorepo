@@ -19,10 +19,11 @@ import {
   theme,
 } from '@lawallet/ui';
 
+import { BtnLoader } from '@/components/Loader/Loader';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useConfig, useWalletContext, getMultipleTags, detectTransferType, formatLNURLData } from '@lawallet/react';
+import { detectTransferType, formatLNURLData, getMultipleTags, useConfig, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { TransactionDirection, TransactionType, TransferTypes } from '@lawallet/react/types';
 import { useEffect, useState } from 'react';
@@ -191,7 +192,7 @@ export default function Page() {
             </Button>
 
             <Button onClick={handleContinue} disabled={loading || inputText.length === 0} loading={loading}>
-              {t('CONTINUE')}
+              {loading ? <BtnLoader /> : t('CONTINUE')}
             </Button>
           </Flex>
           <Divider y={32} />

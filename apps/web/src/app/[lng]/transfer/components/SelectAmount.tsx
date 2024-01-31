@@ -14,6 +14,7 @@ import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
 import { useWalletContext, decimalsToUse, formatToPreference } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
+import { BtnLoader } from '@/components/Loader/Loader';
 
 export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }) => {
   const { lng, t } = useTranslation();
@@ -166,7 +167,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
               disabled={loading || balance.amount === 0 || numpadData.intAmount['SAT'] === 0}
               loading={loading}
             >
-              {t('CONTINUE')}
+              {loading ? <BtnLoader /> : t('CONTINUE')}
             </Button>
           </Flex>
         </Flex>

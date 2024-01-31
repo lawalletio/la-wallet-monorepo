@@ -21,6 +21,7 @@ import { splitHandle, formatAddress, formatToPreference, useWalletContext } from
 import { TransferTypes } from '@lawallet/react/types';
 import { useEffect, useMemo, useState } from 'react';
 import { extractFirstTwoChars } from '@/utils';
+import { BtnLoader } from '@/components/Loader/Loader';
 
 type SummaryProps = {
   isLoading: boolean;
@@ -137,7 +138,7 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
               disabled={!type || isLoading || expired || (type !== TransferTypes.LNURLW && insufficientBalance)}
               loading={isLoading}
             >
-              {type === TransferTypes.LNURLW ? t('CLAIM') : t('TRANSFER')}
+              {isLoading ? <BtnLoader /> : type === TransferTypes.LNURLW ? t('CLAIM') : t('TRANSFER')}
             </Button>
           </Flex>
           <Divider y={32} />
