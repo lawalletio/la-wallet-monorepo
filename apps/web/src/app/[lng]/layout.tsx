@@ -2,7 +2,6 @@
 import StyledComponentsRegistry from '@/utils/registry';
 
 import { TranslateProvider } from '@/context/TranslateContext';
-import { fontSecondary } from '@/styles/fonts';
 import { ReactNode } from 'react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import { LaWalletProvider, defaultLocale } from '@lawallet/react';
@@ -22,7 +21,7 @@ const APP_DESCRIPTION = 'https://lawallet.ar/';
 const Providers = (props: ProviderProps) => {
   const { children, params } = props;
   return (
-    <html lang={params.lng ?? defaultLocale} className={fontSecondary.className}>
+    <html lang={params.lng ?? defaultLocale}>
       <head>
         <title>{APP_NAME}</title>
         <meta name="application-name" content={APP_NAME} />
@@ -42,6 +41,11 @@ const Providers = (props: ProviderProps) => {
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon.ico" />
+
+        {/* Fonts */}
+        <link rel="preload" href="/fonts/IAAB3.woff2" as="font" type="font/woff2" />
+        <link rel="preload" href="/fonts/SF-Regular.woff2" as="font" type="font/woff2" />
+        <link rel="preload" href="/fonts/SF-Bold.woff2" as="font" type="font/woff2" />
 
         {/* <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_TAG_ID}`} />
         <Script id="google-analytics">
