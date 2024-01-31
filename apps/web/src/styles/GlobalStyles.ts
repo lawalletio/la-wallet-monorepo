@@ -1,5 +1,3 @@
-'use client';
-
 import { theme } from '@lawallet/ui';
 import { createGlobalStyle } from 'styled-components';
 
@@ -30,11 +28,11 @@ const GlobalStyles = createGlobalStyle`
     color: ${theme.colors.text};
     font-size: 1em;
     font-weight: 400;
-    font-family: var(--font-secondary);
+    font-family: 'SF PRO Text';
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-primary);
+    font-family: 'IAAB3-Mono';
   }
 
   ul {
@@ -47,7 +45,7 @@ const GlobalStyles = createGlobalStyle`
 
   a, 
   button {
-    font-family: var(--font-secondary);
+    font-family: 'SF PRO Text';
   }
 `;
 
