@@ -13,3 +13,4 @@ export * from './CaretRight';
 export * from './CaretLeft';
 export * from './Check';
 export * from './Alert';
+export * from './ArrowRight';
