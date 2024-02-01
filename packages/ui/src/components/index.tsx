@@ -23,6 +23,8 @@ export * from './LinkSetting';
 export * from './Icon';
 export * from './Icons';
 export * from './ActionSheet';
+export * from './ToggleSwitch';
+export * from './Label';
 
 // Layout
 export * from './Layout/Container';
