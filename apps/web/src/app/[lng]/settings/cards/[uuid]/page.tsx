@@ -1,7 +1,18 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { MainLoader } from '@/components/Loader/Loader';
-import { Button, Container, ButtonGroup, Divider, Feedback, Flex, Heading, InputWithLabel } from '@lawallet/ui';
+import {
+  Button,
+  Container,
+  ButtonGroup,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  InputWithLabel,
+  Label,
+  ToggleSwitch,
+} from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
@@ -188,7 +199,12 @@ const page = () => {
           <Flex justify="space-between" align="center">
             <Heading as="h5">{t('LIMITS')}</Heading>
 
-            <ButtonGroup>
+            <Flex align="center" flex={0} gap={8}>
+              <Label htmlFor="type-limit">{t('UNIQUE')}</Label>
+              <ToggleSwitch id="type-limit" onChange={() => null} />
+              <Label htmlFor="type-limit">{t('DAILY')}</Label>
+            </Flex>
+            {/* <ButtonGroup>
               <Button
                 variant={selectedLimit === 'tx' ? 'filled' : 'borderless'}
                 onClick={() => {
@@ -214,7 +230,7 @@ const page = () => {
               >
                 {t('DAILY')}
               </Button>
-            </ButtonGroup>
+            </ButtonGroup> */}
           </Flex>
 
           <Divider y={24} />

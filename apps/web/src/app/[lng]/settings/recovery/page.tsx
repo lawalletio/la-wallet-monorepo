@@ -7,8 +7,8 @@ import { useState } from 'react';
 import { useTranslation } from '@/context/TranslateContext';
 
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Container, Divider, Flex, Text, theme } from '@lawallet/ui';
-import { InfoCopy, ToggleSwitch } from '@/components/UI';
+import { Button, Container, Divider, Flex, Text, theme, ToggleSwitch, Label } from '@lawallet/ui';
+import { InfoCopy } from '@/components/UI';
 
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { useConfig, useWalletContext } from '@lawallet/react';
@@ -67,9 +67,15 @@ export default function Page() {
               {t('UNDERSTAND_WHAT')}
             </Text>
             <Divider y={8} />
-            <Flex direction="column" gap={4}>
-              <ToggleSwitch label={t('LOSE_KEY')} onChange={setSwitchOne} />
-              <ToggleSwitch label={t('SHARE_KEY')} onChange={setSwitchTwo} />
+            <Flex direction="column" gap={8}>
+              <Flex justify="space-between" align="center" gap={8}>
+                <Label htmlFor="lose-key">{t('LOSE_KEY')}</Label>
+                <ToggleSwitch id="lose-key" onChange={setSwitchOne} />
+              </Flex>
+              <Flex justify="space-between" align="center" gap={8}>
+                <Label htmlFor="share-key">{t('SHARE_KEY')}</Label>
+                <ToggleSwitch id="share-key" onChange={setSwitchTwo} />
+              </Flex>
             </Flex>
             <Divider y={16} />
           </Container>
