@@ -25,6 +25,7 @@ export * from './Icons';
 export * from './ActionSheet';
 export * from './ToggleSwitch';
 export * from './Label';
+export * from './BannerAlert';
 
 // Layout
 export * from './Layout/Container';
