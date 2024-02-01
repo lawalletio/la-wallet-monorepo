@@ -14,3 +14,4 @@ export * from './CaretLeft';
 export * from './Check';
 export * from './Alert';
 export * from './ArrowRight';
+export * from './SafariLogo';
