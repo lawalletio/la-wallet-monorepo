@@ -60,18 +60,17 @@ export default function Page() {
       case TransferTypes.INVOICE:
         router.push(`/transfer/invoice/${cleanData}`);
         return;
-
-      default:
-        const formattedLNURLData = await formatLNURLData(cleanData);
-        if (formattedLNURLData.type === TransferTypes.NONE) {
-          errors.modifyError('INVALID_RECIPIENT');
-          setLoading(false);
-          return;
-        }
-
-        router.push(`/transfer/lnurl?data=${cleanData}`);
-        return;
     }
+
+    const formattedLNURLData = await formatLNURLData(cleanData);
+    if (formattedLNURLData.type === TransferTypes.NONE || formattedLNURLData.type === TransferTypes.INVOICE) {
+      errors.modifyError('INVALID_RECIPIENT');
+      setLoading(false);
+      return;
+    }
+
+    router.push(`/transfer/lnurl?data=${cleanData}`);
+    return;
   };
 
   const handleContinue = async () => {

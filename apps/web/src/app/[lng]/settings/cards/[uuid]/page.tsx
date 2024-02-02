@@ -1,18 +1,7 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { MainLoader } from '@/components/Loader/Loader';
-import {
-  Button,
-  Container,
-  ButtonGroup,
-  Divider,
-  Feedback,
-  Flex,
-  Heading,
-  InputWithLabel,
-  Label,
-  ToggleSwitch,
-} from '@lawallet/ui';
+import { Button, Container, Divider, Feedback, Flex, Heading, InputWithLabel, Label, ToggleSwitch } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';

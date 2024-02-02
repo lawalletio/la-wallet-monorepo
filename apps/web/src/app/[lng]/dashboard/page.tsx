@@ -16,8 +16,19 @@ import Navbar from '@/components/Layout/Navbar';
 import TokenList from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
 import ButtonCTA from '@/components/ButtonCTA';
-import { Avatar, Button, Container, HeroCard, Divider, Flex, Heading, Icon, Text, theme } from '@lawallet/ui';
-import { BannerAlert } from '@/components/UI';
+import {
+  Avatar,
+  Button,
+  BannerAlert,
+  Container,
+  HeroCard,
+  Divider,
+  Flex,
+  Heading,
+  Icon,
+  Text,
+  theme,
+} from '@lawallet/ui';
 
 // Harcode data
 import { useTranslation } from '@/context/TranslateContext';

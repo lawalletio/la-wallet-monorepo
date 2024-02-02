@@ -1,6 +1,5 @@
 'use client';
-import { Container, Divider, Flex, Text, Button, Feedback, theme } from '@lawallet/ui';
-import { CardAlert } from '@/components/UI';
+import { CardAlert, Container, Divider, Flex, Text, Button, Feedback, theme } from '@lawallet/ui';
 import Logo from '@/components/Logo';
 import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
 
