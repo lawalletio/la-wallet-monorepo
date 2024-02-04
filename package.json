@@ -7,9 +7,13 @@
     "dev": "pnpm libs:build && turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "build:react": "pnpm --filter @lawallet/react build",
+    "build:utils": "pnpm --filter @lawallet/utils build",
+    "build:ui": "pnpm --filter @lawallet/ui build",
+    "build:libs": "pnpm build:utils && pnpm build:react && pnpm build:ui",
+    "web:build": "pnpm --filter lawallet-front build",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
-    "libs:build": "pnpm --filter @lawallet/utils build && pnpm --filter @lawallet/react build && pnpm --filter @lawallet/ui build",
     "docs:dev": "pnpm --filter docs dev"
   },
   "devDependencies": {

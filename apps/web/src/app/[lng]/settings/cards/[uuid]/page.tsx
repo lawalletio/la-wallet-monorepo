@@ -1,7 +1,18 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { MainLoader } from '@/components/Loader/Loader';
-import { Button, Container, Divider, Feedback, Flex, Heading, InputWithLabel, Label, ToggleSwitch } from '@lawallet/ui';
+import {
+  Button,
+  Container,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  InputWithLabel,
+  Label,
+  Text,
+  ToggleSwitch,
+} from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
@@ -185,41 +196,31 @@ const page = () => {
 
           <Divider y={24} />
 
+          <Heading as="h5">{t('LIMITS')}</Heading>
+
+          <Divider y={12} />
+
           <Flex justify="space-between" align="center">
-            <Heading as="h5">{t('LIMITS')}</Heading>
+            <Text isBold={true}>{t('LIMIT_TYPE')}</Text>
 
             <Flex align="center" flex={0} gap={8}>
-              <Label htmlFor="type-limit">{t('UNIQUE')}</Label>
-              <ToggleSwitch id="type-limit" onChange={() => null} />
-              <Label htmlFor="type-limit">{t('DAILY')}</Label>
+              <Label htmlFor="type-limit">{t('TX_LIMIT')}</Label>
+              <ToggleSwitch
+                id="type-limit"
+                switchEnabled={selectedLimit === 'daily'}
+                onChange={(bool) => {
+                  setNewConfig({
+                    ...newConfig,
+                    limits: [
+                      !bool
+                        ? { ...defaultTXLimit, amount: newConfig.limits[0].amount }
+                        : { ...defaultDailyLimit, amount: newConfig.limits[0].amount },
+                    ],
+                  });
+                }}
+              />
+              <Label htmlFor="type-limit">{t('DAILY_LIMIT')}</Label>
             </Flex>
-            {/* <ButtonGroup>
-              <Button
-                variant={selectedLimit === 'tx' ? 'filled' : 'borderless'}
-                onClick={() => {
-                  setNewConfig({
-                    ...newConfig,
-                    limits: [{ ...defaultTXLimit, amount: newConfig.limits[0].amount }],
-                  });
-                }}
-                size="small"
-              >
-                {t('UNIQUE')}
-              </Button>
-
-              <Button
-                variant={selectedLimit === 'daily' ? 'filled' : 'borderless'}
-                onClick={() => {
-                  setNewConfig({
-                    ...newConfig,
-                    limits: [{ ...defaultDailyLimit, amount: newConfig.limits[0].amount }],
-                  });
-                }}
-                size="small"
-              >
-                {t('DAILY')}
-              </Button>
-            </ButtonGroup> */}
           </Flex>
 
           <Divider y={24} />
