@@ -5,6 +5,7 @@ export interface SheetProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
+  closeText?: string;
 }
 
 export interface SheetPrimitiveProps {

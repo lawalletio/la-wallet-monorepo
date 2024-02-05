@@ -133,7 +133,12 @@ export default function Page() {
         <Divider y={16} />
       </Container>
 
-      <Sheet title={t('CHANGE_LANGUAGE')} isOpen={sheetLanguage} onClose={() => setSheetLanguage(false)}>
+      <Sheet
+        title={t('CHANGE_LANGUAGE')}
+        isOpen={sheetLanguage}
+        closeText={t('CLOSE')}
+        onClose={() => setSheetLanguage(false)}
+      >
         <Container>
           <Flex direction="column" flex={1}>
             <Radio

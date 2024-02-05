@@ -41,7 +41,7 @@ export const SheetContent = styled.div<SheetContentProps>`
   transition-duration: 0.4s;
 `;
 export const SheetBody = styled.div`
-  overflow-x: scroll;
+  overflow-y: auto;
 
   display: flex;
   flex-direction: column;

@@ -10,7 +10,7 @@ import { SheetProps } from './types';
 import { SheetPrimitive, SheetContent, SheetBody } from './style';
 
 export function Sheet(props: SheetProps) {
-  const { children, isOpen, onClose, title } = props;
+  const { children, isOpen, closeText = 'Close', onClose, title } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -28,10 +28,10 @@ export function Sheet(props: SheetProps) {
       <SheetContent $isOpen={open}>
         <Flex>
           <Container>
-            <Flex align='center' justify='space-between'>
-              <Heading as='h6'>{title}</Heading>
-              <Button variant='borderless' size='small' onClick={handleClose}>
-                Cerrar
+            <Flex align="center" justify="space-between">
+              <Heading as="h6">{title}</Heading>
+              <Button variant="borderless" size="small" onClick={handleClose}>
+                {closeText}
               </Button>
             </Flex>
           </Container>

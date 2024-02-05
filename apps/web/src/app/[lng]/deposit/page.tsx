@@ -187,6 +187,7 @@ export default function Page() {
               : t('PAYMENT_RECEIVED')
         }
         isOpen={showSheet || !identity.data.username.length}
+        closeText={t('CLOSE')}
         onClose={handleCloseSheet}
       >
         {sheetStep === 'amount' && (
