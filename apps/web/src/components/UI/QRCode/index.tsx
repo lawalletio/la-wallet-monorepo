@@ -39,7 +39,7 @@ export default function Component({ value, size = 150, borderSize = 40, showCopy
       <QRCode
         size={size + borderSize}
         onClick={() => {
-          if (showCopy) handleCopy(textToCopy ? textToCopy : value);
+          handleCopy(textToCopy ? textToCopy : value);
         }}
       >
         {showCopy ? (

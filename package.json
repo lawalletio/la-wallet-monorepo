@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo build",
-    "dev": "pnpm libs:build && turbo dev",
+    "dev": "pnpm build:libs && turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "build:react": "pnpm --filter @lawallet/react build",
