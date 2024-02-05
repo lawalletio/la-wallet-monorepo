@@ -28,11 +28,11 @@ const GlobalStyles = createGlobalStyle`
     color: ${theme.colors.text};
     font-size: 1em;
     font-weight: 400;
-    font-family: 'SF PRO Text';
+    font-family: var(--font-secondary);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'IAAB3-Mono';
+    font-family: var(--font-primary);
   }
 
   ul {
@@ -45,7 +45,7 @@ const GlobalStyles = createGlobalStyle`
 
   a, 
   button {
-    font-family: 'SF PRO Text';
+    font-family: var(--font-secondary);
   }
 `;
 

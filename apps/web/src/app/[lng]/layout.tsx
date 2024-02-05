@@ -9,6 +9,8 @@ import AuthProvider from '@/components/Auth/AuthProvider';
 import { config } from '@/constants/constants';
 import { NotificationsProvider } from '@/context/NotificationsContext';
 
+import { fontPrimary, fontSecondary } from '@/styles/fonts';
+
 interface ProviderProps {
   children: ReactNode;
   params: { lng: AvailableLanguages };
@@ -21,7 +23,7 @@ const APP_DESCRIPTION = 'https://lawallet.ar/';
 const Providers = (props: ProviderProps) => {
   const { children, params } = props;
   return (
-    <html lang={params.lng ?? defaultLocale}>
+    <html lang={params.lng ?? defaultLocale} className={`${fontPrimary.variable} ${fontSecondary.variable}`}>
       <head>
         <title>{APP_NAME}</title>
         <meta name="application-name" content={APP_NAME} />
