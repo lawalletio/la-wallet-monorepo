@@ -3,13 +3,18 @@
   "version": "0.1.0",
   "description": "",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lawalletio/la-wallet-monorepo.git",
+    "directory": "packages/utils"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "build": "pnpm run build:esm+types",
     "build:esm+types": "tsc --project ./tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
     "clean": "rm -rf dist"
   },
-  "author": "Ferpa",
+  "author": "LaWallet Labs",
   "license": "MIT",
   "devDependencies": {
     "@scure/base": "1.1.5",
