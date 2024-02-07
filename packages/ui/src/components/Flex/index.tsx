@@ -8,11 +8,11 @@ export function Flex(props: FlexProps): JSX.Element {
 
   return (
     <FlexPrimitive
-      $customGap={`${gap}px`}
+      $customAlign={align}
       $customDirection={direction}
       $customFlex={flex}
+      $customGap={`${gap}px`}
       $customJustify={justify}
-      $customAlign={align}
       onClick={onClick}
     >
       {children}

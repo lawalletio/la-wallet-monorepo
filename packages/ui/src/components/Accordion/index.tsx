@@ -32,8 +32,8 @@ export function Accordion(props: AccordionProps) {
   };
 
   return (
-    <AccordionPrimitive $isOpen={open} $background={backgroundColor} $borderColor={textColor}>
-      <AccordionTrigger onClick={handleClick} isOpen={open}>
+    <AccordionPrimitive $background={backgroundColor} $borderColor={textColor} $isOpen={open}>
+      <AccordionTrigger isOpen={open} onClick={handleClick}>
         {trigger}
       </AccordionTrigger>
       <AccordionContent $isOpen={open}>{children}</AccordionContent>

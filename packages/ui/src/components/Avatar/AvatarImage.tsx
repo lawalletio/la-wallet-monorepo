@@ -10,5 +10,5 @@ interface ComponentProps {
 export function AvatarImage(props: ComponentProps) {
   const { src, alt } = props;
 
-  return <AvatarImagePrimitive src={src} alt={alt} />;
+  return <AvatarImagePrimitive alt={alt} src={src} />;
 }

@@ -16,17 +16,17 @@ export function Alert(props: AlertProps) {
 
   return (
     <AlertPrimitive $background={theme.colors[`${type}15`]} $color={type && theme.colors[type]} $isOpen={!!isOpen}>
-      <div className='box'>
-        <Icon size='small'>{isSuccess ? <CheckIcon /> : <AlertIcon />}</Icon>
+      <div className="box">
+        <Icon size="small">{isSuccess ? <CheckIcon /> : <AlertIcon />}</Icon>
         <div>
           {title && (
-            <Text size='small' isBold>
+            <Text isBold size="small">
               {title}
             </Text>
           )}
-          {description && <Text size='small'>{description}</Text>}
+          {description && <Text size="small">{description}</Text>}
         </div>
-        <div className='progress'></div>
+        <div className="progress" />
       </div>
     </AlertPrimitive>
   );

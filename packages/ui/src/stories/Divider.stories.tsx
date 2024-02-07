@@ -19,7 +19,7 @@ export const defaultComponent: Story = {
   },
   render: (args) => (
     <>
-      <Heading as='h4'>Lorem ipsum dolor sit amet magna aliqua.</Heading>
+      <Heading as="h4">Lorem ipsum dolor sit amet magna aliqua.</Heading>
       <Divider {...args} />
       <Text>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore

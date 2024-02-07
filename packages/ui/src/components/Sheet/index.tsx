@@ -30,7 +30,7 @@ export function Sheet(props: SheetProps) {
           <Container>
             <Flex align="center" justify="space-between">
               <Heading as="h6">{title}</Heading>
-              <Button variant="borderless" size="small" onClick={handleClose}>
+              <Button size="small" variant="borderless" onClick={handleClose}>
                 {closeText}
               </Button>
             </Flex>

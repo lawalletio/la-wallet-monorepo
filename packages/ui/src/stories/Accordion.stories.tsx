@@ -26,9 +26,9 @@ export const defaultComponent: Story = {
     return (
       <Accordion {...args}>
         <AccordionBody>
-          <Flex align='center' justify='space-between'>
-            <Text size='small'>Fecha</Text>
-            <Flex direction='column' align='end'>
+          <Flex align="center" justify="space-between">
+            <Text size="small">Fecha</Text>
+            <Flex direction="column" align="end">
               <Text>12:01</Text>
               <Text>enero 6, 2024</Text>
             </Flex>
@@ -48,9 +48,9 @@ export const borderlessVariant: Story = {
     return (
       <Accordion {...args}>
         <AccordionBody>
-          <Flex align='center' justify='space-between'>
-            <Text size='small'>Fecha</Text>
-            <Flex direction='column' align='end'>
+          <Flex align="center" justify="space-between">
+            <Text size="small">Fecha</Text>
+            <Flex direction="column" align="end">
               <Text>12:01</Text>
               <Text>enero 6, 2024</Text>
             </Flex>

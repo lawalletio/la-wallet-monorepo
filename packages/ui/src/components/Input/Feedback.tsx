@@ -11,7 +11,7 @@ export function Feedback(props: FeedbackProps) {
 
   return (
     <FeedbackPrimitive $isShow={show} $isSuccess={status === 'success'}>
-      <Text size='small' align='right'>
+      <Text align="right" size="small">
         {children}
       </Text>
     </FeedbackPrimitive>

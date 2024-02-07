@@ -27,42 +27,42 @@ export const Dashboard: React.FC = () => {
   return (
     <>
       <HeroCard>
-        <Container size='small'>
+        <Container size="small">
           <Divider y={12} />
-          <Flex justify='space-between'>
-            <Flex align='center' gap={8}>
+          <Flex justify="space-between">
+            <Flex align="center" gap={8}>
               <Avatar>SN</Avatar>
-              <Flex direction='column'>
-                <Text size='small'>Hola,</Text>
+              <Flex direction="column">
+                <Text size="small">Hola,</Text>
                 <Text>satoshi@lawallet.ar</Text>
               </Flex>
             </Flex>
             <Flex gap={4} flex={0}>
-              <Button size='small' variant='bezeled' onClick={() => null}>
-                <Icon size='small'>
+              <Button size="small" variant="bezeled" onClick={() => null}>
+                <Icon size="small">
                   <VisibleIcon />
                 </Icon>
               </Button>
-              <Button size='small' variant='bezeled' onClick={() => null}>
-                <Icon size='small'>
+              <Button size="small" variant="bezeled" onClick={() => null}>
+                <Icon size="small">
                   <GearIcon />
                 </Icon>
               </Button>
             </Flex>
           </Flex>
-          <Flex direction='column' align='center' justify='center' flex={1}>
-            <Text size='small'>Balance</Text>
+          <Flex direction="column" align="center" justify="center" flex={1}>
+            <Text size="small">Balance</Text>
             <Divider y={8} />
-            <Flex align='center' justify='center'>
-              <Icon size='small'>
+            <Flex align="center" justify="center">
+              <Icon size="small">
                 <SatoshiIcon />
               </Icon>
               <Heading>250.000</Heading>
             </Flex>
             <Divider y={8} />
-            <Flex justify='center' gap={4}>
+            <Flex justify="center" gap={4}>
               <Button
-                size='small'
+                size="small"
                 variant={`${token === 'SAT' ? 'bezeled' : 'borderless'}`}
                 onClick={() => setToken('SAT')}
                 style={{ minWidth: '80px' }}
@@ -70,7 +70,7 @@ export const Dashboard: React.FC = () => {
                 SAT
               </Button>
               <Button
-                size='small'
+                size="small"
                 variant={`${token === 'USD' ? 'bezeled' : 'borderless'}`}
                 onClick={() => setToken('USD')}
                 style={{ minWidth: '80px' }}
@@ -78,7 +78,7 @@ export const Dashboard: React.FC = () => {
                 USD
               </Button>
               <Button
-                size='small'
+                size="small"
                 variant={`${token === 'ARS' ? 'bezeled' : 'borderless'}`}
                 onClick={() => setToken('ARS')}
                 style={{ minWidth: '80px' }}
@@ -90,7 +90,7 @@ export const Dashboard: React.FC = () => {
         </Container>
       </HeroCard>
 
-      <Container size='small'>
+      <Container size="small">
         <Divider y={16} />
         <Flex gap={8}>
           <Button onClick={() => null}>
@@ -99,7 +99,7 @@ export const Dashboard: React.FC = () => {
             </Icon>
             Depositar
           </Button>
-          <Button color='secondary' onClick={() => null}>
+          <Button color="secondary" onClick={() => null}>
             <Icon>
               <SendIcon />
             </Icon>
@@ -107,21 +107,21 @@ export const Dashboard: React.FC = () => {
           </Button>
         </Flex>
         <Divider y={16} />
-        <Flex justify='space-between' align='center'>
-          <Text size='small'>Ultima actividad</Text>
-          <Button size='small' variant='borderless' onClick={() => null}>
+        <Flex justify="space-between" align="center">
+          <Text size="small">Ultima actividad</Text>
+          <Button size="small" variant="borderless" onClick={() => null}>
             Ver todo
           </Button>
         </Flex>
-        <Flex direction='column' gap={4}>
+        <Flex direction="column" gap={4}>
           <Accordion
-            variant='borderless'
+            variant="borderless"
             trigger={
-              <Flex align='center'>
+              <Flex align="center">
                 <Text>Enviado</Text>
-                <Flex direction='column' align='end'>
+                <Flex direction="column" align="end">
                   <Text>+ 21 SAT</Text>
-                  <Text size='small'>$10,04 ARS</Text>
+                  <Text size="small">$10,04 ARS</Text>
                 </Flex>
               </Flex>
             }
@@ -129,23 +129,23 @@ export const Dashboard: React.FC = () => {
             <AccordionBody>
               <ul>
                 <li>
-                  <Flex align='center' justify='space-between'>
-                    <Text size='small'>Fecha</Text>
-                    <Flex direction='column' align='end'>
+                  <Flex align="center" justify="space-between">
+                    <Text size="small">Fecha</Text>
+                    <Flex direction="column" align="end">
                       <Text>12:01</Text>
-                      <Text size='small'>enero 6, 2024</Text>
+                      <Text size="small">enero 6, 2024</Text>
                     </Flex>
                   </Flex>
                 </li>
                 <li>
-                  <Flex align='center' justify='space-between'>
-                    <Text size='small'>Mensaje</Text>
+                  <Flex align="center" justify="space-between">
+                    <Text size="small">Mensaje</Text>
                     <Text>Testeando ando</Text>
                   </Flex>
                 </li>
                 <li>
-                  <Flex align='center' justify='space-between'>
-                    <Text size='small'>Estado</Text>
+                  <Flex align="center" justify="space-between">
+                    <Text size="small">Estado</Text>
                     <Text>Confirmada</Text>
                   </Flex>
                 </li>

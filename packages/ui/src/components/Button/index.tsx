@@ -38,10 +38,10 @@ export const Button: FC<ButtonProps> = ({
 
   return (
     <BaseButton
-      disabled={disabled || loading}
-      $isSmall={size === 'small'}
       $background={backgroundColor}
       $color={textColor}
+      $isSmall={size === 'small'}
+      disabled={disabled || loading}
       {...props}
     >
       {children}

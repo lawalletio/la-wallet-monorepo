@@ -9,7 +9,7 @@ export function Heading(props: HeadingProps): JSX.Element {
 
   return (
     <HeadingBox>
-      <HeadingPrimitive as={as} $align={align} $color={color}>
+      <HeadingPrimitive $align={align} $color={color} as={as}>
         {children}
       </HeadingPrimitive>
     </HeadingBox>

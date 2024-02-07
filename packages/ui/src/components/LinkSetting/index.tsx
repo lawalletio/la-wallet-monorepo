@@ -15,7 +15,7 @@ export function LinkSetting(props: LinkSettingProps) {
     <LinkSettingPrimitive>
       <a href={href} target={target}>
         {children}
-        <Icon size='small' color={theme.colors.gray40}>
+        <Icon color={theme.colors.gray40} size="small">
           <CaretRightIcon />
         </Icon>
       </a>

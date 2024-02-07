@@ -30,7 +30,7 @@ export function ActionSheet(props: ActionSheetProps) {
               </Text>
             )}
             {description && (
-              <Text size="small" align="center">
+              <Text align="center" size="small">
                 {description}
               </Text>
             )}

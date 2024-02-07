@@ -40,12 +40,12 @@ export function LinkButton(props: LinkButtonProps) {
 
   return (
     <LinkButtonPrimitive
+      $background={backgroundColor}
+      $color={textColor}
       href={href}
       tabIndex={tabIndex}
       // disabled={disabled}
       $isSmall={size === 'small'}
-      $background={backgroundColor}
-      $color={textColor}
     >
       {children}
     </LinkButtonPrimitive>

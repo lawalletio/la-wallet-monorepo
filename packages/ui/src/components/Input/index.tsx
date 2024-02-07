@@ -28,18 +28,18 @@ export function Input(props: InputProps) {
   return (
     <InputBox $withIcon={isLoading}>
       <InputPrimitive
-        onChange={onChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        type={type}
-        id={id}
-        name={name}
-        value={value}
-        $showValidate={!status}
         $isSuccess={status && status === 'success'}
+        $showValidate={!status}
         autoFocus={autoFocus}
         disabled={disabled}
+        id={id}
+        name={name}
+        placeholder={placeholder}
+        type={type}
+        value={value}
+        onBlur={onBlur}
+        onChange={onChange}
+        onFocus={onFocus}
       />
       {(isLoading || isChecked || isError) && (
         <InputIcon>

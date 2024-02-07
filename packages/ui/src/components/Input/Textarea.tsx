@@ -9,14 +9,14 @@ export function Textarea(props: TextareaProps) {
 
   return (
     <TextareaPrimitive
-      name={name}
-      id={id}
-      value={value}
-      placeholder={placeholder}
-      onChange={onChange}
-      disabled={disabled}
-      $showValidate={!status}
       $isSuccess={status && status === 'success'}
-    ></TextareaPrimitive>
+      $showValidate={!status}
+      disabled={disabled}
+      id={id}
+      name={name}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+    />
   );
 }

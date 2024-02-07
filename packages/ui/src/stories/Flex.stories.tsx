@@ -76,10 +76,10 @@ export const startJustify: Story = {
   },
   render: (args) => (
     <Flex {...args}>
-      <Button size='small' variant='bezeledGray' onClick={() => null}>
+      <Button size="small" variant="bezeledGray" onClick={() => null}>
         +
       </Button>
-      <Button size='small' onClick={() => null}>
+      <Button size="small" onClick={() => null}>
         +
       </Button>
     </Flex>
@@ -93,10 +93,10 @@ export const centerJustify: Story = {
   },
   render: (args) => (
     <Flex {...args}>
-      <Button size='small' variant='bezeledGray' onClick={() => null}>
+      <Button size="small" variant="bezeledGray" onClick={() => null}>
         +
       </Button>
-      <Button size='small' onClick={() => null}>
+      <Button size="small" onClick={() => null}>
         +
       </Button>
     </Flex>
@@ -110,10 +110,10 @@ export const endJustify: Story = {
   },
   render: (args) => (
     <Flex {...args}>
-      <Button size='small' variant='bezeledGray' onClick={() => null}>
+      <Button size="small" variant="bezeledGray" onClick={() => null}>
         +
       </Button>
-      <Button size='small' onClick={() => null}>
+      <Button size="small" onClick={() => null}>
         +
       </Button>
     </Flex>
@@ -127,10 +127,10 @@ export const spaceBetweenJustify: Story = {
   },
   render: (args) => (
     <Flex {...args}>
-      <Button size='small' variant='bezeledGray' onClick={() => null}>
+      <Button size="small" variant="bezeledGray" onClick={() => null}>
         +
       </Button>
-      <Button size='small' onClick={() => null}>
+      <Button size="small" onClick={() => null}>
         +
       </Button>
     </Flex>

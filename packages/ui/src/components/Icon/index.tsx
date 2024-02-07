@@ -10,7 +10,7 @@ export function Icon(props: IconProps) {
   const isSmall = size === 'small';
 
   return (
-    <IconPrimitive $isSmall={isSmall} $color={color}>
+    <IconPrimitive $color={color} $isSmall={isSmall}>
       {children}
     </IconPrimitive>
   );

@@ -68,15 +68,14 @@ export const useNostr = ({
       webln: window.webln,
       nostr: window.nostr as NostrExtensionProvider,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const connectRelays = async () => {
     try {
       await ndk.connect();
       return true;
-    } catch (err) {
-      throw err;
+    } catch {
+      return false;
     }
   };
 
@@ -86,8 +85,8 @@ export const useNostr = ({
       initializeSigner(privateKeySigner);
 
       return privateKeySigner;
-    } catch (err) {
-      throw err;
+    } catch {
+      return;
     }
   };
 
@@ -100,8 +99,8 @@ export const useNostr = ({
       initializeSigner(nip07signer);
 
       return nip07signer;
-    } catch (err) {
-      throw err;
+    } catch {
+      return;
     }
   };
 
@@ -121,7 +120,6 @@ export const useNostr = ({
     loadProviders();
 
     if (autoConnect) connectRelays();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoConnect]);
 
   React.useEffect(() => {
