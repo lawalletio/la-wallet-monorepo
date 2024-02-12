@@ -1,10 +1,6 @@
 {
   "extends": "@lawallet/typescript-config/base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@lawallet/utils": ["./packages/utils/dist"],
-      "@lawallet/react": ["./packages/hooks/dist"]
-    }
+    "baseUrl": "."
   }
 }
