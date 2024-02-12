@@ -26,6 +26,7 @@
     "paths": {
       "@/*": ["./*"]
     },
+    "types": ["@types/react"],
     "moduleResolution": "node"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
