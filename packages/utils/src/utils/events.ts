@@ -224,6 +224,7 @@ export const buildCardTransferDonationEvent = async (
   const userPubkey: string = getPublicKey(privateKey);
 
   const content = await nip04.encrypt(privateKey, config.modulePubkeys.card, uuid);
+  const expiry: number = nowInSeconds() + 3600;
 
   const event: NostrEvent = {
     kind: LaWalletKinds.EPHEMERAL,
@@ -233,6 +234,7 @@ export const buildCardTransferDonationEvent = async (
     tags: [
       ['t', 'card-transfer-donation'],
       ['p', config.modulePubkeys.card],
+      ['expiry', expiry.toString()],
     ],
   };
 

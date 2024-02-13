@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 import { ToggleSwitchProps } from './types';
 import { ToggleSwitchPrimitive } from './style';
+import { Text } from '../Text';
 
 export function ToggleSwitch(props: ToggleSwitchProps) {
-  const { onChange, id, switchEnabled = false } = props;
+  const { label, onChange, id, switchEnabled = false } = props;
 
   const [active, setActive] = useState(switchEnabled);
 
@@ -19,6 +20,7 @@ export function ToggleSwitch(props: ToggleSwitchProps) {
 
   return (
     <ToggleSwitchPrimitive>
+      {label ? <Text>{label}</Text> : null}
       <input checked={active} id={id} type="checkbox" onChange={handleChange} />
       <label htmlFor={id}>Toggle</label>
     </ToggleSwitchPrimitive>

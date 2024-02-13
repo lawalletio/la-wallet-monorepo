@@ -12,12 +12,13 @@ import {
   Label,
   Text,
   ToggleSwitch,
+  theme,
 } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import LimitInput from '../components/LimitInput/LimitInput';
-import { roundToDown, useCards, useConfig, useWalletContext } from '@lawallet/react';
+import { formatToPreference, roundToDown, useCards, useConfig, useWalletContext } from '@lawallet/react';
 import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
 import useErrors from '@/hooks/useErrors';
 import { regexComment, regexUserName } from '@/constants/constants';
@@ -47,7 +48,7 @@ const NAME_MAX_LENGTH = 20;
 const DESC_MAX_LENGTH = 64;
 
 const page = () => {
-  const { t } = useTranslation();
+  const { t, lng } = useTranslation();
   const {
     account: { identity },
   } = useWalletContext();
@@ -177,7 +178,9 @@ const page = () => {
             onChange={handleChangeName}
             isError={
               errors.isExactError('EMPTY_NAME') ||
-              errors.isExactError('MAX_LENGTH_NAME', { length: `${NAME_MAX_LENGTH}` })
+              errors.isExactError('MAX_LENGTH_NAME', {
+                length: `${NAME_MAX_LENGTH}`,
+              })
             }
             name="card-name"
             label={t('NAME')}
@@ -189,7 +192,9 @@ const page = () => {
 
           <InputWithLabel
             onChange={handleChangeDesc}
-            isError={errors.isExactError('MAX_LENGTH_DESC', { length: `${DESC_MAX_LENGTH}` })}
+            isError={errors.isExactError('MAX_LENGTH_DESC', {
+              length: `${DESC_MAX_LENGTH}`,
+            })}
             name="card-desc"
             label={t('DESCRIPTION')}
             placeholder={t('DESCRIPTION')}
@@ -208,15 +213,20 @@ const page = () => {
             <Flex align="center" flex={0} gap={8}>
               <Label htmlFor="type-limit">{t('TX_LIMIT')}</Label>
               <ToggleSwitch
-                id="type-limit"
                 switchEnabled={selectedLimit === 'daily'}
                 onChange={(bool) => {
                   setNewConfig({
                     ...newConfig,
                     limits: [
                       !bool
-                        ? { ...defaultTXLimit, amount: newConfig.limits[0].amount }
-                        : { ...defaultDailyLimit, amount: newConfig.limits[0].amount },
+                        ? {
+                            ...defaultTXLimit,
+                            amount: newConfig.limits[0].amount,
+                          }
+                        : {
+                            ...defaultDailyLimit,
+                            amount: newConfig.limits[0].amount,
+                          },
                     ],
                   });
                 }}
@@ -232,6 +242,18 @@ const page = () => {
             amount={newConfig.limits.length ? roundToDown(Number(newConfig.limits[0].amount) / 1000, 0) : 0}
             currency={'SAT'}
           />
+
+          <Divider y={8} />
+
+          <Flex flex={1} justify="center">
+            <Text color={theme.colors.warning}>
+              {newConfig.limits.length && Number(newConfig.limits[0].amount) > 0
+                ? t(`LIMIT_CARD_PER_${selectedLimit === 'tx' ? 'TX' : 'DAY'}`, {
+                    sats: formatToPreference('SAT', Number(newConfig.limits[0].amount) / 1000, lng).toString(),
+                  })
+                : t('NO_LIMIT_SET')}
+            </Text>
+          </Flex>
 
           <Divider y={24} />
         </Container>

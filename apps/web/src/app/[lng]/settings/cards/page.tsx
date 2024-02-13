@@ -8,9 +8,10 @@ import { Container, Divider, Flex } from '@lawallet/ui';
 import AddNewCardModal from './components/AddCard';
 import DebitCard from './components/DebitCard';
 import EmptyCards from './components/EmptyCards';
-import { useCards, useConfig, useWalletContext } from '@lawallet/react';
+import { buildCardTransferDonationEvent, useCards, useConfig, useWalletContext } from '@lawallet/react';
 import { Design } from '@lawallet/react/types';
 import { useNotifications } from '@/context/NotificationsContext';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
   const {
@@ -26,6 +27,7 @@ export default function Page() {
   });
 
   const { t } = useTranslation();
+  const [cardToDonate, setCardToDonate] = useState<string>('');
 
   const handleToggleStatus = async (uuid: string) => {
     const toggled: boolean = await toggleCardStatus(uuid);
@@ -38,6 +40,38 @@ export default function Page() {
 
     return toggled;
   };
+
+  const handleDonateCard = async (uuid: string) => {
+    try {
+      const transferDonationEvent = await buildCardTransferDonationEvent(uuid, identity.data.privateKey);
+
+      const encodedDonationEvent: string = btoa(JSON.stringify(transferDonationEvent))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+
+      setCardToDonate(uuid);
+
+      return encodedDonationEvent;
+    } catch {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (cardToDonate) {
+      const existCard = cardsData[cardToDonate];
+      if (!existCard) {
+        notifications.showAlert({
+          title: '',
+          description: t('DONATION_CARD_SUCCESS'),
+          type: 'success',
+        });
+
+        setCardToDonate('');
+      }
+    }
+  }, [cardsData, cardToDonate]);
 
   return (
     <>
@@ -58,6 +92,7 @@ export default function Page() {
                     config: cardsConfig.cards?.[key],
                   }}
                   toggleCardStatus={handleToggleStatus}
+                  base64DonationCardEvent={handleDonateCard}
                   key={key}
                 />
               );
