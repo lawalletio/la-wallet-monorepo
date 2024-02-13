@@ -6,6 +6,7 @@ import { InputProps } from './types';
 
 import { theme } from '../../theme';
 import { InputPrimitive, InputBox, InputIcon } from './style';
+import { BtnLoader } from '../Loader/Loader';
 
 export function Input(props: InputProps) {
   const {
@@ -43,7 +44,7 @@ export function Input(props: InputProps) {
       />
       {(isLoading || isChecked || isError) && (
         <InputIcon>
-          {/* {isLoading && <BtnLoader />} */}
+          {isLoading && <BtnLoader />}
           {isChecked && <CheckIcon color={theme.colors.success} />}
           {isError && <AlertIcon color={theme.colors.error} />}
         </InputIcon>

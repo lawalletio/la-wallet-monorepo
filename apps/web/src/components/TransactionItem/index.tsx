@@ -17,7 +17,7 @@ import {
 import { getUsername } from '@lawallet/react/actions';
 import { Transaction, TransactionDirection, TransactionStatus, TransactionType } from '@lawallet/react/types';
 import { useMemo, useState } from 'react';
-import { BtnLoader } from '../Loader/Loader';
+import { BtnLoader } from '@lawallet/ui';
 
 interface ComponentProps {
   transaction: Transaction;

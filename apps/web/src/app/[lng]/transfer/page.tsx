@@ -19,7 +19,6 @@ import {
   theme,
 } from '@lawallet/ui';
 
-import { BtnLoader } from '@/components/Loader/Loader';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
@@ -191,7 +190,7 @@ export default function Page() {
             </Button>
 
             <Button onClick={handleContinue} disabled={loading || inputText.length === 0} loading={loading}>
-              {loading ? <BtnLoader /> : t('CONTINUE')}
+              {t('CONTINUE')}
             </Button>
           </Flex>
           <Divider y={32} />

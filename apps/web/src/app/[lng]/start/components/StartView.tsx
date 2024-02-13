@@ -6,7 +6,7 @@ import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
 import { useEffect, useState } from 'react';
 import { checkIOS } from '@/utils';
 import { useTranslation } from '@/context/TranslateContext';
-import { Loader } from '@/components/Loader/Loader';
+import { Loader } from '@lawallet/ui';
 import { LAWALLET_VERSION } from '@/constants/constants';
 import { useRouter } from 'next/navigation';
 

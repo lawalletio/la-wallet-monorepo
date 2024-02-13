@@ -1,8 +1,7 @@
 import React from 'react';
 import Logo from '@/components/Logo';
-import { Container, Divider, Flex, Text, theme } from '@lawallet/ui';
+import { Container, Divider, Flex, Loader, Text, theme } from '@lawallet/ui';
 import { LAWALLET_VERSION } from '@/constants/constants';
-import { Loader } from '@/components/Loader/Loader';
 
 const SpinnerView = ({ loadingText }: { loadingText?: string }) => {
   return (

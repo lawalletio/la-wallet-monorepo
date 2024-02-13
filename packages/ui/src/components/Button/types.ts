@@ -1,4 +1,4 @@
-import { ReactNode, CSSProperties, ButtonHTMLAttributes } from 'react';
+import { ReactNode, CSSProperties, ButtonHTMLAttributes, ReactElement } from 'react';
 
 type Color = 'primary' | 'secondary' | 'error';
 type Variant = 'filled' | 'bezeled' | 'bezeledGray' | 'borderless';
@@ -18,6 +18,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onTouchEnd?: () => void;
   onMouseDown?: () => void;
   onMouseUp?: () => void;
+  explicitLoader?: ReactElement;
 }
 
 export interface BaseButtonProps {

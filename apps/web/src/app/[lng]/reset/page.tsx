@@ -1,5 +1,5 @@
 'use client';
-import { Loader } from '@/components/Loader/Loader';
+import { Loader } from '@lawallet/ui';
 import Logo from '@/components/Logo';
 
 import { LAWALLET_VERSION } from '@/constants/constants';

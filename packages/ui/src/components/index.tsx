@@ -27,6 +27,7 @@ export * from './ToggleSwitch';
 export * from './Label';
 export * from './BannerAlert';
 export * from './CardAlert';
+export * from './Loader/Loader';
 
 // Layout
 export * from './Layout/Container';

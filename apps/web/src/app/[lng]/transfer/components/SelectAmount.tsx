@@ -5,16 +5,15 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import TokenList from '@/components/TokenList';
-import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
 import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
-import { useWalletContext, decimalsToUse, formatToPreference } from '@lawallet/react';
+import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import { BtnLoader } from '@/components/Loader/Loader';
+import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
 
 export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }) => {
   const { lng, t } = useTranslation();
@@ -167,7 +166,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
               disabled={loading || balance.amount === 0 || numpadData.intAmount['SAT'] === 0}
               loading={loading}
             >
-              {loading ? <BtnLoader /> : t('CONTINUE')}
+              {t('CONTINUE')}
             </Button>
           </Flex>
         </Flex>

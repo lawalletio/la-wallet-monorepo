@@ -5,27 +5,28 @@ import {
   GearIcon,
   HiddenIcon,
   QrCodeIcon,
-  ReceiveIcon,
   SatoshiV2Icon,
   SendIcon,
   VisibleIcon,
 } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useEffect, useMemo, useState } from 'react';
 
+import ButtonCTA from '@/components/ButtonCTA';
 import Navbar from '@/components/Layout/Navbar';
 import TokenList from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
-import ButtonCTA from '@/components/ButtonCTA';
 import {
   Avatar,
-  Button,
   BannerAlert,
+  BtnLoader,
+  Button,
   Container,
-  HeroCard,
   Divider,
   Flex,
   Heading,
+  HeroCard,
   Icon,
+  ReceiveIcon,
   Text,
   theme,
 } from '@lawallet/ui';
@@ -37,12 +38,11 @@ import { useRouter } from 'next/navigation';
 // Animations
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
-import { BtnLoader } from '@/components/Loader/Loader';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
-import { copy } from '@/utils/share';
-import Link from 'next/link';
-import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
 import { extractFirstTwoChars } from '@/utils';
+import { copy } from '@/utils/share';
+import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
+import Link from 'next/link';
 
 export default function Page() {
   const config = useConfig();

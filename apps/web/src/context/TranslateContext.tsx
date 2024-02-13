@@ -1,4 +1,4 @@
-import SpinnerView from '@/components/Loader/SpinnerView';
+import SpinnerView from '@/components/Spinner/SpinnerView';
 import { AvailableLanguages, Dictionary, DictionaryEntry, ReplacementParams } from '@lawallet/react/types';
 import { LanguagesList, defaultLocale } from '@lawallet/react';
 import React, { createContext, useCallback, useContext, useLayoutEffect, useState } from 'react';

@@ -9,7 +9,7 @@ import { copy } from '@/utils/share';
 import { useTranslation } from '@/context/TranslateContext';
 import { useNumpad } from '@/hooks/useNumpad';
 
-import { BtnLoader } from '@/components/Loader/Loader';
+import { BtnLoader } from '@lawallet/ui';
 import TokenList from '@/components/TokenList';
 
 import { Confetti, Keyboard, QRCode } from '@/components/UI';
@@ -212,8 +212,12 @@ export default function Page() {
               </Flex>
               <Divider y={24} />
               <Flex gap={8}>
-                <Button onClick={handleClick} disabled={invoice.loading || numpadData.intAmount['SAT'] === 0}>
-                  {invoice.loading ? <BtnLoader /> : t('GENERATE')}
+                <Button
+                  onClick={handleClick}
+                  disabled={invoice.loading || numpadData.intAmount['SAT'] === 0}
+                  loading={invoice.loading}
+                >
+                  {t('GENERATE')}
                 </Button>
               </Flex>
               <Divider y={24} />

@@ -6,22 +6,21 @@ import {
   Avatar,
   Button,
   Container,
-  HeroCard,
   Divider,
   Feedback,
   Flex,
   Heading,
+  HeroCard,
   Icon,
   LinkButton,
   Text,
 } from '@lawallet/ui';
 
 import { useTranslation } from '@/context/TranslateContext';
-import { splitHandle, formatAddress, formatToPreference, useWalletContext } from '@lawallet/react';
+import { extractFirstTwoChars } from '@/utils';
+import { formatAddress, formatToPreference, splitHandle, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { useEffect, useMemo, useState } from 'react';
-import { extractFirstTwoChars } from '@/utils';
-import { BtnLoader } from '@/components/Loader/Loader';
 
 type SummaryProps = {
   isLoading: boolean;
@@ -138,7 +137,7 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
               disabled={!type || isLoading || expired || (type !== TransferTypes.LNURLW && insufficientBalance)}
               loading={isLoading}
             >
-              {isLoading ? <BtnLoader /> : type === TransferTypes.LNURLW ? t('CLAIM') : t('TRANSFER')}
+              {type === TransferTypes.LNURLW ? t('CLAIM') : t('TRANSFER')}
             </Button>
           </Flex>
           <Divider y={32} />

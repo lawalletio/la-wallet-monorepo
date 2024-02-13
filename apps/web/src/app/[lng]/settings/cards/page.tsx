@@ -3,7 +3,7 @@
 import { useTranslation } from '@/context/TranslateContext';
 
 import Navbar from '@/components/Layout/Navbar';
-import { MainLoader } from '@/components/Loader/Loader';
+import { MainLoader } from '@lawallet/ui';
 import { Container, Divider, Flex } from '@lawallet/ui';
 import AddNewCardModal from './components/AddCard';
 import DebitCard from './components/DebitCard';

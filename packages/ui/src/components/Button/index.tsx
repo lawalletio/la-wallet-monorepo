@@ -1,9 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, ReactElement } from 'react';
 
 import { ButtonProps } from './types';
 
 import { theme } from '../../theme';
 import { BaseButton } from './style';
+import { BtnLoader } from '../Loader/Loader';
 
 export const Button: FC<ButtonProps> = ({
   children,
@@ -12,6 +13,7 @@ export const Button: FC<ButtonProps> = ({
   size = 'normal',
   loading = false,
   disabled = false,
+  explicitLoader = <BtnLoader />,
   ...props
 }): JSX.Element => {
   let backgroundColor: string = 'transparent';
@@ -44,7 +46,7 @@ export const Button: FC<ButtonProps> = ({
       disabled={disabled || loading}
       {...props}
     >
-      {children}
+      {loading ? explicitLoader : children}
     </BaseButton>
   );
 };
