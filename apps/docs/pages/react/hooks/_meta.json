@@ -1,0 +1,32 @@
+{
+    "useAccount": {
+        "display": "hidden"
+    },
+    "useBalance": {
+        "display": "hidden"
+    },
+    "useCards": {
+        "display": "hidden"
+    },
+    "useIdentity": {
+        "display": "hidden"
+    },
+    "useInvoice": {
+        "display": "hidden"
+    },
+    "useLNURL": {
+        "display": "hidden"
+    },
+    "useNostr": {
+        "display": "hidden"
+    },
+    "useSubscription": {
+        "display": "hidden"
+    },
+    "useTransactions": {
+        "display": "hidden"
+    },
+    "useZap": {
+        "display": "hidden"
+    }
+}

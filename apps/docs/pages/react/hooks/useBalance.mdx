@@ -1,0 +1,121 @@
+# useBalance
+
+Hook to get the balance of an account
+
+## Import
+
+```ts
+import { useBalance } from '@lawallet/react';
+```
+
+## Usage
+
+```tsx filename="index.tsx"
+import { useBalance } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const userPubkey: string = '9a9787e3e31cfdc95f3...ec59789c20f63546b191e28d59';
+
+  const { balance } = useBalance({
+    pubkey: userPubkey,
+    tokenId: 'BTC',
+    enabled: Boolean(userPubkey.length),
+    config,
+  });
+}
+```
+
+## Parameters
+
+```ts
+import { type UseBalanceParameters } from '@lawallet/react';
+```
+
+### pubkey
+
+`String`
+
+- Public key of the account for which you want to consult the balance
+
+::: code-group
+
+```tsx [index.tsx]
+import { useBalance } from '@lawallet/react';
+
+function App() {
+  const { balance } = useBalance({
+    pubkey: '17efe7a5f1...53936f68b',
+    tokenId: 'BTC',
+  });
+}
+```
+
+:::
+
+### tokenId
+
+`String`
+
+- Id of the token to be transferred
+
+```tsx [index.tsx]
+import { useBalance } from '@lawallet/react';
+
+function App() {
+  const { balance } = useBalance({
+    pubkey: '17efe7a5f1...53936f68b',
+    tokenId: 'BTC',
+  });
+}
+```
+
+### enabled
+
+`Boolean | undefined`
+
+- Set this to false to disable this query from automatically running.
+- The default parameter is true.
+
+```tsx [index.tsx]
+import { useBalance } from '@lawallet/react';
+
+function App() {
+  const { balance } = useBalance({
+    pubkey: '17efe7a5f1...53936f68b',
+    tokenId: 'BTC',
+    enabled: false,
+  });
+}
+```
+
+### config
+
+`Config | undefined`
+
+[`Config`](/react/createConfig#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/LaWalletConfig).
+
+```tsx [index.tsx]
+import { useBalance } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const { balance } = useBalance({
+    pubkey: '17efe7a5f1...53936f68b',
+    tokenId: 'BTC',
+    config,
+  });
+}
+```
+
+## Return Type
+
+```ts
+import { type UseBalanceReturns } from '@lawallet/react';
+```
+
+### balance
+
+[`TokenBalance`](/react/glossary/types#tokenbalance)
+
+Returns the requested account and token balance information

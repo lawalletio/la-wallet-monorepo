@@ -1,0 +1,644 @@
+# NDK Types
+
+Types inherited from the `@nostr-dev-kit/ndk` library that are used in `@lawallet/react`
+
+## `NDK`
+
+Type that defines the NDK instance
+
+````ts filename="NDK"
+class NDK extends EventEmitter {
+  explicitRelayUrls?: WebSocket['url'][];
+  pool: NDKPool;
+  outboxPool?: NDKPool;
+  private _signer?;
+  private _activeUser?;
+  cacheAdapter?: NDKCacheAdapter;
+  debug: debug$1.Debugger;
+  devWriteRelaySet?: NDKRelaySet;
+  outboxTracker?: OutboxTracker;
+  mutedIds: Map<Hexpubkey | NDKEventId, string>;
+  clientName?: string;
+  clientNip89?: string;
+  /**
+   * Default relay-auth policy that will be used when a relay requests authentication,
+   * if no other policy is specified for that relay.
+   *
+   * @example Disconnect from relays that request authentication:
+   * ```typescript
+   * ndk.relayAuthDefaultPolicy = NDKAuthPolicies.disconnect(ndk.pool);
+   * ```
+   *
+   * @example Sign in to relays that request authentication:
+   * ```typescript
+   * ndk.relayAuthDefaultPolicy = NDKAuthPolicies.signIn({ndk})
+   * ```
+   *
+   * @example Sign in to relays that request authentication, asking the user for confirmation:
+   * ```typescript
+   * ndk.relayAuthDefaultPolicy = (relay: NDKRelay) => {
+   *     const signIn = NDKAuthPolicies.signIn({ndk});
+   *     if (confirm(`Relay ${relay.url} is requesting authentication, do you want to sign in?`)) {
+   *        signIn(relay);
+   *     }
+   * }
+   * ```
+   */
+  relayAuthDefaultPolicy?: NDKAuthPolicy;
+  /**
+   * Fetch function to use for HTTP requests.
+   *
+   * @example
+   * ```typescript
+   * import fetch from "node-fetch";
+   *
+   * ndk.httpFetch = fetch;
+   * ```
+   */
+  httpFetch: typeof fetch | undefined;
+  private autoConnectUserRelays;
+  private autoFetchUserMutelist;
+  constructor(opts?: NDKConstructorParams);
+  /**
+   * Adds an explicit relay to the pool.
+   * @param url
+   * @param relayAuthPolicy Authentication policy to use if different from the default
+   * @param connect Whether to connect to the relay automatically
+   * @returns
+   */
+  addExplicitRelay(urlOrRelay: string | NDKRelay, relayAuthPolicy?: NDKAuthPolicy, connect?: boolean): NDKRelay;
+  toJSON(): string;
+  get activeUser(): NDKUser | undefined;
+  /**
+   * Sets the active user for this NDK instance, typically this will be
+   * called when assigning a signer to the NDK instance.
+   *
+   * This function will automatically connect to the user's relays if
+   * `autoConnectUserRelays` is set to true.
+   *
+   * It will also fetch the user's mutelist if `autoFetchUserMutelist` is set to true.
+   */
+  set activeUser(user: NDKUser | undefined);
+  get signer(): NDKSigner | undefined;
+  set signer(newSigner: NDKSigner | undefined);
+  /**
+   * Connect to relays with optional timeout.
+   * If the timeout is reached, the connection will be continued to be established in the background.
+   */
+  connect(timeoutMs?: number): Promise<void>;
+  /**
+   * Get a NDKUser object
+   *
+   * @param opts
+   * @returns
+   */
+  getUser(opts: GetUserParams): NDKUser;
+  /**
+   * Get a NDKUser from a NIP05
+   * @param nip05 NIP-05 ID
+   * @returns
+   */
+  getUserFromNip05(nip05: string): Promise<NDKUser | undefined>;
+  /**
+   * Create a new subscription. Subscriptions automatically start, you can make them automatically close when all relays send back an EOSE by setting `opts.closeOnEose` to `true`)
+   *
+   * @param filters
+   * @param opts
+   * @param relaySet explicit relay set to use
+   * @param autoStart automatically start the subscription
+   * @returns NDKSubscription
+   */
+  subscribe(
+    filters: NDKFilter | NDKFilter[],
+    opts?: NDKSubscriptionOptions,
+    relaySet?: NDKRelaySet,
+    autoStart?: boolean,
+  ): NDKSubscription;
+  /**
+   * Publish an event to a relay
+   * @param event event to publish
+   * @param relaySet explicit relay set to use
+   * @param timeoutMs timeout in milliseconds to wait for the event to be published
+   * @returns The relays the event was published to
+   *
+   * @deprecated Use `event.publish()` instead
+   */
+  publish(event: NDKEvent, relaySet?: NDKRelaySet, timeoutMs?: number): Promise<Set<NDKRelay>>;
+  /**
+   * Fetch a single event.
+   *
+   * @param idOrFilter event id in bech32 format or filter
+   * @param opts subscription options
+   * @param relaySetOrRelay explicit relay set to use
+   */
+  fetchEvent(
+    idOrFilter: string | NDKFilter,
+    opts?: NDKSubscriptionOptions,
+    relaySetOrRelay?: NDKRelaySet | NDKRelay,
+  ): Promise<NDKEvent | null>;
+  /**
+   * Fetch events
+   */
+  fetchEvents(
+    filters: NDKFilter | NDKFilter[],
+    opts?: NDKSubscriptionOptions,
+    relaySet?: NDKRelaySet,
+  ): Promise<Set<NDKEvent>>;
+  /**
+   * Ensures that a signer is available to sign an event.
+   */
+  assertSigner(): void;
+  /**
+   * Creates a new Nip96 instance for the given domain.
+   * @param domain Domain to use for nip96 uploads
+   * @example Upload a file to a NIP-96 enabled domain:
+   *
+   * ```typescript
+   * const blob = new Blob(["Hello, world!"], { type: "text/plain" });
+   * const nip96 = ndk.getNip96("nostrcheck.me");
+   * await nip96.upload(blob);
+   * ```
+   */
+  getNip96(domain: string): Nip96;
+}
+````
+
+## `NDKEvent`
+
+Type that defines a nostr NDK Event
+
+````ts filename="NDKEvent"
+declare class NDKEvent extends EventEmitter {
+  ndk?: NDK;
+  created_at?: number;
+  content: string;
+  tags: NDKTag[];
+  kind?: NDKKind | number;
+  id: string;
+  sig?: string;
+  pubkey: string;
+  private _author;
+  /**
+   * The relay that this event was first received from.
+   */
+  relay: NDKRelay | undefined;
+  constructor(ndk?: NDK, event?: NostrEvent);
+  /**
+   * Returns the event as is.
+   */
+  rawEvent(): NostrEvent;
+  set author(user: NDKUser);
+  /**
+   * Returns an NDKUser for the author of the event.
+   */
+  get author(): NDKUser;
+  /**
+   * Tag a user with an optional marker.
+   * @param user The user to tag.
+   * @param marker The marker to use in the tag.
+   */
+  tag(user: NDKUser, marker?: string): void;
+  /**
+   * Tag a user with an optional marker.
+   * @param event The event to tag.
+   * @param marker The marker to use in the tag.
+   * @example
+   * ```typescript
+   * reply.tag(opEvent, "reply");
+   * // reply.tags => [["e", <id>, <relay>, "reply"]]
+   * ```
+   */
+  tag(event: NDKEvent, marker?: string): void;
+  /**
+   * Return a NostrEvent object, trying to fill in missing fields
+   * when possible, adding tags when necessary.
+   * @param pubkey {string} The pubkey of the user who the event belongs to.
+   * @returns {Promise<NostrEvent>} A promise that resolves to a NostrEvent.
+   */
+  toNostrEvent(pubkey?: string): Promise<NostrEvent>;
+  isReplaceable: () => boolean;
+  isEphemeral: () => boolean;
+  isParamReplaceable: () => boolean;
+  /**
+   * Encodes a bech32 id.
+   *
+   * @returns {string} - Encoded naddr, note or nevent.
+   */
+  encode: () => `nevent1${string}` | `naddr1${string}` | `note1${string}`;
+  encrypt: (recipient?: NDKUser | undefined, signer?: NDKSigner | undefined) => Promise<void>;
+  decrypt: (sender?: NDKUser | undefined, signer?: NDKSigner | undefined) => Promise<void>;
+  /**
+   * Get all tags with the given name
+   * @param tagName {string} The name of the tag to search for
+   * @returns {NDKTag[]} An array of the matching tags
+   */
+  getMatchingTags(tagName: string): NDKTag[];
+  /**
+   * Get the first tag with the given name
+   * @param tagName Tag name to search for
+   * @returns The value of the first tag with the given name, or undefined if no such tag exists
+   */
+  tagValue(tagName: string): string | undefined;
+  /**
+   * Gets the NIP-31 "alt" tag of the event.
+   */
+  get alt(): string | undefined;
+  /**
+   * Sets the NIP-31 "alt" tag of the event. Use this to set an alt tag so
+   * clients that don't handle a particular event kind can display something
+   * useful for users.
+   */
+  set alt(alt: string | undefined);
+  /**
+   * Remove all tags with the given name (e.g. "d", "a", "p")
+   * @param tagName Tag name to search for and remove
+   * @returns {void}
+   */
+  removeTag(tagName: string): void;
+  /**
+   * Sign the event if a signer is present.
+   *
+   * It will generate tags.
+   * Repleacable events will have their created_at field set to the current time.
+   * @param signer {NDKSigner} The NDKSigner to use to sign the event
+   * @returns {Promise<string>} A Promise that resolves to the signature of the signed event.
+   */
+  sign(signer?: NDKSigner): Promise<string>;
+  /**
+   * Attempt to sign and then publish an NDKEvent to a given relaySet.
+   * If no relaySet is provided, the relaySet will be calculated by NDK.
+   * @param relaySet {NDKRelaySet} The relaySet to publish the even to.
+   * @returns A promise that resolves to the relays the event was published to.
+   */
+  publish(relaySet?: NDKRelaySet, timeoutMs?: number): Promise<Set<NDKRelay>>;
+  /**
+   * Generates tags for users, notes, and other events tagged in content.
+   * Will also generate random "d" tag for parameterized replaceable events where needed.
+   * @returns {ContentTag} The tags and content of the event.
+   */
+  generateTags(): Promise<ContentTag>;
+  muted(): string | null;
+  /**
+   * Returns the "d" tag of a parameterized replaceable event or throws an error if the event isn't
+   * a parameterized replaceable event.
+   * @returns {string} the "d" tag of the event.
+   */
+  replaceableDTag(): string;
+  /**
+   * Provides a deduplication key for the event.
+   *
+   * For kinds 0, 3, 10k-20k this will be the event <kind>:<pubkey>
+   * For kinds 30k-40k this will be the event <kind>:<pubkey>:<d-tag>
+   * For all other kinds this will be the event id
+   */
+  deduplicationKey(): string;
+  /**
+   * Returns the id of the event or, if it's a parameterized event, the generated id of the event using "d" tag, pubkey, and kind.
+   * @returns {string} The id
+   */
+  tagId(): string;
+  /**
+   * Returns the "reference" value ("<kind>:<author-pubkey>:<d-tag>") for this replaceable event.
+   * @returns {string} The id
+   */
+  tagAddress(): string;
+  /**
+   * Get the tag that can be used to reference this event from another event.
+   *
+   * Consider using referenceTags() instead (unless you have a good reason to use this)
+   *
+   * @example
+   *     event = new NDKEvent(ndk, { kind: 30000, pubkey: 'pubkey', tags: [ ["d", "d-code"] ] });
+   *     event.tagReference(); // ["a", "30000:pubkey:d-code"]
+   *
+   *     event = new NDKEvent(ndk, { kind: 1, pubkey: 'pubkey', id: "eventid" });
+   *     event.tagReference(); // ["e", "eventid"]
+   * @returns {NDKTag} The NDKTag object referencing this event
+   */
+  tagReference(marker?: string): NDKTag;
+  /**
+   * Get the tags that can be used to reference this event from another event
+   * @param marker The marker to use in the tag
+   * @example
+   *     event = new NDKEvent(ndk, { kind: 30000, pubkey: 'pubkey', tags: [ ["d", "d-code"] ] });
+   *     event.referenceTags(); // [["a", "30000:pubkey:d-code"], ["e", "parent-id"]]
+   *
+   *     event = new NDKEvent(ndk, { kind: 1, pubkey: 'pubkey', id: "eventid" });
+   *     event.referenceTags(); // [["e", "parent-id"]]
+   * @returns {NDKTag} The NDKTag object referencing this event
+   */
+  referenceTags(marker?: string, skipAuthorTag?: boolean): NDKTag[];
+  /**
+   * Provides the filter that will return matching events for this event.
+   *
+   * @example
+   *    event = new NDKEvent(ndk, { kind: 30000, pubkey: 'pubkey', tags: [ ["d", "d-code"] ] });
+   *    event.filter(); // { "#a": ["30000:pubkey:d-code"] }
+   * @example
+   *    event = new NDKEvent(ndk, { kind: 1, pubkey: 'pubkey', id: "eventid" });
+   *    event.filter(); // { "#e": ["eventid"] }
+   *
+   * @returns The filter that will return matching events for this event
+   */
+  filter(): NDKFilter;
+  /**
+   * Create a zap request for an existing event
+   *
+   * @param amount The amount to zap in millisatoshis
+   * @param comment A comment to add to the zap request
+   * @param extraTags Extra tags to add to the zap request
+   * @param recipient The zap recipient (optional for events)
+   * @param signer The signer to use (will default to the NDK instance's signer)
+   */
+  zap(
+    amount: number,
+    comment?: string,
+    extraTags?: NDKTag[],
+    recipient?: NDKUser,
+    signer?: NDKSigner,
+  ): Promise<string | null>;
+  /**
+   * Generates a deletion event of the current event
+   *
+   * @param reason The reason for the deletion
+   * @returns The deletion event
+   */
+  delete(reason?: string): Promise<NDKEvent>;
+  /**
+   * NIP-18 reposting event.
+   *
+   * @param publish Whether to publish the reposted event automatically
+   * @param signer The signer to use for signing the reposted event
+   * @returns The reposted event
+   *
+   * @function
+   */
+  repost: (publish?: boolean | undefined, signer?: NDKSigner | undefined) => Promise<NDKEvent>;
+  /**
+   * React to an existing event
+   *
+   * @param content The content of the reaction
+   */
+  react(content: string, publish?: boolean): Promise<NDKEvent>;
+}
+````
+
+## `NDKFilter`
+
+Type that defines a nostr NDK Filter
+
+```ts filename="NDKFilter"
+type NDKFilter<K extends number = NDKKind> = {
+  ids?: string[];
+  kinds?: K[];
+  authors?: string[];
+  since?: number;
+  until?: number;
+  limit?: number;
+  search?: string;
+  [key: `#${string}`]: string[] | undefined;
+};
+```
+
+## NDKKind
+
+```ts filename="NDKKind"
+declare enum NDKKind {
+  Metadata = 0,
+  Text = 1,
+  RecommendRelay = 2,
+  Contacts = 3,
+  EncryptedDirectMessage = 4,
+  EventDeletion = 5,
+  Repost = 6,
+  Reaction = 7,
+  BadgeAward = 8,
+  GroupChat = 9,
+  GroupNote = 11,
+  GroupReply = 12,
+  GenericRepost = 16,
+  ChannelCreation = 40,
+  ChannelMetadata = 41,
+  ChannelMessage = 42,
+  ChannelHideMessage = 43,
+  ChannelMuteUser = 44,
+  Media = 1063,
+  Report = 1984,
+  Label = 1985,
+  DVMReqTextExtraction = 5000,
+  DVMReqTextSummarization = 5001,
+  DVMReqTextTranslation = 5002,
+  DVMReqTextGeneration = 5050,
+  DVMReqImageGeneration = 5100,
+  DVMReqDiscoveryNostrContent = 5300,
+  DVMReqDiscoveryNostrPeople = 5301,
+  DVMReqTimestamping = 5900,
+  DVMJobFeedback = 7000,
+  SubscriptionStart = 7001,
+  SubscriptionStop = 7002,
+  GroupAdminAddUser = 9000,
+  GroupAdminRemoveUser = 9001,
+  MuteList = 10000,
+  PinList = 10001,
+  RelayList = 10002,
+  BookmarkList = 10003,
+  CommunityList = 10004,
+  PublicChatList = 10005,
+  BlockRelayList = 10006,
+  SearchRelayList = 10007,
+  InterestList = 10015,
+  EmojiList = 10030,
+  TierList = 17000,
+  SuperFollowList = 17001,
+  FollowSet = 30000,
+  CategorizedPeopleList = 30000,
+  CategorizedBookmarkList = 30001,
+  RelaySet = 30002,
+  CategorizedRelayList = 30002,
+  BookmarkSet = 30003,
+  CurationSet = 30004,
+  InterestSet = 30015,
+  InterestsList = 30015,
+  EmojiSet = 30030,
+  HighlightSet = 39802,
+  SubscriptionTier = 37001,
+  CategorizedHighlightList = 39802,
+  ZapRequest = 9734,
+  Zap = 9735,
+  Highlight = 9802,
+  ClientAuth = 22242,
+  NostrConnect = 24133,
+  NostrConnectAdmin = 24134,
+  HttpAuth = 27235,
+  ProfileBadge = 30008,
+  BadgeDefinition = 30009,
+  MarketStall = 30017,
+  MarketProduct = 30018,
+  Article = 30023,
+  AppSpecificData = 30078,
+  Classified = 30402,
+  HorizontalVideo = 34235,
+  GroupMembers = 39002,
+  AppRecommendation = 31989,
+  AppHandler = 31990,
+}
+```
+
+## `NDKSigner`
+
+Type that defines a nostr NDK Signer
+
+```ts filename="NDKSigner"
+interface NDKSigner {
+  /**
+   * Blocks until the signer is ready and returns the associated NDKUser.
+   * @returns A promise that resolves to the NDKUser instance.
+   */
+  blockUntilReady(): Promise<NDKUser>;
+  /**
+   * Getter for the user property.
+   * @returns A promise that resolves to the NDKUser instance.
+   */
+  user(): Promise<NDKUser>;
+  /**
+   * Signs the given Nostr event.
+   * @param event - The Nostr event to be signed.
+   * @returns A promise that resolves to the signature of the signed event.
+   */
+  sign(event: NostrEvent): Promise<string>;
+  /**
+   * Getter for the preferred relays.
+   * @returns A promise containing a simple map of preferred relays and their read/write policies.
+   */
+  relays?(): Promise<NDKRelay[]>;
+  /**
+   * Encrypts the given Nostr event for the given recipient.
+   * @param value - The value to be encrypted.
+   * @param recipient - The recipient of the encrypted value.
+   */
+  encrypt(recipient: NDKUser, value: string): Promise<string>;
+  /**
+   * Decrypts the given value.
+   * @param value
+   */
+  decrypt(sender: NDKUser, value: string): Promise<string>;
+}
+```
+
+## `NDKSubscription`
+
+Type that defines a nostr NDK subscription
+
+```ts filename="NDKSubscription"
+declare class NDKSubscription extends EventEmitter {
+  readonly subId?: string;
+  readonly filters: NDKFilter[];
+  readonly opts: NDKSubscriptionOptions;
+  readonly pool: NDKPool;
+  readonly skipVerification: boolean;
+  /**
+   * Tracks the filters as they are executed on each relay
+   */
+  relayFilters?: Map<WebSocket['url'], NDKFilter[]>;
+  relaySet?: NDKRelaySet;
+  ndk: NDK;
+  debug: debug.Debugger;
+  eoseDebug: debug.Debugger;
+  /**
+   * Events that have been seen by the subscription, with the time they were first seen.
+   */
+  eventFirstSeen: Map<string, number>;
+  /**
+   * Relays that have sent an EOSE.
+   */
+  eosesSeen: Set<NDKRelay>;
+  /**
+   * Events that have been seen by the subscription per relay.
+   */
+  eventsPerRelay: Map<NDKRelay, Set<NDKEventId>>;
+  /**
+   * The time the last event was received by the subscription.
+   * This is used to calculate when EOSE should be emitted.
+   */
+  private lastEventReceivedAt;
+  internalId: string;
+  constructor(
+    ndk: NDK,
+    filters: NDKFilter | NDKFilter[],
+    opts?: NDKSubscriptionOptions,
+    relaySet?: NDKRelaySet,
+    subId?: string,
+  );
+  /**
+   * Provides access to the first filter of the subscription for
+   * backwards compatibility.
+   */
+  get filter(): NDKFilter;
+  isGroupable(): boolean;
+  private shouldQueryCache;
+  private shouldQueryRelays;
+  private shouldWaitForCache;
+  /**
+   * Start the subscription. This is the main method that should be called
+   * after creating a subscription.
+   */
+  start(): Promise<void>;
+  stop(): void;
+  /**
+   * @returns Whether the subscription has an authors filter.
+   */
+  hasAuthorsFilter(): boolean;
+  private startWithCache;
+  /**
+   * Send REQ to relays
+   */
+  private startWithRelays;
+  /**
+   * Called when an event is received from a relay or the cache
+   * @param event
+   * @param relay
+   * @param fromCache Whether the event was received from the cache
+   */
+  eventReceived(event: NDKEvent, relay: NDKRelay | undefined, fromCache?: boolean): void;
+  private eoseTimeout;
+  eoseReceived(relay: NDKRelay): void;
+}
+```
+
+## `NDKSubscriptionOptions`
+
+Type that defines a nostr NDK subscription options
+
+```ts filename="NDKSubscriptionOptions"
+interface NDKSubscriptionOptions {
+  /**
+   * Whether to close the subscription when all relays have reached the end of the event stream.
+   * @default false
+   */
+  closeOnEose?: boolean;
+  cacheUsage?: NDKSubscriptionCacheUsage;
+  /**
+   * Groupable subscriptions are created with a slight time
+   * delayed to allow similar filters to be grouped together.
+   */
+  groupable?: boolean;
+  /**
+   * The delay to use when grouping subscriptions, specified in milliseconds.
+   * @default 100
+   */
+  groupableDelay?: number;
+  /**
+   * The subscription ID to use for the subscription.
+   */
+  subId?: string;
+  /**
+   * Pool to use
+   */
+  pool?: NDKPool;
+  /**
+   * Skip signature verification
+   * @default false
+   */
+  skipVerification?: boolean;
+}
+```

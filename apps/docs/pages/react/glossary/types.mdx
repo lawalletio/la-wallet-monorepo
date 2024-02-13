@@ -1,0 +1,296 @@
+# Types
+
+Glossary of Types in LaWallet
+
+## `CardConfigPayload`
+
+Type that defines the configuration of a card
+
+```ts filename="CardConfigPayload"
+type CardConfigPayload = {
+  'trusted-merchants': { pubkey: string }[];
+  cards: { [uuid: string]: CardPayload };
+};
+```
+
+```ts filename="CardPayload"
+type CardPayload = {
+  name: string;
+  description: string;
+  status: string;
+  limits: Limit[];
+};
+```
+
+```ts filename="Limit"
+type Limit = {
+  name: string;
+  description: string;
+  token: string;
+  amount: bigint;
+  delta: number;
+};
+```
+
+## `CardDataPayload`
+
+Type that defines the information of a card
+
+```ts filename="CardDataPayload"
+type CardDataPayload = { [uuid: string]: { design: Design } };
+```
+
+```ts filename="Design"
+type Design = { uuid: string; name: string; description: string };
+```
+
+## `CardPayload`
+
+Type that defines the configuration of the card
+
+```ts filename="CardPayload"
+type CardPayload = {
+  name: string;
+  description: string;
+  status: string;
+  limits: Limit[];
+};
+```
+
+## `CreateIdentityReturns`
+
+Type that defines the return from using createIdentity()
+
+```ts filename="CreateIdentityReturns"
+type CreateIdentityReturns = {
+  success: boolean;
+  message: string;
+  newIdentity?: UserIdentity;
+};
+```
+
+```ts filename="UserIdentity"
+interface UserIdentity {
+  username: string;
+  hexpub: string;
+  npub: string;
+  privateKey: string;
+}
+```
+
+## `DecodedInvoiceReturns`
+
+Type that defines the payment information of an invoice. See [`TransferInformation`](/react/glossary/types#transferInformation)
+
+```ts filename="DecodedInvoiceReturns"
+type DecodedInvoiceReturns = PaymentRequestObject & { tagsObject: TagsObject };
+```
+
+```ts filename="PaymentRequestObject"
+type PaymentRequestObject = {
+  paymentRequest?: string;
+  complete?: boolean;
+  prefix?: string;
+  wordsTemp?: string;
+  network?: Network;
+  satoshis?: number | null;
+  millisatoshis?: string | null;
+  timestamp?: number;
+  timestampString?: string;
+  timeExpireDate?: number;
+  timeExpireDateString?: string;
+  payeeNodeKey?: string;
+  signature?: string;
+  recoveryFlag?: number;
+  tags: TagsType;
+};
+```
+
+```ts filename="TagsObject"
+type TagsObject = {
+  payment_hash?: string;
+  payment_secret?: string;
+  description?: string;
+  payee_node_key?: string;
+  purpose_commit_hash?: string;
+  expire_time?: number;
+  min_final_cltv_expiry?: number;
+  fallback_address?: FallbackAddress;
+  routing_info?: RoutingInfo;
+  feature_bits?: FeatureBits;
+  unknownTags?: UnknownTag[];
+};
+```
+
+```ts filename="Network"
+type Network = {
+  [index: string]: any;
+  bech32: string;
+  pubKeyHash: number;
+  scriptHash: number;
+  validWitnessVersions: number[];
+};
+```
+
+## `InvoiceProps`
+
+Type that defines the information of a new invoice to be paid
+
+```ts filename="InvoiceProps"
+type InvoiceProps = {
+  bolt11: string;
+  created_at: number;
+  loading: boolean;
+  payed: boolean;
+};
+```
+
+## `InvoiceTransferType`
+
+Type that defines the payment information of an invoice. See [`TransferInformation`](/react/glossary/types#transferinformation)
+
+```ts filename="InvoiceTransferType"
+interface InvoiceTransferType extends TransferInformation {
+  expired: boolean;
+}
+```
+
+## `LNRequestResponse`
+
+Type that defines the payRequest or withdrawRequest of a lightning network account
+
+```ts filename="LNRequestResponse"
+interface LNRequestResponse {
+  tag: string;
+  callback: string;
+  metadata: string;
+  commentAllowed: number;
+  minSendable?: number;
+  maxSendable?: number;
+  k1?: string;
+  minWithdrawable?: number;
+  maxWithdrawable?: number;
+}
+```
+
+## `LNURLTransferType`
+
+Type that defines the payment information of a LNURL. See [`TransferInformation`](/react/glossary/types#transferInformation) & [`LNRequestResponse`](/react/glossary/types#lnrequestresponse)
+
+```ts filename="LNURLTransferType"
+interface LNURLTransferType extends TransferInformation {
+  comment: string;
+  receiverPubkey: string;
+  request: LNRequestResponse | null;
+}
+```
+
+## `SignerTypes`
+
+Type to define the signer types. See [`NDKSigner`](/react/glossary/ndk#ndksigner)
+
+```ts filename="SignerTypes"
+type SignerTypes = NDKSigner | undefined;
+```
+
+## `TokenBalance`
+
+Type to define the balance of a token
+
+```ts filename="TokenBalance"
+interface TokenBalance {
+  tokenId: string;
+  amount: number;
+  loading: boolean;
+  lastEvent?: NostrEvent;
+  createdAt?: Date;
+}
+```
+
+## `Transaction`
+
+Type to define a transaction
+
+```ts filename="Transaction"
+interface Transaction {
+  id: string;
+  status: TransactionStatus;
+  direction: TransactionDirection;
+  type: TransactionType;
+  tokens: TokensAmount;
+  memo: string;
+  errors: string[];
+  events: NostrEvent[];
+  createdAt: number;
+}
+```
+
+```ts filename="Status"
+enum TransactionStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  ERROR = 'ERROR',
+  REVERTED = 'REVERTED',
+}
+```
+
+```ts filename="Direction"
+enum TransactionDirection {
+  INCOMING = 'INCOMING',
+  OUTGOING = 'OUTGOING',
+}
+```
+
+```ts filename="Types"
+enum TransactionType {
+  CARD = 'CARD',
+  INTERNAL = 'INTERNAL',
+  LN = 'LN',
+}
+```
+
+```ts filename="TokensAmount"
+type TokensAmount = {
+  [_tokenId: string]: number;
+};
+```
+
+## `TransferInformation`
+
+Type that defines the information of a transfer. See [`TransferTypes`](/react/glossary/types#transfertypes)
+
+```ts filename="TransferInformation"
+interface TransferInformation {
+  data: string;
+  amount: number;
+  type: TransferTypes;
+}
+```
+
+## `TransferTypes`
+
+Defines the types of existing transfers
+
+```ts filename="TransferTypes"
+enum TransferTypes {
+  INTERNAL = 'INTERNAL',
+  LUD16 = 'LUD16',
+  INVOICE = 'INVOICE',
+  LNURL = 'LNURL',
+  LNURLW = 'LNURLW',
+  NONE = 'NONE',
+}
+```
+
+## `UserIdentity`
+
+Type to define the identity of a user
+
+```ts filename="UserIdentity"
+interface UserIdentity {
+  username: string;
+  hexpub: string;
+  npub: string;
+  privateKey: string;
+}
+```
