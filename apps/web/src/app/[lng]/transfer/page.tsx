@@ -17,6 +17,7 @@ import {
   LinkButton,
   Text,
   theme,
+  Autocomplete,
 } from '@lawallet/ui';
 
 import { BtnLoader } from '@/components/Loader/Loader';
@@ -125,7 +126,10 @@ export default function Page() {
         <Divider y={16} />
         <Flex flex={1} direction="column">
           <InputGroup>
-            <Input
+            <Autocomplete
+              // Change lastDestinations for search
+              data={lastDestinations}
+              onSelect={setInputText}
               onChange={(e) => {
                 errors.resetError();
                 setInputText(e.target.value);
@@ -137,7 +141,7 @@ export default function Page() {
               disabled={loading}
             />
             <InputGroupRight>
-              <Button size="small" variant="bezeled" onClick={handlePasteInput}>
+              <Button size="small" variant="borderless" onClick={handlePasteInput} disabled={!!inputText}>
                 {t('PASTE')}
               </Button>
             </InputGroupRight>
