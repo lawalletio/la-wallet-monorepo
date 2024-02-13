@@ -32,6 +32,12 @@ export const BaseButton = styled.button<BaseButtonProps>`
     color: ${(props) => props.$color};
   }
 
+  &:disabled {
+    background-color: transparent;
+    color: ${theme.colors.gray50};
+    cursor: not-allowed;
+  }
+
   &:not(:disabled) {
     &:hover {
       opacity: 0.85;
@@ -40,11 +46,6 @@ export const BaseButton = styled.button<BaseButtonProps>`
     &:active {
       opacity: 0.65;
     }
-  }
-
-  &:disabled {
-    background-color: ${theme.colors.gray40};
-    cursor: not-allowed;
   }
 `;
 
