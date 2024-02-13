@@ -60,6 +60,8 @@ export const InputButton = styled.div`
 `;
 
 export const InputGroupPrimitive = styled.div`
+  position: relative;
+
   display: flex;
   width: 100%;
   align-items: end;
@@ -75,7 +77,7 @@ export const InputGroupRightPrimitive = styled.div`
   align-items: center;
   min-height: 50px;
 
-  padding: 0 12px;
+  padding: 0 4px;
 
   background-color: ${theme.colors.gray10};
   border: 1px solid ${theme.colors.gray20};
