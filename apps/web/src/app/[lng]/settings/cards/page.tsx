@@ -3,15 +3,14 @@
 import { useTranslation } from '@/context/TranslateContext';
 
 import Navbar from '@/components/Layout/Navbar';
-import { MainLoader } from '@lawallet/ui';
-import { Container, Divider, Flex } from '@lawallet/ui';
+import { useNotifications } from '@/context/NotificationsContext';
+import { buildCardTransferDonationEvent, useCards, useConfig, useWalletContext } from '@lawallet/react';
+import { Design } from '@lawallet/react/types';
+import { Container, Divider, Flex, Loader } from '@lawallet/ui';
+import { useEffect, useState } from 'react';
 import AddNewCardModal from './components/AddCard';
 import DebitCard from './components/DebitCard';
 import EmptyCards from './components/EmptyCards';
-import { buildCardTransferDonationEvent, useCards, useConfig, useWalletContext } from '@lawallet/react';
-import { Design } from '@lawallet/react/types';
-import { useNotifications } from '@/context/NotificationsContext';
-import { useEffect, useState } from 'react';
 
 export default function Page() {
   const {
@@ -80,7 +79,7 @@ export default function Page() {
       <Container size="small">
         <Divider y={16} />
         {loadInfo.loading ? (
-          <MainLoader />
+          <Loader />
         ) : Object.keys(cardsData).length ? (
           <Flex direction="column" align="center" gap={16}>
             {Object.entries(cardsData).map(([key, value]) => {

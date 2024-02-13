@@ -1,6 +1,11 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
-import { MainLoader } from '@lawallet/ui';
+import { regexComment, regexUserName } from '@/constants/constants';
+import { useTranslation } from '@/context/TranslateContext';
+import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
+import useErrors from '@/hooks/useErrors';
+import { formatToPreference, roundToDown, useCards, useConfig, useWalletContext } from '@lawallet/react';
+import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
 import {
   Button,
   Container,
@@ -10,19 +15,14 @@ import {
   Heading,
   InputWithLabel,
   Label,
+  Loader,
   Text,
   ToggleSwitch,
   theme,
 } from '@lawallet/ui';
-import { useTranslation } from '@/context/TranslateContext';
 import { useParams, useRouter } from 'next/navigation';
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import LimitInput from '../components/LimitInput/LimitInput';
-import { formatToPreference, roundToDown, useCards, useConfig, useWalletContext } from '@lawallet/react';
-import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
-import useErrors from '@/hooks/useErrors';
-import { regexComment, regexUserName } from '@/constants/constants';
-import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 
 const regexNumbers: RegExp = /^[0123456789]+$/;
 
@@ -169,7 +169,7 @@ const page = () => {
       />
 
       {loadInfo.loading ? (
-        <MainLoader />
+        <Loader />
       ) : (
         <Container size="small">
           <Divider y={24} />

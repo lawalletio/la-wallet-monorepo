@@ -9,6 +9,4 @@ export const Loader = () => {
   );
 };
 
-export const MainLoader = () => <LoaderStyle />;
-
 export const BtnLoader = () => <ButtonLoader />;
