@@ -1,24 +1,18 @@
-import styles from './Radio.module.css';
+import React from 'react';
+import { CheckDiv, RadioItem, RadioContainer, RadioInput } from './styles';
+import { Text } from '@lawallet/ui';
 
-type RadioProps = {
-  text: string;
-  checked: boolean;
-  onClick: (e) => void;
-};
-
-const Radio = (props: RadioProps) => {
+const Radio = (props) => {
   const { text, checked, onClick } = props;
 
   return (
-    <div className={styles.itemsToFilterContainer}>
-      <div onClick={onClick} className={styles.dateItem}>
-        <span>{text}</span>
-
-        <input type="radio" className={styles.radio} onChange={() => null} name="date-time" checked={checked} />
-
-        <div className={styles.check}></div>
-      </div>
-    </div>
+    <RadioContainer>
+      <RadioItem onClick={onClick}>
+        <Text>{text}</Text>
+        <RadioInput type="radio" onChange={() => null} name="date-time" checked={checked} />
+        <CheckDiv checked={checked}></CheckDiv>
+      </RadioItem>
+    </RadioContainer>
   );
 };
 

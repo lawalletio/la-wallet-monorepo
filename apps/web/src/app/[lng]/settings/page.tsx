@@ -2,8 +2,12 @@
 
 import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
+import { CACHE_BACKUP_KEY, LAWALLET_VERSION, STORAGE_IDENTITY_KEY } from '@/constants/constants';
+import { useTranslation } from '@/context/TranslateContext';
+import useErrors from '@/hooks/useErrors';
 import {
   Button,
+  ButtonSetting,
   Container,
   Divider,
   Feedback,
@@ -12,12 +16,8 @@ import {
   LinkSetting,
   Sheet,
   Text,
-  ButtonSetting,
   theme,
 } from '@lawallet/ui';
-import { CACHE_BACKUP_KEY, LAWALLET_VERSION, STORAGE_IDENTITY_KEY } from '@/constants/constants';
-import { useTranslation } from '@/context/TranslateContext';
-import useErrors from '@/hooks/useErrors';
 
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useConfig, useWalletContext } from '@lawallet/react';
