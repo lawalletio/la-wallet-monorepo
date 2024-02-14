@@ -28,6 +28,7 @@ export * from './Label';
 export * from './BannerAlert';
 export * from './CardAlert';
 export * from './Loader/Loader';
+export * from './Autocomplete';
 
 // Layout
 export * from './Layout/Container';
