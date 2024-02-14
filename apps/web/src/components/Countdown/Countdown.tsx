@@ -1,3 +1,4 @@
+import { Text } from '@lawallet/ui';
 import { useEffect, useState } from 'react';
 
 const formatTime = (time: number): number | string => {
@@ -31,5 +32,5 @@ export default function Countdown({ seconds }: { seconds: number }) {
     }
   }, [countdown]);
 
-  return <span>{formatTime(countdown)}</span>;
+  return <Text>{formatTime(countdown)}</Text>;
 }
