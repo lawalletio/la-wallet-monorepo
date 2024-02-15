@@ -32,6 +32,8 @@ export interface UseNostrReturns {
   signEvent: (event: NostrEvent, signer?: SignerTypes) => Promise<NostrEvent>;
   authWithPrivateKey: (hexKey: string) => Promise<SignerTypes>;
   authWithExtension: () => Promise<SignerTypes>;
+  encrypt: (receiverPubkey: string, message: string) => Promise<string | undefined>;
+  decrypt: (senderPubkey: string, encryptedMessage: string) => Promise<string | undefined>;
 }
 
 export type SignerTypes = NDKSigner | undefined;
@@ -116,6 +118,30 @@ export const useNostr = ({
     return eventToSign.toNostrEvent();
   };
 
+  const encrypt = async (receiverPubkey: string, message: string): Promise<string | undefined> => {
+    if (!ndk.signer) return;
+
+    try {
+      const user = new NDKUser({ pubkey: receiverPubkey });
+      const encryptedMessage = await ndk.signer.encrypt(user, message);
+      return encryptedMessage;
+    } catch {
+      return;
+    }
+  };
+
+  const decrypt = async (senderPubkey: string, encryptedMessage: string): Promise<string | undefined> => {
+    if (!ndk.signer) return;
+
+    try {
+      const user = new NDKUser({ pubkey: senderPubkey });
+      const decryptedMessage = await ndk.signer.decrypt(user, encryptedMessage);
+      return decryptedMessage;
+    } catch {
+      return;
+    }
+  };
+
   React.useEffect(() => {
     loadProviders();
 
@@ -136,5 +162,7 @@ export const useNostr = ({
     signEvent,
     authWithExtension,
     authWithPrivateKey,
+    encrypt,
+    decrypt,
   };
 };
