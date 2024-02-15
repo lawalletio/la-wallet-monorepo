@@ -68,8 +68,8 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
   };
 
   const execInternalTransfer = async (transferParameters: InternalTransferParamteres): Promise<boolean> => {
-    const { pubkey, amount, comment = '' } = transferParameters;
-    if (!signerInfo || !pubkey || !amount) return false;
+    const { pubkey: receiverPubkey, amount, comment = '' } = transferParameters;
+    if (!signerInfo || !receiverPubkey || !amount) return false;
 
     statusVars.handleMarkLoading(true);
 
@@ -79,8 +79,8 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
           tokenName,
           amount,
           senderPubkey: signerInfo.pubkey,
-          receiverPubkey: pubkey,
           comment,
+          tags: [['p', receiverPubkey]],
         },
         config,
       ),
@@ -101,7 +101,10 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
           tokenName,
           amount,
           senderPubkey: signerInfo.pubkey,
-          bolt11,
+          tags: [
+            ['p', config.modulePubkeys.urlx],
+            ['bolt11', bolt11],
+          ],
         },
         config,
       ),

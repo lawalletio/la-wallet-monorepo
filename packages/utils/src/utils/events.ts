@@ -121,27 +121,27 @@ type TransactionProps = {
   tokenName: string;
   amount: number;
   senderPubkey: string;
-  receiverPubkey?: string;
   comment?: string;
-  bolt11?: string;
+  tags: NDKTag[];
 };
 
 export const buildTxStartEvent = (props: TransactionProps, config: ConfigProps = baseConfig): NostrEvent => {
-  const baseTags: NDKTag[] = [
+  const { tokenName, amount, senderPubkey, comment, tags = [] } = props;
+
+  const txTags: NDKTag[] = [
     ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
     ['p', config.modulePubkeys.ledger],
+    ...tags,
   ];
 
   return {
-    pubkey: props.senderPubkey,
+    pubkey: senderPubkey,
     kind: LaWalletKinds.REGULAR,
     content: JSON.stringify({
-      tokens: { [props.tokenName]: (props.amount * 1000).toString() },
-      ...(props.comment ? { memo: props.comment } : {}),
+      tokens: { [tokenName]: (amount * 1000).toString() },
+      ...(comment ? { memo: comment } : {}),
     }),
-    tags: props.bolt11
-      ? [...baseTags, ['p', config.modulePubkeys.urlx], ['bolt11', props.bolt11]]
-      : [...baseTags, ['p', props.receiverPubkey!]],
+    tags: txTags,
     created_at: nowInSeconds(),
   };
 };
