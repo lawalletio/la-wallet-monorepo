@@ -20,13 +20,20 @@ export default function Page() {
 
   const handleScanURL = (str: string) => {
     const url = new URL(str);
+    const originURL = window.location.origin;
     const cardParameter = url.searchParams.get('c');
 
     if (cardParameter) {
       router.push(`/cards?c=${cardParameter}`);
       return;
     } else {
-      setUrlScanned(str);
+      if (url.origin.startsWith(originURL)) {
+        const pathname: string = url.href.replace(originURL, '');
+        router.push(pathname);
+        return;
+      } else {
+        setUrlScanned(str);
+      }
     }
   };
 

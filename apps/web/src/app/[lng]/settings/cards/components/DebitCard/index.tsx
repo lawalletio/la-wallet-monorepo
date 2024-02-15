@@ -9,7 +9,7 @@ import { CardImage, ConfigCard } from './style';
 import Pause from '@/components/Icons/Pause';
 import Play from '@/components/Icons/Play';
 import { CardPayload, CardStatus, Design } from '@lawallet/react/types';
-import SettingsSheet from '../SettingsSheet/SettingsSheet';
+import SettingsSheet from '../Sheets/SettingsSheet';
 
 export type CardProps = {
   uuid: string;
