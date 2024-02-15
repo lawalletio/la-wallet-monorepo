@@ -3,63 +3,34 @@ import { useState } from 'react';
 
 import Card from '@/components/Card';
 
-import { QRCode } from '@/components/UI';
-import { ActionSheet, Button, Divider, Flex, LinkButton, Text } from '@lawallet/ui';
+import { Button, Flex } from '@lawallet/ui';
 import { CardImage, ConfigCard } from './style';
 
-import Countdown from '@/components/Countdown/Countdown';
 import Pause from '@/components/Icons/Pause';
 import Play from '@/components/Icons/Play';
-import { useTranslation } from '@/context/TranslateContext';
 import { CardPayload, CardStatus, Design } from '@lawallet/react/types';
+import SettingsSheet from '../SettingsSheet/SettingsSheet';
+
+export type CardProps = {
+  uuid: string;
+  data: { design: Design };
+  config: CardPayload | undefined;
+};
 
 interface ComponentProps {
-  card: {
-    uuid: string;
-    data: { design: Design };
-    config: CardPayload | undefined;
-  };
+  card: CardProps;
   toggleCardStatus: (uuid: string) => void;
-  base64DonationCardEvent: (uuid: string) => Promise<string | undefined>;
 }
 
 export default function Component(props: ComponentProps) {
-  const { card, toggleCardStatus, base64DonationCardEvent } = props;
-  const { t } = useTranslation();
+  const { card, toggleCardStatus } = props;
   const [handleSelected, setHandleSelected] = useState(false);
 
   // ActionSheet
   const [showConfiguration, setShowConfiguration] = useState(false);
-  const [showTransfer, setShowTransfer] = useState(false);
-  const [qrInfo, setQrInfo] = useState({
-    value: '',
-    visible: false,
-  });
 
-  const handleShowTransfer = () => {
-    setShowConfiguration(false);
-    setShowTransfer(true);
-  };
-
-  const handleDonateCard = async () => {
-    const encodedDonationEvent: string | undefined = await base64DonationCardEvent(card.uuid);
-    if (!encodedDonationEvent) return;
-
-    const absoluteURL = window.location ? window.location.origin : 'https://app.lawallet.ar';
-
-    setQrInfo({
-      value: `${absoluteURL}/settings/cards/donation?event=${encodedDonationEvent}`,
-      visible: true,
-    });
-  };
-
-  const handleCloseActions = () => {
-    setShowConfiguration(false);
-    setShowTransfer(false);
-    setQrInfo({
-      value: '',
-      visible: false,
-    });
+  const toggleShowConfig = () => {
+    setShowConfiguration(!showConfiguration);
   };
 
   return (
@@ -86,7 +57,7 @@ export default function Component(props: ComponentProps) {
                 </div>
               )}
               <div>
-                <Button onClick={() => setShowConfiguration(true)} variant="bezeledGray">
+                <Button onClick={toggleShowConfig} variant="bezeledGray">
                   <GearIcon />
                 </Button>
               </div>
@@ -96,52 +67,7 @@ export default function Component(props: ComponentProps) {
       </Flex>
 
       {/* Menu actions by Card */}
-      <ActionSheet
-        isOpen={showConfiguration}
-        onClose={handleCloseActions}
-        title={card.config?.name || card.data.design.name}
-        description={card.config?.description || card.data.design.name}
-        cancelText={t('CANCEL')}
-      >
-        <LinkButton variant="bezeledGray" href={`/settings/cards/${card?.uuid}`}>
-          {t('SETTINGS')}
-        </LinkButton>
-        <Button variant="bezeledGray" onClick={() => handleShowTransfer()}>
-          {t('TRANSFER')}
-        </Button>
-      </ActionSheet>
-
-      {/* Actions for confirm and show QR Code for Transfer Card */}
-      <ActionSheet
-        isOpen={!showConfiguration && showTransfer}
-        onClose={handleCloseActions}
-        title={t('TRANSFER')}
-        cancelText={t('CANCEL')}
-        description={
-          qrInfo.visible
-            ? t('SCAN_CODE_FOR_TRANSFER_CARD', {
-                name: card.config?.name ?? card.data.design.name,
-              })
-            : t('CONFIRM_TRANSFER_CARD', {
-                name: card.config?.name ?? card.data.design.name,
-              })
-        }
-      >
-        {qrInfo.visible ? (
-          <Flex direction="column" align="center">
-            <QRCode size={250} value={qrInfo.value} showCopy={false} />
-            <Divider y={12} />
-            <Flex flex={1} direction="column" justify="space-between" align="center">
-              <Text size="small">{t('TIME_LEFT')}</Text>
-              <Countdown seconds={180} />
-            </Flex>
-          </Flex>
-        ) : (
-          <Button color="secondary" variant="bezeledGray" onClick={handleDonateCard}>
-            {t('CONFIRM')}
-          </Button>
-        )}
-      </ActionSheet>
+      <SettingsSheet card={card} isOpen={showConfiguration} onClose={toggleShowConfig} />
     </>
   );
 }

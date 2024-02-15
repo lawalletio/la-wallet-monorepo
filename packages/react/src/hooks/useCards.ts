@@ -1,4 +1,13 @@
-import { LaWalletKinds, buildCardConfigEvent, getTag, parseContent, parseMultiNip04Event } from '@lawallet/utils';
+import {
+  LaWalletKinds,
+  buildCardConfigEvent,
+  buildCardTransferDonationEvent,
+  extendedMultiNip04Decrypt,
+  extendedMultiNip04Encrypt,
+  getTag,
+  parseContent,
+} from '@lawallet/utils';
+import { broadcastEvent } from '@lawallet/utils/actions';
 import {
   CardStatus,
   ConfigTypes,
@@ -7,13 +16,12 @@ import {
   type CardPayload,
   type ConfigParameter,
 } from '@lawallet/utils/types';
-import { broadcastEvent } from '@lawallet/utils/actions';
 
-import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { useEffect, useMemo, useState } from 'react';
-import { useSubscription } from './useSubscription.js';
-import { getPublicKey } from 'nostr-tools';
 import { useConfig } from './useConfig.js';
+import { useSubscription } from './useSubscription.js';
+import { useNostrContext } from '../context/NostrContext.js';
 
 export type CardConfigReturns = {
   cardsData: CardDataPayload;
@@ -21,6 +29,7 @@ export type CardConfigReturns = {
   loadInfo: CardLoadingType;
   toggleCardStatus: (uuid: string) => Promise<boolean>;
   updateCardConfig: (uuid: string, config: CardPayload) => Promise<boolean>;
+  buildDonationEvent: (uuid: string) => Promise<string | undefined>;
 };
 
 type CardLoadingType = {
@@ -29,12 +38,13 @@ type CardLoadingType = {
 };
 
 export interface UseCardsParameters extends ConfigParameter {
-  privateKey: string;
+  onCardDonation?: () => void;
 }
 
 export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
-  const pubkey = useMemo(() => getPublicKey(parameters.privateKey), [parameters.privateKey]);
   const config = useConfig(parameters);
+
+  const [cardToDonate, setCardToDonate] = useState<string>('');
 
   const [cardsData, setCardsData] = useState<CardDataPayload>({});
   const [cardsConfig, setCardsConfig] = useState<CardConfigPayload>({} as CardConfigPayload);
@@ -42,6 +52,9 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     loadedAt: 0,
     loading: true,
   });
+
+  const { encrypt, decrypt, signerInfo, signEvent } = useNostrContext();
+  const pubkey = useMemo(() => (signerInfo ? signerInfo.pubkey : ''), [signerInfo]);
 
   const { subscription } = useSubscription({
     filters: [
@@ -60,14 +73,20 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     config,
   });
 
-  const buildAndBroadcastCardConfig = (cardConfig: CardConfigPayload, privateKey: string): Promise<boolean> => {
-    return buildCardConfigEvent(cardConfig, privateKey, config)
-      .then((configEvent) => {
-        return broadcastEvent(configEvent, config);
-      })
-      .catch(() => {
-        return false;
-      });
+  const buildAndBroadcastCardConfig = async (cardConfig: CardConfigPayload): Promise<boolean> => {
+    if (!pubkey) return false;
+
+    try {
+      const receiverPubkeys: string[] = [config.modulePubkeys.card, pubkey];
+      const nip04Event: NostrEvent = await buildCardConfigEvent(
+        await extendedMultiNip04Encrypt(JSON.stringify(cardConfig), pubkey, receiverPubkeys, encrypt),
+      );
+
+      const signedEvent = await signEvent(nip04Event);
+      return broadcastEvent(signedEvent, config);
+    } catch {
+      return false;
+    }
   };
 
   const toggleCardStatus = async (uuid: string): Promise<boolean> => {
@@ -84,7 +103,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
       },
     };
 
-    return buildAndBroadcastCardConfig(new_card_config, parameters.privateKey);
+    return buildAndBroadcastCardConfig(new_card_config);
   };
 
   const updateCardConfig = async (uuid: string, config: CardPayload): Promise<boolean> => {
@@ -102,14 +121,14 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
       },
     };
 
-    return buildAndBroadcastCardConfig(new_card_config, parameters.privateKey);
+    return buildAndBroadcastCardConfig(new_card_config);
   };
 
   const processReceivedEvent = async (event: NDKEvent) => {
     const nostrEv = await event.toNostrEvent();
 
-    const decryptedData = await parseMultiNip04Event(nostrEv, parameters.privateKey, pubkey);
-    const parsedDecryptedData = parseContent(decryptedData);
+    const decryptedContent = await extendedMultiNip04Decrypt(nostrEv, pubkey, decrypt);
+    const parsedDecryptedData = parseContent(decryptedContent);
 
     const subkind = getTag(nostrEv.tags, 't');
     if (!subkind) return;
@@ -121,6 +140,27 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     }
 
     if (loadInfo.loading) setLoadInfo({ loadedAt: nostrEv.created_at + 1, loading: false });
+  };
+
+  const buildDonationEvent = async (uuid: string) => {
+    try {
+      if (!pubkey) return;
+      const encryptedUUID: string | undefined = await encrypt(config.modulePubkeys.card, uuid);
+      if (!encryptedUUID) return;
+
+      const transferDonationEvent = await buildCardTransferDonationEvent(pubkey, encryptedUUID, config);
+      const signedEvent: NostrEvent = await signEvent(transferDonationEvent);
+
+      const encodedDonationEvent: string = btoa(JSON.stringify(signedEvent))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+
+      setCardToDonate(uuid);
+      return encodedDonationEvent;
+    } catch {
+      return;
+    }
   };
 
   useEffect(() => {
@@ -138,5 +178,15 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     }, 2500);
   }, []);
 
-  return { cardsData, cardsConfig, loadInfo, toggleCardStatus, updateCardConfig };
+  useEffect(() => {
+    if (cardToDonate) {
+      const existCard = cardsData[cardToDonate];
+      if (!existCard) {
+        if (parameters.onCardDonation) parameters.onCardDonation();
+        setCardToDonate('');
+      }
+    }
+  }, [cardsData, cardToDonate]);
+
+  return { cardsData, cardsConfig, loadInfo, toggleCardStatus, updateCardConfig, buildDonationEvent };
 };

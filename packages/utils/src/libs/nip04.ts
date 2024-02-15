@@ -315,7 +315,28 @@ export async function parseMultiNip04Event(
   }
 
   const rawContent = parseContent(event.content);
+  validateDecryptEvent(rawContent);
 
+  const content: MultiNip04Content = rawContent as MultiNip04Content;
+
+  const messageKeyHex: string = await nip04.decrypt(
+    receiverSecKeyHex,
+    event.pubkey,
+    content.key[receiverPubKeyHex] as string,
+  );
+
+  const decryptedMessage: string = doDecryptNip04Like(messageKeyHex, content.enc);
+
+  const macBase64: string = crypto.createHash('sha256').update(decryptedMessage).digest().toString('base64');
+
+  if (content.mac !== macBase64) {
+    throw new Error('MAC mismatch');
+  }
+
+  return decryptedMessage;
+}
+
+const validateDecryptEvent = (rawContent: Record<string, unknown>) => {
   if (!('mac' in rawContent)) {
     throw new Error('Malformed event content, missing "mac"');
   }
@@ -353,14 +374,55 @@ export async function parseMultiNip04Event(
   ) {
     throw new Error('Malformed event content, "key" values should be strings of the form "{content}?iv={iv}"');
   }
+};
+
+export async function extendedMultiNip04Encrypt(
+  message: string, // UTF-8 message to send
+  senderPubKeyHex: string, // HEX sender public key
+  receiverPubKeysHex: string[], // HEX receivers public keys
+  encrypt: (pk: string, msg: string) => Promise<string>,
+): Promise<NostrEvent> {
+  const macBase64: string = crypto.createHash('sha256').update(message).digest().toString('base64');
+  const randomMessageKeyHex: string = Buffer.from(crypto.randomBytes(16)).toString('hex');
+
+  const encryptedContentNip04Like: string = doEncryptNip04Like(randomMessageKeyHex, message);
+
+  const receiverPubKeysHexToNip04RandomMessageKey: { [pk: string]: string } = Object.fromEntries(
+    await Promise.all(
+      receiverPubKeysHex.map(
+        async (pk: string): Promise<[string, string]> => [pk, await encrypt(pk, randomMessageKeyHex)],
+      ),
+    ),
+  );
+
+  return {
+    pubkey: senderPubKeyHex,
+    created_at: nowInSeconds(),
+    tags: receiverPubKeysHex.map((pk: string) => ['p', pk]),
+    content: JSON.stringify({
+      mac: macBase64,
+      enc: encryptedContentNip04Like,
+      key: receiverPubKeysHexToNip04RandomMessageKey,
+      alg: 'sha256:nip-04:nip-04',
+    }),
+  };
+}
+
+export async function extendedMultiNip04Decrypt(
+  event: NostrEvent,
+  receiverPubKeyHex: string,
+  decrypt: (senderPubkey: string, encryptedMessage: string) => Promise<string | undefined>,
+): Promise<string> {
+  if (!event.tags.some((tag: string[]) => (tag[0] ?? null) === 'p' && (tag[1] ?? null) === receiverPubKeyHex)) {
+    throw new Error('Receiver not in receivers list');
+  }
+
+  const rawContent = parseContent(event.content);
+  validateDecryptEvent(rawContent);
 
   const content: MultiNip04Content = rawContent as MultiNip04Content;
-
-  const messageKeyHex: string = await nip04.decrypt(
-    receiverSecKeyHex,
-    event.pubkey,
-    content.key[receiverPubKeyHex] as string,
-  );
+  const messageKeyHex: string | undefined = await decrypt(event.pubkey, content.key[receiverPubKeyHex] as string);
+  if (!messageKeyHex) return '';
 
   const decryptedMessage: string = doDecryptNip04Like(messageKeyHex, content.enc);
 

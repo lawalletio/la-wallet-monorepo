@@ -1,10 +1,11 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { regexComment, regexUserName } from '@/constants/constants';
+import { useCardsContext } from '@/context/CardsContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { formatToPreference, roundToDown, useCards, useConfig, useWalletContext } from '@lawallet/react';
+import { formatToPreference, roundToDown } from '@lawallet/react';
 import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
 import {
   Button,
@@ -49,21 +50,14 @@ const DESC_MAX_LENGTH = 64;
 
 const page = () => {
   const { t, lng } = useTranslation();
-  const {
-    account: { identity },
-  } = useWalletContext();
 
   const errors = useErrors();
-  const config = useConfig();
   const router = useRouter();
   const params = useParams();
 
   const uuid: string = useMemo(() => params.uuid as string, []);
 
-  const { cardsData, cardsConfig, loadInfo, updateCardConfig } = useCards({
-    privateKey: identity.data.privateKey,
-    config,
-  });
+  const { cardsData, cardsConfig, loadInfo, updateCardConfig } = useCardsContext();
 
   const [newConfig, setNewConfig] = useState<CardPayload>({
     name: '',

@@ -9,7 +9,6 @@ export {
   buildIdentityEvent,
   buildCardActivationEvent,
   buildCardConfigEvent,
-  buildCardInfoRequest,
   buildTxStartEvent,
   buildZapRequestEvent,
   buildCardTransferAcceptEvent,
@@ -21,7 +20,13 @@ export { type BaseStorage, type CreateStorageParameters, createStorage } from '.
 
 export { lnurl_decode, lnurl_encode } from '../libs/lnurl.js';
 
-export { type MultiNip04Content, buildMultiNip04Event, parseMultiNip04Event } from '../libs/nip04.js';
+export {
+  type MultiNip04Content,
+  extendedMultiNip04Encrypt,
+  extendedMultiNip04Decrypt,
+  buildMultiNip04Event,
+  parseMultiNip04Event,
+} from '../libs/nip04.js';
 
 export {
   decodeInvoice,

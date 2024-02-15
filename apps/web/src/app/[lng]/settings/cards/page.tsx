@@ -3,30 +3,20 @@
 import { useTranslation } from '@/context/TranslateContext';
 
 import Navbar from '@/components/Layout/Navbar';
+import { useCardsContext } from '@/context/CardsContext';
 import { useNotifications } from '@/context/NotificationsContext';
-import { buildCardTransferDonationEvent, useCards, useConfig, useWalletContext } from '@lawallet/react';
 import { Design } from '@lawallet/react/types';
 import { Container, Divider, Flex, Loader } from '@lawallet/ui';
-import { useEffect, useState } from 'react';
 import AddNewCardModal from './components/AddCard';
 import DebitCard from './components/DebitCard';
 import EmptyCards from './components/EmptyCards';
 
 export default function Page() {
-  const {
-    account: { identity },
-  } = useWalletContext();
-
   const notifications = useNotifications();
-  const config = useConfig();
-
-  const { cardsData, cardsConfig, loadInfo, toggleCardStatus } = useCards({
-    privateKey: identity.data.privateKey,
-    config,
-  });
+  const { cardsData, cardsConfig, loadInfo, toggleCardStatus } = useCardsContext();
 
   const { t } = useTranslation();
-  const [cardToDonate, setCardToDonate] = useState<string>('');
+  // const [cardToDonate, setCardToDonate] = useState<string>('');
 
   const handleToggleStatus = async (uuid: string) => {
     const toggled: boolean = await toggleCardStatus(uuid);
@@ -39,38 +29,6 @@ export default function Page() {
 
     return toggled;
   };
-
-  const handleDonateCard = async (uuid: string) => {
-    try {
-      const transferDonationEvent = await buildCardTransferDonationEvent(uuid, identity.data.privateKey);
-
-      const encodedDonationEvent: string = btoa(JSON.stringify(transferDonationEvent))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
-
-      setCardToDonate(uuid);
-
-      return encodedDonationEvent;
-    } catch {
-      return;
-    }
-  };
-
-  useEffect(() => {
-    if (cardToDonate) {
-      const existCard = cardsData[cardToDonate];
-      if (!existCard) {
-        notifications.showAlert({
-          title: '',
-          description: t('DONATION_CARD_SUCCESS'),
-          type: 'success',
-        });
-
-        setCardToDonate('');
-      }
-    }
-  }, [cardsData, cardToDonate]);
 
   return (
     <>
@@ -91,7 +49,6 @@ export default function Page() {
                     config: cardsConfig.cards?.[key],
                   }}
                   toggleCardStatus={handleToggleStatus}
-                  base64DonationCardEvent={handleDonateCard}
                   key={key}
                 />
               );
