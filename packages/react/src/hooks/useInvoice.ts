@@ -40,7 +40,7 @@ export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
 
   const executePayment = async () => {
     if (!params.bolt11) return false;
-    return execOutboundTransfer({ bolt11: parsedInvoice.data, amount: parsedInvoice.amount });
+    return execOutboundTransfer({ tags: [['bolt11', parsedInvoice.data]], amount: parsedInvoice.amount });
   };
 
   useEffect(() => {

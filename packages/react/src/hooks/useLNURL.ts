@@ -104,7 +104,7 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
           `${callback}?amount=${LNURLInfo.amount * 1000}&comment=${escapingBrackets(LNURLInfo.comment)}`,
         );
 
-        execOutboundTransfer({ bolt11, amount: LNURLInfo.amount });
+        execOutboundTransfer({ tags: [['bolt11', bolt11]], amount: LNURLInfo.amount });
       }
     } catch (err) {
       handleMarkError((err as Error).message);

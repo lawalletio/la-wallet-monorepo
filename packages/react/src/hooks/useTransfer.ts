@@ -1,4 +1,4 @@
-import type { NDKEvent, NDKKind, NostrEvent } from '@nostr-dev-kit/ndk';
+import type { NDKEvent, NDKKind, NDKTag, NostrEvent } from '@nostr-dev-kit/ndk';
 import {
   LaWalletKinds,
   LaWalletTags,
@@ -13,7 +13,7 @@ import { useStatusVars, type UseStatusVarsReturns } from './useStatusVars.js';
 import { broadcastEvent } from '../exports/actions.js';
 import type { ConfigParameter } from '../exports/types.js';
 
-type OutboundTransferParameters = { bolt11: string; amount: number };
+type OutboundTransferParameters = { tags: NDKTag[]; amount: number };
 type InternalTransferParamteres = {
   pubkey: string;
   amount: number;
@@ -90,8 +90,8 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
   };
 
   const execOutboundTransfer = async (params: OutboundTransferParameters): Promise<boolean> => {
-    const { bolt11, amount } = params;
-    if (!signer || !signerInfo || !bolt11 || !amount) return false;
+    const { tags = [], amount } = params;
+    if (!signer || !signerInfo || !amount) return false;
 
     statusVars.handleMarkLoading(true);
 
@@ -101,10 +101,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
           tokenName,
           amount,
           senderPubkey: signerInfo.pubkey,
-          tags: [
-            ['p', config.modulePubkeys.urlx],
-            ['bolt11', bolt11],
-          ],
+          tags: [['p', config.modulePubkeys.urlx], ...tags],
         },
         config,
       ),
