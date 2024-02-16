@@ -55,6 +55,8 @@ export interface LNRequestResponse {
   k1?: string;
   minWithdrawable?: number;
   maxWithdrawable?: number;
+  federationId?: string;
+  accountPubKey?: string;
 }
 
 export interface TransferInformation {

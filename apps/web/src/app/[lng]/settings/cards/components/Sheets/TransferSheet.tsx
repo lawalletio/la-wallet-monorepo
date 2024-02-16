@@ -21,7 +21,6 @@ const TransferSheet = ({ card, isOpen, onClose }: SettingsSheetProps) => {
     const encodedDonationEvent: string | undefined = await buildDonationEvent(card.uuid);
     if (!encodedDonationEvent) return;
 
-    console.log(encodedDonationEvent);
     const absoluteURL = window.location ? window.location.origin : 'https://app.lawallet.ar';
 
     setQrInfo({
