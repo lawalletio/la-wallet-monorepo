@@ -3,6 +3,24 @@ import { createGlobalStyle } from 'styled-components';
 import { theme } from './theme';
 
 export const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'IAAB3-Mono';
+    src: url('./fonts/IAAB3.woff2');
+    weight: 400;
+  }
+
+  @font-face {
+    font-family: 'SF PRO Text';
+    src: url('./fonts/SF-Regular.woff2');
+    font-weight: 400;
+  }
+
+  @font-face {
+    font-family: 'SF PRO Text';
+    src: url('./fonts/SF-Bold.woff2');
+    font-weight: 700;
+  }
+
   * {
     box-sizing: border-box;
     
@@ -27,8 +45,18 @@ export const GlobalStyle = createGlobalStyle`
     background: ${theme.colors.background};
 
     color: ${theme.colors.text};
+    font-family: 'SF PRO Text';
     font-size: 1em;
     font-weight: 400;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'IAAB3-Mono';
   }
 
   ul {
@@ -45,5 +73,11 @@ export const GlobalStyle = createGlobalStyle`
     -ms-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  a,
+  button,
+  input {
+    font-family: 'SF PRO Text';
   }
 `;
