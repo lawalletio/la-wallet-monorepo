@@ -1,24 +1,30 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { useTranslation } from '@/context/TranslateContext';
-import { useConfig, useInvoice } from '@lawallet/react';
-import React from 'react';
-import { Summary } from '../../components/Summary';
-import { TransferTypes } from '@lawallet/react/types';
-import { FinishTransfer } from '../../components/Finish';
-import { ErrorTransfer } from '../../components/Error';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
+import { useConfig, useInvoice, useTransfer } from '@lawallet/react';
+import { TransferTypes } from '@lawallet/react/types';
+import { ErrorTransfer } from '../../components/Error';
+import { FinishTransfer } from '../../components/Finish';
+import { Summary } from '../../components/Summary';
 
 const TransferWithInvoice = ({ params }) => {
   const { t } = useTranslation();
   const config = useConfig();
 
-  const { isLoading, isError, isSuccess, parsedInvoice, executePayment } = useInvoice({
+  const { txInfo } = useInvoice({
     bolt11: params.bolt11,
     config,
   });
 
-  useActionOnKeypress('Enter', executePayment, [parsedInvoice]);
+  const { isLoading, isError, isSuccess, execOutboundTransfer } = useTransfer({ ...params, tokenName: 'BTC' });
+
+  const executePayment = async () => {
+    if (!txInfo.data || txInfo.type !== TransferTypes.INVOICE || txInfo.expired) return false;
+    return execOutboundTransfer({ tags: [['bolt11', txInfo.data]], amount: txInfo.amount });
+  };
+
+  useActionOnKeypress('Enter', executePayment, [txInfo]);
 
   return (
     <>
@@ -26,7 +32,7 @@ const TransferWithInvoice = ({ params }) => {
         <>
           <Navbar />
 
-          {isError ? <ErrorTransfer /> : <FinishTransfer transferInfo={parsedInvoice} />}
+          {isError ? <ErrorTransfer /> : <FinishTransfer transferInfo={txInfo} />}
         </>
       ) : (
         <>
@@ -34,10 +40,10 @@ const TransferWithInvoice = ({ params }) => {
           <Summary
             isLoading={isLoading}
             isSuccess={isSuccess}
-            data={parsedInvoice.data}
+            data={txInfo.data}
             type={TransferTypes.INVOICE}
-            amount={parsedInvoice.amount}
-            expired={parsedInvoice.expired}
+            amount={txInfo.amount}
+            expired={txInfo.expired}
             onClick={executePayment}
           />
         </>

@@ -1,3 +1,4 @@
+import { differenceInSeconds } from 'date-fns';
 import { baseConfig, defaultInvoiceTransfer, defaultLNURLTransfer } from '../constants/constants.js';
 import { getPayRequest, requestInvoice } from '../interceptors/transaction.js';
 import bolt11 from '../libs/light-bolt11.js';
@@ -78,9 +79,7 @@ export const parseInvoiceInfo = (decodedInvoice: DecodedInvoiceReturns) => {
   const invoiceAmount: number = Number(decodedInvoice.millisatoshis);
   if (!invoiceAmount) return defaultInvoiceTransfer;
 
-  const createdAt = decodedInvoice.timestamp;
-
-  const transfer: InvoiceTransferType = {
+  let transfer: InvoiceTransferType = {
     ...defaultInvoiceTransfer,
     data: decodedInvoice.paymentRequest.toLowerCase(),
     type: TransferTypes.INVOICE,
@@ -88,10 +87,8 @@ export const parseInvoiceInfo = (decodedInvoice: DecodedInvoiceReturns) => {
     expired: false,
   };
 
-  if (createdAt && createdAt) {
-    const expirationDate: number = (createdAt + Number(decodedInvoice.timeExpireDate)) * 1000;
-    if (expirationDate < Date.now()) transfer.expired = true;
-  }
+  if (decodedInvoice.timeExpireDate && Number(decodedInvoice.timeExpireDate) * 1000 < Date.now())
+    transfer.expired = true;
 
   return transfer;
 };

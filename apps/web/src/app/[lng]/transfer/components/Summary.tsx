@@ -18,9 +18,9 @@ import {
 
 import { useTranslation } from '@/context/TranslateContext';
 import { extractFirstTwoChars } from '@/utils';
-import { formatAddress, formatToPreference, splitHandle, useWalletContext } from '@lawallet/react';
+import { formatAddress, formatToPreference, splitHandle, useConfig, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type SummaryProps = {
   isLoading: boolean;
@@ -35,6 +35,7 @@ type SummaryProps = {
 export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {
   const { lng, t } = useTranslation();
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
+  const config = useConfig();
 
   const {
     account: { balance },
@@ -50,11 +51,15 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
     return formatToPreference(currency, convertedInt, lng);
   }, [amount, pricesData, currency]);
 
-  useEffect(() => {
+  const detectInsufficientBalance = useCallback(() => {
     setInsufficientBalance(!isLoading && !isSuccess && balance.amount < amount);
+  }, [balance.amount, amount, isLoading, isSuccess]);
+
+  useEffect(() => {
+    detectInsufficientBalance();
   }, [balance.amount, amount]);
 
-  const [transferUsername, transferDomain] = splitHandle(data);
+  const [transferUsername, transferDomain] = splitHandle(data, config);
 
   return (
     <>
@@ -114,14 +119,13 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
         <Divider y={16} />
       </Container>
 
-      {expired ||
-        (type !== TransferTypes.LNURLW && !balance.loading && insufficientBalance && (
-          <Flex flex={1} align="center" justify="center">
-            <Feedback show={true} status={'error'}>
-              {expired ? t('INVOICE_EXPIRED') : t('INSUFFICIENT_BALANCE')}
-            </Feedback>
-          </Flex>
-        ))}
+      {expired || (type !== TransferTypes.LNURLW && !balance.loading && insufficientBalance) ? (
+        <Flex flex={1} align="center" justify="center">
+          <Feedback show={true} status={'error'}>
+            {expired ? t('INVOICE_EXPIRED') : t('INSUFFICIENT_BALANCE')}
+          </Feedback>
+        </Flex>
+      ) : null}
 
       <Flex>
         <Container size="small">
