@@ -1,13 +1,13 @@
 'use client';
 
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Flex, Text } from '@lawallet/ui';
-import QrScanner from '@/components/UI/Scanner/Scanner';
 import { Modal } from '@/components/UI';
+import QrScanner from '@/components/UI/Scanner/Scanner';
 import { regexURL } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
+import { detectTransferType, removeLightningStandard } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import { detectTransferType, removeLightningStandard, useConfig } from '@lawallet/react';
+import { Button, Flex, Text } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
 import NimiqQrScanner from 'qr-scanner';
 import { useState } from 'react';
@@ -16,7 +16,6 @@ export default function Page() {
   const [urlScanned, setUrlScanned] = useState<string>('');
   const { t } = useTranslation();
   const router = useRouter();
-  const config = useConfig();
 
   const handleScanURL = (str: string) => {
     const url = new URL(str);
@@ -47,7 +46,7 @@ export default function Page() {
       return;
     } else {
       const cleanScan: string = removeLightningStandard(result.data);
-      const scanType: TransferTypes = detectTransferType(cleanScan, config);
+      const scanType: TransferTypes = detectTransferType(cleanScan);
       if (scanType === TransferTypes.NONE) return;
 
       if (scanType === TransferTypes.INVOICE) {

@@ -58,7 +58,7 @@ export const claimLNURLw = async (
   }
 };
 
-export const detectTransferType = (data: string, config: ConfigProps = baseConfig): TransferTypes => {
+export const detectTransferType = (data: string): TransferTypes => {
   if (!data.length) return TransferTypes.NONE;
 
   const upperStr: string = data.toUpperCase();
@@ -188,18 +188,18 @@ const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): P
 export const removeLightningStandard = (str: string) => {
   const lowStr: string = str.toLowerCase();
 
-  return lowStr.startsWith('lightning://')
-    ? lowStr.replace('lightning://', '')
-    : lowStr.startsWith('lightning:')
-      ? lowStr.replace('lightning:', '')
-      : lowStr;
+  if (lowStr.startsWith('lightning://')) return lowStr.replace('lightning://', '');
+  if (lowStr.startsWith('lightning:')) return lowStr.replace('lightning:', '');
+  if (lowStr.startsWith('lnurlw://')) return lowStr.replace('lnurlw://', '');
+
+  return lowStr;
 };
 
 export const formatLNURLData = async (data: string, config: ConfigProps = baseConfig): Promise<LNURLTransferType> => {
   if (!data.length) return defaultLNURLTransfer;
   const cleanStr: string = removeLightningStandard(data);
 
-  const decodedTransferType: TransferTypes = detectTransferType(cleanStr, config);
+  const decodedTransferType: TransferTypes = detectTransferType(cleanStr);
   if (decodedTransferType === TransferTypes.NONE) return defaultLNURLTransfer;
 
   switch (decodedTransferType) {

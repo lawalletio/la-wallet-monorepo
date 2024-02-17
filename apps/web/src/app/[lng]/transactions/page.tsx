@@ -6,7 +6,7 @@ import { useTranslation } from '@/context/TranslateContext';
 import { useWalletContext } from '@lawallet/react';
 import { Transaction } from '@lawallet/react/types';
 import { Button, Container, Divider, Flex, Footer, Loader, Text, theme } from '@lawallet/ui';
-import { differenceInDays } from 'date-fns';
+import { differenceInCalendarDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -53,7 +53,7 @@ export default function Page() {
               if (!dateToRender || dateToRender.toDateString() !== txDate.toDateString()) {
                 dateToRender = txDate;
 
-                const differenceWithToday: number = differenceInDays(new Date(), txDate);
+                const differenceWithToday: number = differenceInCalendarDays(new Date(), txDate);
                 const isToday: boolean = differenceWithToday === 0;
                 const isYesterday: boolean = differenceWithToday === 1;
 
