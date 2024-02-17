@@ -1,7 +1,7 @@
 'use client';
 
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import TokenList from '@/components/TokenList';
@@ -11,9 +11,23 @@ import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
-import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
+import { decimalsToUse, formatAddress, formatToPreference, splitHandle, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
+import {
+  Avatar,
+  Button,
+  Container,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  HeroCard,
+  Icon,
+  InputWithLabel,
+  Text,
+  theme,
+} from '@lawallet/ui';
+import { extractFirstTwoChars } from '@/utils';
 
 export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }) => {
   const { lng, t } = useTranslation();
@@ -36,6 +50,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
   }, [pricesData, balance.amount, userCurrency]);
 
   const numpadData = useNumpad(userCurrency, maxAvailableAmount);
+  const params = useSearchParams();
   const errors = useErrors();
   const router = useRouter();
 
@@ -93,18 +108,45 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
   };
 
   useEffect(() => {
-    if (transferInfo.amount && transferInfo.amount !== numpadData.intAmount['SAT']) {
+    const amountParam = params.get('amount') ?? transferInfo.amount;
+    if (amountParam && amountParam !== numpadData.intAmount['SAT']) {
       const convertedAmount: number =
-        convertCurrency(transferInfo.amount, 'SAT', userCurrency) * 10 ** decimalsToUse(userCurrency);
+        convertCurrency(amountParam, 'SAT', userCurrency) * 10 ** decimalsToUse(userCurrency);
 
       numpadData.updateNumpadAmount(convertedAmount.toString());
     }
   }, [pricesData]);
 
   useActionOnKeypress('Enter', handleClick, [numpadData, transferInfo]);
+  const [transferUsername, transferDomain] = splitHandle(transferInfo.data);
 
   return (
     <>
+      <HeroCard>
+        <Container>
+          <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
+            {transferInfo.type === TransferTypes.LNURLW ? (
+              <Text size="small">{t('CLAIM_THIS_INVOICE')}</Text>
+            ) : (
+              <Avatar size="large">
+                <Text size="small">{extractFirstTwoChars(transferUsername)}</Text>
+              </Avatar>
+            )}
+
+            {transferInfo.type === TransferTypes.INVOICE || transferInfo.type === TransferTypes.LNURLW ? (
+              <Flex justify="center">
+                <Text>{formatAddress(transferInfo.data, 15)}</Text>
+              </Flex>
+            ) : (
+              <Flex justify="center">
+                <Text>
+                  {transferUsername}@{transferDomain}
+                </Text>
+              </Flex>
+            )}
+          </Flex>
+        </Container>
+      </HeroCard>
       <Container size="small">
         <Divider y={16} />
         <Flex direction="column" gap={8} flex={1} justify="center">

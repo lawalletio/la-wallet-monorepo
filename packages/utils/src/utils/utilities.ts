@@ -103,6 +103,7 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
     ...defaultLNURLTransfer,
     data,
     type: TransferTypes.LNURL,
+    receiverPubkey: config.modulePubkeys.urlx,
     request: payRequest,
   };
 
@@ -110,6 +111,7 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
     return {
       ...transfer,
       type: TransferTypes.LNURLW,
+      receiverPubkey: config.modulePubkeys.urlx,
       amount: payRequest.maxWithdrawable! / 1000,
     };
   }
@@ -128,7 +130,8 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
           if (data[0] === 'text/identifier') return data;
         });
 
-        if (identifier && identifier.length === 2) return { ...transfer, data: identifier[1]! };
+        if (identifier && identifier.length === 2)
+          return { ...transfer, data: identifier[1]!, receiverPubkey: config.modulePubkeys.urlx };
       }
     } catch (error) {
       console.log(error);
@@ -177,6 +180,7 @@ const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): P
     return {
       ...transfer,
       amount: payRequest.maxSendable! / 1000,
+      receiverPubkey: config.modulePubkeys.urlx,
     };
 
   return transfer;
