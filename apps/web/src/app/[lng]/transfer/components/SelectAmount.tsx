@@ -14,6 +14,7 @@ import { useNumpad } from '@/hooks/useNumpad';
 import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
+import CardWithData from './CardWithData';
 
 export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }) => {
   const { lng, t } = useTranslation();
@@ -107,7 +108,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
 
   return (
     <>
-      {/* <HeroCardWithData type={transferInfo.type} data={transferInfo.data} /> */}
+      <CardWithData type={transferInfo.type} data={transferInfo.data} />
 
       <Container size="small">
         <Divider y={16} />

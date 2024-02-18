@@ -1,13 +1,12 @@
 'use client';
-import { useLNURLContext } from '@/context/LNURLContext';
-import React from 'react';
-import { Summary } from '../../components/Summary';
 import Navbar from '@/components/Layout/Navbar';
+import { useLNURLContext } from '@/context/LNURLContext';
 import { useTranslation } from '@/context/TranslateContext';
+import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
+import { TransferTypes } from '@lawallet/react/types';
 import { ErrorTransfer } from '../../components/Error';
 import { FinishTransfer } from '../../components/Finish';
-import { TransferTypes } from '@lawallet/react/types';
-import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
+import { Summary } from '../../components/Summary';
 
 const page = () => {
   const { t } = useTranslation();

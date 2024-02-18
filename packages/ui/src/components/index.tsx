@@ -2,6 +2,7 @@
 export * from './Button';
 export * from './Button/ButtonGroup';
 export * from './ButtonSetting';
+export * from './Card';
 export * from './Flex';
 export * from './Divider';
 export * from './Heading';

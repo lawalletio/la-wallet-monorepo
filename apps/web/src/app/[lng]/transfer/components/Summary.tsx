@@ -8,7 +8,7 @@ import { useTranslation } from '@/context/TranslateContext';
 import { formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import HeroCardWithData from './HeroCardWithData';
+import CardWithData from './CardWithData';
 
 type SummaryProps = {
   isLoading: boolean;
@@ -48,7 +48,7 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
 
   return (
     <>
-      <HeroCardWithData type={type} data={data} />
+      <CardWithData type={type} data={data} />
 
       <Container size="small">
         <Divider y={16} />

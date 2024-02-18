@@ -90,22 +90,30 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const loadLNURLParam = async (lnurl: string) => {
-    const decoded: boolean = await decodeLNURL(lnurl);
+  const loadLNURLParam = async () => {
+    const dataParam: string = params.get('data') ?? '';
+    if (!dataParam) return;
+
+    const decoded: boolean = await decodeLNURL(dataParam);
     if (!decoded) router.push('/transfer');
   };
 
   useEffect(() => {
     const { transferInfo } = LNURLInfo;
+    if (transferInfo.type !== TransferTypes.NONE) {
+      const amountParam: number = Number(params.get('amount'));
 
-    if (transferInfo.type !== TransferTypes.NONE) setLNURLTransferInfo(transferInfo);
+      const new_info: LNURLTransferType = {
+        ...transferInfo,
+        ...(amountParam && amountParam !== transferInfo.amount ? { amount: amountParam } : {}),
+      };
+
+      setLNURLTransferInfo(new_info);
+    }
   }, [LNURLInfo]);
 
   useEffect(() => {
-    const dataParam: string = params.get('data') ?? '';
-    if (!dataParam) return;
-
-    loadLNURLParam(dataParam);
+    loadLNURLParam();
   }, []);
 
   const value = {
