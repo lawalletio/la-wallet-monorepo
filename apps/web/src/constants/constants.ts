@@ -11,7 +11,7 @@ export const MAX_INVOICE_AMOUNT = 10 ** 7;
 
 const devConfig = {
   endpoints: { identity: 'https://debug.lawallet.ar' },
-  federation: { id: 'debug.lawallet.ar', domain: 'debug.lawallet.ar' },
+  federation: { id: 'lawallet.ar', domain: 'debug.lawallet.ar' },
 };
 
 export const config = createConfig(isDev ? devConfig : {});

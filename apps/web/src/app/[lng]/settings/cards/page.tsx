@@ -16,7 +16,6 @@ export default function Page() {
   const { cardsData, cardsConfig, loadInfo, toggleCardStatus } = useCardsContext();
 
   const { t } = useTranslation();
-  // const [cardToDonate, setCardToDonate] = useState<string>('');
 
   const handleToggleStatus = async (uuid: string) => {
     const toggled: boolean = await toggleCardStatus(uuid);

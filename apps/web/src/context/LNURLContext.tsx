@@ -6,9 +6,11 @@ import {
   useLNURL,
   useNostrContext,
   useTransfer,
+  useWalletContext,
 } from '@lawallet/react';
 import { requestInvoice } from '@lawallet/react/actions';
 import { LNURLTransferType, TransferTypes } from '@lawallet/react/types';
+import { NDKTag } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -32,7 +34,10 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
   const [LNURLTransferInfo, setLNURLTransferInfo] = useState<LNURLTransferType>(defaultLNURLTransfer);
 
   const { LNURLInfo, decodeLNURL } = useLNURL({ lnurlOrAddress: LNURLTransferInfo.data, config });
-  const { signerInfo, signer } = useNostrContext();
+  const {
+    account: { identity },
+  } = useWalletContext();
+  const { signerInfo, signer, encrypt } = useNostrContext();
 
   const {
     isLoading,
@@ -66,24 +71,37 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
     try {
       if (LNURLTransferInfo.type === TransferTypes.LNURLW) {
         const { callback, maxWithdrawable, k1 } = LNURLTransferInfo.request!;
-        claimLNURLw(signerInfo.npub, callback, k1!, maxWithdrawable!, config)
-          .then((claimed) => {
-            claimed ? handleMarkSuccess() : handleMarkError();
-          })
-          .catch(() => handleMarkError());
-      } else if (LNURLTransferInfo.type === TransferTypes.INTERNAL) {
-        execInternalTransfer({
-          pubkey: LNURLTransferInfo.receiverPubkey,
-          amount: LNURLTransferInfo.amount,
-          comment: LNURLTransferInfo.comment,
-        });
+        const claimed: boolean = await claimLNURLw(signerInfo.npub, callback, k1!, maxWithdrawable!, config);
+
+        claimed ? handleMarkSuccess() : handleMarkError();
       } else {
-        const { callback } = LNURLTransferInfo.request!;
-        const bolt11: string = await requestInvoice(
-          `${callback}?amount=${LNURLTransferInfo.amount * 1000}&comment=${escapingBrackets(LNURLTransferInfo.comment)}`,
+        const metadataMessage: { sender?: string; receiver: string } = {
+          receiver: LNURLTransferInfo.data,
+          ...(identity.data.username.length ? { sender: `${identity.data.username}@${config.federation.domain}` } : {}),
+        };
+
+        const metadataEncrypted: string = await encrypt(
+          LNURLTransferInfo.receiverPubkey,
+          JSON.stringify(metadataMessage),
         );
 
-        execOutboundTransfer({ tags: [['bolt11', bolt11]], amount: LNURLTransferInfo.amount });
+        const metadataTag: NDKTag = ['metadata', 'true', 'nip04', metadataEncrypted];
+
+        if (LNURLTransferInfo.type === TransferTypes.INTERNAL) {
+          execInternalTransfer({
+            pubkey: LNURLTransferInfo.receiverPubkey,
+            amount: LNURLTransferInfo.amount,
+            comment: LNURLTransferInfo.comment,
+            tags: [metadataTag],
+          });
+        } else {
+          const { callback } = LNURLTransferInfo.request!;
+          const bolt11: string = await requestInvoice(
+            `${callback}?amount=${LNURLTransferInfo.amount * 1000}&comment=${escapingBrackets(LNURLTransferInfo.comment)}`,
+          );
+
+          execOutboundTransfer({ tags: [['bolt11', bolt11], metadataTag], amount: LNURLTransferInfo.amount });
+        }
       }
     } catch (err) {
       handleMarkError((err as Error).message);

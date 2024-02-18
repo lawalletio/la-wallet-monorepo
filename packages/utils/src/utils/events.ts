@@ -30,12 +30,17 @@ export type GenerateIdentityReturns = {
   event: NostrEvent;
 };
 
-export const getTag = (tags: NDKTag[], keyTag: string) => {
-  const tagValue = tags.find((tag) => tag[0] === keyTag);
-  return tagValue ? tagValue[1] : '';
+export const getTagValue = (tags: NDKTag[], keyTag: string): string => {
+  const tag: NDKTag | undefined = tags.find((tag) => tag[0] === keyTag);
+  return tag ? tag[1]! : '';
 };
 
-export const getMultipleTags = (tags: NDKTag[], keyTag: string) => {
+export const getTag = (tags: NDKTag[], keyTag: string): NDKTag | undefined => {
+  const tagValue = tags.find((tag) => tag[0] === keyTag);
+  return tagValue;
+};
+
+export const getMultipleTagsValues = (tags: NDKTag[], keyTag: string) => {
   const values: string[] = [];
 
   const tagsValue: NDKTag[] = tags.filter((tag) => tag[0] === keyTag);

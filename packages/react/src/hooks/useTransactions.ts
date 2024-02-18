@@ -1,11 +1,18 @@
-import { LaWalletKinds, LaWalletTags, getMultipleTags, getTag, parseContent } from '@lawallet/utils';
+import { LaWalletKinds, LaWalletTags, getMultipleTagsValues, getTag, getTagValue, parseContent } from '@lawallet/utils';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
-import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
+import {
+  type NDKEvent,
+  type NDKKind,
+  type NDKSubscriptionOptions,
+  type NDKTag,
+  type NostrEvent,
+} from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { nip26, type Event } from 'nostr-tools';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
+import { useNostrContext } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
 
@@ -60,11 +67,18 @@ const defaultActivity = {
   idsLoaded: [],
 };
 
+type EventWithStatus = {
+  startEvent: NDKEvent | undefined;
+  statusEvent: NDKEvent | undefined;
+};
+
 export const useTransactions = (parameters: UseTransactionsProps): UseTransactionsReturns => {
   const { pubkey, enabled = true, limit = 1000, since = undefined, until = undefined, storage = false } = parameters;
   const config = useConfig(parameters);
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
+
+  const { decrypt } = useNostrContext();
 
   const { events: walletEvents } = useSubscription({
     filters: [
@@ -95,9 +109,30 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
       },
     ],
     options,
-    enabled: enabled && !activityInfo.loading,
+    enabled: enabled,
     config,
   });
+
+  const extractMetadata = async (event: NostrEvent, direction: TransactionDirection) => {
+    try {
+      const metadataTag = getTag(event.tags, 'metadata');
+      if (metadataTag && metadataTag.length === 4) {
+        const [, encrypted, encrpytType, message] = metadataTag;
+
+        if (!encrypted) return parseContent(message!);
+
+        if (encrpytType === 'nip04') {
+          const decryptPubkey: string =
+            direction === TransactionDirection.INCOMING ? event.pubkey : getMultipleTagsValues(event.tags, 'p')[1]!;
+
+          const decryptedMessage = await decrypt(decryptPubkey, message!);
+          return parseContent(decryptedMessage);
+        }
+      }
+    } catch {
+      return {};
+    }
+  };
 
   const formatStartTransaction = async (event: NDKEvent) => {
     const nostrEvent: NostrEvent = await event.toNostrEvent();
@@ -107,15 +142,16 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
     const AuthorIsUser: boolean = DelegatorIsUser || event.pubkey === pubkey;
 
     if (AuthorIsCard && !DelegatorIsUser) {
-      const delegation_pTags: string[] = getMultipleTags(event.tags, 'p');
+      const delegation_pTags: string[] = getMultipleTagsValues(event.tags, 'p');
       if (!delegation_pTags.includes(pubkey)) return;
     }
 
     const direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
 
     const eventContent = parseContent(event.content);
+    const metadata = await extractMetadata(nostrEvent, direction);
 
-    const newTransaction: Transaction = {
+    let newTransaction: Transaction = {
       id: event.id!,
       status: TransactionStatus.PENDING,
       memo: eventContent.memo ?? '',
@@ -125,10 +161,11 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
       events: [nostrEvent],
       errors: [],
       createdAt: event.created_at! * 1000,
+      metadata,
     };
 
     if (!AuthorIsCard) {
-      const boltTag: string | undefined = getTag(event.tags, 'bolt11');
+      const boltTag: string | undefined = getTagValue(event.tags, 'bolt11');
       if (boltTag && boltTag.length) newTransaction.type = TransactionType.LN;
     }
 
@@ -147,7 +184,7 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
   const updateTxStatus = async (transaction: Transaction, statusEvent: NDKEvent) => {
     const parsedContent = parseContent(statusEvent.content);
 
-    const statusTag: string | undefined = getTag(statusEvent.tags, 't');
+    const statusTag: string | undefined = getTagValue(statusEvent.tags, 't');
 
     if (statusTag) {
       const isError: boolean = statusTag.includes('error');
@@ -166,7 +203,7 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
 
   const findAsocciatedEvent = React.useCallback((events: NDKEvent[], eventId: string) => {
     return events.find((event) => {
-      const associatedEvents: string[] = getMultipleTags(event.tags, 'e');
+      const associatedEvents: string[] = getMultipleTagsValues(event.tags, 'e');
       return associatedEvents.includes(eventId) ? event : undefined;
     });
   }, []);
@@ -177,7 +214,7 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
       refundEvents: NDKEvent[] = [];
 
     events.forEach((e) => {
-      const subkind: string | undefined = getTag(e.tags, 't');
+      const subkind: string | undefined = getTagValue(e.tags, 't');
       if (subkind) {
         const isStatusEvent: boolean = statusTags.includes(subkind);
 
@@ -185,7 +222,7 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
           statusEvents.push(e);
           return;
         } else {
-          const eTags: string[] = getMultipleTags(e.tags, 'e');
+          const eTags: string[] = getMultipleTagsValues(e.tags, 'e');
 
           if (eTags.length) {
             const isRefundEvent = events.find((event) => eTags.includes(event.id));
@@ -204,6 +241,47 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
     return [startedEvents, statusEvents, refundEvents];
   };
 
+  function parseStatusEvents(
+    startEvent: NDKEvent,
+    statusEvents?: NDKEvent[],
+    refundEvents?: NDKEvent[],
+  ): EventWithStatus[] {
+    const statusEvent: NDKEvent | undefined = statusEvents
+      ? findAsocciatedEvent(statusEvents, startEvent.id!)
+      : undefined;
+
+    const startRefundEvent: NDKEvent | undefined = refundEvents
+      ? findAsocciatedEvent(refundEvents, startEvent.id!)
+      : undefined;
+
+    const statusRefundEvent: NDKEvent | undefined =
+      startRefundEvent && refundEvents ? findAsocciatedEvent(refundEvents, startRefundEvent.id!) : undefined;
+
+    const startWithStatus: EventWithStatus = {
+      startEvent,
+      statusEvent,
+    };
+
+    const refundWithStatus: EventWithStatus = {
+      startEvent: startRefundEvent,
+      statusEvent: statusRefundEvent,
+    };
+
+    return [startWithStatus, refundWithStatus];
+  }
+
+  async function fillTransaction(txEvents: EventWithStatus, refundEvents: EventWithStatus) {
+    let tmpTransaction: Transaction | undefined = await formatStartTransaction(txEvents.startEvent!);
+    if (!tmpTransaction) return;
+
+    if (txEvents.statusEvent) tmpTransaction = await updateTxStatus(tmpTransaction, txEvents.statusEvent);
+
+    if (refundEvents.startEvent)
+      tmpTransaction = await markTxRefund(tmpTransaction, refundEvents.statusEvent || refundEvents.startEvent);
+
+    return tmpTransaction;
+  }
+
   async function generateTransactions(events: NDKEvent[]) {
     const transactions: Transaction[] = [];
     const [startedEvents, statusEvents, refundEvents] = filterEventsByTxType(events);
@@ -216,34 +294,13 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
       };
     });
 
-    startedEvents!.forEach((startEvent) => {
-      formatStartTransaction(startEvent)
-        .then((formattedTx) => {
-          if (!formattedTx) return;
-          if (!statusEvents) return formattedTx;
-
-          const statusEvent: NDKEvent | undefined = findAsocciatedEvent(statusEvents, startEvent.id!);
-
-          if (!statusEvent) return formattedTx;
-          return updateTxStatus(formattedTx, statusEvent);
-        })
-        .then((formattedTx) => {
-          if (!formattedTx) return;
-          if (!refundEvents) return formattedTx;
-
-          const refundEvent: NDKEvent | undefined = findAsocciatedEvent(refundEvents, startEvent.id!);
-
-          if (!refundEvent) return formattedTx;
-
-          const statusRefundEvent: NDKEvent | undefined = findAsocciatedEvent(refundEvents, refundEvent.id!);
-          return markTxRefund(formattedTx, statusRefundEvent || refundEvent);
-        })
-        .then((transaction: Transaction | undefined) => {
-          if (!transaction) return;
-
-          transactions.push(transaction);
-        });
-    });
+    await Promise.all(
+      startedEvents!.map(async (startEvent) => {
+        const [startWithStatus, refundWithStatus] = parseStatusEvents(startEvent, statusEvents, refundEvents);
+        const transaction = await fillTransaction(startWithStatus!, refundWithStatus!);
+        if (transaction) transactions.push(transaction);
+      }),
+    );
 
     setActivityInfo((prev) => {
       return {

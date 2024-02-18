@@ -58,40 +58,6 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
-  apps/wallet-docs:
-    dependencies:
-      next:
-        specifier: ^14.1.0
-        version: 14.1.0(@babel/core@7.23.7)(react-dom@18.2.0)(react@18.2.0)
-      nextra:
-        specifier: latest
-        version: 2.13.3(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
-      nextra-theme-docs:
-        specifier: latest
-        version: 2.13.3(next@14.1.0)(nextra@2.13.3)(react-dom@18.2.0)(react@18.2.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      '@types/node':
-        specifier: 20.11.17
-        version: 20.11.17
-      autoprefixer:
-        specifier: ^10.4.17
-        version: 10.4.17(postcss@8.4.35)
-      postcss:
-        specifier: ^8.4.35
-        version: 8.4.35
-      tailwindcss:
-        specifier: ^3.4.1
-        version: 3.4.1
-      typescript:
-        specifier: ^5.3.3
-        version: 5.3.3
-
   apps/web:
     dependencies:
       '@bitcoin-design/bitcoin-icons-react':

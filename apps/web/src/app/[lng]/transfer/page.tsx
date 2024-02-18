@@ -22,21 +22,19 @@ import {
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { detectTransferType, formatLNURLData, getMultipleTags, useConfig, useWalletContext } from '@lawallet/react';
-import { getUsername } from '@lawallet/react/actions';
-import { TransactionDirection, TransactionType, TransferTypes } from '@lawallet/react/types';
-import { useEffect, useState } from 'react';
+import { detectTransferType, formatLNURLData, useWalletContext } from '@lawallet/react';
+import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
+import { useMemo, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
 
 export default function Page() {
-  const config = useConfig();
   const { t } = useTranslation();
   const {
-    account: { identity, transactions },
+    account: { transactions },
   } = useWalletContext();
 
   const params = useSearchParams();
-  const [lastDestinations, setLastDestinations] = useState<string[]>([]);
+
   const [inputText, setInputText] = useState<string>(params.get('data') ?? '');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -88,33 +86,20 @@ export default function Page() {
     }
   };
 
-  const loadLastDestinations = () => {
-    const lastDest: string[] = [];
-
-    transactions.forEach(async (tx) => {
-      if (tx.type === TransactionType.INTERNAL && tx.direction === TransactionDirection.OUTGOING) {
-        const txPubkeys: string[] = getMultipleTags(tx.events[0].tags, 'p');
-        if (txPubkeys.length !== 2) return;
-
-        const receiverPubkey: string = txPubkeys[1];
-        if (receiverPubkey === identity.data.hexpub) return;
-
-        const username: string = await getUsername(receiverPubkey, config);
-
-        if (username.length) {
-          const formattedLud16: string = `${username}@${config.federation.domain}`;
-          if (!lastDest.includes(formattedLud16)) {
-            lastDest.push(formattedLud16);
-            setLastDestinations(lastDest);
-          }
-        }
-      }
+  const lastDestinations = useMemo(() => {
+    const receiversList: string[] = [];
+    transactions.forEach((tx: Transaction) => {
+      if (
+        tx.direction === TransactionDirection.OUTGOING &&
+        tx.metadata &&
+        tx.metadata.receiver &&
+        !receiversList.includes(tx.metadata.receiver)
+      )
+        receiversList.push(tx.metadata.receiver);
     });
-  };
 
-  useEffect(() => {
-    if (transactions.length) loadLastDestinations();
-  }, [transactions.length]);
+    return receiversList;
+  }, [transactions]);
 
   return (
     <>

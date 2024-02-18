@@ -3,7 +3,7 @@ import {
   LaWalletKinds,
   LaWalletTags,
   buildTxStartEvent,
-  getTag,
+  getTagValue,
   useConfig,
   useNostrContext,
 } from '../exports/index.js';
@@ -18,6 +18,7 @@ type InternalTransferParamteres = {
   pubkey: string;
   amount: number;
   comment: string;
+  tags?: NDKTag[];
 };
 
 interface UseTransferReturns extends UseStatusVarsReturns {
@@ -68,7 +69,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
   };
 
   const execInternalTransfer = async (transferParameters: InternalTransferParamteres): Promise<boolean> => {
-    const { pubkey: receiverPubkey, amount, comment = '' } = transferParameters;
+    const { pubkey: receiverPubkey, amount, tags = [], comment = '' } = transferParameters;
     if (!signerInfo || !receiverPubkey || !amount) return false;
 
     statusVars.handleMarkLoading(true);
@@ -80,7 +81,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
           amount,
           senderPubkey: signerInfo.pubkey,
           comment,
-          tags: [['p', receiverPubkey]],
+          tags: [['p', receiverPubkey], ...tags],
         },
         config,
       ),
@@ -112,7 +113,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
 
   const processStatusTransfer = async (ledgerEvent: NDKEvent) => {
     if (startEvent) {
-      const subkind: string | undefined = getTag(ledgerEvent.tags, 't');
+      const subkind: string | undefined = getTagValue(ledgerEvent.tags, 't');
       if (subkind) {
         if (subkind.includes('error')) statusVars.handleMarkError();
 

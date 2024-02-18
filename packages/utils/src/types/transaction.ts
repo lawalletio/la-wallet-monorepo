@@ -12,6 +12,7 @@ export interface Transaction {
   errors: string[];
   events: NostrEvent[];
   createdAt: number;
+  metadata?: Record<string, string>;
 }
 
 export enum TransferTypes {

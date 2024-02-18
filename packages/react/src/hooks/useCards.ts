@@ -4,7 +4,7 @@ import {
   buildCardTransferDonationEvent,
   extendedMultiNip04Decrypt,
   extendedMultiNip04Encrypt,
-  getTag,
+  getTagValue,
   parseContent,
 } from '@lawallet/utils';
 import { broadcastEvent } from '@lawallet/utils/actions';
@@ -130,7 +130,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     const decryptedContent = await extendedMultiNip04Decrypt(nostrEv, pubkey, decrypt);
     const parsedDecryptedData = parseContent(decryptedContent);
 
-    const subkind = getTag(nostrEv.tags, 't');
+    const subkind = getTagValue(nostrEv.tags, 't');
     if (!subkind) return;
 
     if (subkind === ConfigTypes.DATA) {

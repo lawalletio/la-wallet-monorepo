@@ -5,19 +5,10 @@ import { CreditCardIcon, LightningIcon, TransferIcon } from '@bitcoin-design/bit
 import { Accordion, AccordionBody, Flex, Text, theme } from '@lawallet/ui';
 
 import { useTranslation } from '@/context/TranslateContext';
-import {
-  dateFormatter,
-  defaultCurrency,
-  formatToPreference,
-  getMultipleTags,
-  unescapingText,
-  useConfig,
-  useWalletContext,
-} from '@lawallet/react';
-import { getUsername } from '@lawallet/react/actions';
-import { Transaction, TransactionDirection, TransactionStatus, TransactionType } from '@lawallet/react/types';
-import { useMemo, useState } from 'react';
+import { dateFormatter, defaultCurrency, formatToPreference, unescapingText, useWalletContext } from '@lawallet/react';
+import { Transaction, TransactionDirection, TransactionStatus } from '@lawallet/react/types';
 import { BtnLoader } from '@lawallet/ui';
+import { useMemo, useState } from 'react';
 
 interface ComponentProps {
   transaction: Transaction;
@@ -28,9 +19,10 @@ type LudInfoProps = {
   data: string;
 };
 
+const defaultTransferText: string = 'Lightning';
+
 export default function Component({ transaction }: ComponentProps) {
   if (!transaction) return null;
-  const config = useConfig();
   const { lng, t } = useTranslation();
   const { status, type } = transaction;
   const {
@@ -45,7 +37,7 @@ export default function Component({ transaction }: ComponentProps) {
 
   const [ludInfo, setLudInfo] = useState<LudInfoProps>({
     loading: false,
-    data: 'Lightning',
+    data: defaultTransferText,
   });
 
   const listTypes = {
@@ -60,26 +52,20 @@ export default function Component({ transaction }: ComponentProps) {
   );
 
   const handleOpenAccordion = async () => {
-    if (transaction.type === TransactionType.INTERNAL) {
-      setLudInfo({ ...ludInfo, loading: true });
+    setLudInfo({ ...ludInfo, loading: true });
 
-      let username: string = '';
-      if (transaction.direction === TransactionDirection.INCOMING) {
-        username = await getUsername(transaction.events[0].pubkey, config);
-      } else {
-        const txPubkeys: string[] = getMultipleTags(transaction.events[0].tags, 'p');
-        if (txPubkeys.length < 2) return;
+    if (transaction.metadata) {
+      const username: string =
+        transaction.direction === TransactionDirection.INCOMING
+          ? transaction.metadata.sender ?? defaultTransferText
+          : transaction.metadata.receiver ?? defaultTransferText;
 
-        const receiverPubkey: string = txPubkeys[1];
-        username = await getUsername(receiverPubkey, config);
-      }
-
-      username.length
-        ? setLudInfo({
-            loading: false,
-            data: `${username}@${config.federation.domain}`,
-          })
-        : setLudInfo({ ...ludInfo, loading: false });
+      setLudInfo({
+        loading: false,
+        data: username,
+      });
+    } else {
+      setLudInfo({ ...ludInfo, loading: false });
     }
   };
 
