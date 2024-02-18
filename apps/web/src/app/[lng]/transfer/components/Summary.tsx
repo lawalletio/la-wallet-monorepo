@@ -2,31 +2,19 @@
 
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import {
-  Avatar,
-  Button,
-  Container,
-  Divider,
-  Feedback,
-  Flex,
-  Heading,
-  HeroCard,
-  Icon,
-  LinkButton,
-  Text,
-} from '@lawallet/ui';
+import { Button, Container, Divider, Feedback, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 
 import { useTranslation } from '@/context/TranslateContext';
-import { extractFirstTwoChars } from '@/utils';
-import { formatAddress, formatToPreference, splitHandle, useConfig, useWalletContext } from '@lawallet/react';
+import { formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import HeroCardWithData from './HeroCardWithData';
 
 type SummaryProps = {
   isLoading: boolean;
   isSuccess: boolean;
   data: string;
-  type: string;
+  type: TransferTypes;
   amount: number;
   expired?: boolean;
   onClick: (e: React.MouseEvent<HTMLElement>) => void;
@@ -35,7 +23,6 @@ type SummaryProps = {
 export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {
   const { lng, t } = useTranslation();
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
-  const config = useConfig();
 
   const {
     account: { balance },
@@ -59,35 +46,9 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
     detectInsufficientBalance();
   }, [balance.amount, amount]);
 
-  const [transferUsername, transferDomain] = splitHandle(data, config);
-
   return (
     <>
-      <HeroCard>
-        <Container>
-          <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
-            {type === TransferTypes.LNURLW ? (
-              <Text size="small">{t('CLAIM_THIS_INVOICE')}</Text>
-            ) : (
-              <Avatar size="large">
-                <Text size="small">{extractFirstTwoChars(transferUsername)}</Text>
-              </Avatar>
-            )}
-
-            {type === TransferTypes.INVOICE || type === TransferTypes.LNURLW ? (
-              <Flex justify="center">
-                <Text>{formatAddress(data, 15)}</Text>
-              </Flex>
-            ) : (
-              <Flex justify="center">
-                <Text>
-                  {transferUsername}@{transferDomain}
-                </Text>
-              </Flex>
-            )}
-          </Flex>
-        </Container>
-      </HeroCard>
+      <HeroCardWithData type={type} data={data} />
 
       <Container size="small">
         <Divider y={16} />

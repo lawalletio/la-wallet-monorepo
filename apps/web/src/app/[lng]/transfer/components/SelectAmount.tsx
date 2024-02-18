@@ -11,23 +11,9 @@ import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
-import { decimalsToUse, formatAddress, formatToPreference, splitHandle, useWalletContext } from '@lawallet/react';
+import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import {
-  Avatar,
-  Button,
-  Container,
-  Divider,
-  Feedback,
-  Flex,
-  Heading,
-  HeroCard,
-  Icon,
-  InputWithLabel,
-  Text,
-  theme,
-} from '@lawallet/ui';
-import { extractFirstTwoChars } from '@/utils';
+import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
 
 export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }) => {
   const { lng, t } = useTranslation();
@@ -118,35 +104,11 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
   }, [pricesData]);
 
   useActionOnKeypress('Enter', handleClick, [numpadData, transferInfo]);
-  const [transferUsername, transferDomain] = splitHandle(transferInfo.data);
 
   return (
     <>
-      <HeroCard>
-        <Container>
-          <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
-            {transferInfo.type === TransferTypes.LNURLW ? (
-              <Text size="small">{t('CLAIM_THIS_INVOICE')}</Text>
-            ) : (
-              <Avatar size="large">
-                <Text size="small">{extractFirstTwoChars(transferUsername)}</Text>
-              </Avatar>
-            )}
+      {/* <HeroCardWithData type={transferInfo.type} data={transferInfo.data} /> */}
 
-            {transferInfo.type === TransferTypes.INVOICE || transferInfo.type === TransferTypes.LNURLW ? (
-              <Flex justify="center">
-                <Text>{formatAddress(transferInfo.data, 15)}</Text>
-              </Flex>
-            ) : (
-              <Flex justify="center">
-                <Text>
-                  {transferUsername}@{transferDomain}
-                </Text>
-              </Flex>
-            )}
-          </Flex>
-        </Container>
-      </HeroCard>
       <Container size="small">
         <Divider y={16} />
         <Flex direction="column" gap={8} flex={1} justify="center">
