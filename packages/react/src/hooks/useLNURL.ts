@@ -1,9 +1,4 @@
-import {
-  TransferTypes,
-  type ConfigParameter,
-  type LNRequestResponse,
-  type LNURLTransferType,
-} from '@lawallet/utils/types';
+import { TransferTypes, type ConfigParameter, type LNURLTransferType } from '@lawallet/utils/types';
 import { useEffect, useState } from 'react';
 
 import { defaultLNURLTransfer, formatLNURLData, lnurl_decode } from '@lawallet/utils';

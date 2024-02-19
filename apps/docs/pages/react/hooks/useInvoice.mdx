@@ -16,7 +16,7 @@ import { config } from './config';
 
 function App() {
 
-  const { decodedInvoice, executePayment } = useInvoice({
+  const { decodedInvoice } = useInvoice({
     bolt11: 'lnbc1...'
     config,
   });
@@ -39,8 +39,8 @@ import { type UseInvoiceParameters } from '@lawallet/react';
 import { useInvoice } from '@lawallet/react';
 
 function App() {
-  const { decodedInvoice, executePayment } = useInvoice({
-    bolt11: 'lnbc1...', // [!code focus]
+  const { decodedInvoice } = useInvoice({
+    bolt11: 'lnbc1...',
   });
 }
 ```
@@ -53,50 +53,12 @@ function App() {
 
 ```tsx [index.tsx]
 import { useInvoice } from '@lawallet/react';
-import { config } from './config'; // [!code focus]
+import { config } from './config';
 
 function App() {
-  const { decodedInvoice, executePayment } = useInvoice({
+  const { decodedInvoice } = useInvoice({
     bolt11: 'lnbc1...',
-    config, // [!code focus]
-  });
-}
-```
-
-### onSuccess
-
-`undefined | () => void`
-
-- Function to execute when the invoice payment is successful.
-
-```tsx [index.tsx]
-import { useInvoice } from '@lawallet/react';
-
-function App() {
-  const { decodedInvoice, executePayment } = useInvoice({
-    bolt11: 'lnbc1...',
-    onSuccess: () => {
-      console.log('successful invoice payment'); // [!code focus]
-    },
-  });
-}
-```
-
-### onError
-
-`undefined | (message?: string) => void`
-
-- Function to execute when the invoice payment has an error.
-
-```tsx [index.tsx]
-import { useInvoice } from '@lawallet/react';
-
-function App() {
-  const { decodedInvoice, executePayment } = useInvoice({
-    bolt11: 'lnbc1...',
-    onError: () => {
-      console.log('invoice payment error'); // [!code focus]
-    },
+    config,
   });
 }
 ```
@@ -107,31 +69,7 @@ function App() {
 import { type UseInvoiceReturns } from '@lawallet/react';
 ```
 
-### isLoading
-
-`Boolean`
-
-This variable defines whether the invoice payment is in the loading stage
-
-### isSuccess
-
-`Boolean`
-
-This variable defines whether the invoice payment was successful
-
-### isError
-
-`Boolean`
-
-This variable defines whether the invoice payment had an error
-
-### error
-
-`string | undefined`
-
-This variable defines the error that occurred in the payment
-
-### parsedInvoice
+### txInfo
 
 [`InvoiceTransferType`](/react/glossary/types#invoicetransfertype)
 
@@ -142,9 +80,3 @@ Information of the transaction to be executed
 [`DecodedInvoiceReturns`](/react/glossary/types#decodedinvoicereturns)
 
 Decoded invoice information
-
-### executePayment
-
-`() => Promise<boolean>`
-
-Execute invoice payment

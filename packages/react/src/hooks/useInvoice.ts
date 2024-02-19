@@ -14,8 +14,6 @@ export interface UseInvoiceReturns {
 
 interface UseInvoiceParameters extends ConfigParameter {
   bolt11?: string;
-  onSuccess?: () => void;
-  onError?: (message?: string) => void;
 }
 
 export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
