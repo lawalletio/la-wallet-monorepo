@@ -1,9 +1,9 @@
 import { useTranslation } from '@/context/TranslateContext';
-import { ActionSheet, Button, LinkButton } from '@lawallet/ui';
+import { ActionSheet, Button } from '@lawallet/ui';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { CardProps } from '../DebitCard';
 import TransferSheet from './TransferSheet';
-import { useRouter } from 'next/navigation';
 
 export type SettingsSheetProps = { isOpen: boolean; card: CardProps; onClose: () => void };
 
@@ -25,9 +25,9 @@ const SettingsSheet = ({ card, onClose, isOpen }: SettingsSheetProps) => {
         description={card.config?.description || card.data.design.name}
         cancelText={t('CANCEL')}
       >
-        <LinkButton variant="bezeledGray" onClick={() => router.push(`/settings/cards/${card?.uuid}`)}>
+        <Button variant="bezeledGray" onClick={() => router.push(`/settings/cards/${card?.uuid}`)}>
           {t('SETTINGS')}
-        </LinkButton>
+        </Button>
         <Button variant="bezeledGray" onClick={handleShowTransfer}>
           {t('TRANSFER')}
         </Button>

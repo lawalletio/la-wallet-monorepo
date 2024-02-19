@@ -44,7 +44,6 @@ export function LinkButton(props: LinkButtonProps) {
       $color={textColor}
       tabIndex={tabIndex}
       onClick={onClick}
-      // disabled={disabled}
       $isSmall={size === 'small'}
     >
       {children}
