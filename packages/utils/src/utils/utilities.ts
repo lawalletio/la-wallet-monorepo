@@ -1,4 +1,3 @@
-import { differenceInSeconds } from 'date-fns';
 import { baseConfig, defaultInvoiceTransfer, defaultLNURLTransfer } from '../constants/constants.js';
 import { getPayRequest, requestInvoice } from '../interceptors/transaction.js';
 import bolt11 from '../libs/light-bolt11.js';
@@ -97,6 +96,13 @@ export const parseInvoiceInfo = (decodedInvoice: DecodedInvoiceReturns) => {
   return transfer;
 };
 
+const removeHttpOrHttps = (str: string) => {
+  if (str.startsWith('http://')) return str.replace('http://', '');
+  if (str.startsWith('https://')) return str.replace('https://', '');
+
+  return str;
+};
+
 const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): Promise<LNURLTransferType> => {
   const decodedLNURL = lnurl_decode(data);
 
@@ -120,11 +126,17 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
     };
   }
 
+  const decodedWithoutHttps: string = removeHttpOrHttps(decodedLNURL).replace('www.', '');
+  const [domain, username] = decodedWithoutHttps.includes('/.well-known/lnurlp/')
+    ? decodedWithoutHttps.split('/.well-known/lnurlp/')
+    : decodedWithoutHttps.split('/lnurlp/');
+
   if (payRequest && payRequest.tag === 'payRequest') {
     try {
       if (payRequest.federationId && payRequest.federationId === config.federation.id) {
         return {
           ...transfer,
+          data: username && domain ? `${username}@${domain}` : data,
           type: TransferTypes.INTERNAL,
           receiverPubkey: payRequest.accountPubKey!,
         };
@@ -142,7 +154,10 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
     }
   }
 
-  return transfer;
+  return {
+    ...transfer,
+    data: username && domain ? `${username}@${domain}` : data,
+  };
 };
 
 export const splitHandle = (handle: string, config: ConfigProps = baseConfig): string[] => {

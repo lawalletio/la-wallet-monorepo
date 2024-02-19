@@ -64,43 +64,50 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const defineMetadata = async (receiver: string): Promise<NDKTag> => {
+    const showReceiver: boolean = Boolean(receiver.length && !receiver.toLowerCase().startsWith('lnurl'));
+    const showSender: boolean = Boolean(identity.data.username.length);
+
+    const metadataMessage: { sender?: string; receiver?: string } = {
+      ...(showReceiver ? { receiver: LNURLInfo.transferInfo.data } : {}),
+      ...(showSender ? { sender: `${identity.data.username}@${config.federation.domain}` } : {}),
+    };
+
+    const metadataEncrypted: string = await encrypt(LNURLTransferInfo.receiverPubkey, JSON.stringify(metadataMessage));
+
+    const metadataTag: NDKTag = ['metadata', 'true', 'nip04', metadataEncrypted];
+    return metadataTag;
+  };
+
   const execute = async () => {
     if (isLoading || !signer || !signerInfo || LNURLTransferInfo.type === TransferTypes.NONE) return;
     handleMarkLoading(true);
 
+    const { type, request, receiverPubkey, data, amount, comment } = LNURLTransferInfo;
+
     try {
-      if (LNURLTransferInfo.type === TransferTypes.LNURLW) {
-        const { callback, maxWithdrawable, k1 } = LNURLTransferInfo.request!;
+      if (type === TransferTypes.LNURLW) {
+        const { callback, maxWithdrawable, k1 } = request!;
         const claimed: boolean = await claimLNURLw(signerInfo.npub, callback, k1!, maxWithdrawable!, config);
 
         claimed ? handleMarkSuccess() : handleMarkError();
       } else {
-        const metadataMessage: { sender?: string; receiver: string } = {
-          receiver: LNURLTransferInfo.data,
-          ...(identity.data.username.length ? { sender: `${identity.data.username}@${config.federation.domain}` } : {}),
-        };
+        const metadataTag: NDKTag = await defineMetadata(data);
 
-        const metadataEncrypted: string = await encrypt(
-          LNURLTransferInfo.receiverPubkey,
-          JSON.stringify(metadataMessage),
-        );
-
-        const metadataTag: NDKTag = ['metadata', 'true', 'nip04', metadataEncrypted];
-
-        if (LNURLTransferInfo.type === TransferTypes.INTERNAL) {
+        if (type === TransferTypes.INTERNAL) {
           execInternalTransfer({
-            receiverPubkey: LNURLTransferInfo.receiverPubkey,
-            amount: LNURLTransferInfo.amount,
-            comment: LNURLTransferInfo.comment,
+            receiverPubkey: receiverPubkey,
+            amount: amount,
+            comment: comment,
             tags: [metadataTag],
           });
         } else {
-          const { callback } = LNURLTransferInfo.request!;
+          const { callback } = request!;
           const bolt11: string = await requestInvoice(
-            `${callback}?amount=${LNURLTransferInfo.amount * 1000}&comment=${escapingBrackets(LNURLTransferInfo.comment)}`,
+            `${callback}?amount=${amount * 1000}&comment=${escapingBrackets(comment)}`,
           );
 
-          execOutboundTransfer({ tags: [['bolt11', bolt11], metadataTag], amount: LNURLTransferInfo.amount });
+          execOutboundTransfer({ tags: [['bolt11', bolt11], metadataTag], amount: amount });
         }
       }
     } catch (err) {

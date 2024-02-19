@@ -101,6 +101,7 @@ export default function Page() {
         tx.direction === TransactionDirection.OUTGOING &&
         tx.metadata &&
         tx.metadata.receiver &&
+        tx.metadata.receiver.length < 40 &&
         !receiversList.includes(tx.metadata.receiver)
       )
         receiversList.push(tx.metadata.receiver);
