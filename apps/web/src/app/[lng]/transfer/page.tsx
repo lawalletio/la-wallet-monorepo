@@ -148,7 +148,7 @@ export default function Page() {
               value={inputText}
               status={errors.errorInfo.visible ? 'error' : undefined}
               disabled={loading}
-              visible={Boolean(autoCompleteData.length)}
+              visible={Boolean(autoCompleteData.length) && !loading}
             />
             <InputGroupRight>
               <Button size="small" variant="borderless" onClick={handlePasteInput} disabled={!!inputText}>
