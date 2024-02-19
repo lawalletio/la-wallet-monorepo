@@ -15,7 +15,7 @@
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
-    "docs": "pnpm --filter @lawallet/docs build:docs",
+    "docs:build": "pnpm --filter @lawallet/docs build",
     "docs:start": "pnpm --filter @lawallet/docs start:docs"
   },
   "devDependencies": {
