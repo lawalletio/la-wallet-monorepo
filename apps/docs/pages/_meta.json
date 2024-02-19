@@ -7,5 +7,15 @@
   "react": {
     "title": "React",
     "type": "page"
+  },
+  "more": {
+    "title": "More",
+    "type": "menu",
+    "items": {
+      "contribute": {
+        "title": "Contributing",
+        "href": "/contribute"
+      }
+    }
   }
 }

@@ -1,0 +1,71 @@
+import Link from 'next/link';
+import { Steps } from 'nextra/components';
+
+# Contributing
+
+You can also contribute to the LaWallet ecosystem. Take a look at this document to understand how you can do it.
+
+# Overview
+
+This guide is intended to help you set up the LaWallet front end on your local network.
+
+Follow these steps to start modifying the app's source code
+
+<Steps>
+### Cloning the repository
+
+To start contributing to the project, clone it to your local machine using git:
+
+```bash
+git clone https://github.com/lawalletio/la-wallet-monorepo.git
+```
+
+### Installing Node.js and pnpm
+
+LaWallet uses <Link className="text-blue-500" href="https://pnpm.io/workspaces">pnpm workspaces</Link> to manage multiple projects. You need to install Nodejs v18.15 or higher and pnpm@8.10.5
+
+You can run the following commands in your terminal to check your local Node.js and pnpm versions:
+
+```bash
+node -v
+pnpm -v
+```
+
+If the versions are not correct or you don't have Node.js or pnpm installed, download and follow their setup instructions:
+
+- Install Node.js from the <Link className="text-blue-500" href="https://nodejs.org/en">official website</Link>
+
+- Install <Link className="text-blue-500" href="https://pnpm.io/installation">pnpm</Link>
+
+### Installing dependences
+
+Once in the project's root directory, run the following command to install the project's dependencies:
+
+```bash
+pnpm install
+```
+
+After the install completes, pnpm links packages across the project for development
+
+### Running dev
+
+To start the local development playground, run the following command:
+
+```
+pnpm run dev
+```
+
+This command will compile all the packages and start the LaWallet webapp in development mode
+
+### Last step
+
+If there was no error, the LaWallet webapp should already be started on your local network
+By default, the application opens on port 3000. You must enter http://localhost:3000 to check if everything is fine.
+
+</Steps>
+
+# You finished!
+
+You are now able to begin editing the application's source code, and any modifications you make will be instantly reflected on the local site.
+
+If you want to contribute, but aren't sure where to start, you can contact <Link className="text-blue-500" href="https://discord.lacrypta.ar">the LaWallet team</Link>
