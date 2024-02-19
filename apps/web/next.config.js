@@ -17,6 +17,7 @@ const nextConfig = {
   reactStrictMode: false,
   trailingSlash: true,
   swcMinify: true,
+  transpilePackages: ['@lawallet/react', '@lawallet/utils', '@lawallet/ui'],
   compiler: {
     styledComponents: true,
   },
