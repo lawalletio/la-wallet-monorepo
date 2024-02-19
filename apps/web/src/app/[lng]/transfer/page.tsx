@@ -115,7 +115,7 @@ export default function Page() {
     const data: string[] = lastDestinations.filter((dest) => dest.startsWith(inputText));
     if (data.length >= 3) return data;
 
-    if (!inputText.includes('@')) return removeDuplicateArray([...data, `${inputText}@${config.federation.domain}`]);
+    if (!inputText.includes('@')) return removeDuplicateArray([`${inputText}@${config.federation.domain}`, ...data]);
 
     const [username, domain] = inputText.split('@');
     if (!domain) data.push(`${username}@${config.federation.domain}`);
