@@ -5,7 +5,8 @@
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unllamas/components.git"
+    "url": "https://github.com/lawalletio/la-wallet-monorepo.git",
+    "directory": "packages/ui"
   },
   "main": "dist/index.js",
   "type": "module",
@@ -22,7 +23,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "author": "Jona",
+  "author": "LaWallet Labs",
   "license": "MIT",
   "devDependencies": {
     "@storybook/addon-docs": "^7.6.10",
