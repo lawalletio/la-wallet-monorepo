@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 import { LinkButtonPrimitiveProps } from './types';
 
-export const LinkButtonPrimitive = styled.a<LinkButtonPrimitiveProps>`
+export const LinkButtonPrimitive = styled.div<LinkButtonPrimitiveProps>`
   display: flex;
   align-items: center;
   justify-content: center;

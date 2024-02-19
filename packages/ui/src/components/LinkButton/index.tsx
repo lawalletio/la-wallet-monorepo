@@ -13,7 +13,7 @@ export function LinkButton(props: LinkButtonProps) {
     size = 'normal',
     // disabled = false,
     tabIndex = 0,
-    href,
+    onClick,
   } = props;
 
   let backgroundColor: string = 'transparent';
@@ -42,8 +42,8 @@ export function LinkButton(props: LinkButtonProps) {
     <LinkButtonPrimitive
       $background={backgroundColor}
       $color={textColor}
-      href={href}
       tabIndex={tabIndex}
+      onClick={onClick}
       // disabled={disabled}
       $isSmall={size === 'small'}
     >

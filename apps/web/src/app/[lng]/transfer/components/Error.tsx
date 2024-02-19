@@ -2,13 +2,11 @@
 
 import { Divider, Container, Flex, Heading, LinkButton, Text } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
+import { useRouter } from 'next/navigation';
 
 export const ErrorTransfer = () => {
   const { t } = useTranslation();
-  //   const { transferInfo } = useTransferContext();
-
-  //   const router = useRouter();
-  //   if (!transferInfo.data) router.push('/dashboard');
+  const router = useRouter();
 
   return (
     <>
@@ -23,7 +21,7 @@ export const ErrorTransfer = () => {
         <Container size="small">
           <Divider y={16} />
           <Flex gap={8}>
-            <LinkButton variant="borderless" href="/dashboard">
+            <LinkButton variant="borderless" onClick={() => router.push('/dashboard')}>
               {t('GO_HOME')}
             </LinkButton>
           </Flex>

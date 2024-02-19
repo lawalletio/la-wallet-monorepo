@@ -83,7 +83,7 @@ export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInforma
         <Container size="small">
           <Divider y={16} />
           <Flex gap={8}>
-            <LinkButton variant="borderless" href="/dashboard">
+            <LinkButton variant="borderless" onClick={() => router.push('/dashboard')}>
               {t('GO_HOME')}
             </LinkButton>
           </Flex>

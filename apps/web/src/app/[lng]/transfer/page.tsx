@@ -163,7 +163,7 @@ export default function Page() {
 
           <Divider y={16} />
           <Flex>
-            <LinkButton color="secondary" variant="bezeled" href={'/scan'}>
+            <LinkButton color="secondary" variant="bezeled" onClick={() => router.push('/scan')}>
               {t('SCAN_QR_CODE')}
             </LinkButton>
           </Flex>

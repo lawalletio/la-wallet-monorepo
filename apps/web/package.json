@@ -1,6 +1,6 @@
 {
   "name": "lawallet-front",
-  "version": "1.0.1",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",

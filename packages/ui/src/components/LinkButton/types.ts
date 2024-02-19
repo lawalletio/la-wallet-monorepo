@@ -12,7 +12,7 @@ export interface LinkButtonProps {
   // disabled?: boolean;
   componentName?: string;
   tabIndex?: number;
-  href: string;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 export interface LinkButtonPrimitiveProps {

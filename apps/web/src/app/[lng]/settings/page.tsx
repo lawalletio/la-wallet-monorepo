@@ -65,7 +65,7 @@ export default function Page() {
         </Text>
         <Divider y={8} />
         <Flex direction="column" gap={4}>
-          <LinkSetting href="/settings/cards">{t('MY_CARDS')}</LinkSetting>
+          <LinkSetting onClick={() => router.push('/settings/cards')}>{t('MY_CARDS')}</LinkSetting>
         </Flex>
         <Divider y={8} />
 
@@ -91,7 +91,7 @@ export default function Page() {
             </Text>
             <Divider y={8} />
             <Flex direction="column" gap={4}>
-              <LinkSetting href="/settings/recovery">{t('BACKUP_ACCOUNT')}</LinkSetting>
+              <LinkSetting onClick={() => router.push('/settings/recovery')}>{t('BACKUP_ACCOUNT')}</LinkSetting>
             </Flex>
           </>
         )}
@@ -102,12 +102,8 @@ export default function Page() {
         </Text>
         <Divider y={8} />
         <Flex direction="column" gap={4}>
-          <LinkSetting href="https://twitter.com/lawalletok" target="_blank">
-            Twitter
-          </LinkSetting>
-          <LinkSetting href="https://discord.gg/QESv76truh" target="_blank">
-            Discord
-          </LinkSetting>
+          <LinkSetting onClick={() => router.push('https://twitter.com/lawalletok')}>Twitter</LinkSetting>
+          <LinkSetting onClick={() => router.push('https://discord.lacrypta.ar')}>Discord</LinkSetting>
         </Flex>
         <Divider y={16} />
         <Flex justify="center">

@@ -9,6 +9,7 @@ import { formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import CardWithData from './CardWithData';
+import { useRouter } from 'next/navigation';
 
 type SummaryProps = {
   isLoading: boolean;
@@ -22,6 +23,7 @@ type SummaryProps = {
 
 export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {
   const { lng, t } = useTranslation();
+  const router = useRouter();
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
 
   const {
@@ -92,7 +94,7 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
         <Container size="small">
           <Divider y={16} />
           <Flex gap={8}>
-            <LinkButton variant="bezeledGray" href="/dashboard">
+            <LinkButton variant="bezeledGray" onClick={() => router.push('/dashboard')}>
               {t('CANCEL')}
             </LinkButton>
 
