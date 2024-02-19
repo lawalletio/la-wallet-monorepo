@@ -61,6 +61,10 @@
         "title": "useTransactions",
         "href": "/react/hooks/useTransactions"
     },
+    "useTransfer": {
+        "title": "useTransfer",
+        "href": "/react/hooks/useTransfer"
+    },
     "useZap": {
         "title": "useZap",
         "href": "/react/hooks/useZap"

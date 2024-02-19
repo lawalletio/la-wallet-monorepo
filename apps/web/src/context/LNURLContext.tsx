@@ -89,7 +89,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
 
         if (LNURLTransferInfo.type === TransferTypes.INTERNAL) {
           execInternalTransfer({
-            pubkey: LNURLTransferInfo.receiverPubkey,
+            receiverPubkey: LNURLTransferInfo.receiverPubkey,
             amount: LNURLTransferInfo.amount,
             comment: LNURLTransferInfo.comment,
             tags: [metadataTag],

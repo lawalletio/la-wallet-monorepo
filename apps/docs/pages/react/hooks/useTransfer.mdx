@@ -1,0 +1,145 @@
+# useTransfer
+
+Hook to decode or pay an invoice
+
+## Import
+
+```ts
+import { useTransfer } from '@lawallet/react';
+```
+
+## Usage
+
+```tsx filename="index.tsx"
+import { useTransfer } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const { isLoading, isSuccess, execInternalTransfer, execOutboundTransfer } = useTransfer({
+    tokenName: 'BTC',
+    config,
+  });
+}
+```
+
+## Parameters
+
+```ts
+import { type UseTransferParameters } from '@lawallet/react';
+```
+
+### tokenName
+
+`String`
+
+- id of the token to transfer
+
+```tsx [index.tsx]
+import { useTransfer } from '@lawallet/react';
+
+function App() {
+  const { isLoading, isSuccess, execInternalTransfer, execOutboundTransfer } = useTransfer({
+    tokenName: 'BTC',
+  });
+}
+```
+
+### onSuccess
+
+`undefined | () => void`
+
+- Function to execute when the transfer is successful.
+
+```tsx [index.tsx]
+import { useTransfer } from '@lawallet/react';
+
+function App() {
+  const { isLoading, isSuccess, execInternalTransfer, execOutboundTransfer } = useTransfer({
+    tokenName: 'BTC',
+    onSuccess: () => {
+      console.log('successful payment');
+    },
+  });
+}
+```
+
+### onError
+
+`undefined | (message?: string) => void`
+
+- Function to execute when the transfer has an error.
+
+```tsx [index.tsx]
+import { useTransfer } from '@lawallet/react';
+
+function App() {
+  const { isLoading, isSuccess, execInternalTransfer, execOutboundTransfer } = useTransfer({
+    tokenName: 'BTC',
+    onError: () => {
+      console.log('error on payment');
+    },
+  });
+}
+```
+
+### config
+
+`Config | undefined`
+
+[`Config`](/react/createConfig#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/LaWalletConfig).
+
+```tsx [index.tsx]
+import { useTransfer } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const { isLoading, isSuccess, execInternalTransfer, execOutboundTransfer } = useTransfer({
+    tokenName: 'BTC',
+    config,
+  });
+}
+```
+
+## Return Type
+
+```ts
+import { type UseTransferReturns } from '@lawallet/react';
+```
+
+### isLoading
+
+`Boolean`
+
+This variable defines whether the transfer is in the loading stage
+
+### isSuccess
+
+`Boolean`
+
+This variable defines whether the transfer was successful
+
+### isError
+
+`Boolean`
+
+This variable defines whether the transfer had an error
+
+### error
+
+`string | undefined`
+
+This variable defines the error that occurred in the transfer
+
+### execInternalTransfer
+
+`(params: InternalTransferParameters) => Promise<boolean>`
+[`InternalTransferParameters`](/react/glossary/types#internaltransferparameters)
+
+Function to execute an internal transfer
+
+### execInternalTransfer
+
+`(params: OutboundTransferParameters) => Promise<boolean>`
+[`OutboundTransferParameters`](/react/glossary/types#outboundtransferparameters)
+
+Function to execute an external transfer

@@ -13,16 +13,16 @@ import { useStatusVars, type UseStatusVarsReturns } from './useStatusVars.js';
 import { broadcastEvent } from '../exports/actions.js';
 import type { ConfigParameter } from '../exports/types.js';
 
-type OutboundTransferParameters = { tags: NDKTag[]; amount: number };
-type InternalTransferParamteres = {
-  pubkey: string;
+type OutboundTransferParameters = { amount: number; tags: NDKTag[] };
+type InternalTransferParameters = {
+  receiverPubkey: string;
   amount: number;
   comment: string;
   tags?: NDKTag[];
 };
 
 interface UseTransferReturns extends UseStatusVarsReturns {
-  execInternalTransfer: (params: InternalTransferParamteres) => Promise<boolean>;
+  execInternalTransfer: (params: InternalTransferParameters) => Promise<boolean>;
   execOutboundTransfer: (params: OutboundTransferParameters) => Promise<boolean>;
 }
 
@@ -68,8 +68,8 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
     });
   };
 
-  const execInternalTransfer = async (transferParameters: InternalTransferParamteres): Promise<boolean> => {
-    const { pubkey: receiverPubkey, amount, tags = [], comment = '' } = transferParameters;
+  const execInternalTransfer = async (transferParameters: InternalTransferParameters): Promise<boolean> => {
+    const { receiverPubkey, amount, tags = [], comment = '' } = transferParameters;
     if (!signerInfo || !receiverPubkey || !amount) return false;
 
     statusVars.handleMarkLoading(true);

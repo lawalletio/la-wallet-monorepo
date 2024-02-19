@@ -294,3 +294,24 @@ interface UserIdentity {
   privateKey: string;
 }
 ```
+
+## InternalTransferParameters
+
+Type that defines the parameters of an internal transfer
+
+```ts filename="InternalTransferParameters"
+type InternalTransferParameters = {
+  pubkey: string;
+  amount: number;
+  comment: string;
+  tags?: NDKTag[];
+};
+```
+
+## OutboundTransferParameters
+
+Type that defines the parameters of an external transfer
+
+```ts filename="OutboundTransferParameters"
+type OutboundTransferParameters = { amount: number; tags: NDKTag[] };
+```
