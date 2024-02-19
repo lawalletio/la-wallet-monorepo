@@ -19,32 +19,28 @@ import {
 
 import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { useEffect, useMemo, useState } from 'react';
+import { useNostrContext } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
-import { useNostrContext } from '../context/NostrContext.js';
 
-export type CardConfigReturns = {
+export interface CardConfigReturns {
   cardsData: CardDataPayload;
   cardsConfig: CardConfigPayload;
   loadInfo: CardLoadingType;
   toggleCardStatus: (uuid: string) => Promise<boolean>;
   updateCardConfig: (uuid: string, config: CardPayload) => Promise<boolean>;
-  buildDonationEvent: (uuid: string) => Promise<string | undefined>;
-};
+  buildDonationEvent: (uuid: string) => Promise<NostrEvent | undefined>;
+}
 
 type CardLoadingType = {
   loadedAt: number;
   loading: boolean;
 };
 
-export interface UseCardsParameters extends ConfigParameter {
-  onCardDonation?: () => void;
-}
+export interface UseCardsParameters extends ConfigParameter {}
 
 export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
   const config = useConfig(parameters);
-
-  const [cardToDonate, setCardToDonate] = useState<string>('');
 
   const [cardsData, setCardsData] = useState<CardDataPayload>({});
   const [cardsConfig, setCardsConfig] = useState<CardConfigPayload>({} as CardConfigPayload);
@@ -142,7 +138,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     if (loadInfo.loading) setLoadInfo({ loadedAt: nostrEv.created_at + 1, loading: false });
   };
 
-  const buildDonationEvent = async (uuid: string) => {
+  const buildDonationEvent = async (uuid: string): Promise<NostrEvent | undefined> => {
     try {
       if (!pubkey) return;
       const encryptedUUID: string | undefined = await encrypt(config.modulePubkeys.card, uuid);
@@ -151,13 +147,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
       const transferDonationEvent = await buildCardTransferDonationEvent(pubkey, encryptedUUID, config);
       const signedEvent: NostrEvent = await signEvent(transferDonationEvent);
 
-      const encodedDonationEvent: string = btoa(JSON.stringify(signedEvent))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
-
-      setCardToDonate(uuid);
-      return encodedDonationEvent;
+      return signedEvent;
     } catch {
       return;
     }
@@ -177,16 +167,6 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
         });
     }, 2500);
   }, []);
-
-  useEffect(() => {
-    if (cardToDonate) {
-      const existCard = cardsData[cardToDonate];
-      if (!existCard) {
-        if (parameters.onCardDonation) parameters.onCardDonation();
-        setCardToDonate('');
-      }
-    }
-  }, [cardsData, cardToDonate]);
 
   return { cardsData, cardsConfig, loadInfo, toggleCardStatus, updateCardConfig, buildDonationEvent };
 };

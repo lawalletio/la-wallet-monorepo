@@ -1,19 +1,30 @@
 'use client';
 import { CardConfigReturns, useCards, useConfig } from '@lawallet/react';
-import { createContext, useContext } from 'react';
+import { NostrEvent } from '@nostr-dev-kit/ndk';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useNotifications } from './NotificationsContext';
 import { useTranslation } from './TranslateContext';
 
-const CardsContext = createContext({} as CardConfigReturns);
+interface CardContextType extends CardConfigReturns {
+  encodeDonationEvent: (uuid: string) => Promise<string | undefined>;
+}
+
+const CardsContext = createContext({} as CardContextType);
 
 export function CardsProvider(props: React.PropsWithChildren) {
   const { children } = props;
+
+  const [cardToDonate, setCardToDonate] = useState<string>('');
   const config = useConfig();
+
+  const cards = useCards({
+    config,
+  });
 
   const notifications = useNotifications();
   const { t } = useTranslation();
 
-  const handleCardDonation = () => {
+  const notifyCardDonation = () => {
     notifications.showAlert({
       title: '',
       description: t('DONATION_CARD_SUCCESS'),
@@ -21,12 +32,35 @@ export function CardsProvider(props: React.PropsWithChildren) {
     });
   };
 
-  const cards = useCards({
-    onCardDonation: handleCardDonation,
-    config,
-  });
+  const encodeDonationEvent = async (uuid: string) => {
+    const donationEvent: NostrEvent | undefined = await cards.buildDonationEvent(uuid);
+    if (!donationEvent) return;
 
-  return <CardsContext.Provider value={cards}>{children}</CardsContext.Provider>;
+    const encodedDonationEvent: string = btoa(JSON.stringify(donationEvent))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    setCardToDonate(uuid);
+    return encodedDonationEvent;
+  };
+
+  useEffect(() => {
+    if (cardToDonate) {
+      const existCard = cards.cardsData[cardToDonate];
+      if (!existCard) {
+        notifyCardDonation();
+        setCardToDonate('');
+      }
+    }
+  }, [cards.cardsData, cardToDonate]);
+
+  const value: CardContextType = {
+    ...cards,
+    encodeDonationEvent,
+  };
+
+  return <CardsContext.Provider value={value}>{children}</CardsContext.Provider>;
 }
 
 export const useCardsContext = () => {

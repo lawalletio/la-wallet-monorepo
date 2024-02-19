@@ -13,12 +13,12 @@ const defaultQRInfo = {
 
 const TransferSheet = ({ card, isOpen, onClose }: SettingsSheetProps) => {
   const { t } = useTranslation();
-  const { buildDonationEvent } = useCardsContext();
+  const { encodeDonationEvent } = useCardsContext();
 
   const [qrInfo, setQrInfo] = useState(defaultQRInfo);
 
   const handleDonateCard = async () => {
-    const encodedDonationEvent: string | undefined = await buildDonationEvent(card.uuid);
+    const encodedDonationEvent: string | undefined = await encodeDonationEvent(card.uuid);
     if (!encodedDonationEvent) return;
 
     const absoluteURL = window.location ? window.location.origin : 'https://app.lawallet.ar';
