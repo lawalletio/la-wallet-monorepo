@@ -6,19 +6,20 @@ import { Item } from './Item';
 import { AutocompleteProps } from './types';
 
 import { AutocompletePrimitive, AutocompleteContent } from './style';
+import { BtnLoader } from '../Loader/Loader';
 
 export function Autocomplete(props: AutocompleteProps) {
-  const { data, value, onSelect } = props;
+  const { visible, data, value, onSelect } = props;
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
-    if (value) setOpen(!!value);
-  }, [value]);
-
-  useEffect(() => {
     if (value && !open) setOpen(false);
   }, [open]);
+
+  useEffect(() => {
+    setOpen(visible);
+  }, [visible]);
 
   function useOutsideAlerter(ref: any) {
     useEffect(() => {
@@ -51,7 +52,7 @@ export function Autocomplete(props: AutocompleteProps) {
       <Input {...props} />
       {open && (
         <AutocompleteContent>
-          {!value && data?.length && <span>Cargando...</span>}
+          {!value && data?.length ? <BtnLoader /> : null}
           {value &&
             data?.slice(0, 3).map((lud16: string) => (
               <button onClick={() => handleSelect(lud16)}>

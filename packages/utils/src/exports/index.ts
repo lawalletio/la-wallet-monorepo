@@ -39,6 +39,7 @@ export {
   parseContent,
   claimLNURLw,
   parseInvoiceInfo,
+  removeDuplicateArray,
 } from '../utils/utilities.js';
 
 export {

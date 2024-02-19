@@ -19,10 +19,17 @@ import {
   theme,
 } from '@lawallet/ui';
 
+import { lightningAddresses } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { detectTransferType, formatLNURLData, useWalletContext } from '@lawallet/react';
+import {
+  detectTransferType,
+  formatLNURLData,
+  removeDuplicateArray,
+  useConfig,
+  useWalletContext,
+} from '@lawallet/react';
 import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
 import { useMemo, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
@@ -40,6 +47,7 @@ export default function Page() {
 
   const errors = useErrors();
   const router = useRouter();
+  const config = useConfig();
 
   const initializeTransfer = async (data: string) => {
     if (loading) return;
@@ -101,6 +109,25 @@ export default function Page() {
     return receiversList;
   }, [transactions]);
 
+  const autoCompleteData: string[] = useMemo(() => {
+    if (!inputText.length || inputText.length > 15) return [];
+
+    const data: string[] = lastDestinations.filter((dest) => dest.startsWith(inputText));
+    if (data.length >= 3) return data;
+
+    if (!inputText.includes('@')) return removeDuplicateArray([...data, `${inputText}@${config.federation.domain}`]);
+
+    const [username, domain] = inputText.split('@');
+    if (!domain) data.push(`${username}@${config.federation.domain}`);
+
+    const recommendations: string[] = [];
+    lightningAddresses.forEach((address) => {
+      if (address.startsWith(domain)) recommendations.push(`${username}@${address}`);
+    });
+
+    return removeDuplicateArray([...data, ...recommendations]);
+  }, [lastDestinations, inputText]);
+
   return (
     <>
       <Navbar showBackPage={true} title={t('TRANSFER_MONEY')} overrideBack="/dashboard" />
@@ -110,8 +137,7 @@ export default function Page() {
         <Flex flex={1} direction="column">
           <InputGroup>
             <Autocomplete
-              // Change lastDestinations for search
-              data={lastDestinations}
+              data={autoCompleteData}
               onSelect={setInputText}
               onChange={(e) => {
                 errors.resetError();
@@ -122,6 +148,7 @@ export default function Page() {
               value={inputText}
               status={errors.errorInfo.visible ? 'error' : undefined}
               disabled={loading}
+              visible={Boolean(autoCompleteData.length)}
             />
             <InputGroupRight>
               <Button size="small" variant="borderless" onClick={handlePasteInput} disabled={!!inputText}>
