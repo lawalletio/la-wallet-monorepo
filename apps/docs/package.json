@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/docs",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "La Crypta Wallet Docs",
   "scripts": {
     "dev:docs": "next dev -p 4000",

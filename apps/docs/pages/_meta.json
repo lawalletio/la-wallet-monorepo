@@ -13,8 +13,8 @@
     "type": "menu",
     "items": {
       "contribute": {
-        "title": "Contributing",
-        "href": "/contribute"
+        "title": "Get started",
+        "href": "/get-started"
       }
     }
   }
