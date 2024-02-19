@@ -13,7 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import ButtonCTA from '@/components/ButtonCTA';
 import Navbar from '@/components/Layout/Navbar';
-import TokenList from '@/components/TokenList';
+import { TokenList } from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
 import {
   Avatar,

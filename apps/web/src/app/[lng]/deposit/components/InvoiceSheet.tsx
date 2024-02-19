@@ -1,4 +1,4 @@
-import { TokenList } from '@/components/TokenList/style';
+import { TokenList } from '@/components/TokenList';
 import { Confetti, Keyboard, QRCode } from '@/components/UI';
 import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';

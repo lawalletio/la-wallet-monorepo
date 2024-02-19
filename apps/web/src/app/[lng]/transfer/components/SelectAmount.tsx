@@ -4,7 +4,7 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-import TokenList from '@/components/TokenList';
+import { TokenList } from '@/components/TokenList';
 import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
