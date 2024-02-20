@@ -1,13 +1,17 @@
 'use client';
 
-import Container from '@/components/Layout/Container';
-import Footer from '@/components/Layout/Footer';
 import Navbar from '@/components/Layout/Navbar';
 import TransactionItem from '@/components/TransactionItem';
-import { Button, Divider, Flex } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 import { useWalletContext } from '@lawallet/react';
+import { Transaction } from '@lawallet/react/types';
+import { Button, Container, Divider, Flex, Footer, Loader, Text, theme } from '@lawallet/ui';
+import { differenceInCalendarDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+let dateToRender: Date | null = null;
 
 export default function Page() {
   const { t } = useTranslation();
@@ -16,32 +20,63 @@ export default function Page() {
   } = useWalletContext();
   const router = useRouter();
 
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+
+  const loadMoreTransactions = () => {
+    const actLength: number = filteredTransactions.length;
+    if (actLength === transactions.length) return;
+
+    setTimeout(() => {
+      setFilteredTransactions((prev) => [...prev, ...transactions.slice(actLength, actLength + 10)]);
+    }, 600);
+  };
+
+  useEffect(() => {
+    if (transactions.length) setFilteredTransactions(transactions.slice(0, 15));
+  }, [transactions]);
+
   return (
     <>
       <Navbar showBackPage={true} title={t('ACTIVITY')} />
 
       <Container size="small">
-        {/* <Divider y={12} /> */}
-        {/* <Text size="small" color={theme.colors.gray50}>
-          {t('TODAY')}
-        </Text> */}
-        <Divider y={8} />
-        <Flex direction="column" gap={4}>
-          {transactions.map((transaction) => (
-            <TransactionItem key={transaction.id} transaction={transaction} />
-          ))}
-        </Flex>
-        {/* <Divider y={12} />
-        <Text size="small" color={theme.colors.gray50}>
-          {t('YESTERDAY')}
-        </Text>
-        <Divider y={8} />
-        <Flex direction="column" gap={4}>
-          {transactions.map(transaction => (
-            <TransactionItem key={transaction.id} transaction={transaction} />
-          ))}
-        </Flex>
-        <Divider y={12} /> */}
+        <InfiniteScroll
+          dataLength={filteredTransactions.length}
+          next={loadMoreTransactions}
+          hasMore={filteredTransactions.length < transactions.length}
+          loader={<Loader />}
+        >
+          <Flex direction="column" gap={4}>
+            {filteredTransactions.map((transaction) => {
+              const txDate = new Date(transaction.createdAt);
+
+              if (!dateToRender || dateToRender.toDateString() !== txDate.toDateString()) {
+                dateToRender = txDate;
+
+                const differenceWithToday: number = differenceInCalendarDays(new Date(), txDate);
+                const isToday: boolean = differenceWithToday === 0;
+                const isYesterday: boolean = differenceWithToday === 1;
+
+                return (
+                  <React.Fragment key={transaction.id}>
+                    <Divider y={8} />
+                    <Text size="small" color={theme.colors.gray50}>
+                      {isToday ? t('TODAY') : isYesterday ? t('YESTERDAY') : txDate.toLocaleDateString()}
+                    </Text>
+
+                    <TransactionItem transaction={transaction} />
+                  </React.Fragment>
+                );
+              } else {
+                return (
+                  <React.Fragment key={transaction.id}>
+                    <TransactionItem transaction={transaction} />
+                  </React.Fragment>
+                );
+              }
+            })}
+          </Flex>
+        </InfiniteScroll>
       </Container>
 
       <Divider y={64} />

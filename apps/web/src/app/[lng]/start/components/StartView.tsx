@@ -1,21 +1,17 @@
 'use client';
-import { Divider, Flex, Text, Button, CardAlert, Feedback } from '@/components/UI';
-import Container from '@/components/Layout/Container';
+import { CardAlert, Container, Divider, Flex, Text, Button, Feedback, theme } from '@lawallet/ui';
 import Logo from '@/components/Logo';
 import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
 
-import theme from '@/styles/theme';
 import { useEffect, useState } from 'react';
 import { checkIOS } from '@/utils';
 import { useTranslation } from '@/context/TranslateContext';
-import { useMediaQuery } from '@uidotdev/usehooks';
-import { Loader } from '@/components/Loader/Loader';
+import { Loader } from '@lawallet/ui';
 import { LAWALLET_VERSION } from '@/constants/constants';
 import { useRouter } from 'next/navigation';
 
 const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery('only screen and (max-width : 768px)');
   const [isIOS, setIsIOS] = useState<boolean>(false);
 
   const router = useRouter();
@@ -42,7 +38,7 @@ const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
             <HomeDescription />
             <Divider y={16} />
 
-            {isMobile && isIOS && (
+            {isIOS && (
               <>
                 <CardAlert
                   title={t('RECOMMEND_SAFARI_TITLE')}

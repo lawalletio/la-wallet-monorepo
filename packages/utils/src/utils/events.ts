@@ -1,10 +1,9 @@
 import { NDKEvent, NDKKind, NDKPrivateKeySigner, type NDKTag, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { getEventHash, getPublicKey, getSignature, nip04, nip26, type UnsignedEvent } from 'nostr-tools';
+import { getEventHash, getPublicKey, getSignature, nip26, type UnsignedEvent } from 'nostr-tools';
 import { baseConfig } from '../constants/constants.js';
-import { ConfigTypes, type CardConfigPayload } from '../types/card.js';
+import { ConfigTypes } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
 import { type UserIdentity } from '../types/identity.js';
-import { buildMultiNip04Event } from '../libs/nip04.js';
 import { nowInSeconds } from './utilities.js';
 
 export enum LaWalletKinds {
@@ -31,12 +30,17 @@ export type GenerateIdentityReturns = {
   event: NostrEvent;
 };
 
-export const getTag = (tags: NDKTag[], keyTag: string) => {
-  const tagValue = tags.find((tag) => tag[0] === keyTag);
-  return tagValue ? tagValue[1] : '';
+export const getTagValue = (tags: NDKTag[], keyTag: string): string => {
+  const tag: NDKTag | undefined = tags.find((tag) => tag[0] === keyTag);
+  return tag ? tag[1]! : '';
 };
 
-export const getMultipleTags = (tags: NDKTag[], keyTag: string) => {
+export const getTag = (tags: NDKTag[], keyTag: string): NDKTag | undefined => {
+  const tagValue = tags.find((tag) => tag[0] === keyTag);
+  return tagValue;
+};
+
+export const getMultipleTagsValues = (tags: NDKTag[], keyTag: string) => {
   const values: string[] = [];
 
   const tagsValue: NDKTag[] = tags.filter((tag) => tag[0] === keyTag);
@@ -121,125 +125,56 @@ type TransactionProps = {
   tokenName: string;
   amount: number;
   senderPubkey: string;
-  receiverPubkey?: string;
   comment?: string;
-  bolt11?: string;
+  tags: NDKTag[];
 };
 
 export const buildTxStartEvent = (props: TransactionProps, config: ConfigProps = baseConfig): NostrEvent => {
-  const baseTags: NDKTag[] = [
+  const { tokenName, amount, senderPubkey, comment, tags = [] } = props;
+
+  const txTags: NDKTag[] = [
     ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
     ['p', config.modulePubkeys.ledger],
+    ...tags,
   ];
 
   return {
-    pubkey: props.senderPubkey,
+    pubkey: senderPubkey,
     kind: LaWalletKinds.REGULAR,
     content: JSON.stringify({
-      tokens: { [props.tokenName]: (props.amount * 1000).toString() },
-      ...(props.comment ? { memo: props.comment } : {}),
+      tokens: { [tokenName]: (amount * 1000).toString() },
+      ...(comment ? { memo: comment } : {}),
     }),
-    tags: props.bolt11
-      ? [...baseTags, ['p', config.modulePubkeys.urlx], ['bolt11', props.bolt11]]
-      : [...baseTags, ['p', props.receiverPubkey!]],
+    tags: txTags,
     created_at: nowInSeconds(),
   };
 };
-
-// export const buildTxStartEvent = async (
-//   tokenName: string,
-//   transferInfo: TransferInformation,
-//   tags: NDKTag[],
-//   privateKey: string,
-//   config: ConfigProps = baseConfig,
-// ): Promise<NostrEvent> => {
-//   const signer = new NDKPrivateKeySigner(privateKey);
-//   const userPubkey = getPublicKey(privateKey);
-
-//   const internalEvent: NDKEvent = new NDKEvent();
-//   internalEvent.pubkey = userPubkey;
-//   internalEvent.kind = LaWalletKinds.REGULAR;
-
-//   internalEvent.content = JSON.stringify({
-//     tokens: { [tokenName]: (transferInfo.amount * 1000).toString() },
-//     memo: transferInfo.comment,
-//   });
-
-//   internalEvent.tags = [
-//     ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
-//     ['p', config.modulePubkeys.ledger],
-//     ['p', transferInfo.receiverPubkey],
-//   ];
-
-//   if (tags.length) internalEvent.tags = [...internalEvent.tags, ...tags];
-
-//   await internalEvent.sign(signer!);
-//   const event: NostrEvent = await internalEvent.toNostrEvent();
-//   return event;
-// };
-
-export const buildCardInfoRequest = async (subkind: string, privateKey: string) => {
-  const userPubkey: string = getPublicKey(privateKey);
-
-  const event: NostrEvent = {
-    content: '',
-    pubkey: userPubkey,
-    created_at: nowInSeconds(),
-    kind: LaWalletKinds.PARAMETRIZED_REPLACEABLE,
-    tags: [['t', subkind]],
+export const buildCardConfigEvent = async (multiNip04Event: NostrEvent): Promise<NostrEvent> => {
+  return {
+    ...multiNip04Event,
+    kind: LaWalletKinds.REGULAR,
+    tags: multiNip04Event.tags.concat([['t', `${ConfigTypes.CONFIG.valueOf()}-change`]]),
   };
-
-  event.id = getEventHash(event as UnsignedEvent);
-  event.sig = getSignature(event as UnsignedEvent, privateKey);
-
-  return event;
-};
-
-export const buildCardConfigEvent = async (
-  cardConfig: CardConfigPayload,
-  privateKey: string,
-  config: ConfigProps = baseConfig,
-): Promise<NostrEvent> => {
-  const userPubkey: string = getPublicKey(privateKey);
-  const event: NostrEvent = await buildMultiNip04Event(JSON.stringify(cardConfig), privateKey, userPubkey, [
-    config.modulePubkeys.card,
-    userPubkey,
-  ]);
-
-  event.kind = LaWalletKinds.REGULAR;
-
-  event.tags = event.tags.concat([['t', `${ConfigTypes.CONFIG.valueOf()}-change`]]);
-
-  event.id = getEventHash(event as UnsignedEvent);
-  event.sig = getSignature(event as UnsignedEvent, privateKey);
-
-  return event;
 };
 
 export const buildCardTransferDonationEvent = async (
-  uuid: string,
-  privateKey: string,
+  pubkey: string,
+  uuidNip04: string,
   config: ConfigProps = baseConfig,
 ) => {
-  const userPubkey: string = getPublicKey(privateKey);
-
-  const content = await nip04.encrypt(privateKey, config.modulePubkeys.card, uuid);
-
+  const expiry: number = nowInSeconds() + 3600;
   const event: NostrEvent = {
     kind: LaWalletKinds.EPHEMERAL,
-    pubkey: userPubkey,
-    content,
+    pubkey,
+    content: uuidNip04,
     created_at: nowInSeconds(),
     tags: [
       ['t', 'card-transfer-donation'],
       ['p', config.modulePubkeys.card],
+      ['expiry', expiry.toString()],
     ],
   };
 
-  event.id = getEventHash(event as UnsignedEvent);
-  event.sig = getSignature(event as UnsignedEvent, privateKey);
-
-  //return btoa(JSON.stringify(event).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''))
   return event;
 };
 

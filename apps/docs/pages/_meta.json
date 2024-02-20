@@ -1,0 +1,21 @@
+{
+  "index": {
+    "title": "Home",
+    "type": "page",
+    "display": "hidden"
+  },
+  "react": {
+    "title": "React",
+    "type": "page"
+  },
+  "more": {
+    "title": "More",
+    "type": "menu",
+    "items": {
+      "get-started": {
+        "title": "Get started",
+        "href": "/react/get-started"
+      }
+    }
+  }
+}

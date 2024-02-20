@@ -16,6 +16,7 @@ export {
   type TransferInformation,
   type LNURLTransferType,
   type InvoiceTransferType,
+  type LNRequestResponse,
   TransactionType,
   TransactionDirection,
   TransactionStatus,

@@ -1,22 +1,28 @@
 'use client';
 
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-import Container from '@/components/Layout/Container';
-import TokenList from '@/components/TokenList';
-import { Button, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Keyboard, Text } from '@/components/UI';
+import { TokenList } from '@/components/TokenList';
+import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
-import theme from '@/styles/theme';
-import { useWalletContext, decimalsToUse, formatToPreference } from '@lawallet/react';
-import { TransferTypes } from '@lawallet/react/types';
+import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
+import { LNURLTransferType, TransferTypes } from '@lawallet/react/types';
+import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
+import CardWithData from './CardWithData';
 
-export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }) => {
+type SelectTransferAmountType = {
+  transferInfo: LNURLTransferType;
+  setAmountToPay: (amount: number) => void;
+  setComment: (comment: string) => void;
+};
+
+export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }: SelectTransferAmountType) => {
   const { lng, t } = useTranslation();
 
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
@@ -37,6 +43,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
   }, [pricesData, balance.amount, userCurrency]);
 
   const numpadData = useNumpad(userCurrency, maxAvailableAmount);
+  const params = useSearchParams();
   const errors = useErrors();
   const router = useRouter();
 
@@ -49,9 +56,9 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
     const satsAmount: number =
       numpadData.intAmount['SAT'] > balance.amount ? balance.amount : numpadData.intAmount['SAT'];
 
-    if (transferInfo.type === TransferTypes.LUD16 && transferInfo.payRequest) {
+    if (transferInfo.type === TransferTypes.LUD16 && transferInfo.request) {
       const mSats = satsAmount * 1000;
-      const { minSendable, maxSendable } = transferInfo.payRequest;
+      const { minSendable, maxSendable } = transferInfo.request;
 
       if (mSats < minSendable! || mSats > maxSendable!) {
         errors.modifyError('INVALID_SENDABLE_AMOUNT', {
@@ -77,9 +84,9 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
       return;
     }
 
-    if (text.length > 255 || (transferInfo.payRequest && text.length > transferInfo.payRequest.commentAllowed)) {
+    if (text.length > 255 || (transferInfo.request && text.length > transferInfo.request.commentAllowed)) {
       errors.modifyError('COMMENT_MAX_LENGTH', {
-        chars: (transferInfo.payRequest?.commentAllowed ?? 255).toString(),
+        chars: (transferInfo.request?.commentAllowed ?? 255).toString(),
       });
       return;
     }
@@ -94,9 +101,10 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
   };
 
   useEffect(() => {
-    if (transferInfo.amount && transferInfo.amount !== numpadData.intAmount['SAT']) {
+    const amountParam: number = Number(params.get('amount')) ?? transferInfo.amount;
+    if (amountParam && amountParam !== numpadData.intAmount['SAT']) {
       const convertedAmount: number =
-        convertCurrency(transferInfo.amount, 'SAT', userCurrency) * 10 ** decimalsToUse(userCurrency);
+        convertCurrency(amountParam, 'SAT', userCurrency) * 10 ** decimalsToUse(userCurrency);
 
       numpadData.updateNumpadAmount(convertedAmount.toString());
     }
@@ -106,6 +114,8 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
 
   return (
     <>
+      <CardWithData type={transferInfo.type} data={transferInfo.data} />
+
       <Container size="small">
         <Divider y={16} />
         <Flex direction="column" gap={8} flex={1} justify="center">
@@ -131,12 +141,12 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
 
           <TokenList />
 
-          {transferInfo.payRequest && (
+          {transferInfo.request && (
             <Flex justify="center">
               <Feedback show={true} status={'success'}>
                 {t('SENDABLE_AMOUNT', {
-                  minSendable: formatToPreference('SAT', transferInfo.payRequest.minSendable! / 1000, lng),
-                  maxSendable: formatToPreference('SAT', transferInfo.payRequest.maxSendable! / 1000, lng),
+                  minSendable: formatToPreference('SAT', transferInfo.request.minSendable! / 1000, lng),
+                  maxSendable: formatToPreference('SAT', transferInfo.request.maxSendable! / 1000, lng),
                 })}
               </Feedback>
             </Flex>

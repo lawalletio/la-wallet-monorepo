@@ -3,52 +3,58 @@
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import {
+  Autocomplete,
   Button,
+  Container,
   Divider,
   Feedback,
   Flex,
   Icon,
-  Input,
   InputGroup,
   InputGroupRight,
   LinkButton,
   Text,
-} from '@/components/UI';
+  theme,
+} from '@lawallet/ui';
 
+import { lightningAddresses } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import theme from '@/styles/theme';
-import { useConfig, useWalletContext, getMultipleTags, detectTransferType } from '@lawallet/react';
-import { getUsername } from '@lawallet/react/actions';
-import { TransactionDirection, TransactionType, TransferTypes } from '@lawallet/react/types';
-import { useEffect, useState } from 'react';
+import {
+  detectTransferType,
+  formatLNURLData,
+  removeDuplicateArray,
+  useConfig,
+  useWalletContext,
+} from '@lawallet/react';
+import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
+import { useMemo, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
 
 export default function Page() {
-  const config = useConfig();
   const { t } = useTranslation();
   const {
-    account: { identity, transactions },
+    account: { transactions },
   } = useWalletContext();
 
   const params = useSearchParams();
-  const [lastDestinations, setLastDestinations] = useState<string[]>([]);
+
   const [inputText, setInputText] = useState<string>(params.get('data') ?? '');
   const [loading, setLoading] = useState<boolean>(false);
 
   const errors = useErrors();
   const router = useRouter();
+  const config = useConfig();
 
   const initializeTransfer = async (data: string) => {
     if (loading) return;
     setLoading(true);
 
     const cleanData: string = data.trim();
-    const type: TransferTypes = detectTransferType(cleanData, config);
+    const type: TransferTypes = detectTransferType(cleanData);
 
     switch (type) {
       case TransferTypes.NONE:
@@ -59,11 +65,17 @@ export default function Page() {
       case TransferTypes.INVOICE:
         router.push(`/transfer/invoice/${cleanData}`);
         return;
-
-      default:
-        router.push(`/transfer/lnurl?data=${cleanData}`);
-        return;
     }
+
+    const formattedLNURLData = await formatLNURLData(cleanData);
+    if (formattedLNURLData.type === TransferTypes.NONE || formattedLNURLData.type === TransferTypes.INVOICE) {
+      errors.modifyError('INVALID_RECIPIENT');
+      setLoading(false);
+      return;
+    }
+
+    router.push(`/transfer/lnurl?data=${cleanData}`);
+    return;
   };
 
   const handleContinue = async () => {
@@ -82,33 +94,40 @@ export default function Page() {
     }
   };
 
-  const loadLastDestinations = () => {
-    const lastDest: string[] = [];
-
-    transactions.forEach(async (tx) => {
-      if (tx.type === TransactionType.INTERNAL && tx.direction === TransactionDirection.OUTGOING) {
-        const txPubkeys: string[] = getMultipleTags(tx.events[0].tags, 'p');
-        if (txPubkeys.length !== 2) return;
-
-        const receiverPubkey: string = txPubkeys[1];
-        if (receiverPubkey === identity.data.hexpub) return;
-
-        const username: string = await getUsername(receiverPubkey, config);
-
-        if (username.length) {
-          const formattedLud16: string = `${username}@${config.federation.domain}`;
-          if (!lastDest.includes(formattedLud16)) {
-            lastDest.push(formattedLud16);
-            setLastDestinations(lastDest);
-          }
-        }
-      }
+  const lastDestinations = useMemo(() => {
+    const receiversList: string[] = [];
+    transactions.forEach((tx: Transaction) => {
+      if (
+        tx.direction === TransactionDirection.OUTGOING &&
+        tx.metadata &&
+        tx.metadata.receiver &&
+        tx.metadata.receiver.length < 40 &&
+        !receiversList.includes(tx.metadata.receiver)
+      )
+        receiversList.push(tx.metadata.receiver);
     });
-  };
 
-  useEffect(() => {
-    if (transactions.length) loadLastDestinations();
-  }, [transactions.length]);
+    return receiversList;
+  }, [transactions]);
+
+  const autoCompleteData: string[] = useMemo(() => {
+    if (!inputText.length || inputText.length > 15) return [];
+
+    const data: string[] = lastDestinations.filter((dest) => dest.startsWith(inputText));
+    if (data.length >= 3) return data;
+
+    if (!inputText.includes('@')) return removeDuplicateArray([`${inputText}@${config.federation.domain}`, ...data]);
+
+    const [username, domain] = inputText.split('@');
+    if (!domain) data.push(`${username}@${config.federation.domain}`);
+
+    const recommendations: string[] = [];
+    lightningAddresses.forEach((address) => {
+      if (address.startsWith(domain)) recommendations.push(`${username}@${address}`);
+    });
+
+    return removeDuplicateArray([...data, ...recommendations]);
+  }, [lastDestinations, inputText]);
 
   return (
     <>
@@ -118,7 +137,9 @@ export default function Page() {
         <Divider y={16} />
         <Flex flex={1} direction="column">
           <InputGroup>
-            <Input
+            <Autocomplete
+              data={autoCompleteData}
+              onSelect={setInputText}
               onChange={(e) => {
                 errors.resetError();
                 setInputText(e.target.value);
@@ -128,9 +149,10 @@ export default function Page() {
               value={inputText}
               status={errors.errorInfo.visible ? 'error' : undefined}
               disabled={loading}
+              visible={Boolean(autoCompleteData.length) && !loading}
             />
             <InputGroupRight>
-              <Button size="small" variant="bezeled" onClick={handlePasteInput}>
+              <Button size="small" variant="borderless" onClick={handlePasteInput} disabled={!!inputText}>
                 {t('PASTE')}
               </Button>
             </InputGroupRight>
@@ -142,7 +164,7 @@ export default function Page() {
 
           <Divider y={16} />
           <Flex>
-            <LinkButton color="secondary" variant="bezeled" href={'/scan'}>
+            <LinkButton color="secondary" variant="bezeled" onClick={() => router.push('/scan')}>
               {t('SCAN_QR_CODE')}
             </LinkButton>
           </Flex>

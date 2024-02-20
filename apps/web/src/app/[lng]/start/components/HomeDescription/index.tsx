@@ -1,9 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/context/TranslateContext';
-import { Flex, Heading, Text } from '@/components/UI';
-
-import theme from '@/styles/theme';
+import { Flex, Heading, Text, theme } from '@lawallet/ui';
 
 import { HomeDescription } from './style';
 

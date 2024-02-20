@@ -16,7 +16,7 @@ ignoreddoc.md
 # Testing
 coverage
 
-apps/test
+apps/wallet-docs
 
 # Turbo
 .turbo

@@ -1,0 +1,92 @@
+{
+    "-- Introduction": {
+        "type": "separator",
+        "title": "Introduction"
+    },
+    "index": "Getting started",
+    "-- Configuration": {
+        "type": "separator",
+        "title": "Configuration"
+    },
+    "createConfig": {
+        "title": "createConfig"
+    },
+    "createStorage": {
+        "title": "createStorage"
+    },
+    "LaWalletConfig": {
+        "title": "LaWalletConfig"
+    },
+    "-- Hooks": {
+        "type": "separator",
+        "title": "Hooks"
+    },
+    "hooks": {
+        "display": "hidden",
+        "type": "page"
+    },
+    "useAccount": {
+        "title": "useAccount",
+        "href": "/react/hooks/useAccount"
+    },
+    "useBalance": {
+        "title": "useBalance",
+        "href": "/react/hooks/useBalance"
+    },
+    "useCards": {
+        "title": "useCards",
+        "href": "/react/hooks/useCards"
+    },
+    "useIdentity": {
+        "title": "useIdentity",
+        "href": "/react/hooks/useIdentity"
+    },
+    "useInvoice": {
+        "title": "useInvoice",
+        "href": "/react/hooks/useInvoice"
+    },
+    "useLNURL": {
+        "title": "useLNURL",
+        "href": "/react/hooks/useLNURL"
+    },
+    "useNostr": {
+        "title": "useNostr",
+        "href": "/react/hooks/useNostr"
+    },
+    "useSubscription": {
+        "title": "useSubscription",
+        "href": "/react/hooks/useSubscription"
+    },
+    "useTransactions": {
+        "title": "useTransactions",
+        "href": "/react/hooks/useTransactions"
+    },
+    "useTransfer": {
+        "title": "useTransfer",
+        "href": "/react/hooks/useTransfer"
+    },
+    "useZap": {
+        "title": "useZap",
+        "href": "/react/hooks/useZap"
+    },
+    "-- Glossary": {
+        "type": "separator",
+        "title": "Glossary"
+    },
+    "glossary": {
+        "display": "hidden",
+        "type": "page"
+    },
+    "Types": {
+        "title": "Types",
+        "href": "/react/glossary/types"
+    },
+    "NDK": {
+        "title": "NDK",
+        "href": "/react/glossary/ndk"
+    },
+    "get-started": {
+        "type": "page",
+        "display": "hidden"
+    }
+}

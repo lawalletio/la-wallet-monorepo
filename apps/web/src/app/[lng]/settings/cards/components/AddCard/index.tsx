@@ -1,5 +1,6 @@
 'use client';
-import { Button, Flex, Modal, Text } from '@/components/UI';
+import { Button, Flex, Text } from '@lawallet/ui';
+import { Modal } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 // import { AlertTypes } from '@/hooks/useAlerts';
 import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';
@@ -7,6 +8,8 @@ import { requestCardActivation } from '@lawallet/react/actions';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { AlertTypes } from '@/hooks/useAlerts';
+import { useNotifications } from '@/context/NotificationsContext';
 
 export type NewCard = {
   card: string;
@@ -26,6 +29,7 @@ const AddNewCardModal = () => {
   const pathname = usePathname();
   const params = useSearchParams();
   const config = useConfig();
+  const notifications = useNotifications();
 
   const {
     account: { identity },
@@ -36,14 +40,14 @@ const AddNewCardModal = () => {
     router.replace(pathname);
   };
 
-  // const sendNotification = (alertDescription: string, alertType: AlertTypes) => {
-  //   // notifications.showAlert({
-  //   //   description: alertDescription,
-  //   //   type: alertType,
-  //   // });
+  const sendNotification = (alertDescription: string, alertType: AlertTypes) => {
+    notifications.showAlert({
+      description: alertDescription,
+      type: alertType,
+    });
 
-  //   resetCardInfo();
-  // };
+    resetCardInfo();
+  };
 
   const handleActivateCard = () => {
     if (newCardInfo.loading) return;
@@ -54,18 +58,15 @@ const AddNewCardModal = () => {
 
     buildCardActivationEvent(newCardInfo.card, identity.data.privateKey, config)
       .then((cardEvent: NostrEvent) => {
-        requestCardActivation(cardEvent, config).then(() => {
-          // const description: string = cardActivated ? t('ACTIVATE_SUCCESS') : t('ACTIVATE_ERROR');
+        requestCardActivation(cardEvent, config).then((cardActivated) => {
+          const description: string = cardActivated ? t('ACTIVATE_SUCCESS') : t('ACTIVATE_ERROR');
+          const type: AlertTypes = cardActivated ? 'success' : 'error';
 
-          // const type: AlertTypes = cardActivated ? 'success' : 'error';
-
-          // sendNotification(description, type);
-          resetCardInfo();
+          sendNotification(description, type);
         });
       })
       .catch(() => {
-        // sendNotification(t('ACTIVATE_ERROR'), 'error');
-        resetCardInfo();
+        sendNotification(t('ACTIVATE_ERROR'), 'error');
       });
   };
 
@@ -79,7 +80,11 @@ const AddNewCardModal = () => {
   }, []);
 
   return (
-    <Modal title={t('NEW_CARD')} isOpen={Boolean(newCardInfo.card.length)} onClose={() => null}>
+    <Modal
+      title={t('NEW_CARD')}
+      isOpen={Boolean(newCardInfo.card.length)}
+      onClose={() => router.push('/settings/cards')}
+    >
       <Text>{t('DETECT_NEW_CARD')}</Text>
       <Flex direction="column" gap={4}>
         <Flex>

@@ -1,4 +1,13 @@
-import { LaWalletKinds, buildCardConfigEvent, getTag, parseContent, parseMultiNip04Event } from '@lawallet/utils';
+import {
+  LaWalletKinds,
+  buildCardConfigEvent,
+  buildCardTransferDonationEvent,
+  extendedMultiNip04Decrypt,
+  extendedMultiNip04Encrypt,
+  getTagValue,
+  parseContent,
+} from '@lawallet/utils';
+import { broadcastEvent } from '@lawallet/utils/actions';
 import {
   CardStatus,
   ConfigTypes,
@@ -7,33 +16,30 @@ import {
   type CardPayload,
   type ConfigParameter,
 } from '@lawallet/utils/types';
-import { broadcastEvent } from '@lawallet/utils/actions';
 
-import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { useEffect, useMemo, useState } from 'react';
-import { useSubscription } from './useSubscription.js';
-import { getPublicKey } from 'nostr-tools';
+import { useNostrContext } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
+import { useSubscription } from './useSubscription.js';
 
-export type CardConfigReturns = {
+export interface CardConfigReturns {
   cardsData: CardDataPayload;
   cardsConfig: CardConfigPayload;
   loadInfo: CardLoadingType;
   toggleCardStatus: (uuid: string) => Promise<boolean>;
   updateCardConfig: (uuid: string, config: CardPayload) => Promise<boolean>;
-};
+  buildDonationEvent: (uuid: string) => Promise<NostrEvent | undefined>;
+}
 
 type CardLoadingType = {
   loadedAt: number;
   loading: boolean;
 };
 
-export interface UseCardsParameters extends ConfigParameter {
-  privateKey: string;
-}
+export interface UseCardsParameters extends ConfigParameter {}
 
 export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
-  const pubkey = useMemo(() => getPublicKey(parameters.privateKey), [parameters.privateKey]);
   const config = useConfig(parameters);
 
   const [cardsData, setCardsData] = useState<CardDataPayload>({});
@@ -42,6 +48,9 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     loadedAt: 0,
     loading: true,
   });
+
+  const { encrypt, decrypt, signerInfo, signEvent } = useNostrContext();
+  const pubkey = useMemo(() => (signerInfo ? signerInfo.pubkey : ''), [signerInfo]);
 
   const { subscription } = useSubscription({
     filters: [
@@ -60,14 +69,20 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     config,
   });
 
-  const buildAndBroadcastCardConfig = (cardConfig: CardConfigPayload, privateKey: string): Promise<boolean> => {
-    return buildCardConfigEvent(cardConfig, privateKey, config)
-      .then((configEvent) => {
-        return broadcastEvent(configEvent, config);
-      })
-      .catch(() => {
-        return false;
-      });
+  const buildAndBroadcastCardConfig = async (cardConfig: CardConfigPayload): Promise<boolean> => {
+    if (!pubkey) return false;
+
+    try {
+      const receiverPubkeys: string[] = [config.modulePubkeys.card, pubkey];
+      const nip04Event: NostrEvent = await buildCardConfigEvent(
+        await extendedMultiNip04Encrypt(JSON.stringify(cardConfig), pubkey, receiverPubkeys, encrypt),
+      );
+
+      const signedEvent = await signEvent(nip04Event);
+      return broadcastEvent(signedEvent, config);
+    } catch {
+      return false;
+    }
   };
 
   const toggleCardStatus = async (uuid: string): Promise<boolean> => {
@@ -84,7 +99,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
       },
     };
 
-    return buildAndBroadcastCardConfig(new_card_config, parameters.privateKey);
+    return buildAndBroadcastCardConfig(new_card_config);
   };
 
   const updateCardConfig = async (uuid: string, config: CardPayload): Promise<boolean> => {
@@ -102,16 +117,16 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
       },
     };
 
-    return buildAndBroadcastCardConfig(new_card_config, parameters.privateKey);
+    return buildAndBroadcastCardConfig(new_card_config);
   };
 
   const processReceivedEvent = async (event: NDKEvent) => {
     const nostrEv = await event.toNostrEvent();
 
-    const decryptedData = await parseMultiNip04Event(nostrEv, parameters.privateKey, pubkey);
-    const parsedDecryptedData = parseContent(decryptedData);
+    const decryptedContent = await extendedMultiNip04Decrypt(nostrEv, pubkey, decrypt);
+    const parsedDecryptedData = parseContent(decryptedContent);
 
-    const subkind = getTag(nostrEv.tags, 't');
+    const subkind = getTagValue(nostrEv.tags, 't');
     if (!subkind) return;
 
     if (subkind === ConfigTypes.DATA) {
@@ -121,6 +136,21 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     }
 
     if (loadInfo.loading) setLoadInfo({ loadedAt: nostrEv.created_at + 1, loading: false });
+  };
+
+  const buildDonationEvent = async (uuid: string): Promise<NostrEvent | undefined> => {
+    try {
+      if (!pubkey) return;
+      const encryptedUUID: string | undefined = await encrypt(config.modulePubkeys.card, uuid);
+      if (!encryptedUUID) return;
+
+      const transferDonationEvent = await buildCardTransferDonationEvent(pubkey, encryptedUUID, config);
+      const signedEvent: NostrEvent = await signEvent(transferDonationEvent);
+
+      return signedEvent;
+    } catch {
+      return;
+    }
   };
 
   useEffect(() => {
@@ -138,5 +168,5 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     }, 2500);
   }, []);
 
-  return { cardsData, cardsConfig, loadInfo, toggleCardStatus, updateCardConfig };
+  return { cardsData, cardsConfig, loadInfo, toggleCardStatus, updateCardConfig, buildDonationEvent };
 };

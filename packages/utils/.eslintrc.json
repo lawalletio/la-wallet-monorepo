@@ -1,0 +1,6 @@
+{
+  "extends": ["@lawallet/eslint-config/library.js"],
+  "parserOptions": {
+    "sourceType": "module"
+}
+}

@@ -12,6 +12,7 @@ export interface Transaction {
   errors: string[];
   events: NostrEvent[];
   createdAt: number;
+  metadata?: Record<string, string>;
 }
 
 export enum TransferTypes {
@@ -55,6 +56,8 @@ export interface LNRequestResponse {
   k1?: string;
   minWithdrawable?: number;
   maxWithdrawable?: number;
+  federationId?: string;
+  accountPubKey?: string;
 }
 
 export interface TransferInformation {

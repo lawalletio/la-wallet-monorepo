@@ -2,9 +2,9 @@
 
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
-import { Avatar, Confetti, Divider, Flex, Heading, Icon, LinkButton, Text } from '@/components/UI';
+import { Avatar, Container, Divider, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
+import { Confetti } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
 import { TransferInformation, TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';
@@ -83,7 +83,7 @@ export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInforma
         <Container size="small">
           <Divider y={16} />
           <Flex gap={8}>
-            <LinkButton variant="borderless" href="/dashboard">
+            <LinkButton variant="borderless" onClick={() => router.push('/dashboard')}>
               {t('GO_HOME')}
             </LinkButton>
           </Flex>

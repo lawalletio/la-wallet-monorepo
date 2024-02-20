@@ -1,5 +1,5 @@
+import { bech32 } from '@scure/base';
 import assert from 'assert';
-import { bech32 } from 'bech32';
 
 const rules = {
   prefix: 'lnurl',
@@ -7,14 +7,22 @@ const rules = {
 };
 
 export const lnurl_decode = (encoded: string) => {
-  assert.strictEqual(typeof encoded, 'string', 'Invalid argument ("encoded"): String expected');
-  const decoded = bech32.decode(encoded, rules.limit);
-  return Buffer.from(bech32.fromWords(decoded.words)).toString('utf8');
+  try {
+    assert.strictEqual(typeof encoded, 'string', 'Invalid argument ("encoded"): String expected');
+    const decoded = bech32.decode(encoded, rules.limit);
+    return Buffer.from(bech32.fromWords(decoded.words)).toString('utf8');
+  } catch {
+    return '';
+  }
 };
 
 export const lnurl_encode = (unencoded: string) => {
-  assert.strictEqual(typeof unencoded, 'string', 'Invalid argument ("unencoded"): String expected');
+  try {
+    assert.strictEqual(typeof unencoded, 'string', 'Invalid argument ("unencoded"): String expected');
 
-  const words = bech32.toWords(Buffer.from(unencoded, 'utf8'));
-  return bech32.encode(rules.prefix, words, rules.limit);
+    const words = bech32.toWords(Buffer.from(unencoded, 'utf8'));
+    return bech32.encode(rules.prefix, words, rules.limit);
+  } catch {
+    return '';
+  }
 };

@@ -1,15 +1,24 @@
 'use client';
 
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
-import { Button, Divider, Feedback, Flex, Icon, LinkSetting, Sheet, Text } from '@/components/UI';
-import { ButtonSetting } from '@/components/UI/ButtonSetting/style';
 import { CACHE_BACKUP_KEY, LAWALLET_VERSION, STORAGE_IDENTITY_KEY } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
+import {
+  Button,
+  ButtonSetting,
+  Container,
+  Divider,
+  Feedback,
+  Flex,
+  Icon,
+  LinkSetting,
+  Sheet,
+  Text,
+  theme,
+} from '@lawallet/ui';
 
-import theme from '@/styles/theme';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useConfig, useWalletContext } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
@@ -56,7 +65,7 @@ export default function Page() {
         </Text>
         <Divider y={8} />
         <Flex direction="column" gap={4}>
-          <LinkSetting href="/settings/cards">{t('MY_CARDS')}</LinkSetting>
+          <LinkSetting onClick={() => router.push('/settings/cards')}>{t('MY_CARDS')}</LinkSetting>
         </Flex>
         <Divider y={8} />
 
@@ -82,7 +91,7 @@ export default function Page() {
             </Text>
             <Divider y={8} />
             <Flex direction="column" gap={4}>
-              <LinkSetting href="/settings/recovery">{t('BACKUP_ACCOUNT')}</LinkSetting>
+              <LinkSetting onClick={() => router.push('/settings/recovery')}>{t('BACKUP_ACCOUNT')}</LinkSetting>
             </Flex>
           </>
         )}
@@ -93,12 +102,8 @@ export default function Page() {
         </Text>
         <Divider y={8} />
         <Flex direction="column" gap={4}>
-          <LinkSetting href="https://twitter.com/lawalletok" target="_blank">
-            Twitter
-          </LinkSetting>
-          <LinkSetting href="https://discord.gg/QESv76truh" target="_blank">
-            Discord
-          </LinkSetting>
+          <LinkSetting onClick={() => router.push('https://twitter.com/lawalletok')}>Twitter</LinkSetting>
+          <LinkSetting onClick={() => router.push('https://discord.lacrypta.ar')}>Discord</LinkSetting>
         </Flex>
         <Divider y={16} />
         <Flex justify="center">
@@ -124,7 +129,12 @@ export default function Page() {
         <Divider y={16} />
       </Container>
 
-      <Sheet title={t('CHANGE_LANGUAGE')} isOpen={sheetLanguage} onClose={() => setSheetLanguage(false)}>
+      <Sheet
+        title={t('CHANGE_LANGUAGE')}
+        isOpen={sheetLanguage}
+        closeText={t('CLOSE')}
+        onClose={() => setSheetLanguage(false)}
+      >
         <Container>
           <Flex direction="column" flex={1}>
             <Radio

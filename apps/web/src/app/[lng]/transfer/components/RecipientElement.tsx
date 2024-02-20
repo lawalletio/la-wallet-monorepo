@@ -1,4 +1,4 @@
-import { Avatar, Flex, Text } from '@/components/UI';
+import { Avatar, Flex, Text } from '@lawallet/ui';
 import { extractFirstTwoChars } from '@/utils';
 import { splitHandle } from '@lawallet/react';
 

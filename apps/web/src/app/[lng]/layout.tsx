@@ -1,18 +1,15 @@
 'use client';
-
-import { ThemeProvider } from 'styled-components';
-
 import StyledComponentsRegistry from '@/utils/registry';
 
 import { TranslateProvider } from '@/context/TranslateContext';
-import GlobalStyles from '@/styles/GlobalStyles';
-import { fontSecondary } from '@/styles/fonts';
-import theme from '@/styles/theme';
 import { ReactNode } from 'react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import { LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
 import { config } from '@/constants/constants';
+import { NotificationsProvider } from '@/context/NotificationsContext';
+
+import { fontPrimary, fontSecondary } from '@/styles/fonts';
 
 interface ProviderProps {
   children: ReactNode;
@@ -26,7 +23,7 @@ const APP_DESCRIPTION = 'https://lawallet.ar/';
 const Providers = (props: ProviderProps) => {
   const { children, params } = props;
   return (
-    <html lang={params.lng ?? defaultLocale} className={fontSecondary.className}>
+    <html lang={params.lng ?? defaultLocale} className={`${fontPrimary.variable} ${fontSecondary.variable}`}>
       <head>
         <title>{APP_NAME}</title>
         <meta name="application-name" content={APP_NAME} />
@@ -47,6 +44,11 @@ const Providers = (props: ProviderProps) => {
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon.ico" />
 
+        {/* Fonts */}
+        {/* <link rel="preload" href="/fonts/IAAB3.woff2" as="font" type="font/woff2" />
+        <link rel="preload" href="/fonts/SF-Regular.woff2" as="font" type="font/woff2" />
+        <link rel="preload" href="/fonts/SF-Bold.woff2" as="font" type="font/woff2" /> */}
+
         {/* <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_TAG_ID}`} />
         <Script id="google-analytics">
           {`
@@ -61,12 +63,11 @@ const Providers = (props: ProviderProps) => {
 
       <body>
         <StyledComponentsRegistry>
-          <GlobalStyles />
           <LaWalletProvider config={config}>
             <AuthProvider lng={params.lng}>
-              <ThemeProvider theme={theme}>
-                <TranslateProvider lng={params.lng}>{children}</TranslateProvider>
-              </ThemeProvider>
+              <TranslateProvider lng={params.lng}>
+                <NotificationsProvider>{children}</NotificationsProvider>
+              </TranslateProvider>
             </AuthProvider>
           </LaWalletProvider>
         </StyledComponentsRegistry>

@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 
 interface TokenListProps {}
 
-export const TokenList = styled.div<TokenListProps>`
+export const TokenListStyle = styled.div<TokenListProps>`
   width: 100%;
 
   button {

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["dom", "dom.iterable", "esnext", "WebWorker"],
     "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
@@ -26,6 +26,7 @@
     "paths": {
       "@/*": ["./*"]
     },
+    "types": ["@types/react", "@serwist/next/typings"],
     "moduleResolution": "node"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,4 +1,4 @@
-import theme from '@/styles/theme';
+import { theme } from '@lawallet/ui';
 import styled from 'styled-components';
 
 interface CardImageProp {

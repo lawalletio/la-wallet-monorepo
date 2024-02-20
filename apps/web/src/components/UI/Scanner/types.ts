@@ -1,4 +1,5 @@
 import NimiqQrScanner from 'qr-scanner';
+import { CSSProperties } from 'react';
 export { default as Nimiq } from 'qr-scanner';
 
 export interface QrScannerProps {
@@ -13,15 +14,15 @@ export interface QrScannerProps {
   /**
    * Property that represents a style for the container
    */
-  containerStyle?: any;
+  containerStyle?: CSSProperties;
   /**
    * Property that represents a style for the video container
    */
-  videoContainerStyle?: any;
+  videoContainerStyle?: CSSProperties;
   /**
    * Property that represents a style for the video
    */
-  videoStyle?: any;
+  videoStyle?: CSSProperties;
   /**
    * Property that represents the ID of the video element
    */
@@ -29,7 +30,7 @@ export interface QrScannerProps {
   /**
    * Property that represents the view finder component
    */
-  ViewFinder?: (props: any) => React.ReactElement<any, any> | null;
+  ViewFinder?: () => React.ReactNode;
   /**
    * Start the camera as soon as the component mounts?
    */

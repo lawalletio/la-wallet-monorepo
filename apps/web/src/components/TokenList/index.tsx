@@ -1,16 +1,15 @@
 'use client';
 
-import Container from '@/components/Layout/Container';
-import { Button, Flex } from '@/components/UI';
+import { Button, Container, Flex } from '@lawallet/ui';
 
-import { TokenList } from './style';
+import { TokenListStyle } from './style';
 import { useWalletContext, CurrenciesList } from '@lawallet/react';
 
-export default function Component() {
+export function TokenList() {
   const { settings } = useWalletContext();
 
   return (
-    <TokenList>
+    <TokenListStyle>
       <Container>
         <Flex gap={4} justify="center">
           {CurrenciesList.map((currency) => {
@@ -29,6 +28,6 @@ export default function Component() {
           })}
         </Flex>
       </Container>
-    </TokenList>
+    </TokenListStyle>
   );
 }

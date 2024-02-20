@@ -4,19 +4,25 @@
   "type": "module",
   "scripts": {
     "build": "turbo build",
-    "dev": "pnpm libs:build && turbo dev",
+    "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "build:react": "pnpm --filter @lawallet/react build",
+    "build:utils": "pnpm --filter @lawallet/utils build",
+    "build:ui": "pnpm --filter @lawallet/ui build",
+    "build:libs": "pnpm build:utils && pnpm build:react && pnpm build:ui",
+    "web:build": "pnpm --filter lawallet-front build",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
-    "libs:build": "pnpm --filter @lawallet/utils build && pnpm --filter @lawallet/react build",
-    "docs:dev": "pnpm --filter docs dev"
+    "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
+    "docs:build": "pnpm --filter @lawallet/docs build",
+    "docs:start": "pnpm --filter @lawallet/docs start:docs"
   },
   "devDependencies": {
     "@lawallet/eslint-config": "^1.0.0",
     "@lawallet/typescript-config": "^1.0.0",
-    "prettier": "^3.2.2",
-    "turbo": "latest"
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.3"
   },
   "packageManager": "pnpm@8.9.0",
   "overrides": {

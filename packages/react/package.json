@@ -1,18 +1,25 @@
 {
   "name": "@lawallet/react",
-  "version": "0.0.7",
+  "version": "0.1.2",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lawalletio/la-wallet-monorepo.git",
+    "directory": "packages/react"
+  },
   "scripts": {
+    "dev": "pnpm run build:esm+types --watch",
     "test": "echo \"Error: no test specified\" && exit 0",
     "build": "pnpm run build:esm+types",
     "build:esm+types": "tsc --project ./tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "lint": "eslint ."
   },
-  "author": "Ferpa",
+  "author": "LaWallet Labs",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.11.6",
-    "@types/react": "^18.2.48",
+    "@types/node": "^20.11.17",
+    "@types/react": "^18.2.55",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
@@ -20,7 +27,7 @@
   },
   "dependencies": {
     "@lawallet/utils": "*",
-    "@nostr-dev-kit/ndk": "^2.3.3",
+    "@nostr-dev-kit/ndk": "^2.4.0",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "overrides": {

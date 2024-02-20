@@ -1,17 +1,31 @@
 'use client';
-import Container from '@/components/Layout/Container';
 import Navbar from '@/components/Layout/Navbar';
-import { MainLoader } from '@/components/Loader/Loader';
-import { Button, ButtonGroup, Divider, Feedback, Flex, Heading, InputWithLabel } from '@/components/UI';
-import { useTranslation } from '@/context/TranslateContext';
-import { useParams, useRouter } from 'next/navigation';
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import LimitInput from '../components/LimitInput/LimitInput';
-import { useCards, useConfig, useWalletContext } from '@lawallet/react';
-import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
-import useErrors from '@/hooks/useErrors';
 import { regexComment, regexUserName } from '@/constants/constants';
+import { useCardsContext } from '@/context/CardsContext';
+import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
+import useErrors from '@/hooks/useErrors';
+import { formatToPreference, roundToDown } from '@lawallet/react';
+import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
+import {
+  Button,
+  Container,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  InputWithLabel,
+  Label,
+  Loader,
+  Text,
+  ToggleSwitch,
+  theme,
+} from '@lawallet/ui';
+import { useParams, useRouter } from 'next/navigation';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import LimitInput from '../components/LimitInput/LimitInput';
+
+const regexNumbers: RegExp = /^[0123456789]+$/;
 
 const defaultTXLimit: Limit = {
   name: 'Transactional limit',
@@ -35,22 +49,15 @@ const NAME_MAX_LENGTH = 20;
 const DESC_MAX_LENGTH = 64;
 
 const page = () => {
-  const { t } = useTranslation();
-  const {
-    account: { identity },
-  } = useWalletContext();
+  const { t, lng } = useTranslation();
 
   const errors = useErrors();
-  const config = useConfig();
   const router = useRouter();
   const params = useParams();
 
   const uuid: string = useMemo(() => params.uuid as string, []);
 
-  const { cardsData, cardsConfig, loadInfo, updateCardConfig } = useCards({
-    privateKey: identity.data.privateKey,
-    config,
-  });
+  const { cardsData, cardsConfig, loadInfo, updateCardConfig } = useCardsContext();
 
   const [newConfig, setNewConfig] = useState<CardPayload>({
     name: '',
@@ -67,14 +74,22 @@ const page = () => {
   }, [newConfig.limits]);
 
   const handleChangeLimit = (e: ChangeEvent<HTMLInputElement>) => {
+    errors.resetError();
+    const targetValue = e.target.value ?? 0;
+    if (targetValue.length && !regexNumbers.test(targetValue)) {
+      errors.modifyError('solo numeros');
+      return;
+    }
+
     const inputAmount: number = !e.target.value ? 0 : parseFloat(e.target.value);
+    const mSats: number = inputAmount * 1000;
 
     setNewConfig({
       ...newConfig,
       limits: [
         selectedLimit === 'tx'
-          ? { ...defaultTXLimit, amount: BigInt(inputAmount).toString() }
-          : { ...defaultDailyLimit, amount: BigInt(inputAmount).toString() },
+          ? { ...defaultTXLimit, amount: BigInt(mSats).toString() }
+          : { ...defaultDailyLimit, amount: BigInt(mSats).toString() },
       ],
     });
   };
@@ -148,7 +163,7 @@ const page = () => {
       />
 
       {loadInfo.loading ? (
-        <MainLoader />
+        <Loader />
       ) : (
         <Container size="small">
           <Divider y={24} />
@@ -157,7 +172,9 @@ const page = () => {
             onChange={handleChangeName}
             isError={
               errors.isExactError('EMPTY_NAME') ||
-              errors.isExactError('MAX_LENGTH_NAME', { length: `${NAME_MAX_LENGTH}` })
+              errors.isExactError('MAX_LENGTH_NAME', {
+                length: `${NAME_MAX_LENGTH}`,
+              })
             }
             name="card-name"
             label={t('NAME')}
@@ -169,62 +186,68 @@ const page = () => {
 
           <InputWithLabel
             onChange={handleChangeDesc}
-            isError={errors.isExactError('MAX_LENGTH_DESC', { length: `${DESC_MAX_LENGTH}` })}
+            isError={errors.isExactError('MAX_LENGTH_DESC', {
+              length: `${DESC_MAX_LENGTH}`,
+            })}
             name="card-desc"
             label={t('DESCRIPTION')}
             placeholder={t('DESCRIPTION')}
             value={newConfig.description}
           />
 
-          <Divider y={12} />
-
-          <Flex align="center">
-            <Feedback show={errors.errorInfo.visible} status={errors.errorInfo.visible ? 'error' : undefined}>
-              {errors.errorInfo.text}
-            </Feedback>
-          </Flex>
-
           <Divider y={24} />
 
+          <Heading as="h5">{t('LIMITS')}</Heading>
+
+          <Divider y={12} />
+
           <Flex justify="space-between" align="center">
-            <Heading as="h5">{t('LIMITS')}</Heading>
+            <Text isBold={true}>{t('LIMIT_TYPE')}</Text>
 
-            <ButtonGroup>
-              <Button
-                variant={selectedLimit === 'tx' ? 'filled' : 'borderless'}
-                onClick={() => {
+            <Flex align="center" flex={0} gap={8}>
+              <Label htmlFor="type-limit">{t('TX_LIMIT')}</Label>
+              <ToggleSwitch
+                switchEnabled={selectedLimit === 'daily'}
+                onChange={(bool) => {
                   setNewConfig({
                     ...newConfig,
-                    limits: [{ ...defaultTXLimit, amount: newConfig.limits[0].amount }],
+                    limits: [
+                      !bool
+                        ? {
+                            ...defaultTXLimit,
+                            amount: newConfig.limits[0].amount,
+                          }
+                        : {
+                            ...defaultDailyLimit,
+                            amount: newConfig.limits[0].amount,
+                          },
+                    ],
                   });
                 }}
-                size="small"
-              >
-                {t('UNIQUE')}
-              </Button>
-
-              <Button
-                variant={selectedLimit === 'daily' ? 'filled' : 'borderless'}
-                onClick={() => {
-                  setNewConfig({
-                    ...newConfig,
-                    limits: [{ ...defaultDailyLimit, amount: newConfig.limits[0].amount }],
-                  });
-                }}
-                size="small"
-              >
-                {t('DAILY')}
-              </Button>
-            </ButtonGroup>
+              />
+              <Label htmlFor="type-limit">{t('DAILY_LIMIT')}</Label>
+            </Flex>
           </Flex>
 
           <Divider y={24} />
 
           <LimitInput
             onChange={handleChangeLimit}
-            amount={newConfig.limits.length ? newConfig.limits[0].amount : 0}
+            amount={newConfig.limits.length ? roundToDown(Number(newConfig.limits[0].amount) / 1000, 0) : 0}
             currency={'SAT'}
           />
+
+          <Divider y={8} />
+
+          <Flex flex={1} justify="center">
+            <Text color={theme.colors.warning}>
+              {newConfig.limits.length && Number(newConfig.limits[0].amount) > 0
+                ? t(`LIMIT_CARD_PER_${selectedLimit === 'tx' ? 'TX' : 'DAY'}`, {
+                    sats: formatToPreference('SAT', Number(newConfig.limits[0].amount) / 1000, lng).toString(),
+                  })
+                : t('NO_LIMIT_SET')}
+            </Text>
+          </Flex>
 
           <Divider y={24} />
         </Container>
@@ -232,6 +255,14 @@ const page = () => {
 
       <Flex>
         <Container size="small">
+          <Divider y={12} />
+
+          <Flex flex={1} align="center" justify="center">
+            <Feedback show={errors.errorInfo.visible} status={errors.errorInfo.visible ? 'error' : undefined}>
+              {errors.errorInfo.text}
+            </Feedback>
+          </Flex>
+
           <Divider y={16} />
           <Flex gap={8}>
             <Button variant="bezeledGray" onClick={() => router.push('/settings/cards')}>

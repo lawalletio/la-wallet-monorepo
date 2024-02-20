@@ -1,29 +1,23 @@
-import { useEffect, useState } from 'react';
 import { decodeInvoice, defaultInvoiceTransfer, parseInvoiceInfo } from '@lawallet/utils';
 import {
   TransferTypes,
   type ConfigParameter,
-  type InvoiceTransferType,
   type DecodedInvoiceReturns,
+  type InvoiceTransferType,
 } from '@lawallet/utils/types';
-import { useTransfer } from './useTransfer.js';
-import type { StatusVarsTypes } from './useStatusVars.js';
+import { useEffect, useState } from 'react';
 
-export interface UseInvoiceReturns extends StatusVarsTypes {
-  parsedInvoice: InvoiceTransferType;
+export interface UseInvoiceReturns {
+  txInfo: InvoiceTransferType;
   decodedInvoice: DecodedInvoiceReturns | undefined;
-  executePayment: () => Promise<boolean>;
 }
 
 interface UseInvoiceParameters extends ConfigParameter {
   bolt11?: string;
-  onSuccess?: () => void;
-  onError?: (message?: string) => void;
 }
 
 export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
-  const { error, isLoading, isError, isSuccess, execOutboundTransfer } = useTransfer({ ...params, tokenName: 'BTC' });
-  const [parsedInvoice, setParsedInvoice] = useState<InvoiceTransferType>(defaultInvoiceTransfer);
+  const [txInfo, setTxInfo] = useState<InvoiceTransferType>(defaultInvoiceTransfer);
   const [decodedInvoice, setDecodedInvoice] = useState<DecodedInvoiceReturns | undefined>(undefined);
 
   const initializeInvoice = async (data: string) => {
@@ -34,18 +28,12 @@ export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
 
     const transferInfo: InvoiceTransferType = parseInvoiceInfo(decoded);
     if (transferInfo.type !== TransferTypes.INVOICE) return;
-
-    setParsedInvoice(transferInfo);
-  };
-
-  const executePayment = async () => {
-    if (!params.bolt11) return false;
-    return execOutboundTransfer({ bolt11: parsedInvoice.data, amount: parsedInvoice.amount });
+    setTxInfo(transferInfo);
   };
 
   useEffect(() => {
     if (params.bolt11) initializeInvoice(params.bolt11);
   }, [params.bolt11]);
 
-  return { error, isLoading, isError, isSuccess, parsedInvoice, decodedInvoice, executePayment };
+  return { txInfo, decodedInvoice };
 };

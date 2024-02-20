@@ -28,12 +28,12 @@ An open source repository for all LaWallet front-end interfaces.
 For instructions per application or package, see the README published for each application:
 
 - [Web](apps/web/README.md)
-
+- [React Hooks](packages/react/README.md)
 
 ## 🗂 Directory Structure
 
-| Folder      | Contents                                                                       |
-| ----------- | ------------------------------------------------------------------------------ |
-| `apps/`     | The home for each standalone application.                                      |
-| `config/`   | Shared infrastructure packages and configurations.                             |
-| `packages/` | Shared code packages covering UI, shared functionality, and shared utilities.  |
+| Folder      | Contents                                                                      |
+| ----------- | ----------------------------------------------------------------------------- |
+| `apps/`     | The home for each standalone application.                                     |
+| `config/`   | Shared infrastructure packages and configurations.                            |
+| `packages/` | Shared code packages covering UI, shared functionality, and shared utilities. |

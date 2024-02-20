@@ -1,0 +1,10 @@
+{
+    "index": {
+        "title": "Get started",
+        "type": "page",
+        "display": "hidden"
+    },
+    "get-started": {
+        "display": "hidden"
+    }
+}
