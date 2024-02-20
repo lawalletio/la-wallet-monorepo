@@ -2,12 +2,30 @@ import { Tabs } from 'nextra/components';
 import Link from 'next/link';
 import styles from './index.module.css';
 
-# Getting Started
+# Overview Monorepo
 
-LaWallet hooks to interact with LaWallet
+It is an open source project that provides all the front-end interfaces of LaWallet. <br/>
+Includes the front-end interface of the web application, react hooks library and atomic LaWallet components. <br/>
+This repository uses <Link className="text-blue-500" href="https://pnpm.io/workspaces">pnpm workspaces</Link> to manage multiple projects.
 
-{' '}
+## 🗂 Directory Structure
 
-<Link className={styles.cta} href="/react">
-  Get started <span>→</span>
-</Link>
+This repository is divided into these folders:
+
+| Folder      | Contents                                                                      |
+| ----------- | ----------------------------------------------------------------------------- |
+| `apps/`     | docs & web applications.                                                      |
+| `config/`   | Shared infrastructure packages and configurations.                            |
+| `packages/` | Shared code packages covering UI, shared functionality, and shared utilities. |
+
+## Running LaWallet front
+
+See the <Link className="text-blue-500" href="/react/get-started">install guide</Link> for details on installation and setup.
+
+## LaWallet React Hooks
+
+<Link href="https://www.npmjs.com/package/@lawallet/react">`@lawallet/react`</Link> is an npm package that provides react
+hooks to interact with basic LaWallet functionalities. <br />
+Review <Link className="text-blue-500" href="/react">
+  react hooks documentation
+</Link> to understand how to use it.
