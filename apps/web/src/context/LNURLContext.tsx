@@ -125,6 +125,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const { transferInfo } = LNURLInfo;
+
     if (transferInfo.type !== TransferTypes.NONE) {
       const amountParam: number = Number(params.get('amount'));
 
@@ -134,6 +135,9 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
       };
 
       setLNURLTransferInfo(new_info);
+
+      if (transferInfo && transferInfo.request && transferInfo.request.minSendable === transferInfo.request.maxSendable)
+        router.push(`/transfer/lnurl/summary?data=${transferInfo.data}&amount=${transferInfo.amount}`);
     }
   }, [LNURLInfo]);
 

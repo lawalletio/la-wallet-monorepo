@@ -12,11 +12,17 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
 import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
-import { TransferTypes } from '@lawallet/react/types';
+import { LNURLTransferType, TransferTypes } from '@lawallet/react/types';
 import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
 import CardWithData from './CardWithData';
 
-export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }) => {
+type SelectTransferAmountType = {
+  transferInfo: LNURLTransferType;
+  setAmountToPay: (amount: number) => void;
+  setComment: (comment: string) => void;
+};
+
+export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }: SelectTransferAmountType) => {
   const { lng, t } = useTranslation();
 
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
@@ -50,9 +56,9 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
     const satsAmount: number =
       numpadData.intAmount['SAT'] > balance.amount ? balance.amount : numpadData.intAmount['SAT'];
 
-    if (transferInfo.type === TransferTypes.LUD16 && transferInfo.payRequest) {
+    if (transferInfo.type === TransferTypes.LUD16 && transferInfo.request) {
       const mSats = satsAmount * 1000;
-      const { minSendable, maxSendable } = transferInfo.payRequest;
+      const { minSendable, maxSendable } = transferInfo.request;
 
       if (mSats < minSendable! || mSats > maxSendable!) {
         errors.modifyError('INVALID_SENDABLE_AMOUNT', {
@@ -78,9 +84,9 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
       return;
     }
 
-    if (text.length > 255 || (transferInfo.payRequest && text.length > transferInfo.payRequest.commentAllowed)) {
+    if (text.length > 255 || (transferInfo.request && text.length > transferInfo.request.commentAllowed)) {
       errors.modifyError('COMMENT_MAX_LENGTH', {
-        chars: (transferInfo.payRequest?.commentAllowed ?? 255).toString(),
+        chars: (transferInfo.request?.commentAllowed ?? 255).toString(),
       });
       return;
     }
@@ -95,7 +101,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
   };
 
   useEffect(() => {
-    const amountParam = params.get('amount') ?? transferInfo.amount;
+    const amountParam: number = Number(params.get('amount')) ?? transferInfo.amount;
     if (amountParam && amountParam !== numpadData.intAmount['SAT']) {
       const convertedAmount: number =
         convertCurrency(amountParam, 'SAT', userCurrency) * 10 ** decimalsToUse(userCurrency);
@@ -135,12 +141,12 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
 
           <TokenList />
 
-          {transferInfo.payRequest && (
+          {transferInfo.request && (
             <Flex justify="center">
               <Feedback show={true} status={'success'}>
                 {t('SENDABLE_AMOUNT', {
-                  minSendable: formatToPreference('SAT', transferInfo.payRequest.minSendable! / 1000, lng),
-                  maxSendable: formatToPreference('SAT', transferInfo.payRequest.maxSendable! / 1000, lng),
+                  minSendable: formatToPreference('SAT', transferInfo.request.minSendable! / 1000, lng),
+                  maxSendable: formatToPreference('SAT', transferInfo.request.maxSendable! / 1000, lng),
                 })}
               </Feedback>
             </Flex>

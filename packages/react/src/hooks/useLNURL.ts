@@ -27,7 +27,7 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
     transferInfo: defaultLNURLTransfer,
   });
 
-  const decodeLNURL = async (data: string) => {
+  const decodeLNURL = async (data: string): Promise<boolean> => {
     const lnurlTransferInfo: LNURLTransferType = await formatLNURLData(data, config);
 
     switch (lnurlTransferInfo.type) {
@@ -44,6 +44,7 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
       decoded_lnurl: lnurl_decode(data),
       transferInfo: lnurlTransferInfo,
     });
+
     return true;
   };
 

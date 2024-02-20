@@ -132,6 +132,8 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
     : decodedWithoutHttps.split('/lnurlp/');
 
   if (payRequest && payRequest.tag === 'payRequest') {
+    const amount: number = payRequest.minSendable! === payRequest.maxSendable! ? payRequest.maxSendable! / 1000 : 0;
+
     try {
       if (payRequest.federationId && payRequest.federationId === config.federation.id) {
         return {
@@ -139,6 +141,7 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
           data: username && domain ? `${username}@${domain}` : data,
           type: TransferTypes.INTERNAL,
           receiverPubkey: payRequest.accountPubKey!,
+          amount,
         };
       } else {
         const parsedMetadata: Array<string>[] = JSON.parse(payRequest.metadata);
@@ -147,7 +150,7 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
         });
 
         if (identifier && identifier.length === 2)
-          return { ...transfer, data: identifier[1]!, receiverPubkey: config.modulePubkeys.urlx };
+          return { ...transfer, data: identifier[1]!, receiverPubkey: config.modulePubkeys.urlx, amount };
       }
     } catch (error) {
       console.log(error);
@@ -180,9 +183,12 @@ const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): P
   const payRequest = await getPayRequest(`https://${domain}/.well-known/lnurlp/${username}`);
   if (!payRequest) return defaultLNURLTransfer;
 
+  const amount: number = payRequest.minSendable === payRequest.maxSendable ? payRequest.maxSendable! / 1000 : 0;
+
   const transfer: LNURLTransferType = {
     ...defaultLNURLTransfer,
     data,
+    amount,
     type: TransferTypes.LUD16,
     request: payRequest,
   };
@@ -195,14 +201,10 @@ const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): P
     };
   }
 
-  if (payRequest.minSendable == payRequest.maxSendable)
-    return {
-      ...transfer,
-      amount: payRequest.maxSendable! / 1000,
-      receiverPubkey: config.modulePubkeys.urlx,
-    };
-
-  return transfer;
+  return {
+    ...transfer,
+    receiverPubkey: config.modulePubkeys.urlx,
+  };
 };
 
 export const removeLightningStandard = (str: string) => {
