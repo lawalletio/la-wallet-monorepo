@@ -84,5 +84,9 @@
     "NDK": {
         "title": "NDK",
         "href": "/react/glossary/ndk"
+    },
+    "get-started": {
+        "type": "page",
+        "display": "hidden"
     }
 }

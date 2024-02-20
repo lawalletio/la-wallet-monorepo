@@ -12,9 +12,9 @@
     "title": "More",
     "type": "menu",
     "items": {
-      "contribute": {
+      "get-started": {
         "title": "Get started",
-        "href": "/get-started"
+        "href": "/react/get-started"
       }
     }
   }
