@@ -1,4 +1,4 @@
-import { appTheme } from '../../config/themeConfig';
+import { appTheme } from '@/config';
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`

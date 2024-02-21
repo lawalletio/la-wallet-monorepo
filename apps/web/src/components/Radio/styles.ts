@@ -1,4 +1,4 @@
-import { appTheme } from '../../../config/themeConfig';
+import { appTheme } from '@/config';
 import styled from 'styled-components';
 
 type CheckedProp = { checked: boolean };

@@ -18,7 +18,7 @@ import {
   Text,
 } from '@lawallet/ui';
 
-import { appTheme } from '../../../../config/themeConfig';
+import { appTheme } from '@/config';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useConfig, useWalletContext } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';

@@ -4,7 +4,7 @@ import { CreditCardIcon, LightningIcon, TransferIcon } from '@bitcoin-design/bit
 
 import { Accordion, AccordionBody, Flex, Text } from '@lawallet/ui';
 
-import { appTheme } from '../../../config/themeConfig';
+import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { dateFormatter, defaultCurrency, formatToPreference, unescapingText, useWalletContext } from '@lawallet/react';
 import { Transaction, TransactionDirection, TransactionStatus } from '@lawallet/react/types';

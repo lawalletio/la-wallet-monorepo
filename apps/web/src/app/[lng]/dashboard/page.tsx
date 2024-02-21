@@ -38,11 +38,11 @@ import { useRouter } from 'next/navigation';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
-import { appTheme } from '../../../../config/themeConfig';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
 import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import Link from 'next/link';
+import { appTheme } from '@/config';
 
 export default function Page() {
   const config = useConfig();

@@ -6,10 +6,10 @@ import { ReactNode } from 'react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import { LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
-import { config } from '../../../config/federationConfig';
 import { NotificationsProvider } from '@/context/NotificationsContext';
 
 import { fontPrimary, fontSecondary } from '@/styles/fonts';
+import { config } from '@/config';
 
 interface ProviderProps {
   children: ReactNode;

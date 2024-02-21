@@ -1,4 +1,4 @@
-import { appTheme } from '../../../../../../../config/themeConfig';
+import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { Container, Flex, Text } from '@lawallet/ui';
 import EmptySvg from './EmptySvg';

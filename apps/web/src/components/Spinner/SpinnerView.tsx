@@ -1,6 +1,6 @@
 import Logo from '@/components/Logo';
 import { LAWALLET_VERSION } from '@/constants/constants';
-import { appTheme } from '../../../config/themeConfig';
+import { appTheme } from '@/config';
 import { Container, Divider, Flex, Loader, Text } from '@lawallet/ui';
 
 const SpinnerView = ({ loadingText }: { loadingText?: string }) => {

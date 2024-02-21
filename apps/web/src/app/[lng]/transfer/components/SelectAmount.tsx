@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { TokenList } from '@/components/TokenList';
 import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
-import { appTheme } from '../../../../../config/themeConfig';
+import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';

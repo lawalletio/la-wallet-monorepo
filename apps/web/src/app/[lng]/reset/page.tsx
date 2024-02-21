@@ -3,7 +3,7 @@ import Logo from '@/components/Logo';
 import { Loader } from '@lawallet/ui';
 
 import { LAWALLET_VERSION } from '@/constants/constants';
-import { appTheme } from '../../../../config/themeConfig';
+import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
 import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';

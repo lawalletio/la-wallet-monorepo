@@ -1,6 +1,6 @@
 'use client';
 
-import { appTheme } from '../../../../config/themeConfig';
+import { appTheme } from '@/config';
 import { styled } from 'styled-components';
 
 interface ModalProps {

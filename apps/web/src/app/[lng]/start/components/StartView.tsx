@@ -4,7 +4,7 @@ import Logo from '@/components/Logo';
 import { Button, CardAlert, Container, Divider, Feedback, Flex, Text } from '@lawallet/ui';
 
 import { LAWALLET_VERSION } from '@/constants/constants';
-import { appTheme } from '../../../../../config/themeConfig';
+import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { checkIOS } from '@/utils';
 import { Loader } from '@lawallet/ui';
