@@ -109,7 +109,7 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
       },
     ],
     options,
-    enabled: enabled,
+    enabled: enabled && !activityInfo.loading,
     config,
   });
 

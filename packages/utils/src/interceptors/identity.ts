@@ -27,8 +27,6 @@ export const generateUserIdentity = async (name?: string): Promise<UserIdentity>
 };
 
 export const validateNonce = async (nonce: string, config: ConfigProps = baseConfig): Promise<boolean> => {
-  if (nonce.toLowerCase() === 'test') return true;
-
   return fetch(`${config.endpoints.identity}/api/nonce/${nonce}`)
     .then((res) => res.json())
     .then((response) => {

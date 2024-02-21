@@ -4,13 +4,10 @@ import { createStorage, type BaseStorage, noopStorage } from './createStorage.js
 import type { ConfigProps } from './types/config.js';
 
 export interface CreateConfigParameters {
+  federationId?: string;
   endpoints?: {
     identity?: string;
     api?: string;
-  };
-  federation?: {
-    id?: string;
-    domain?: string;
   };
   modulePubkeys?: {
     card?: string;
@@ -25,13 +22,15 @@ export interface CreateConfigParameters {
 export function createConfig(parameters: CreateConfigParameters = {}): ConfigProps {
   const {
     endpoints,
-    federation,
+    federationId,
     modulePubkeys,
     storage = createStorage({
       storage: typeof window !== 'undefined' && window.localStorage ? window.localStorage : noopStorage,
     }),
     signer,
   } = parameters;
+
+  const identityURL = new URL(endpoints?.identity ?? baseConfig.endpoints.identity);
 
   return {
     ...baseConfig,
@@ -40,8 +39,8 @@ export function createConfig(parameters: CreateConfigParameters = {}): ConfigPro
       ...endpoints,
     },
     federation: {
-      ...baseConfig.federation,
-      ...federation,
+      id: federationId ?? baseConfig.federation.id,
+      domain: identityURL.hostname,
     },
     modulePubkeys: {
       ...baseConfig.modulePubkeys,
