@@ -6,7 +6,7 @@ import { LAWALLET_VERSION } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 
 import { useRouter } from 'next/navigation';
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../config/themeConfig';
 
 export default function Page() {
   const { t } = useTranslation();

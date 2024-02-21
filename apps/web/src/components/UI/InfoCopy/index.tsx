@@ -3,7 +3,7 @@ import { copy } from '@/utils/share';
 
 import { Button, Flex, Text } from '@lawallet/ui';
 
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../../config/themeConfig';
 import { useNotifications } from '@/context/NotificationsContext';
 import { InfoCopy } from './style';
 

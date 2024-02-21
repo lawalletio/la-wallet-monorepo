@@ -1,7 +1,7 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { regexComment, regexUserName } from '@/constants/constants';
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../../../../config/themeConfig';
 import { useCardsContext } from '@/context/CardsContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';

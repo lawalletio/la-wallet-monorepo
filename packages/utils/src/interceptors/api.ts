@@ -3,7 +3,7 @@
 import { baseConfig } from '../constants/constants.js';
 
 class ApiGateway {
-  baseUrl = baseConfig.endpoints.api;
+  baseUrl = baseConfig.endpoints.gateway;
   headers = {
     'Content-Type': 'application/json',
   };

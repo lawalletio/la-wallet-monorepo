@@ -6,8 +6,8 @@ import type { ConfigProps } from './types/config.js';
 export interface CreateConfigParameters {
   federationId?: string;
   endpoints?: {
-    identity?: string;
-    api?: string;
+    lightningDomain?: string;
+    gateway?: string;
   };
   modulePubkeys?: {
     card?: string;
@@ -30,18 +30,13 @@ export function createConfig(parameters: CreateConfigParameters = {}): ConfigPro
     signer,
   } = parameters;
 
-  const identityURL = new URL(endpoints?.identity ?? baseConfig.endpoints.identity);
-
   return {
     ...baseConfig,
     endpoints: {
       ...baseConfig.endpoints,
       ...endpoints,
     },
-    federation: {
-      id: federationId ?? baseConfig.federation.id,
-      domain: identityURL.hostname,
-    },
+    federationId: federationId ?? baseConfig.federationId,
     modulePubkeys: {
       ...baseConfig.modulePubkeys,
       ...modulePubkeys,

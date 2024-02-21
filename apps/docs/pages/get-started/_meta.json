@@ -1,0 +1,17 @@
+{
+    "-- Introduction": {
+        "type": "separator",
+        "title": "Introduction"
+    },
+    "index": "Getting Started",
+    "-- Configurations": {
+        "type": "separator",
+        "title": "Configurations"
+    },
+    "federation": {
+        "title": "Federation"
+    },
+    "theme": {
+        "title": "Theme"
+    }
+}

@@ -2,6 +2,7 @@ import {
   claimLNURLw,
   defaultLNURLTransfer,
   escapingBrackets,
+  normalizeLNDomain,
   useConfig,
   useLNURL,
   useNostrContext,
@@ -70,7 +71,11 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
 
     const metadataMessage: { sender?: string; receiver?: string } = {
       ...(showReceiver ? { receiver: LNURLInfo.transferInfo.data } : {}),
-      ...(showSender ? { sender: `${identity.data.username}@${config.federation.domain}` } : {}),
+      ...(showSender
+        ? {
+            sender: `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`,
+          }
+        : {}),
     };
 
     const metadataEncrypted: string = await encrypt(LNURLTransferInfo.receiverPubkey, JSON.stringify(metadataMessage));

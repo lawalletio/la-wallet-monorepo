@@ -27,7 +27,7 @@ export const generateUserIdentity = async (name?: string): Promise<UserIdentity>
 };
 
 export const validateNonce = async (nonce: string, config: ConfigProps = baseConfig): Promise<boolean> => {
-  return fetch(`${config.endpoints.identity}/api/nonce/${nonce}`)
+  return fetch(`${config.endpoints.lightningDomain}/api/nonce/${nonce}`)
     .then((res) => res.json())
     .then((response) => {
       if (!response || !response.status) return false;
@@ -38,7 +38,7 @@ export const validateNonce = async (nonce: string, config: ConfigProps = baseCon
 };
 
 export const claimIdentity = async (event: NostrEvent, config: ConfigProps = baseConfig): Promise<IdentityResponse> => {
-  return fetch(`${config.endpoints.identity}/api/identity`, {
+  return fetch(`${config.endpoints.lightningDomain}/api/identity`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -62,29 +62,29 @@ export const claimIdentity = async (event: NostrEvent, config: ConfigProps = bas
 };
 
 export const getUsername = (pubkey: string, config: ConfigProps = baseConfig) => {
-  const storagedUsername: string = (config.storage.getItem(`${config.federation.id}_${pubkey}`) as string) || '';
+  const storagedUsername: string = (config.storage.getItem(`${config.federationId}_${pubkey}`) as string) || '';
   if (storagedUsername.length) return storagedUsername;
 
-  return fetch(`${config.endpoints.identity}/api/pubkey/${pubkey}`)
+  return fetch(`${config.endpoints.lightningDomain}/api/pubkey/${pubkey}`)
     .then((res) => res.json())
     .then((info) => {
       if (!info || !info.username) return '';
 
-      config.storage.setItem(`${config.federation.id}_${pubkey}`, info.username);
+      config.storage.setItem(`${config.federationId}_${pubkey}`, info.username);
       return info.username;
     })
     .catch(() => '');
 };
 
 export const getUserPubkey = (username: string, config: ConfigProps = baseConfig) =>
-  fetch(`${config.endpoints.identity}/api/lud16/${username}`)
+  fetch(`${config.endpoints.lightningDomain}/api/lud16/${username}`)
     .then((res) => res.json())
     .then((info) => info.accountPubKey ?? '')
     .catch(() => '');
 
 export const existIdentity = async (name: string, config: ConfigProps = baseConfig): Promise<boolean> => {
   try {
-    const response = await fetch(`${config.endpoints.identity}/api/identity?name=${name}`);
+    const response = await fetch(`${config.endpoints.lightningDomain}/api/identity?name=${name}`);
     return response.status === 200;
   } catch {
     return false;

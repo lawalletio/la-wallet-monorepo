@@ -23,7 +23,7 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import { useCreateIdentity } from '@/hooks/useCreateIdentity';
 import { validateNonce } from '@lawallet/react/actions';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { useConfig } from '@lawallet/react';
+import { normalizeLNDomain, useConfig } from '@lawallet/react';
 
 export default function Page() {
   const config = useConfig();
@@ -97,7 +97,7 @@ export default function Page() {
               }
             />
             <InputGroupRight>
-              <Text size="small">@{config.federation.domain}</Text>
+              <Text size="small">@{normalizeLNDomain(config.endpoints.lightningDomain)}</Text>
             </InputGroupRight>
           </InputGroup>
           <Feedback show={errors.errorInfo.visible} status={errors.errorInfo.visible ? 'error' : undefined}>

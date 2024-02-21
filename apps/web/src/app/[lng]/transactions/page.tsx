@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/Layout/Navbar';
 import TransactionItem from '@/components/TransactionItem';
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../../config/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
 import { useWalletContext } from '@lawallet/react';
 import { Transaction } from '@lawallet/react/types';

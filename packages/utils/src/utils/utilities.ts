@@ -29,6 +29,15 @@ export const nowInSeconds = (): number => {
   return Math.floor(Date.now() / 1000);
 };
 
+export const normalizeLNDomain = (domain: string) => {
+  try {
+    const iURL = new URL(domain);
+    return iURL.hostname;
+  } catch {
+    return '';
+  }
+};
+
 function addQueryParameter(url: string, parameter: string) {
   if (url.indexOf('?') === -1) {
     return url + '?' + parameter;
@@ -47,7 +56,7 @@ export const claimLNURLw = async (
   if (!callback || !k1 || !amount) return false;
 
   try {
-    const pr: string = await requestInvoice(`${config.endpoints.api}/lnurlp/${toNpub}/callback?amount=${amount}`);
+    const pr: string = await requestInvoice(`${config.endpoints.gateway}/lnurlp/${toNpub}/callback?amount=${amount}`);
     if (!pr) return false;
 
     let urlCallback: string = callback;
@@ -135,7 +144,7 @@ const parseLNURLInfo = async (data: string, config: ConfigProps = baseConfig): P
     const amount: number = payRequest.minSendable! === payRequest.maxSendable! ? payRequest.maxSendable! / 1000 : 0;
 
     try {
-      if (payRequest.federationId && payRequest.federationId === config.federation.id) {
+      if (payRequest.federationId && payRequest.federationId === config.federationId) {
         return {
           ...transfer,
           data: username && domain ? `${username}@${domain}` : data,
@@ -171,7 +180,7 @@ export const splitHandle = (handle: string, config: ConfigProps = baseConfig): s
       const [username, domain] = handle.split('@');
       return [username!, domain!];
     } else {
-      return [handle, config.federation.domain];
+      return [handle, normalizeLNDomain(config.endpoints.lightningDomain)];
     }
   } catch {
     return [];
@@ -193,7 +202,7 @@ const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): P
     request: payRequest,
   };
 
-  if (payRequest.federationId && payRequest.federationId === config.federation.id) {
+  if (payRequest.federationId && payRequest.federationId === config.federationId) {
     return {
       ...transfer,
       type: TransferTypes.INTERNAL,

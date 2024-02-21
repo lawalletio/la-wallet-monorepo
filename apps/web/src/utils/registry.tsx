@@ -5,7 +5,7 @@ import { useServerInsertedHTML } from 'next/navigation';
 import { ServerStyleSheet } from 'styled-components';
 import { Provider } from '@lawallet/ui';
 import GlobalStyles from '@/styles/GlobalStyles';
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../config/themeConfig';
 
 export default function StyledComponentsRegistry({ children }) {
   // Only create stylesheet once with lazy initial state

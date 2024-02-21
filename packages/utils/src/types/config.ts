@@ -2,13 +2,8 @@ import type { NDKSigner } from '@nostr-dev-kit/ndk';
 import type { BaseStorage } from '../createStorage.js';
 
 export type EndpointsConfigType = {
-  identity: string;
-  api: string;
-};
-
-export type FederationConfigType = {
-  id: string;
-  domain: string;
+  lightningDomain: string;
+  gateway: string;
 };
 
 export type ModulePubkeysConfigType = {
@@ -19,7 +14,7 @@ export type ModulePubkeysConfigType = {
 
 export type ConfigProps = {
   endpoints: EndpointsConfigType;
-  federation: FederationConfigType;
+  federationId: string;
   modulePubkeys: ModulePubkeysConfigType;
   relaysList: string[];
   storage: BaseStorage;

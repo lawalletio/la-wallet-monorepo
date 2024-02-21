@@ -6,15 +6,12 @@ import type { AvailableLanguages } from '../types/translations.js';
 import type { AvailableCurrencies, CurrencyMetadata, UserConfigProps } from '../types/userConfig.js';
 
 export const baseConfig: ConfigProps = {
+  federationId: 'lawallet.ar',
   endpoints: {
-    api: 'https://api.lawallet.ar',
-    identity: 'https://lawallet.ar',
+    gateway: 'https://api.lawallet.ar',
+    lightningDomain: 'https://lawallet.ar',
   },
   relaysList: ['wss://relay.damus.io', 'wss://relay.lawallet.ar'],
-  federation: {
-    id: 'lawallet.ar',
-    domain: 'lawallet.ar',
-  },
   modulePubkeys: {
     card: '18f6a706091b421bd9db1ec964b4f934007fb6997c60e3c500fdaebe5f9f7b18',
     ledger: 'bd9b0b60d5cd2a9df282fc504e88334995e6fac8b148fa89e0f8c09e2a570a84',

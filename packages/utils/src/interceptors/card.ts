@@ -4,7 +4,7 @@ import { type ConfigProps } from '../types/config.js';
 import { baseConfig } from '../constants/constants.js';
 
 export const requestCardActivation = async (event: NostrEvent, config: ConfigProps = baseConfig): Promise<boolean> => {
-  return fetch(`${config.endpoints.api}/card`, {
+  return fetch(`${config.endpoints.gateway}/card`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export const cardResetCaim = async (
   event: NostrEvent,
   config: ConfigProps = baseConfig,
 ): Promise<Record<'name' | 'error', string>> => {
-  return fetch(`${config.endpoints.api}/card/reset/claim`, {
+  return fetch(`${config.endpoints.gateway}/card/reset/claim`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export const cardInfoRequest = async (
   event: NostrEvent,
   config: ConfigProps = baseConfig,
 ): Promise<CardRequestResponse> => {
-  return fetch(`${config.endpoints.api}/card/${type}/request`, {
+  return fetch(`${config.endpoints.gateway}/card/${type}/request`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

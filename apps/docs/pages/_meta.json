@@ -5,17 +5,12 @@
     "display": "hidden"
   },
   "react": {
-    "title": "React",
+    "title": "React Hooks",
     "type": "page"
   },
-  "more": {
-    "title": "More",
-    "type": "menu",
-    "items": {
-      "get-started": {
-        "title": "Clone repository",
-        "href": "/react/get-started"
-      }
-    }
+  "get-started": {
+    "title": "Clone repository",
+    "type": "page",
+    "href": "/react/get-started"
   }
 }

@@ -7,7 +7,7 @@ import { copy } from '@/utils/share';
 
 import { Text } from '@lawallet/ui';
 
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../../config/themeConfig';
 import { useNotifications } from '@/context/NotificationsContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { QRCode, Toast } from './style';

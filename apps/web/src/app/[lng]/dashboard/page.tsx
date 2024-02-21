@@ -38,10 +38,10 @@ import { useRouter } from 'next/navigation';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../../config/themeConfig';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
-import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
+import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import Link from 'next/link';
 
 export default function Page() {
@@ -87,14 +87,17 @@ export default function Page() {
               </Text>
               <Flex
                 onClick={() => {
-                  if (identity.data.username) copy(`${identity.data.username}@${config.federation.domain}`);
+                  if (identity.data.username)
+                    copy(`${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`);
                 }}
               >
                 {loading ? (
                   <Text> -- </Text>
                 ) : (
                   <Text>
-                    {identity.data.username ? `${identity.data.username}@${config.federation.domain}` : t('ANONYMOUS')}
+                    {identity.data.username
+                      ? `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
+                      : t('ANONYMOUS')}
                   </Text>
                 )}
               </Flex>

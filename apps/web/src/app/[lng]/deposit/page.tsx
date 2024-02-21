@@ -10,9 +10,9 @@ import { useTranslation } from '@/context/TranslateContext';
 import { QRCode } from '@/components/UI';
 import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
 
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../../config/themeConfig';
 import { useNotifications } from '@/context/NotificationsContext';
-import { formatAddress, lnurl_encode, useConfig, useWalletContext } from '@lawallet/react';
+import { formatAddress, lnurl_encode, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import InvoiceSheet from './components/InvoiceSheet';
 
 export default function Page() {
@@ -37,7 +37,7 @@ export default function Page() {
   const LNURLEncoded: string = useMemo(
     () =>
       lnurl_encode(
-        `https://${config.federation.domain}/.well-known/lnurlp/${
+        `${config.endpoints.lightningDomain}/.well-known/lnurlp/${
           identity.data.username ? identity.data.username : identity.data.npub
         }`,
       ).toUpperCase(),
@@ -55,7 +55,7 @@ export default function Page() {
               size={300}
               borderSize={30}
               value={('lightning:' + LNURLEncoded).toUpperCase()}
-              textToCopy={`${identity.data.username}@${config.federation.domain}`}
+              textToCopy={`${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`}
             />
           </Flex>
           <Flex>
@@ -70,7 +70,7 @@ export default function Page() {
                   <Flex>
                     <Text>
                       {identity.data.username
-                        ? `${identity.data.username}@${config.federation.domain}`
+                        ? `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
                         : formatAddress(LNURLEncoded, 20)}
                     </Text>
                   </Flex>
@@ -81,7 +81,9 @@ export default function Page() {
                     variant="bezeled"
                     onClick={() =>
                       handleCopy(
-                        identity.data.username ? `${identity.data.username}@${config.federation.domain}` : LNURLEncoded,
+                        identity.data.username
+                          ? `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
+                          : LNURLEncoded,
                       )
                     }
                   >

@@ -19,13 +19,14 @@ import {
 } from '@lawallet/ui';
 
 import { lightningAddresses } from '@/constants/constants';
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../../config/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import {
   detectTransferType,
   formatLNURLData,
+  normalizeLNDomain,
   removeDuplicateArray,
   useConfig,
   useWalletContext,
@@ -116,10 +117,11 @@ export default function Page() {
     const data: string[] = lastDestinations.filter((dest) => dest.startsWith(inputText));
     if (data.length >= 3) return data;
 
-    if (!inputText.includes('@')) return removeDuplicateArray([`${inputText}@${config.federation.domain}`, ...data]);
+    if (!inputText.includes('@'))
+      return removeDuplicateArray([`${inputText}@${normalizeLNDomain(config.endpoints.lightningDomain)}`, ...data]);
 
     const [username, domain] = inputText.split('@');
-    if (!domain) data.push(`${username}@${config.federation.domain}`);
+    if (!domain) data.push(`${username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`);
 
     const recommendations: string[] = [];
     lightningAddresses.forEach((address) => {

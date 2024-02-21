@@ -40,6 +40,7 @@ export {
   claimLNURLw,
   parseInvoiceInfo,
   removeDuplicateArray,
+  normalizeLNDomain,
 } from '../utils/utilities.js';
 
 export {

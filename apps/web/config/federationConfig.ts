@@ -1,13 +1,11 @@
 import { CreateConfigParameters, createConfig } from '@lawallet/react';
 import { ConfigProps } from '@lawallet/react/types';
 
-const isDev = process.env.NODE_ENV === 'development';
-
-const prodConfig: CreateConfigParameters = {
+const federationConfig: CreateConfigParameters = {
   federationId: 'lawallet.ar',
   endpoints: {
-    api: 'https://api.lawallet.ar',
-    identity: 'https://lawallet.ar',
+    gateway: 'https://api.lawallet.ar',
+    lightningDomain: 'https://lawallet.ar',
   },
   relaysList: ['wss://relay.damus.io', 'wss://relay.lawallet.ar'],
   modulePubkeys: {
@@ -16,10 +14,4 @@ const prodConfig: CreateConfigParameters = {
     urlx: 'e17feb5f2cf83546bcf7fd9c8237b05275be958bd521543c2285ffc6c2d654b3',
   },
 };
-
-const devConfig: CreateConfigParameters = {
-  federationId: 'lawallet.ar',
-  endpoints: { identity: 'https://debug.lawallet.ar' },
-};
-
-export const config: ConfigProps = createConfig(isDev ? devConfig : prodConfig);
+export const config: ConfigProps = createConfig(federationConfig);

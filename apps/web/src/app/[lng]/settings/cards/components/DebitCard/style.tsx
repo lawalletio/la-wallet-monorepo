@@ -1,4 +1,4 @@
-import { appTheme } from '@/constants/themeConfig';
+import { appTheme } from '../../../../../../../config/themeConfig';
 import styled from 'styled-components';
 
 interface CardImageProp {
