@@ -26,7 +26,7 @@ const config: DocsThemeConfig = {
   footer: {
     text: (
       <div style={{ textAlign: 'center', margin: 'auto' }}>
-        <div>powered by </div>
+        <div>Made with eggs by </div>
         <div style={{ marginTop: '8px' }}>
           <a target="_blank" href="https://lacrypta.ar">
             <LaCryptaLogo />
