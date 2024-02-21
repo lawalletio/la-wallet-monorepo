@@ -1,7 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
 
-import { theme } from './theme';
-
 export const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'IAAB3-Mono';
@@ -42,9 +40,9 @@ export const GlobalStyle = createGlobalStyle`
     min-width: 100vw;
     min-height: 100dvh;
 
-    background: ${theme.colors.background};
+    background: ${(props) => props.theme.colors.background};
 
-    color: ${theme.colors.text};
+    color: ${(props) => props.theme.colors.text};
     font-family: 'SF PRO Text';
     font-size: 1em;
     font-weight: 400;

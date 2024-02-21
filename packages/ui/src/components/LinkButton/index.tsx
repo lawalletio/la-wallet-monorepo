@@ -2,8 +2,9 @@ import React from 'react';
 
 import { LinkButtonProps } from './types';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 import { LinkButtonPrimitive } from './style';
+import { useTheme } from 'styled-components';
 
 export function LinkButton(props: LinkButtonProps) {
   const {
@@ -15,6 +16,8 @@ export function LinkButton(props: LinkButtonProps) {
     tabIndex = 0,
     onClick,
   } = props;
+
+  const theme = useTheme();
 
   let backgroundColor: string = 'transparent';
   let textColor: string = theme.colors.text;

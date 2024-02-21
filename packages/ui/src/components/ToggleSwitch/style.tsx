@@ -1,4 +1,4 @@
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 import { styled } from 'styled-components';
 
 export const ToggleSwitchPrimitive = styled.div`
@@ -20,7 +20,7 @@ export const ToggleSwitchPrimitive = styled.div`
     min-width: 44px;
     height: 24px;
 
-    background: ${theme.colors.gray30};
+    background: ${(props) => props.theme.colors.gray30};
     border-radius: 100px;
 
     text-indent: -9999px;
@@ -36,7 +36,7 @@ export const ToggleSwitchPrimitive = styled.div`
       width: 20px;
       height: 20px;
 
-      background: ${theme.colors.white};
+      background: ${(props) => props.theme.colors.white};
       border-radius: 90px;
 
       transition: 0.3s;
@@ -48,7 +48,7 @@ export const ToggleSwitchPrimitive = styled.div`
   }
 
   input:checked + label {
-    background: ${theme.colors.primary};
+    background: ${(props) => props.theme.colors.primary};
   }
 
   input:checked + label:after {

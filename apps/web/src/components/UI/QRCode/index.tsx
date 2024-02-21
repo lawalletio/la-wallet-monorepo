@@ -5,8 +5,9 @@ import ReactQRCode from 'react-qr-code';
 
 import { copy } from '@/utils/share';
 
-import { Text, theme } from '@lawallet/ui';
+import { Text } from '@lawallet/ui';
 
+import { appTheme } from '@/constants/themeConfig';
 import { useNotifications } from '@/context/NotificationsContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { QRCode, Toast } from './style';
@@ -49,7 +50,7 @@ export default function Component({ value, size = 150, borderSize = 40, showCopy
           </Toast>
         ) : null}
 
-        <ReactQRCode value={value} size={size} fgColor={theme.colors.black} bgColor={theme.colors.white} />
+        <ReactQRCode value={value} size={size} fgColor={appTheme.colors.black} bgColor={appTheme.colors.white} />
       </QRCode>
     </>
   );

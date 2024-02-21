@@ -1,7 +1,5 @@
 import { styled } from 'styled-components';
 
-import { theme } from '../../theme';
-
 export const ButtonSettingPrimitive = styled.div`
   display: inline-flex;
   justify-content: space-between;
@@ -11,10 +9,10 @@ export const ButtonSettingPrimitive = styled.div`
 
   padding: 0 12px;
 
-  background-color: ${theme.colors.gray15};
+  background-color: ${(props) => props.theme.colors.gray15};
   border-radius: 8px;
 
-  color: ${theme.colors.text};
+  color: ${(props) => props.theme.colors.text};
   font-size: 0.8rem;
   text-decoration: none;
 `;

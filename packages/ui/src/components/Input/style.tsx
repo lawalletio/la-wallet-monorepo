@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 import { InputPrimitiveProps, FeedbackPrimitiveProps } from './types';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 
 export const InputPrimitive = styled.input<InputPrimitiveProps>`
   flex: 1;
@@ -13,13 +13,17 @@ export const InputPrimitive = styled.input<InputPrimitiveProps>`
   padding: 8px;
   padding-left: 12px;
 
-  background-color: ${theme.colors.gray15};
+  background-color: ${(props) => props.theme.colors.gray15};
   border-radius: 8px;
   border: 1px solid
     ${(props) =>
-      props.$showValidate ? theme.colors.gray20 : props.$isSuccess ? theme.colors.success : theme.colors.error};
+      props.$showValidate
+        ? props.theme.colors.gray20
+        : props.$isSuccess
+          ? props.theme.colors.success
+          : props.theme.colors.error};
 
-  color: ${theme.colors.text};
+  color: ${(props) => props.theme.colors.text};
   font-size: 0.8em;
 
   outline: none;
@@ -27,20 +31,20 @@ export const InputPrimitive = styled.input<InputPrimitiveProps>`
   transition-duration: 0.3s;
 
   &::placeholder {
-    color: ${theme.colors.gray30};
+    color: ${(props) => props.theme.colors.gray30};
   }
 
   &:not(:disabled) {
     &:hover {
-      border-color: ${theme.colors.gray30};
+      border-color: ${(props) => props.theme.colors.gray30};
     }
 
     &:focus-visible {
-      border-color: ${theme.colors.primary};
+      border-color: ${(props) => props.theme.colors.primary};
     }
 
     &:active {
-      border-color: ${theme.colors.primary};
+      border-color: ${(props) => props.theme.colors.primary};
     }
   }
 
@@ -79,8 +83,8 @@ export const InputGroupRightPrimitive = styled.div`
 
   padding: 0 4px;
 
-  background-color: ${theme.colors.gray10};
-  border: 1px solid ${theme.colors.gray20};
+  background-color: ${(props) => props.theme.colors.gray10};
+  border: 1px solid ${(props) => props.theme.colors.gray20};
   border-left: 0;
   border-radius: 0 8px 8px 0;
 `;
@@ -92,7 +96,7 @@ export const FeedbackPrimitive = styled.div<FeedbackPrimitiveProps>`
 
   margin-top: 4px;
 
-  color: ${(props) => (props.$isSuccess ? theme.colors.success : theme.colors.error)};
+  color: ${(props) => (props.$isSuccess ? props.theme.colors.success : props.theme.colors.error)};
 
   /* font-size: 0.7em; */
 `;
@@ -137,13 +141,17 @@ export const TextareaPrimitive = styled.textarea<InputPrimitiveProps>`
   padding: 8px;
   padding-left: 12px;
 
-  background-color: ${theme.colors.gray15};
+  background-color: ${(props) => props.theme.colors.gray15};
   border-radius: 8px;
   border: 1px solid
     ${(props) =>
-      props.$showValidate ? theme.colors.gray20 : props.$isSuccess ? theme.colors.success : theme.colors.error};
+      props.$showValidate
+        ? props.theme.colors.gray20
+        : props.$isSuccess
+          ? props.theme.colors.success
+          : props.theme.colors.error};
 
-  color: ${theme.colors.text};
+  color: ${(props) => props.theme.colors.text};
   font-size: 0.8em;
 
   outline: none;
@@ -152,19 +160,19 @@ export const TextareaPrimitive = styled.textarea<InputPrimitiveProps>`
   transition-duration: 0.3s;
 
   &::placeholder {
-    color: ${theme.colors.gray30};
+    color: ${(props) => props.theme.colors.gray30};
   }
 
   &:hover {
-    border-color: ${theme.colors.gray30};
+    border-color: ${(props) => props.theme.colors.gray30};
   }
 
   &:active {
-    border-color: ${theme.colors.primary};
+    border-color: ${(props) => props.theme.colors.primary};
   }
 
   &:focus-visible {
-    border-color: ${theme.colors.primary};
+    border-color: ${(props) => props.theme.colors.primary};
   }
 `;
 export const Pin = styled.div`
@@ -182,12 +190,12 @@ export const Pin = styled.div`
     width: 100%;
     flex: 1;
 
-    background-color: ${theme.colors.gray15};
+    background-color: ${(props) => props.theme.colors.gray15};
     border-radius: 8px;
-    border: 1px solid ${theme.colors.gray20};
+    border: 1px solid ${(props) => props.theme.colors.gray20};
 
     font-size: initial;
-    color: ${theme.colors.text};
+    color: ${(props) => props.theme.colors.text};
     font-size: 0.8em;
 
     &.vi__character--inactive {

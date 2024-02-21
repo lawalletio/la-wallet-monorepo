@@ -2,8 +2,9 @@
 
 import { CreditCardIcon, LightningIcon, TransferIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import { Accordion, AccordionBody, Flex, Text, theme } from '@lawallet/ui';
+import { Accordion, AccordionBody, Flex, Text } from '@lawallet/ui';
 
+import { appTheme } from '@/constants/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
 import { dateFormatter, defaultCurrency, formatToPreference, unescapingText, useWalletContext } from '@lawallet/react';
 import { Transaction, TransactionDirection, TransactionStatus } from '@lawallet/react/types';
@@ -96,15 +97,15 @@ export default function Component({ transaction }: ComponentProps) {
               <Text
                 color={
                   hideBalance
-                    ? theme.colors.text
+                    ? appTheme.colors.text
                     : transaction.status === TransactionStatus.ERROR ||
                         transaction.status === TransactionStatus.REVERTED
-                      ? theme.colors.error
+                      ? appTheme.colors.error
                       : transaction.status === TransactionStatus.PENDING
-                        ? theme.colors.warning
+                        ? appTheme.colors.warning
                         : isFromMe
-                          ? theme.colors.text
-                          : theme.colors.success
+                          ? appTheme.colors.text
+                          : appTheme.colors.success
                 }
               >
                 {hideBalance ? (
@@ -119,7 +120,7 @@ export default function Component({ transaction }: ComponentProps) {
                   </>
                 )}
               </Text>
-              <Text size="small" color={theme.colors.gray50}>
+              <Text size="small" color={appTheme.colors.gray50}>
                 {hideBalance
                   ? '*****'
                   : `$${formatToPreference(
@@ -137,7 +138,7 @@ export default function Component({ transaction }: ComponentProps) {
           <ul>
             <li>
               <Flex align="center" justify="space-between">
-                <Text size="small" color={theme.colors.gray50}>
+                <Text size="small" color={appTheme.colors.gray50}>
                   {isFromMe ? t('TO') : t('FROM')}
                 </Text>
                 <Text>{ludInfo.loading ? <BtnLoader /> : ludInfo.data}</Text>
@@ -145,12 +146,12 @@ export default function Component({ transaction }: ComponentProps) {
             </li>
             <li>
               <Flex align="center" justify="space-between">
-                <Text size="small" color={theme.colors.gray50}>
+                <Text size="small" color={appTheme.colors.gray50}>
                   {t('DATE')}
                 </Text>
                 <Flex direction="column" align="end">
                   <Text>{dateFormatter(lng, new Date(Number(transaction.createdAt)), 'HH:mm')}</Text>
-                  <Text size="small" color={theme.colors.gray50}>
+                  <Text size="small" color={appTheme.colors.gray50}>
                     {dateFormatter(lng, new Date(Number(transaction.createdAt)), 'MMMM d, yyyy')}
                   </Text>
                 </Flex>
@@ -160,7 +161,7 @@ export default function Component({ transaction }: ComponentProps) {
             {transaction.memo ? (
               <li>
                 <Flex align="center" justify="space-between">
-                  <Text size="small" color={theme.colors.gray50}>
+                  <Text size="small" color={appTheme.colors.gray50}>
                     {t('MESSAGE')}
                   </Text>
                   <Text>{unescapingText(transaction.memo)}</Text>
@@ -170,7 +171,7 @@ export default function Component({ transaction }: ComponentProps) {
 
             <li>
               <Flex align="center" justify="space-between">
-                <Text size="small" color={theme.colors.gray50}>
+                <Text size="small" color={appTheme.colors.gray50}>
                   {t('STATUS')}
                 </Text>
                 <Text>{t(status)}</Text>

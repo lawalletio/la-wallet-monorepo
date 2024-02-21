@@ -1,4 +1,4 @@
-import { theme } from '@lawallet/ui';
+import { appTheme } from '@/constants/themeConfig';
 import styled from 'styled-components';
 
 type CheckedProp = { checked: boolean };
@@ -28,14 +28,14 @@ export const CheckDiv = styled.div<CheckedProp>`
   align-items: center;
   justify-content: center;
   margin: 1rem;
-  border: 2px solid ${theme.colors.gray50};
+  border: 2px solid ${appTheme.colors.gray50};
   border-radius: 100%;
   height: 25px;
   width: 25px;
   transition: border 300ms linear;
 
   &:hover {
-    border: 2px solid ${theme.colors.primary};
+    border: 2px solid ${appTheme.colors.primary};
   }
 
   &::before {
@@ -44,6 +44,6 @@ export const CheckDiv = styled.div<CheckedProp>`
     height: 9px;
     width: 9px;
     transition: background 300ms linear;
-    background: ${(props) => (props.checked ? theme.colors.primary : 'transparent')};
+    background: ${(props) => (props.checked ? appTheme.colors.primary : 'transparent')};
   }
 `;

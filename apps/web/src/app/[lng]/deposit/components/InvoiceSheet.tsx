@@ -1,6 +1,7 @@
 import { TokenList } from '@/components/TokenList';
 import { Confetti, Keyboard, QRCode } from '@/components/UI';
 import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
@@ -19,7 +20,6 @@ import {
   Icon,
   Sheet,
   Text,
-  theme,
 } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -153,7 +153,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
           <Container size="small">
             <Flex direction="column" justify="center" align="center" flex={1} gap={8}>
               <BtnLoader />
-              <Text size="small" color={theme.colors.gray50}>
+              <Text size="small" color={appTheme.colors.gray50}>
                 {t('WAITING_PAYMENT_OF')}
               </Text>
               <Flex justify="center" align="center" gap={4}>
@@ -187,10 +187,10 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
           <Confetti />
           <Container size="small">
             <Flex direction="column" justify="center" flex={1} align="center" gap={8}>
-              <Icon color={theme.colors.primary}>
+              <Icon color={appTheme.colors.primary}>
                 <CheckIcon />
               </Icon>
-              <Text size="small" color={theme.colors.gray50}>
+              <Text size="small" color={appTheme.colors.gray50}>
                 {t('PAYMENT_RECEIVED')}
               </Text>
               <Flex justify="center" align="center" gap={4}>

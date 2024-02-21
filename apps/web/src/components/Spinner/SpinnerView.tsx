@@ -1,7 +1,7 @@
-import React from 'react';
 import Logo from '@/components/Logo';
-import { Container, Divider, Flex, Loader, Text, theme } from '@lawallet/ui';
 import { LAWALLET_VERSION } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
+import { Container, Divider, Flex, Loader, Text } from '@lawallet/ui';
 
 const SpinnerView = ({ loadingText }: { loadingText?: string }) => {
   return (
@@ -9,7 +9,7 @@ const SpinnerView = ({ loadingText }: { loadingText?: string }) => {
       <Divider y={16} />
       <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
         <Logo />
-        <Text align="center" size="small" color={theme.colors.white}>
+        <Text align="center" size="small" color={appTheme.colors.white}>
           {LAWALLET_VERSION}
         </Text>
       </Flex>

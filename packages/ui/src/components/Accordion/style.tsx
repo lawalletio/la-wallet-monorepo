@@ -2,17 +2,17 @@ import { styled } from 'styled-components';
 
 import { AccordionPrimitiveProps, AccordionContentProps, AccordionTriggerPrimitiveProps } from './types';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 
 export const AccordionPrimitive = styled.div<AccordionPrimitiveProps>`
   width: 100%;
 
-  background-color: ${(props) => (props.$isOpen ? theme.colors.gray15 : props.$background)};
-  border: 1px solid ${(props) => (props.$isOpen ? theme.colors.gray35 : props.$borderColor)};
+  background-color: ${(props) => (props.$isOpen ? props.theme.colors.gray15 : props.$background)};
+  border: 1px solid ${(props) => (props.$isOpen ? props.theme.colors.gray35 : props.$borderColor)};
   border-radius: 8px;
 
   &:hover {
-    border-color: ${(props) => (props.$isOpen ? theme.colors.gray35 : theme.colors.gray25)};
+    border-color: ${(props) => (props.$isOpen ? props.theme.colors.gray35 : props.theme.colors.gray25)};
   }
 `;
 
@@ -35,9 +35,9 @@ export const AccordionTriggerPrimitive = styled.button<AccordionTriggerPrimitive
 
   background-color: transparent;
   border: none;
-  border-bottom: 1px solid ${(props) => (props.$isOpen ? theme.colors.gray20 : 'transparent')};
+  border-bottom: 1px solid ${(props) => (props.$isOpen ? props.theme.colors.gray20 : 'transparent')};
 
-  color: ${theme.colors.text};
+  color: ${(props) => props.theme.colors.text};
   font-size: initial;
   text-align: left;
 
@@ -48,7 +48,7 @@ export const AccordionTriggerPrimitive = styled.button<AccordionTriggerPrimitive
   }
 
   svg {
-    color: ${(props) => (props.$isOpen ? theme.colors.text : theme.colors.gray25)};
+    color: ${(props) => (props.$isOpen ? props.theme.colors.text : props.theme.colors.gray25)};
 
     transform: ${(props) => (props.$isOpen ? 'rotate(180deg)' : 'rotate(0)')};
   }
@@ -60,7 +60,7 @@ export const AccordionBodyPrimitive = styled.div`
   ul {
     li {
       padding: 12px 0;
-      border-bottom: 1px solid ${theme.colors.gray20};
+      border-bottom: 1px solid ${(props) => props.theme.colors.gray20};
 
       &:last-child {
         border-bottom: none;

@@ -1,8 +1,9 @@
 import { useTranslation } from '@/context/TranslateContext';
 import { copy } from '@/utils/share';
 
-import { Button, Flex, Text, theme } from '@lawallet/ui';
+import { Button, Flex, Text } from '@lawallet/ui';
 
+import { appTheme } from '@/constants/themeConfig';
 import { useNotifications } from '@/context/NotificationsContext';
 import { InfoCopy } from './style';
 
@@ -34,7 +35,7 @@ export default function Component(props: ComponentProps) {
       <InfoCopy>
         <Flex align="center" gap={8} flex={1}>
           <Flex direction="column" flex={1}>
-            <Text size="small" color={theme.colors.gray50}>
+            <Text size="small" color={appTheme.colors.gray50}>
               {title}
             </Text>
             <Text>{value}</Text>

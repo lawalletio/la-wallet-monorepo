@@ -4,11 +4,14 @@ import { CheckIcon, AlertIcon } from '../Icons';
 
 import { InputProps } from './types';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 import { InputPrimitive, InputBox, InputIcon } from './style';
 import { BtnLoader } from '../Loader/Loader';
+import { useTheme } from 'styled-components';
 
 export function Input(props: InputProps) {
+  const theme = useTheme();
+
   const {
     placeholder,
     value,

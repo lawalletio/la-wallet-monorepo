@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 
 import { AutocompletePrimitiveProps } from './types';
 
@@ -21,8 +21,8 @@ export const AutocompleteContent = styled.div`
   padding: 4px;
   margin-top: 4px;
 
-  background-color: ${theme.colors.gray20};
-  border: 1px solid ${theme.colors.gray25};
+  background-color: ${(props) => props.theme.colors.gray20};
+  border: 1px solid ${(props) => props.theme.colors.gray25};
   border-radius: 12px;
 
   box-shadow: 0px 8px 12px 0px rgba(28, 28, 28, 0.48);
@@ -34,20 +34,20 @@ export const AutocompleteContent = styled.div`
     border-radius: 8px;
     border: none;
 
-    color: ${theme.colors.text};
+    color: ${(props) => props.theme.colors.text};
 
     cursor: pointer;
 
     &:hover {
-      background-color: ${theme.colors.gray15};
+      background-color: ${(props) => props.theme.colors.gray15};
     }
 
     &:focus {
-      background-color: ${theme.colors.gray10};
+      background-color: ${(props) => props.theme.colors.gray10};
     }
 
     &:active {
-      background-color: ${theme.colors.primary15};
+      background-color: ${(props) => props.theme.colors.primary15};
     }
   }
 

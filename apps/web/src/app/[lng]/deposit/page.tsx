@@ -8,8 +8,9 @@ import { copy } from '@/utils/share';
 import { useTranslation } from '@/context/TranslateContext';
 
 import { QRCode } from '@/components/UI';
-import { Button, Container, Divider, Flex, Text, theme } from '@lawallet/ui';
+import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
 
+import { appTheme } from '@/constants/themeConfig';
 import { useNotifications } from '@/context/NotificationsContext';
 import { formatAddress, lnurl_encode, useConfig, useWalletContext } from '@lawallet/react';
 import InvoiceSheet from './components/InvoiceSheet';
@@ -63,7 +64,7 @@ export default function Page() {
 
               <Flex align="center">
                 <Flex direction="column">
-                  <Text size="small" color={theme.colors.gray50}>
+                  <Text size="small" color={appTheme.colors.gray50}>
                     {t('USER')}
                   </Text>
                   <Flex>

@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 
 import { BaseButtonProps, ButtonCustomProps } from './types';
 
@@ -16,7 +16,7 @@ export const BaseButton = styled.button<BaseButtonProps>`
   padding: ${(props) => (props.$isSmall ? '4px 8px' : '12px 8px')};
 
   border: none;
-  border-radius: 50px;
+  border-radius: ${(props) => props.theme.borders.buttonRadius};
   background-color: ${(props) => props.$background};
 
   color: ${(props) => props.$color};
@@ -34,7 +34,7 @@ export const BaseButton = styled.button<BaseButtonProps>`
 
   &:disabled {
     background-color: transparent;
-    color: ${theme.colors.gray50};
+    color: ${(props) => props.theme.colors.gray50};
     cursor: not-allowed;
   }
 
@@ -61,7 +61,7 @@ export const ButtonCustom = styled.button<ButtonCustomProps>`
   padding: ${(props) => (props.$isSmall ? '4px 8px' : '12px 8px')};
 
   border: none;
-  border-radius: 50px;
+  border-radius: ${(props) => props.theme.borders.buttonRadius};
   background-color: ${(props) => props.$background};
 
   color: ${(props) => props.$color};
@@ -88,7 +88,7 @@ export const ButtonCustom = styled.button<ButtonCustomProps>`
   }
 
   &:disabled {
-    background-color: ${theme.colors.gray40};
+    background-color: ${(props) => props.theme.colors.gray40};
     cursor: not-allowed;
   }
 `;
@@ -99,6 +99,6 @@ export const ButtonGroupStyle = styled.div`
 
   padding: 4px;
 
-  background-color: ${theme.colors.gray15};
+  background-color: ${(props) => props.theme.colors.gray15};
   border-radius: 24px;
 `;

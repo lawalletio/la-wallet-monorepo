@@ -1,6 +1,6 @@
 'use client';
 
-import { theme } from '@lawallet/ui';
+import { appTheme } from '@/constants/themeConfig';
 import { styled } from 'styled-components';
 
 interface ModalProps {
@@ -48,7 +48,7 @@ export const ModalContent = styled.div`
 
   padding: 24px;
 
-  background-color: ${theme.colors.gray15};
+  background-color: ${appTheme.colors.gray15};
   border-radius: 24px;
 
   @media screen and (min-width: 1023px) {

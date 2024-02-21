@@ -7,10 +7,11 @@ import { useState } from 'react';
 import { useTranslation } from '@/context/TranslateContext';
 
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Container, Divider, Flex, Text, theme, ToggleSwitch, Label } from '@lawallet/ui';
 import { InfoCopy } from '@/components/UI';
+import { Button, Container, Divider, Flex, Label, Text, ToggleSwitch } from '@lawallet/ui';
 
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
 import { useConfig, useWalletContext } from '@lawallet/react';
 
 export default function Page() {
@@ -63,7 +64,7 @@ export default function Page() {
         <>
           <Container size="small">
             <Divider y={16} />
-            <Text size="small" color={theme.colors.gray50}>
+            <Text size="small" color={appTheme.colors.gray50}>
               {t('UNDERSTAND_WHAT')}
             </Text>
             <Divider y={8} />

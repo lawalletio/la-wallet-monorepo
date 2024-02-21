@@ -5,6 +5,7 @@ import { useServerInsertedHTML } from 'next/navigation';
 import { ServerStyleSheet } from 'styled-components';
 import { Provider } from '@lawallet/ui';
 import GlobalStyles from '@/styles/GlobalStyles';
+import { appTheme } from '@/constants/themeConfig';
 
 export default function StyledComponentsRegistry({ children }) {
   // Only create stylesheet once with lazy initial state
@@ -17,10 +18,10 @@ export default function StyledComponentsRegistry({ children }) {
     return <React.Fragment>{styles}</React.Fragment>;
   });
 
-  if (typeof window !== 'undefined') return <React.Fragment>{children}</React.Fragment>;
+  const sheet = typeof window === 'undefined' ? styledComponentsStyleSheet.instance : undefined;
 
   return (
-    <Provider sheet={styledComponentsStyleSheet.instance}>
+    <Provider theme={appTheme} sheet={sheet}>
       <GlobalStyles />
       {children}
     </Provider>

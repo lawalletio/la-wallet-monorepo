@@ -16,9 +16,9 @@ import {
   LinkSetting,
   Sheet,
   Text,
-  theme,
 } from '@lawallet/ui';
 
+import { appTheme } from '@/constants/themeConfig';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useConfig, useWalletContext } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
@@ -60,7 +60,7 @@ export default function Page() {
 
       <Container size="small">
         <Divider y={16} />
-        <Text size="small" color={theme.colors.gray50}>
+        <Text size="small" color={appTheme.colors.gray50}>
           {t('ACCOUNT')}
         </Text>
         <Divider y={8} />
@@ -77,7 +77,7 @@ export default function Page() {
               <Text isBold={true}>{lng.toUpperCase()}</Text>
             </Flex>
 
-            <Icon size="small" color={theme.colors.gray40}>
+            <Icon size="small" color={appTheme.colors.gray40}>
               <CaretRightIcon />
             </Icon>
           </ButtonSetting>
@@ -86,7 +86,7 @@ export default function Page() {
         {Boolean(identity.data.privateKey.length) && (
           <>
             <Divider y={16} />
-            <Text size="small" color={theme.colors.gray50}>
+            <Text size="small" color={appTheme.colors.gray50}>
               {t('SECURITY')}
             </Text>
             <Divider y={8} />
@@ -97,7 +97,7 @@ export default function Page() {
         )}
 
         <Divider y={16} />
-        <Text size="small" color={theme.colors.gray50}>
+        <Text size="small" color={appTheme.colors.gray50}>
           {t('ABOUT_US')}
         </Text>
         <Divider y={8} />
@@ -107,7 +107,7 @@ export default function Page() {
         </Flex>
         <Divider y={16} />
         <Flex justify="center">
-          <Text size="small" color={theme.colors.gray50}>
+          <Text size="small" color={appTheme.colors.gray50}>
             LaWallet {LAWALLET_VERSION}
           </Text>
         </Flex>

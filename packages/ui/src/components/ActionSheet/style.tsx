@@ -1,7 +1,6 @@
 import { styled } from 'styled-components';
 
 import { ActionSheetPrimitiveProps } from './types';
-import { theme } from '../../theme';
 
 export const ActionSheetPrimitive = styled.div<ActionSheetPrimitiveProps>`
   position: fixed;
@@ -45,13 +44,13 @@ export const ActionSheetContent = styled.div`
 
   padding: 12px;
 
-  background-color: ${theme.colors.gray15};
+  background-color: ${(props) => props.theme.colors.gray15};
   border-radius: 16px;
 
   button,
   a {
     border-radius: 8px;
-    border-top: 1px solid ${theme.colors.gray20};
+    border-top: 1px solid ${(props) => props.theme.colors.gray20};
   }
 `;
 

@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 import { SheetPrimitiveProps, SheetContentProps } from './types';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 
 export const SheetPrimitive = styled.div<SheetPrimitiveProps>`
   position: fixed;
@@ -14,7 +14,7 @@ export const SheetPrimitive = styled.div<SheetPrimitiveProps>`
   width: 100%;
   height: 100%;
 
-  background-color: ${(props) => (props.$isOpen ? theme.colors.black : 'transparent')};
+  background-color: ${(props) => (props.$isOpen ? props.theme.colors.black : 'transparent')};
 
   transform: ${(props) => (props.$isOpen ? 'translateY(0)' : 'translateY(100%)')};
   transition-duration: 0.2s;
@@ -34,7 +34,7 @@ export const SheetContent = styled.div<SheetContentProps>`
   margin-top: 60px;
   padding-top: 24px;
 
-  background-color: ${theme.colors.gray15};
+  background-color: ${(props) => props.theme.colors.gray15};
   border-radius: 24px 24px 0 0;
 
   transform: ${(props) => (props.$isOpen ? 'translateY(0)' : 'translateY(100%)')};

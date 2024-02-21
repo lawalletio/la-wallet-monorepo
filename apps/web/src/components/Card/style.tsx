@@ -1,4 +1,4 @@
-import { theme } from '@lawallet/ui';
+import { appTheme } from '@/constants/themeConfig';
 import styled from 'styled-components';
 
 interface CardProp {
@@ -13,7 +13,7 @@ export const Card = styled.div<CardProp>`
   height: 176px;
 
   border-radius: 12px;
-  background-color: ${(props) => (props.$isActive ? theme.colors.primary : theme.colors.gray25)};
+  background-color: ${(props) => (props.$isActive ? appTheme.colors.primary : appTheme.colors.gray25)};
 
   mix-blend-mode: ${(props) => (props.$isActive ? 'normal' : 'luminosity')};
   transition-duration: 0.4s;

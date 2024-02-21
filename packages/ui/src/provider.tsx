@@ -1,20 +1,19 @@
 import React, { ReactNode } from 'react';
 import { ThemeProvider, StyleSheetManager } from 'styled-components';
 
-import { theme } from './theme';
+import { ThemeProps } from './theme/types';
 
 interface ProviderProps {
   children: ReactNode;
-  sheet: any;
+  theme: ThemeProps;
+  sheet?: any;
 }
 
 export function Provider(props: ProviderProps) {
-  const { children, sheet } = props;
+  const { children, theme, sheet } = props;
 
   return (
     <StyleSheetManager sheet={sheet}>
-      {/* <GlobalStyle /> */}
-
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </StyleSheetManager>
   );

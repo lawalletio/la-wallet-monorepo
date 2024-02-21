@@ -1,6 +1,6 @@
 'use client';
 
-import { theme } from '@lawallet/ui';
+import { appTheme } from '@/constants/themeConfig';
 import { styled } from 'styled-components';
 
 interface QRCodeProps {
@@ -15,7 +15,7 @@ export const QRCode = styled.div<QRCodeProps>`
   align-items: center;
   width: ${(props) => props.size ?? 200}px;
   height: ${(props) => props.size ?? 200}px;
-  background-color: ${theme.colors.white};
+  background-color: ${appTheme.colors.white};
   border-radius: 12px;
 
   cursor: pointer;
@@ -39,10 +39,10 @@ export const Toast = styled.div<ToastProps>`
 
   padding: 0 8px;
 
-  background-color: ${theme.colors.primary15};
+  background-color: ${appTheme.colors.primary15};
   border-radius: 12px;
 
-  color: ${theme.colors.primary};
+  color: ${appTheme.colors.primary};
 
   div {
     position: relative;
@@ -59,6 +59,6 @@ export const Toast = styled.div<ToastProps>`
     border-right: 5px solid transparent;
     border-bottom: 5px solid transparent;
     border-left: 5px solid transparent;
-    border-top: 5px solid ${theme.colors.primary15};
+    border-top: 5px solid ${appTheme.colors.primary15};
   }
 `;

@@ -4,13 +4,14 @@ import { AccordionTrigger } from './AccordionTrigger';
 
 import { AccordionProps } from './types';
 
-import { theme } from '../../theme';
-import { AccordionPrimitive, AccordionContent } from './style';
+import { useTheme } from 'styled-components';
+import { AccordionContent, AccordionPrimitive } from './style';
 
 export function Accordion(props: AccordionProps) {
   const { children, trigger, onOpen, variant = 'filled' } = props;
 
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
 
   let backgroundColor: string = 'transparent';
   let textColor: string = theme.colors.text;

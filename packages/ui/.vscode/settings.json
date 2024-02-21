@@ -43,6 +43,6 @@
   "typescript.format.enable": false,
   "typescript.validate.enable": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   }
 }

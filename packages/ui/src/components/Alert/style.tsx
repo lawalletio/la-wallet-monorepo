@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 
 import { AlertPrimitiveProps } from './types';
 
@@ -36,11 +36,11 @@ export const AlertPrimitive = styled.div<AlertPrimitiveProps>`
     padding: 12px;
     padding-bottom: 18px;
 
-    background-color: ${theme.colors.white};
+    background-color: ${(props) => props.theme.colors.white};
     box-shadow: 0 18px 40px 4px ${(props) => props.$background};
     border-radius: 4px;
 
-    color: ${theme.colors.background};
+    color: ${(props) => props.theme.colors.background};
 
     > div {
       &:first-child {
@@ -50,7 +50,7 @@ export const AlertPrimitive = styled.div<AlertPrimitiveProps>`
         background-color: ${(props) => props.$color};
         border-radius: 24px;
 
-        color: ${theme.colors.text};
+        color: ${(props) => props.theme.colors.text};
       }
 
       &:last-child {

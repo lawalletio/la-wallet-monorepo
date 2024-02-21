@@ -14,7 +14,7 @@ export const LinkButtonPrimitive = styled.div<LinkButtonPrimitiveProps>`
   padding: ${(props) => (props.$isSmall ? '4px 8px' : '12px 8px')};
 
   border: none;
-  border-radius: 50px;
+  border-radius: ${(props) => props.theme.borders.buttonRadius};
   background-color: ${(props) => props.$background};
 
   color: ${(props) => props.$color};

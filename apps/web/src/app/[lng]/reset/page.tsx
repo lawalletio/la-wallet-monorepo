@@ -1,13 +1,14 @@
 'use client';
-import { Loader } from '@lawallet/ui';
 import Logo from '@/components/Logo';
+import { Loader } from '@lawallet/ui';
 
 import { LAWALLET_VERSION } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
 import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';
 import { cardResetCaim, generateUserIdentity } from '@lawallet/react/actions';
-import { Container, Feedback, Flex, Heading, Text, theme } from '@lawallet/ui';
+import { Container, Feedback, Flex, Heading, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
@@ -55,7 +56,7 @@ export default function Page() {
     <Container size="medium">
       <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
         <Logo />
-        <Text align="center" color={theme.colors.gray50}>
+        <Text align="center" color={appTheme.colors.gray50}>
           {LAWALLET_VERSION}
         </Text>
       </Flex>

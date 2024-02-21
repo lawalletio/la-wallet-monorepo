@@ -16,10 +16,10 @@ import {
   InputGroupRight,
   LinkButton,
   Text,
-  theme,
 } from '@lawallet/ui';
 
 import { lightningAddresses } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
@@ -172,7 +172,7 @@ export default function Page() {
           {/* Ultimos 3 destinos */}
           {Boolean(lastDestinations.length) && (
             <>
-              <Text size="small" color={theme.colors.gray50}>
+              <Text size="small" color={appTheme.colors.gray50}>
                 {t('LAST_RECIPIENTS')}
               </Text>
 

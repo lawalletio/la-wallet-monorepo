@@ -1,8 +1,8 @@
-import { theme } from '@lawallet/ui';
+import { baseTheme } from '@lawallet/ui';
 import 'styled-components';
 
-type Theme = typeof theme;
+type Theme = typeof baseTheme;
 
 declare module 'styled-components' {
-  export interface DefaultTheme extends Theme {}
+  export interface DefaultTheme extends baseTheme {}
 }

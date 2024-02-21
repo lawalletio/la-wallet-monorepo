@@ -1,4 +1,4 @@
-import { theme } from '@lawallet/ui';
+import { appTheme } from '@/constants/themeConfig';
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
@@ -23,9 +23,9 @@ const GlobalStyles = createGlobalStyle`
     min-width: 100vw;
     min-height: 100dvh;
 
-    background: ${theme.colors.background};
+    background: ${appTheme.colors.background};
 
-    color: ${theme.colors.text};
+    color: ${appTheme.colors.text};
     font-size: 1em;
     font-weight: 400;
     font-family: var(--font-secondary);

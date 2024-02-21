@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 
 export const CardAlertPrimitive = styled.div`
   position: relative;
@@ -10,10 +10,10 @@ export const CardAlertPrimitive = styled.div`
 
   padding: 16px;
 
-  background-color: ${theme.colors.white};
+  background-color: ${(props) => props.theme.colors.white};
   border-radius: 24px;
 
-  color: ${theme.colors.black};
+  color: ${(props) => props.theme.colors.black};
 
   > div {
     &:first-child {

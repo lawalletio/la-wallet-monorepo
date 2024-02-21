@@ -1,6 +1,7 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { regexComment, regexUserName } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
 import { useCardsContext } from '@/context/CardsContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
@@ -19,7 +20,6 @@ import {
   Loader,
   Text,
   ToggleSwitch,
-  theme,
 } from '@lawallet/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
@@ -240,7 +240,7 @@ const page = () => {
           <Divider y={8} />
 
           <Flex flex={1} justify="center">
-            <Text color={theme.colors.warning}>
+            <Text color={appTheme.colors.warning}>
               {newConfig.limits.length && Number(newConfig.limits[0].amount) > 0
                 ? t(`LIMIT_CARD_PER_${selectedLimit === 'tx' ? 'TX' : 'DAY'}`, {
                     sats: formatToPreference('SAT', Number(newConfig.limits[0].amount) / 1000, lng).toString(),

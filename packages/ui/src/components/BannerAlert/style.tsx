@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { theme } from '../../theme';
+import { baseTheme } from '../../theme';
 
 import { BannerAlertPrimitiveProps } from './types';
 
@@ -12,11 +12,11 @@ export const BannerAlertPrimitive = styled.div<BannerAlertPrimitiveProps>`
 
   padding: 24px 32px;
 
-  background-color: ${theme.colors.gray15};
-  border: 1px solid ${theme.colors.gray20};
+  background-color: ${(props) => props.theme.colors.gray15};
+  border: 1px solid ${(props) => props.theme.colors.gray20};
   border-radius: 24px;
 
-  color: ${theme.colors.text};
+  color: ${(props) => props.theme.colors.text};
   text-decoration: none;
 
   > div {
@@ -60,7 +60,7 @@ export const Asset = styled.div`
     width: 100%;
     height: 100%;
 
-    background: linear-gradient(to left, rgba(38, 38, 38, 0.65), ${theme.colors.gray15});
+    background: linear-gradient(to left, rgba(38, 38, 38, 0.65), ${(props) => props.theme.colors.gray15});
   }
 
   img {

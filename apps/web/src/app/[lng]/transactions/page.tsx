@@ -2,10 +2,11 @@
 
 import Navbar from '@/components/Layout/Navbar';
 import TransactionItem from '@/components/TransactionItem';
+import { appTheme } from '@/constants/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
 import { useWalletContext } from '@lawallet/react';
 import { Transaction } from '@lawallet/react/types';
-import { Button, Container, Divider, Flex, Footer, Loader, Text, theme } from '@lawallet/ui';
+import { Button, Container, Divider, Flex, Footer, Loader, Text } from '@lawallet/ui';
 import { differenceInCalendarDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -60,7 +61,7 @@ export default function Page() {
                 return (
                   <React.Fragment key={transaction.id}>
                     <Divider y={8} />
-                    <Text size="small" color={theme.colors.gray50}>
+                    <Text size="small" color={appTheme.colors.gray50}>
                       {isToday ? t('TODAY') : isYesterday ? t('YESTERDAY') : txDate.toLocaleDateString()}
                     </Text>
 

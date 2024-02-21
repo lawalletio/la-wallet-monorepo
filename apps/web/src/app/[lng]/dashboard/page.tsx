@@ -28,7 +28,6 @@ import {
   Icon,
   ReceiveIcon,
   Text,
-  theme,
 } from '@lawallet/ui';
 
 // Harcode data
@@ -39,6 +38,7 @@ import { useRouter } from 'next/navigation';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
 import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
@@ -82,7 +82,7 @@ export default function Page() {
               <Text size="small">{identity.data.username ? extractFirstTwoChars(identity.data.username) : 'AN'}</Text>
             </Avatar>
             <Flex direction="column">
-              <Text size="small" color={theme.colors.gray50}>
+              <Text size="small" color={appTheme.colors.gray50}>
                 {t('HELLO')},
               </Text>
               <Flex
@@ -113,7 +113,7 @@ export default function Page() {
         </Navbar>
 
         <Flex direction="column" align="center" justify="center" flex={1}>
-          <Text size="small" color={theme.colors.gray50}>
+          <Text size="small" color={appTheme.colors.gray50}>
             {t('BALANCE')}
           </Text>
           <Divider y={8} />
@@ -177,7 +177,7 @@ export default function Page() {
         ) : (
           <>
             <Flex justify="space-between" align="center">
-              <Text size="small" color={theme.colors.gray50}>
+              <Text size="small" color={appTheme.colors.gray50}>
                 {t('LAST_ACTIVITY').toUpperCase()}
               </Text>
 

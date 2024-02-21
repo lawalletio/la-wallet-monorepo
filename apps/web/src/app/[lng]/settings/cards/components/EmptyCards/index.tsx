@@ -1,5 +1,6 @@
-import { Container, Flex, Text, theme } from '@lawallet/ui';
+import { appTheme } from '@/constants/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
+import { Container, Flex, Text } from '@lawallet/ui';
 import EmptySvg from './EmptySvg';
 
 const EmptyCards = () => {
@@ -11,7 +12,7 @@ const EmptyCards = () => {
         <EmptySvg />
         <Flex direction="column" gap={4} align="center">
           <Text isBold={true}>{t('NO_HAVE_CARDS')}</Text>
-          <Text size="small" color={theme.colors.gray50}>
+          <Text size="small" color={appTheme.colors.gray50}>
             {t('NOT_FOUND_CARD')}
           </Text>
         </Flex>

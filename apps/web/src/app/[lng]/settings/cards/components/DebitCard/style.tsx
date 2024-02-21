@@ -1,4 +1,4 @@
-import { theme } from '@lawallet/ui';
+import { appTheme } from '@/constants/themeConfig';
 import styled from 'styled-components';
 
 interface CardImageProp {
@@ -9,7 +9,7 @@ export const CardImage = styled.div<CardImageProp>`
   display: flex;
 
   border-radius: 12px;
-  /* box-shadow: ${(props) => (props.$isActive ? `0 18px 30px 0 ${theme.colors.primary}33}` : 'none')}; */
+  /* box-shadow: ${(props) => (props.$isActive ? `0 18px 30px 0 ${appTheme.colors.primary}33}` : 'none')}; */
 `;
 
 export const ConfigCard = styled.div<CardImageProp>`

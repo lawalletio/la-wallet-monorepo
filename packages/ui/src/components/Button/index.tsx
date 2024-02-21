@@ -1,10 +1,9 @@
-import React, { FC, ReactElement } from 'react';
-
+import React, { FC } from 'react';
 import { ButtonProps } from './types';
 
-import { theme } from '../../theme';
 import { BaseButton } from './style';
 import { BtnLoader } from '../Loader/Loader';
+import { useTheme } from 'styled-components';
 
 export const Button: FC<ButtonProps> = ({
   children,
@@ -16,6 +15,7 @@ export const Button: FC<ButtonProps> = ({
   explicitLoader = <BtnLoader />,
   ...props
 }): JSX.Element => {
+  const theme = useTheme();
   let backgroundColor: string = 'transparent';
   let textColor: string = theme.colors.text;
 

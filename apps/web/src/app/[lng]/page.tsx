@@ -1,11 +1,12 @@
 'use client';
 
 import Logo from '@/components/Logo';
-import { Button, Divider, Container, Flex, Text, theme } from '@lawallet/ui';
+import { Button, Divider, Container, Flex, Text } from '@lawallet/ui';
 import { LAWALLET_VERSION } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 
 import { useRouter } from 'next/navigation';
+import { appTheme } from '@/constants/themeConfig';
 
 export default function Page() {
   const { t } = useTranslation();
@@ -17,7 +18,7 @@ export default function Page() {
       <Divider y={16} />
       <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
         <Logo />
-        <Text align="center" color={theme.colors.gray50}>
+        <Text align="center" color={appTheme.colors.gray50}>
           {LAWALLET_VERSION}
         </Text>
       </Flex>

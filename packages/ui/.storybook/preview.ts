@@ -5,7 +5,7 @@ import { withThemeFromJSXProvider } from '@storybook/addon-themes';
 // import DocTemplate from './DocTemplate.mdx';
 
 import { Provider } from '../src/Provider';
-import { theme } from '../src/theme';
+import { baseTheme } from '../src/theme';
 import { GlobalStyle } from '../src/style';
 
 const preview: Preview = {

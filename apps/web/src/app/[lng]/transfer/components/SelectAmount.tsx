@@ -7,13 +7,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { TokenList } from '@/components/TokenList';
 import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
 import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
 import { LNURLTransferType, TransferTypes } from '@lawallet/react/types';
-import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text, theme } from '@lawallet/ui';
+import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text } from '@lawallet/ui';
 import CardWithData from './CardWithData';
 
 type SelectTransferAmountType = {
@@ -132,7 +133,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
 
           {!hideBalance && (
             <Flex justify="center" align="center" gap={4}>
-              <Heading as="h6" color={theme.colors.gray50}>
+              <Heading as="h6" color={appTheme.colors.gray50}>
                 {userCurrency !== 'SAT' && '$'}
                 {formatToPreference(userCurrency, maxAvailableAmount, lng)} {t('AVAILABLE')}.
               </Heading>

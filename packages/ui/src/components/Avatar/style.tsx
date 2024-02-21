@@ -1,7 +1,5 @@
 import { styled } from 'styled-components';
 
-import { theme } from '../../theme';
-
 interface AvatarPrimitiveProps {
   $isNormal: boolean;
 }
@@ -17,8 +15,8 @@ export const AvatarPrimitive = styled.div<AvatarPrimitiveProps>`
   max-width: ${(props) => (props.$isNormal ? '35px' : '45px')};
   max-height: ${(props) => (props.$isNormal ? '35px' : '45px')};
 
-  background-color: ${theme.colors.gray20};
-  border: 1px solid ${theme.colors.gray30};
+  background-color: ${(props) => props.theme.colors.gray20};
+  border: 1px solid ${(props) => props.theme.colors.gray30};
   border-radius: 50%;
 
   font-size: 14px;

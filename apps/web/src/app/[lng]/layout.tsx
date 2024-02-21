@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import { LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
-import { config } from '@/constants/constants';
+import { config } from '@/constants/walletConfig';
 import { NotificationsProvider } from '@/context/NotificationsContext';
 
 import { fontPrimary, fontSecondary } from '@/styles/fonts';

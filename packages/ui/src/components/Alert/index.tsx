@@ -1,18 +1,19 @@
 import React from 'react';
 
-import { Text } from '../Text';
 import { Icon } from '../Icon';
 import { AlertIcon, CheckIcon } from '../Icons';
+import { Text } from '../Text';
 
 import { AlertProps } from './types';
 
-import { theme } from '../../theme';
+import { useTheme } from 'styled-components';
 import { AlertPrimitive } from './style';
 
 export function Alert(props: AlertProps) {
   const { title, description, type = 'success', isOpen } = props;
 
   const isSuccess = type === 'success';
+  const theme = useTheme();
 
   return (
     <AlertPrimitive $background={theme.colors[`${type}15`]} $color={type && theme.colors[type]} $isOpen={!!isOpen}>

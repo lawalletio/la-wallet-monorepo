@@ -1,14 +1,15 @@
 'use client';
-import { CardAlert, Container, Divider, Flex, Text, Button, Feedback, theme } from '@lawallet/ui';
-import Logo from '@/components/Logo';
 import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
+import Logo from '@/components/Logo';
+import { Button, CardAlert, Container, Divider, Feedback, Flex, Text } from '@lawallet/ui';
 
-import { useEffect, useState } from 'react';
-import { checkIOS } from '@/utils';
-import { useTranslation } from '@/context/TranslateContext';
-import { Loader } from '@lawallet/ui';
 import { LAWALLET_VERSION } from '@/constants/constants';
+import { appTheme } from '@/constants/themeConfig';
+import { useTranslation } from '@/context/TranslateContext';
+import { checkIOS } from '@/utils';
+import { Loader } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
       <Divider y={16} />
       <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
         <Logo />
-        <Text align="center" color={theme.colors.gray50}>
+        <Text align="center" color={appTheme.colors.gray50}>
           {LAWALLET_VERSION}
         </Text>
       </Flex>
