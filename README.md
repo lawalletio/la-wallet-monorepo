@@ -16,7 +16,7 @@ An open source repository for all LaWallet front-end interfaces.
 ## Interfaces
 
 - Web: [app.lawallet.ar](https://app.lawallet.ar)
-- Docs: [docs.lawallet.ar](https://docs.lawallet.ar)
+- Docs: [front.lawallet.io](https://front.lawallet.io)
 
 ## Socials / Contact
 
