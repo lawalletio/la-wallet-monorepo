@@ -11,6 +11,6 @@
   "get-started": {
     "title": "Clone repository",
     "type": "page",
-    "href": "/react/get-started"
+    "href": "/get-started"
   }
 }
