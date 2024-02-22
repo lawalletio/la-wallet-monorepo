@@ -1,7 +1,7 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
-import { regexComment, regexUserName } from '@/constants/constants';
 import { appTheme } from '@/config';
+import { regexComment } from '@/constants/constants';
 import { useCardsContext } from '@/context/CardsContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
@@ -45,7 +45,7 @@ const defaultDailyLimit: Limit = {
 
 type LimitsConfigOptions = 'tx' | 'daily';
 
-const NAME_MAX_LENGTH = 20;
+const NAME_MAX_LENGTH = 32;
 const DESC_MAX_LENGTH = 64;
 
 const page = () => {
@@ -77,7 +77,7 @@ const page = () => {
     errors.resetError();
     const targetValue = e.target.value ?? 0;
     if (targetValue.length && !regexNumbers.test(targetValue)) {
-      errors.modifyError('solo numeros');
+      errors.modifyError('ONLY_NUMBERS_ALLOWED');
       return;
     }
 
@@ -118,7 +118,7 @@ const page = () => {
     if (!newConfig.name.length) return errors.modifyError('EMPTY_NAME');
     if (newConfig.name.length > NAME_MAX_LENGTH)
       return errors.modifyError('MAX_LENGTH_NAME', { length: `${NAME_MAX_LENGTH}` });
-    if (!regexUserName.test(newConfig.name)) return errors.modifyError('INVALID_USERNAME');
+    if (!regexComment.test(newConfig.name)) return errors.modifyError('INVALID_USERNAME');
 
     if (newConfig.description.length > DESC_MAX_LENGTH)
       return errors.modifyError('MAX_LENGTH_DESC', { length: `${DESC_MAX_LENGTH}` });
