@@ -24,7 +24,7 @@ const BaseLoader = styled.span`
   height: 28px;
   border-radius: 50%;
   display: inline-block;
-  border-top: 2px solid #fff;
+  border-top: 2px solid ${(props) => props.theme.colors.gray50};
   border-right: 2px solid transparent;
   box-sizing: border-box;
   animation: ${rotate} 1s linear infinite;
