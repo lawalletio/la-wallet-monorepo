@@ -9,5 +9,5 @@ export const CardStyle = styled.div`
   align-self: stretch;
 
   border-radius: 8px;
-  background: var(--gray15, #262626);
+  background: ${(props) => props.theme.colors.gray15};
 `;
