@@ -50,9 +50,8 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
 
   return (
     <>
-      <CardWithData type={type} data={data} />
-
       <Container size="small">
+        <CardWithData type={type} data={data} />
         <Divider y={16} />
         <Flex direction="column" flex={1} justify="center" align="center" gap={8}>
           <Heading as="h6">Total</Heading>
