@@ -41,7 +41,7 @@ export default function Page() {
       const pValues: string[] = getMultipleTagsValues(event.tags, 'p');
 
       if (subkindValue === LaWalletTags.CARD_TRANSFER_DONATION && pValues.includes(config.modulePubkeys.card)) {
-        router.push(`${window.location.origin}/cards/donation?event=${eventParameter}`);
+        router.push(`${window.location.origin}/settings/cards/donation?event=${eventParameter}`);
         return;
       } else {
         setUrlScanned(str);
