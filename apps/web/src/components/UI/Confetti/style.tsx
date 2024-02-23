@@ -25,6 +25,6 @@ export const Confetti = styled.div<ConfettiProps>`
 
     width: 100%;
     height: 65%;
-    background: linear-gradient(to top, rgba(28, 28, 28, 1), rgba(28, 28, 28, 0));
+    background: linear-gradient(to top, ${(props) => props.theme.colors.background}, rgba(28, 28, 28, 0));
   }
 `;
