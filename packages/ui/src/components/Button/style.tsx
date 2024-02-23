@@ -1,7 +1,5 @@
 import { styled } from 'styled-components';
 
-import { baseTheme } from '../../theme';
-
 import { BaseButtonProps, ButtonCustomProps } from './types';
 
 export const BaseButton = styled.button<BaseButtonProps>`
