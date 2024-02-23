@@ -14,7 +14,7 @@ export const SheetPrimitive = styled.div<SheetPrimitiveProps>`
   width: 100%;
   height: 100%;
 
-  background-color: ${(props) => (props.$isOpen ? props.theme.colors.black : 'transparent')};
+  background-color: ${(props) => (props.$isOpen ? props.theme.colors.background : 'transparent')};
 
   transform: ${(props) => (props.$isOpen ? 'translateY(0)' : 'translateY(100%)')};
   transition-duration: 0.2s;
