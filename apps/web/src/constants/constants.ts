@@ -16,4 +16,5 @@ export const lightningAddresses = [
   'getalby.com',
   'blink.com',
   'bitrefill.com',
+  'btcpp.ar',
 ];
