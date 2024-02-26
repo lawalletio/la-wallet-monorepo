@@ -5,9 +5,17 @@ import { Modal } from '@/components/UI';
 import QrScanner from '@/components/UI/Scanner/Scanner';
 import { regexURL } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
-import { detectTransferType, removeLightningStandard } from '@lawallet/react';
+import {
+  LaWalletTags,
+  detectTransferType,
+  getMultipleTagsValues,
+  getTagValue,
+  removeLightningStandard,
+  useConfig,
+} from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { Button, Flex, Text } from '@lawallet/ui';
+import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter } from 'next/navigation';
 import NimiqQrScanner from 'qr-scanner';
 import { useState } from 'react';
@@ -16,6 +24,30 @@ export default function Page() {
   const [urlScanned, setUrlScanned] = useState<string>('');
   const { t } = useTranslation();
   const router = useRouter();
+  const config = useConfig();
+
+  const processExternalURL = (str: string) => {
+    const url = new URL(str);
+    const eventParameter = url.searchParams.get('event');
+
+    if (!eventParameter) {
+      setUrlScanned(str);
+      return;
+    }
+
+    const event: NostrEvent = JSON.parse(atob(eventParameter));
+    if (event) {
+      const subkindValue: string = getTagValue(event.tags, 't');
+      const pValues: string[] = getMultipleTagsValues(event.tags, 'p');
+
+      if (subkindValue === LaWalletTags.CARD_TRANSFER_DONATION && pValues.includes(config.modulePubkeys.card)) {
+        router.push(`${window.location.origin}/settings/cards/donation?event=${eventParameter}`);
+        return;
+      } else {
+        setUrlScanned(str);
+      }
+    }
+  };
 
   const handleScanURL = (str: string) => {
     const url = new URL(str);
@@ -31,7 +63,7 @@ export default function Page() {
         router.push(pathname);
         return;
       } else {
-        setUrlScanned(str);
+        processExternalURL(str);
       }
     }
   };

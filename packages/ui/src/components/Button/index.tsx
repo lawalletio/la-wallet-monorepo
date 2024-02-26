@@ -22,7 +22,7 @@ export const Button: FC<ButtonProps> = ({
   switch (variant) {
     case 'filled':
       backgroundColor = theme.colors[color];
-      textColor = theme.colors.black;
+      textColor = theme.colors.background;
       break;
     case 'bezeled':
       backgroundColor = theme.colors[`${color}15`];

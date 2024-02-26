@@ -23,6 +23,8 @@ export enum LaWalletTags {
   OUTBOUND_TRANSACTION_ERROR = 'outbound-transaction-error',
   CREATE_IDENTITY = 'create-identity',
   CARD_ACTIVATION_REQUEST = 'card-activation-request',
+  CARD_TRANSFER_DONATION = 'card-transfer-donation',
+  CARD_TRANSFER_ACCEPTANCE = 'card-transfer-acceptance',
 }
 
 export type GenerateIdentityReturns = {
@@ -169,7 +171,7 @@ export const buildCardTransferDonationEvent = async (
     content: uuidNip04,
     created_at: nowInSeconds(),
     tags: [
-      ['t', 'card-transfer-donation'],
+      ['t', LaWalletTags.CARD_TRANSFER_DONATION],
       ['p', config.modulePubkeys.card],
       ['expiry', expiry.toString()],
     ],
@@ -205,7 +207,7 @@ export const buildCardTransferAcceptEvent = async (
     }),
     created_at: nowInSeconds(),
     tags: [
-      ['t', 'card-transfer-acceptance'],
+      ['t', LaWalletTags.CARD_TRANSFER_ACCEPTANCE],
       ['p', config.modulePubkeys.card],
       ['p', giverPubkey],
     ],

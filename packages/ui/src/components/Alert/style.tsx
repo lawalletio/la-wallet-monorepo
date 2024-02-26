@@ -36,7 +36,7 @@ export const AlertPrimitive = styled.div<AlertPrimitiveProps>`
     padding: 12px;
     padding-bottom: 18px;
 
-    background-color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => props.theme.colors.text};
     box-shadow: 0 18px 40px 4px ${(props) => props.$background};
     border-radius: 4px;
 

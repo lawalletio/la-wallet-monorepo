@@ -115,9 +115,8 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
 
   return (
     <>
-      <CardWithData type={transferInfo.type} data={transferInfo.data} />
-
       <Container size="small">
+        <CardWithData type={transferInfo.type} data={transferInfo.data} />
         <Divider y={16} />
         <Flex direction="column" gap={8} flex={1} justify="center">
           <Flex justify="center" align="center" gap={4}>
