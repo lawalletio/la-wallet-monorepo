@@ -1,12 +1,6 @@
 import { LaWalletKinds, LaWalletTags, getMultipleTagsValues, getTag, getTagValue, parseContent } from '@lawallet/utils';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
-import {
-  type NDKEvent,
-  type NDKKind,
-  type NDKSubscriptionOptions,
-  type NDKTag,
-  type NostrEvent,
-} from '@nostr-dev-kit/ndk';
+import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 
 import type { ConfigParameter } from '@lawallet/utils/types';
@@ -324,7 +318,7 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
 
       if (cachedTxs.length) {
         const lastCached: number = cachedTxs.length
-          ? 1 + cachedTxs[0]!.events[cachedTxs[0]!.events.length - 1]!.created_at
+          ? cachedTxs[0]!.events[cachedTxs[0]!.events.length - 1]!.created_at
           : 0;
 
         setActivityInfo({
