@@ -30,7 +30,7 @@ export default function Subnavbar(props: ComponentProps) {
       <Container>
         <div className="info">
           <button onClick={() => router.push('/dashboard')} className={`${path === 'home' && 'active'}`}>
-            <Icon>
+            <Icon color={appTheme.colors.text}>
               <HomeIcon />
             </Icon>
             <Text size="small" color={appTheme.colors.text}>
@@ -43,7 +43,7 @@ export default function Subnavbar(props: ComponentProps) {
             </Button>
           </ButtonCTA>
           <button onClick={() => router.push('/plugins')} className={`${path === 'plugins' && 'active'}`}>
-            <Icon>
+            <Icon color={appTheme.colors.text}>
               <RocketIcon />
             </Icon>
             <Text size="small" color={appTheme.colors.text}>
