@@ -171,5 +171,6 @@
   "LIMIT_CARD_PER_DAY": "Tu tarjeta tendrá un límite de {{ sats }} SAT por día",
   "NO_LIMIT_SET": "Tu tarjeta no tendrá ningún limite en los pagos",
   "TIME_LEFT": "Tiempo restante",
-  "DONATION_CARD_SUCCESS": "Tu tarjeta fue transferida correctamente"
+  "DONATION_CARD_SUCCESS": "Tu tarjeta fue transferida correctamente",
+  "HOME": "Inicio"
 }

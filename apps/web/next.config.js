@@ -17,10 +17,10 @@ const nextConfig = {
   reactStrictMode: false,
   trailingSlash: true,
   swcMinify: true,
-  transpilePackages: ['@lawallet/react', '@lawallet/utils', '@lawallet/ui'],
+  transpilePackages: ['@lawallet/react', '@lawallet/utils', '@lawallet/ui', '@lawallet/micro-front'],
   compiler: {
     styledComponents: true,
   },
 };
 
-module.exports = withSerwist(nextConfig);
+module.exports = nextConfig;

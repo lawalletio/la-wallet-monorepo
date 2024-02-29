@@ -1,0 +1,49 @@
+{
+  "name": "@lawallet/microfront-template",
+  "version": "0.1.1",
+  "description": "",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lawalletio/la-wallet-monorepo.git",
+    "directory": "modules/microfront-template"
+  },
+  "main": "dist/index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsc && node watch.config.js",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
+    "build": "node esbuild.config.js && tsc"
+  },
+  "author": "LaWallet Labs",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18",
+    "react-dom": "^18",
+    "next": "14.1.0",
+    "@lawallet/ui": "*",
+    "@lawallet/react": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "esbuild": "0.20.0",
+    "esbuild-plugin-styled-components": "^3.0.1",
+    "eslint-config-next": "14.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.33.2"
+  }
+}

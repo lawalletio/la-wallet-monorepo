@@ -7,7 +7,15 @@ import { loadingMessages } from '@/context/TranslateContext';
 
 // const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
 
-const protectedRoutes: string[] = ['/dashboard', '/transfer', '/deposit', '/scan', '/settings', '/transactions'];
+const protectedRoutes: string[] = [
+  '/dashboard',
+  '/transfer',
+  '/deposit',
+  '/scan',
+  '/settings',
+  '/transactions',
+  '/plugins',
+];
 
 const AuthProvider = ({ children, lng }: { children: React.ReactNode; lng: AvailableLanguages }) => {
   const {
