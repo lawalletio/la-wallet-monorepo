@@ -6,6 +6,8 @@
 //   register: true
 // })
 
+const { version } = require('./package.json');
+
 const withSerwist = require('@serwist/next').default({
   // Note: This is only an example. If you use Pages Router,
   // use something else that works, such as "service-worker/index.ts".
@@ -20,6 +22,9 @@ const nextConfig = {
   transpilePackages: ['@lawallet/react', '@lawallet/utils', '@lawallet/ui'],
   compiler: {
     styledComponents: true,
+  },
+  env: {
+    version,
   },
 };
 

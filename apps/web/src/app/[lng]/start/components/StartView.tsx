@@ -3,7 +3,6 @@ import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
 import Logo from '@/components/Logo';
 import { Button, CardAlert, Container, Divider, Feedback, Flex, Text } from '@lawallet/ui';
 
-import { LAWALLET_VERSION } from '@/constants/constants';
 import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { checkIOS } from '@/utils';
@@ -27,7 +26,7 @@ const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
       <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
         <Logo />
         <Text align="center" color={appTheme.colors.gray50}>
-          {LAWALLET_VERSION}
+          v{process.env.version}
         </Text>
       </Flex>
 

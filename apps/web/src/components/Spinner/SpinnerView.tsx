@@ -1,5 +1,4 @@
 import Logo from '@/components/Logo';
-import { LAWALLET_VERSION } from '@/constants/constants';
 import { appTheme } from '@/config';
 import { Container, Divider, Flex, Loader, Text } from '@lawallet/ui';
 
@@ -10,7 +9,7 @@ const SpinnerView = ({ loadingText }: { loadingText?: string }) => {
       <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
         <Logo />
         <Text align="center" size="small" color={appTheme.colors.white}>
-          {LAWALLET_VERSION}
+          v{process.env.version}
         </Text>
       </Flex>
 

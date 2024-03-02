@@ -2,7 +2,6 @@
 
 import Logo from '@/components/Logo';
 import { Button, Divider, Container, Flex, Text } from '@lawallet/ui';
-import { LAWALLET_VERSION } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 
 import { useRouter } from 'next/navigation';
@@ -19,7 +18,7 @@ export default function Page() {
       <Flex direction="column" align="center" justify="center" gap={8} flex={1}>
         <Logo />
         <Text align="center" color={appTheme.colors.gray50}>
-          {LAWALLET_VERSION}
+          v{process.env.version}
         </Text>
       </Flex>
 

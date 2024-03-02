@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
-import { CACHE_BACKUP_KEY, LAWALLET_VERSION, STORAGE_IDENTITY_KEY } from '@/constants/constants';
+import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
 import {
@@ -108,7 +108,7 @@ export default function Page() {
         <Divider y={16} />
         <Flex justify="center">
           <Text size="small" color={appTheme.colors.gray50}>
-            LaWallet {LAWALLET_VERSION}
+            LaWallet v{process.env.version}
           </Text>
         </Flex>
         <Divider y={16} />
