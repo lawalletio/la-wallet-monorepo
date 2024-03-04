@@ -1,0 +1,13 @@
+# Node
+node_modules
+
+# Bundle
+dist
+
+# Mac
+.DS_Store
+
+examples/
+
+# Storybook
+storybook-static/

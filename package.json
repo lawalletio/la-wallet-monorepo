@@ -10,7 +10,7 @@
     "build:react": "pnpm --filter @lawallet/react build",
     "build:utils": "pnpm --filter @lawallet/utils build",
     "build:ui": "pnpm --filter @lawallet/ui build",
-    "build:modules": "pnpm --filter @lawallet/microfront-template build",
+    "build:modules": "pnpm --filter @lawallet/plugin build",
     "build:libs": "pnpm build:utils && pnpm build:react && pnpm build:ui && pnpm build:modules",
     "web:build": "pnpm --filter lawallet-front build",
     "web:dev": "pnpm --filter lawallet-front dev",

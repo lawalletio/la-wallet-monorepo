@@ -1,12 +1,12 @@
 {
-  "name": "@lawallet/microfront-template",
-  "version": "0.1.1",
+  "name": "@lawallet/boltz",
+  "version": "0.0.1",
   "description": "",
   "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/lawalletio/la-wallet-monorepo.git",
-    "directory": "modules/microfront-template"
+    "directory": "plugins/boltz"
   },
   "main": "dist/index.js",
   "type": "module",
