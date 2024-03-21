@@ -1,9 +1,25 @@
 import dynamic from 'next/dynamic';
 import SpinnerView from '@/components/Spinner/SpinnerView';
+import { ComponentType } from 'react';
 
-export const PLUGINS = {
+type RouteProps = {
+  path: string;
+  component: ComponentType<React.JSX.Element> | React.JSX.Element | null;
+};
+
+type PluginProps = {
+  metadata: {
+    author: string;
+    title: string;
+    description: string;
+  };
+  routes: RouteProps[];
+};
+
+export const PLUGINS: Record<string, PluginProps> = {
   boltz: {
     metadata: {
+      author: 'LaWallet Labs',
       title: 'Boltz',
       description: 'Boltz exchange plugin',
     },
@@ -26,6 +42,7 @@ export const PLUGINS = {
   },
   plugin: {
     metadata: {
+      author: 'LaWallet Labs',
       title: 'Plugin',
       description: 'A test plugin',
     },
