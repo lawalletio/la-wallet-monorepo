@@ -4,7 +4,7 @@ import { ComponentType } from 'react';
 
 type RouteProps = {
   path: string;
-  component: ComponentType<React.JSX.Element> | React.JSX.Element | null;
+  component: ComponentType;
 };
 
 type PluginProps = {
