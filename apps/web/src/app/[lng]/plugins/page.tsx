@@ -1,6 +1,6 @@
 'use client';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import plugins from '@/config/plugins.json';
+import { PLUGINS } from '@/config/plugins';
 
 import { ArrowRightIcon, Button, Card, Container, Divider, Flex, Heading, Icon, Text } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
@@ -15,29 +15,31 @@ export default function Page() {
         <Divider y={24} />
         <Heading>Plugins</Heading>
         <Divider y={24} />
-        {Object.keys(plugins).map((key) => {
-          const value: { title: string; description: string; package: string } = plugins[key];
+        {Object.keys(PLUGINS).map((key) => {
+          const value: { title: string; description: string } = PLUGINS[key].metadata;
 
           return (
-            <Card key={key}>
-              <Flex gap={16} justify="space-between" align="center">
-                <div>
-                  <Text isBold>{value.title}</Text>
-                  <Text>{value.description}</Text>
-                </div>
-                <div>
-                  <Button onClick={() => router.push(`/plugins/${key}`)} variant="borderless">
-                    <Icon>
-                      <ArrowRightIcon />
-                    </Icon>
-                  </Button>
-                </div>
-              </Flex>
-            </Card>
+            <>
+              <Card key={key}>
+                <Flex gap={16} justify="space-between" align="center">
+                  <div>
+                    <Text isBold>{value.title}</Text>
+                    <Text>{value.description}</Text>
+                  </div>
+                  <div>
+                    <Button onClick={() => router.push(`/plugins/${key}`)} variant="borderless">
+                      <Icon>
+                        <ArrowRightIcon />
+                      </Icon>
+                    </Button>
+                  </div>
+                </Flex>
+              </Card>
+              <Divider y={16} />
+            </>
           );
         })}
         <Divider y={8} />
-        <Divider y={24} />
       </Container>
 
       <Subnavbar path="plugins" />

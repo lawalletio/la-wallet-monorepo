@@ -1,7 +1,0 @@
-{
-    "template": {
-        "title": "Test module",
-        "description": "Description of module",
-        "package": "@lawallet/microfront-template"
-    }
-}
