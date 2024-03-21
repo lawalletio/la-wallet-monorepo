@@ -1,3 +1,4 @@
+'use client';
 import { Button, Container, Flex, Text } from '@lawallet/ui';
 import { useWalletContext, formatToPreference } from '@lawallet/react';
 import React from 'react';
