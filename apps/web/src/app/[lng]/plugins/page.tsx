@@ -1,6 +1,6 @@
 'use client';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import { PLUGINS } from '@/config/plugins';
+import { PLUGINS } from '@/plugins';
 
 import { ArrowRightIcon, Button, Card, Container, Divider, Flex, Heading, Icon, Text } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
