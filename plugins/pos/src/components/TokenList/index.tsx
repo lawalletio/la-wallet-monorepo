@@ -1,6 +1,7 @@
 'use client';
 
 import { TokensList } from '@lawallet/ui';
+import React from 'react';
 
 import { CurrenciesList, useWalletContext } from '@lawallet/react';
 import { AvailableCurrencies } from '@lawallet/react/types';

@@ -31,6 +31,7 @@ export * from './CardAlert';
 export * from './Loader/Loader';
 export * from './Autocomplete';
 export * from './Keyboard';
+export * from './TokensList';
 
 // Layout
 export * from './Layout/Container';
