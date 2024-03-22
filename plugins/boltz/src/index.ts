@@ -7,3 +7,5 @@ export const App: AppProps = {
   '/': AppIndex,
   '/test': PruebaIndex,
 };
+
+export const PluginRoutes = Object.keys(App);

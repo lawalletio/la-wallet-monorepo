@@ -30,7 +30,7 @@ export function Navbar(props: ComponentProps) {
             children
           )}
 
-          {rightButton ? <Right>{rightButton}</Right> : <Right />}
+          {rightButton ? <Right>{rightButton}</Right> : !children ? <Right /> : null}
         </Flex>
       </Container>
     </NavbarStyled>
