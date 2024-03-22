@@ -35,3 +35,4 @@ export * from './Autocomplete';
 export * from './Layout/Container';
 export * from './Layout/HeroCard';
 export * from './Layout/Footer';
+export * from './Layout/Navbar';

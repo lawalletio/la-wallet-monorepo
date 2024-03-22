@@ -2,8 +2,6 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import Navbar from '@/components/Layout/Navbar';
-
 import StartView from '@/app/[lng]/start/components/StartView';
 import {
   Button,
@@ -15,6 +13,7 @@ import {
   Input,
   InputGroup,
   InputGroupRight,
+  Navbar,
   Text,
 } from '@lawallet/ui';
 
@@ -24,6 +23,7 @@ import { useCreateIdentity } from '@/hooks/useCreateIdentity';
 import { validateNonce } from '@lawallet/react/actions';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { normalizeLNDomain, useConfig } from '@lawallet/react';
+import BackButton from '@/components/BackButton';
 
 export default function Page() {
   const config = useConfig();
@@ -72,7 +72,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar />
+      <Navbar leftButton={<BackButton />} />
       <Container size="small">
         <Flex direction="column" justify="center">
           <Heading as="h2">{t('REGISTER_USER')}</Heading>

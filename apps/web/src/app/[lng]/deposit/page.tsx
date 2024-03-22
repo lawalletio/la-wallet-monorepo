@@ -1,6 +1,4 @@
 'use client';
-
-import Navbar from '@/components/Layout/Navbar';
 import { useMemo, useState } from 'react';
 
 import { copy } from '@/utils/share';
@@ -8,12 +6,13 @@ import { copy } from '@/utils/share';
 import { useTranslation } from '@/context/TranslateContext';
 
 import { QRCode } from '@/components/UI';
-import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
+import { Button, Container, Divider, Flex, Navbar, Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config';
 import { useNotifications } from '@/context/NotificationsContext';
 import { formatAddress, lnurl_encode, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import InvoiceSheet from './components/InvoiceSheet';
+import BackButton from '@/components/BackButton';
 
 export default function Page() {
   const config = useConfig();
@@ -46,7 +45,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar showBackPage={true} title={t('DEPOSIT')} />
+      <Navbar leftButton={<BackButton />} title={t('DEPOSIT')} />
 
       {identity.data.username.length ? (
         <>

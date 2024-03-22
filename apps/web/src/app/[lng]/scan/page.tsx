@@ -1,6 +1,6 @@
 'use client';
 
-import Navbar from '@/components/Layout/Navbar';
+import BackButton from '@/components/BackButton';
 import { Modal } from '@/components/UI';
 import QrScanner from '@/components/UI/Scanner/Scanner';
 import { regexURL } from '@/constants/constants';
@@ -14,7 +14,7 @@ import {
   useConfig,
 } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
-import { Button, Flex, Text } from '@lawallet/ui';
+import { Button, Flex, Navbar, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter } from 'next/navigation';
 import NimiqQrScanner from 'qr-scanner';
@@ -92,7 +92,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar showBackPage={true} title={t('SCAN_QR')} />
+      <Navbar leftButton={<BackButton />} title={t('SCAN_QR')} />
 
       <Flex justify="center" align="center" flex={1}>
         <QrScanner

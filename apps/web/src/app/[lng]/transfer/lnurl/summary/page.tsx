@@ -1,5 +1,4 @@
 'use client';
-import Navbar from '@/components/Layout/Navbar';
 import { useLNURLContext } from '@/context/LNURLContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
@@ -7,6 +6,8 @@ import { TransferTypes } from '@lawallet/react/types';
 import { ErrorTransfer } from '../../components/Error';
 import { FinishTransfer } from '../../components/Finish';
 import { Summary } from '../../components/Summary';
+import { Navbar } from '@lawallet/ui';
+import BackButton from '@/components/BackButton';
 
 const page = () => {
   const { t } = useTranslation();
@@ -25,12 +26,15 @@ const page = () => {
       ) : (
         <>
           <Navbar
-            showBackPage={true}
             title={t('VALIDATE_INFO')}
-            overrideBack={
-              LNURLTransferInfo.type === TransferTypes.LNURLW
-                ? `/transfer`
-                : `/transfer/lnurl?data=${LNURLTransferInfo.data}&amount=${LNURLTransferInfo.amount}${LNURLTransferInfo.comment ? `&comment=${LNURLTransferInfo.comment}` : ''}`
+            leftButton={
+              <BackButton
+                overrideBack={
+                  LNURLTransferInfo.type === TransferTypes.LNURLW
+                    ? `/transfer`
+                    : `/transfer/lnurl?data=${LNURLTransferInfo.data}&amount=${LNURLTransferInfo.amount}${LNURLTransferInfo.comment ? `&comment=${LNURLTransferInfo.comment}` : ''}`
+                }
+              />
             }
           />
           <Summary

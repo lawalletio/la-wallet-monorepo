@@ -1,6 +1,5 @@
 'use client';
 
-import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
 import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
@@ -14,6 +13,7 @@ import {
   Flex,
   Icon,
   LinkSetting,
+  Navbar,
   Sheet,
   Text,
 } from '@lawallet/ui';
@@ -24,6 +24,7 @@ import { useConfig, useWalletContext } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import BackButton from '@/components/BackButton';
 
 export default function Page() {
   const config = useConfig();
@@ -56,7 +57,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar showBackPage={true} title={t('SETTINGS')} overrideBack="/dashboard" />
+      <Navbar leftButton={<BackButton overrideBack="/dashboard" />} title={t('SETTINGS')} />
 
       <Container size="small">
         <Divider y={16} />

@@ -1,5 +1,4 @@
 'use client';
-import Navbar from '@/components/Layout/Navbar';
 import { appTheme } from '@/config';
 import { regexComment } from '@/constants/constants';
 import { useCardsContext } from '@/context/CardsContext';
@@ -18,12 +17,14 @@ import {
   InputWithLabel,
   Label,
   Loader,
+  Navbar,
   Text,
   ToggleSwitch,
 } from '@lawallet/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import LimitInput from '../components/LimitInput/LimitInput';
+import BackButton from '@/components/BackButton';
 
 const regexNumbers: RegExp = /^[0123456789]+$/;
 
@@ -157,9 +158,8 @@ const page = () => {
   return (
     <>
       <Navbar
-        showBackPage={true}
         title={loadInfo.loading ? t('LOADING') : cardsData[uuid].design.name}
-        overrideBack="/settings/cards"
+        leftButton={<BackButton overrideBack="/settings/cards" />}
       />
 
       {loadInfo.loading ? (

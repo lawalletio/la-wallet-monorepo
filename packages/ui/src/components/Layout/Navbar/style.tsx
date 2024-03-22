@@ -1,15 +1,13 @@
 'use client';
-
-import { appTheme } from '@/config';
 import { styled } from 'styled-components';
 
 interface NavbarProps {}
 
-export const Navbar = styled.div<NavbarProps>`
+export const NavbarStyled = styled.div<NavbarProps>`
   height: 60px;
   position: relative;
   z-index: 10;
-  background-color: ${appTheme.colors.background};
+  background-color: ${(props) => props.theme.colors.background};
 `;
 
 export const BackButton = styled.button`
@@ -19,7 +17,7 @@ export const BackButton = styled.button`
   background-color: transparent;
   border: none;
 
-  color: ${appTheme.colors.primary};
+  color: ${(props) => props.theme.colors.primary};
 
   cursor: pointer;
 `;

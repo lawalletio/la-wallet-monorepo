@@ -2,14 +2,14 @@
 
 import { useTranslation } from '@/context/TranslateContext';
 
-import Navbar from '@/components/Layout/Navbar';
 import { useCardsContext } from '@/context/CardsContext';
 import { useNotifications } from '@/context/NotificationsContext';
 import { Design } from '@lawallet/react/types';
-import { Container, Divider, Flex, Loader } from '@lawallet/ui';
+import { Container, Divider, Flex, Loader, Navbar } from '@lawallet/ui';
 import AddNewCardModal from './components/AddCard';
 import DebitCard from './components/DebitCard';
 import EmptyCards from './components/EmptyCards';
+import BackButton from '@/components/BackButton';
 
 export default function Page() {
   const notifications = useNotifications();
@@ -31,7 +31,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar title={t('MY_CARDS')} showBackPage={true} overrideBack={'/settings'} />
+      <Navbar title={t('MY_CARDS')} leftButton={<BackButton overrideBack="/settings" />} />
 
       <Container size="small">
         <Divider y={16} />

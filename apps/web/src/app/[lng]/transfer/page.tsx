@@ -3,7 +3,6 @@
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import Navbar from '@/components/Layout/Navbar';
 import {
   Autocomplete,
   Button,
@@ -15,11 +14,13 @@ import {
   InputGroup,
   InputGroupRight,
   LinkButton,
+  Navbar,
   Text,
 } from '@lawallet/ui';
 
-import { lightningAddresses } from '@/constants/constants';
+import BackButton from '@/components/BackButton';
 import { appTheme } from '@/config';
+import { lightningAddresses } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
@@ -133,7 +134,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar showBackPage={true} title={t('TRANSFER_MONEY')} overrideBack="/dashboard" />
+      <Navbar title={t('TRANSFER_MONEY')} leftButton={<BackButton overrideBack="/dashboard" />} />
 
       <Container size="small">
         <Divider y={16} />

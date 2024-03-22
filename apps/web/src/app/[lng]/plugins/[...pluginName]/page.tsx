@@ -1,5 +1,7 @@
 'use client';
+import BackButton from '@/components/BackButton';
 import { PLUGINS } from '@/config/plugins';
+import { Navbar } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -35,5 +37,12 @@ export default function Page({ params }) {
     }
   }, [params.pluginName]);
 
-  return Component ? <Component /> : router.push('/plugins');
+  return Component ? (
+    <>
+      <Navbar title={PLUGINS[pluginName].metadata.title} leftButton={<BackButton />} />
+      <Component />
+    </>
+  ) : (
+    router.push('/plugins')
+  );
 }

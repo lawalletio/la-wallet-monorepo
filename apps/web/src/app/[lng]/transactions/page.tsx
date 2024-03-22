@@ -1,12 +1,11 @@
 'use client';
-
-import Navbar from '@/components/Layout/Navbar';
+import BackButton from '@/components/BackButton';
 import TransactionItem from '@/components/TransactionItem';
 import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { useWalletContext } from '@lawallet/react';
 import { Transaction } from '@lawallet/react/types';
-import { Button, Container, Divider, Flex, Footer, Loader, Text } from '@lawallet/ui';
+import { Button, Container, Divider, Flex, Footer, Loader, Navbar, Text } from '@lawallet/ui';
 import { differenceInCalendarDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -38,7 +37,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar showBackPage={true} title={t('ACTIVITY')} />
+      <Navbar leftButton={<BackButton overrideBack="/dashboard" />} title={t('ACTIVITY')} />
 
       <Container size="small">
         <InfiniteScroll

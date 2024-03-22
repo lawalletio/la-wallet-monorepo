@@ -5,14 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { useTranslation } from '@/context/TranslateContext';
-
-import Navbar from '@/components/Layout/Navbar';
 import { InfoCopy } from '@/components/UI';
-import { Button, Container, Divider, Flex, Label, Text, ToggleSwitch } from '@lawallet/ui';
+import { Button, Container, Divider, Flex, Label, Navbar, Text, ToggleSwitch } from '@lawallet/ui';
 
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { appTheme } from '@/config';
 import { useConfig, useWalletContext } from '@lawallet/react';
+import BackButton from '@/components/BackButton';
 
 export default function Page() {
   const { t } = useTranslation();
@@ -33,7 +32,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar title={t('BACKUP_ACCOUNT')} showBackPage={true} overrideBack={'/settings'} />
+      <Navbar title={t('BACKUP_ACCOUNT')} leftButton={<BackButton overrideBack="/settings" />} />
 
       {showRecovery ? (
         <>

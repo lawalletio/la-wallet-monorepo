@@ -1,9 +1,7 @@
 'use client';
 import { useTranslation } from '@/context/TranslateContext';
 import { useRouter } from 'next/navigation';
-
-import Navbar from '@/components/Layout/Navbar';
-import { Button, Container, Divider, Feedback, Flex, Heading, Textarea } from '@lawallet/ui';
+import { Button, Container, Divider, Feedback, Flex, Heading, Navbar, Textarea } from '@lawallet/ui';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
@@ -11,6 +9,7 @@ import { useConfig, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { getPublicKey } from 'nostr-tools';
 import { ChangeEvent, useState } from 'react';
+import BackButton from '@/components/BackButton';
 
 export default function Page() {
   const {
@@ -65,7 +64,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar />
+      <Navbar leftButton={<BackButton />} />
       <Container size="small">
         <Flex direction="column" justify="center">
           <Heading as="h2">{t('LOGIN_TITLE')}</Heading>

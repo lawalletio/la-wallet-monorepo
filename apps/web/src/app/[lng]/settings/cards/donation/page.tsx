@@ -1,12 +1,12 @@
 'use client';
+import BackButton from '@/components/BackButton';
 import Countdown from '@/components/Countdown/Countdown';
-import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import { useNotifications } from '@/context/NotificationsContext';
 import { useTranslation } from '@/context/TranslateContext';
 import { buildCardTransferAcceptEvent, nowInSeconds, useWalletContext } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
-import { Button, Flex, Text } from '@lawallet/ui';
+import { Button, Flex, Navbar, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -76,7 +76,7 @@ const page = () => {
 
   return (
     <>
-      <Navbar showBackPage={true} title={'Recibir tarjeta'} overrideBack="/settings/cards" />
+      <Navbar leftButton={<BackButton overrideBack="/settings/cards" />} title={'Recibir tarjeta'} />
 
       <Modal
         title={t('NEW_CARD')}

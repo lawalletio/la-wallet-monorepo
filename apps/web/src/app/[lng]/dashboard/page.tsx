@@ -4,7 +4,6 @@
 import { GearIcon, HiddenIcon, SatoshiV2Icon, SendIcon, VisibleIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useEffect, useMemo, useState } from 'react';
 
-import Navbar from '@/components/Layout/Navbar';
 import { TokenList } from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
 import {
@@ -18,6 +17,7 @@ import {
   Heading,
   HeroCard,
   Icon,
+  Navbar,
   ReceiveIcon,
   Text,
 } from '@lawallet/ui';

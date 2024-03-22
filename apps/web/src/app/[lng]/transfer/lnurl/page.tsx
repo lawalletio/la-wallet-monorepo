@@ -1,11 +1,12 @@
 'use client';
 import React, { useEffect } from 'react';
 import { SelectTransferAmount } from '../components/SelectAmount';
-import Navbar from '@/components/Layout/Navbar';
 import { useLNURLContext } from '@/context/LNURLContext';
 import { TransferTypes } from '@lawallet/react/types';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/context/TranslateContext';
+import { Navbar } from '@lawallet/ui';
+import BackButton from '@/components/BackButton';
 
 const TransferWithLNURL = () => {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ const TransferWithLNURL = () => {
 
   return (
     <>
-      <Navbar showBackPage={true} title={t('DEFINE_AMOUNT')} overrideBack={`/transfer`} />
+      <Navbar title={t('DEFINE_AMOUNT')} leftButton={<BackButton overrideBack="/transfer" />} />
 
       <SelectTransferAmount transferInfo={LNURLTransferInfo} setAmountToPay={setAmountToPay} setComment={setComment} />
     </>
