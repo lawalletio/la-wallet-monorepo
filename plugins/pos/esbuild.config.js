@@ -1,7 +1,7 @@
 import * as esbuild from 'esbuild';
 
 export const esbuildConfig = {
-  entryPoints: ['src/index.ts'],
+  entryPoints: ['src/index.ts', 'src/metadata.ts'],
   bundle: true,
   minify: true,
   splitting: true,

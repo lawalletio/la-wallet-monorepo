@@ -23,6 +23,17 @@
   },
   "author": "LaWallet Labs",
   "license": "MIT",
+  "exports": {
+    ".": "./dist/index.js",
+    "./metadata": "./dist/metadata.js"
+  },
+  "typesVersions": {
+    "*": {
+      "metadata": [
+        "./dist/metadata.d.ts"
+      ]
+    }
+  },
   "peerDependencies": {
     "react": "^18",
     "react-dom": "^18",
