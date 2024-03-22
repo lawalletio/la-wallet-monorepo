@@ -14,7 +14,7 @@
     "@feririarte/plugin": "*",
     "@formatjs/intl-localematcher": "^0.5.4",
     "@lawallet/boltz": "*",
-    "@lawallet/plugin": "*",
+    "@lawallet/pos": "*",
     "@lawallet/react": "*",
     "@lawallet/ui": "*",
     "@nostr-dev-kit/ndk": "^2.4.0",

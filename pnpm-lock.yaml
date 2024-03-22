@@ -72,9 +72,9 @@ importers:
       '@lawallet/boltz':
         specifier: '*'
         version: link:../../plugins/boltz
-      '@lawallet/plugin':
+      '@lawallet/pos':
         specifier: '*'
-        version: link:../../plugins/plugin
+        version: link:../../plugins/pos
       '@lawallet/react':
         specifier: '*'
         version: link:../../packages/react
@@ -353,9 +353,6 @@ importers:
       '@lawallet/ui':
         specifier: '*'
         version: link:../../packages/ui
-      next:
-        specifier: 14.1.0
-        version: 14.1.0(@babel/core@7.23.7)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18
         version: 18.2.0
@@ -384,9 +381,6 @@ importers:
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
-      eslint-config-next:
-        specifier: 14.1.0
-        version: 14.1.0(eslint@8.56.0)(typescript@5.3.3)
       eslint-config-standard-with-typescript:
         specifier: ^43.0.1
         version: 43.0.1(@typescript-eslint/eslint-plugin@6.20.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)(typescript@5.3.3)
@@ -406,7 +400,7 @@ importers:
         specifier: ^5
         version: 5.3.3
 
-  plugins/plugin:
+  plugins/pos:
     dependencies:
       '@lawallet/react':
         specifier: '*'
@@ -414,9 +408,6 @@ importers:
       '@lawallet/ui':
         specifier: '*'
         version: link:../../packages/ui
-      next:
-        specifier: 14.1.0
-        version: 14.1.0(@babel/core@7.23.7)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18
         version: 18.2.0
@@ -445,9 +436,6 @@ importers:
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
-      eslint-config-next:
-        specifier: 14.1.0
-        version: 14.1.0(eslint@8.56.0)(typescript@5.3.3)
       eslint-config-standard-with-typescript:
         specifier: ^43.0.1
         version: 43.0.1(@typescript-eslint/eslint-plugin@6.20.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)(typescript@5.3.3)

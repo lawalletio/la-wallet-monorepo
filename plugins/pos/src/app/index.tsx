@@ -1,5 +1,5 @@
-import { Button, Container, Flex, Text } from '@lawallet/ui';
-import { useWalletContext, formatToPreference } from '@lawallet/react';
+import { formatToPreference, useWalletContext } from '@lawallet/react';
+import { Container, Flex, Text } from '@lawallet/ui';
 import React from 'react';
 
 export const AppIndex = () => {

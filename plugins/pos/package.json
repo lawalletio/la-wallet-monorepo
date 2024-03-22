@@ -1,12 +1,12 @@
 {
-  "name": "@lawallet/plugin",
+  "name": "@lawallet/pos",
   "version": "0.0.1",
   "description": "",
   "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/lawalletio/la-wallet-monorepo.git",
-    "directory": "plugins/plugin"
+    "directory": "plugins/pos"
   },
   "main": "dist/index.js",
   "type": "module",
@@ -26,7 +26,6 @@
   "peerDependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.1.0",
     "@lawallet/ui": "*",
     "@lawallet/react": "*"
   },
@@ -38,7 +37,6 @@
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "esbuild": "0.20.0",
     "esbuild-plugin-styled-components": "^3.0.1",
-    "eslint-config-next": "14.1.0",
     "eslint": "^8.56.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-import": "^2.29.1",
