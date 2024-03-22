@@ -5,16 +5,25 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import { TokenList } from '@/components/TokenList';
-import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
 import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useNumpad } from '@/hooks/useNumpad';
-import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
+import { decimalsToUse, formatToPreference, useNumpad, useWalletContext } from '@lawallet/react';
 import { LNURLTransferType, TransferTypes } from '@lawallet/react/types';
-import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text } from '@lawallet/ui';
+import {
+  Button,
+  Container,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  Icon,
+  InputWithLabel,
+  Keyboard,
+  Text,
+} from '@lawallet/ui';
 import CardWithData from './CardWithData';
 
 type SelectTransferAmountType = {

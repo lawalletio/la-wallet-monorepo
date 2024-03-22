@@ -1,15 +1,14 @@
 'use client';
 
-import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { Avatar, Container, Divider, Flex, Heading, Icon, LinkButton, Navbar, Text } from '@lawallet/ui';
 import { Confetti } from '@/components/UI';
 import { useTranslation } from '@/context/TranslateContext';
+import { extractFirstTwoChars } from '@/utils';
+import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { formatAddress, formatToPreference, splitHandle, useWalletContext } from '@lawallet/react';
 import { TransferInformation, TransferTypes } from '@lawallet/react/types';
+import { Avatar, Container, Divider, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { useWalletContext, splitHandle, formatAddress, formatToPreference } from '@lawallet/react';
-import { extractFirstTwoChars } from '@/utils';
-import BackButton from '@/components/BackButton';
 
 export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInformation }) => {
   const { lng, t } = useTranslation();
@@ -32,8 +31,6 @@ export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInforma
 
   return (
     <>
-      <Navbar leftButton={<BackButton />} />
-
       <Container size="small">
         <Confetti />
         <Divider y={16} />

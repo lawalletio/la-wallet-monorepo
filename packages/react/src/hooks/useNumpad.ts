@@ -1,6 +1,7 @@
-import { CurrenciesList, decimalsToUse, useCurrencyConverter } from '@lawallet/react';
-import type { AvailableCurrencies } from '@lawallet/react/types';
+import type { AvailableCurrencies } from '@lawallet/utils/types';
+import { decimalsToUse, CurrenciesList } from '@lawallet/utils';
 import { useEffect, useState } from 'react';
+import { useCurrencyConverter } from './useCurrencyConverter.js';
 
 type AmountType = Record<AvailableCurrencies, number>;
 const defaultIntAmount: AmountType = { SAT: 0, ARS: 0, USD: 0 };

@@ -1,13 +1,12 @@
 import { TokenList } from '@/components/TokenList';
-import { Confetti, Keyboard, QRCode } from '@/components/UI';
+import { Confetti, QRCode } from '@/components/UI';
 import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 import { appTheme } from '@/config';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useNumpad } from '@/hooks/useNumpad';
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { formatToPreference, useWalletContext, useZap } from '@lawallet/react';
+import { formatToPreference, useNumpad, useWalletContext, useZap } from '@lawallet/react';
 import {
   BtnLoader,
   Button,
@@ -18,6 +17,7 @@ import {
   Flex,
   Heading,
   Icon,
+  Keyboard,
   Sheet,
   Text,
 } from '@lawallet/ui';
