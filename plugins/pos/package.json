@@ -40,7 +40,12 @@
     "@lawallet/ui": "*",
     "@lawallet/react": "*",
     "next": "14.1.0",
-    "styled-components": "^6.1.8"
+    "styled-components": "^6.1.8",
+    "@nostr-dev-kit/ndk": "^2.4.0",
+    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
+  },
+  "dependencies": {
+    "react-use-storage": "^0.5.1"
   },
   "devDependencies": {
     "typescript": "^5",

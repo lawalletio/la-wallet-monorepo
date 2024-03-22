@@ -1,11 +1,11 @@
 import { AppIndex } from './app';
-import { PayDesk } from './app/paydesk';
+import { PayDeskLayout } from './app/paydesk/layout';
 
 type AppProps = Record<string, () => React.JSX.Element>;
 
 export const App: AppProps = {
   '/': AppIndex,
-  '/paydesk': PayDesk,
+  '/paydesk': PayDeskLayout,
 };
 
 export const PluginRoutes = Object.keys(App);

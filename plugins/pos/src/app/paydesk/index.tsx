@@ -1,16 +1,26 @@
 'use client';
-import { formatToPreference, useNumpad, useWalletContext } from '@lawallet/react';
-import { BtnLoader, Button, Container, Divider, Flex, Heading, Icon, Keyboard, SatoshiIcon, Text } from '@lawallet/ui';
-import React, { useState } from 'react';
+import { formatToPreference, useConfig, useNumpad, useWalletContext } from '@lawallet/react';
+import { Button, Container, Divider, Flex, Heading, Icon, Keyboard, SatoshiIcon, Text } from '@lawallet/ui';
+import React, { useEffect, useState } from 'react';
 import { TokenList } from '../../components/TokenList';
+import { useOrder } from '../../context/Order';
+import { useNostr } from '../../context/Nostr';
+import { useLN } from '../../context/LN';
+import { getPayRequest } from '@lawallet/react/actions';
 
 export function PayDesk() {
   // Hooks
-  // const { generateOrderEvent, setAmount, setOrderEvent, clear } = useOrder();
-  // const { publish } = useNostr();
-  // const { setLUD06 } = useLN();
-  // const { userConfig, destination } = useContext(LaWalletContext);
-  const { settings } = useWalletContext();
+  const { generateOrderEvent, setAmount, setOrderEvent, clear } = useOrder();
+  const { publish } = useNostr();
+  const { setLUD06 } = useLN();
+
+  const {
+    account: { identity },
+    settings,
+  } = useWalletContext();
+
+  const config = useConfig();
+
   const numpadData = useNumpad(settings.props.currency);
 
   // Local states
@@ -18,6 +28,7 @@ export function PayDesk() {
   const sats = numpadData.intAmount['SAT'];
 
   /** Functions */
+  // const router = useRouter();
 
   const handleClick = async () => {
     if (sats === 0 || loading) return;
@@ -25,11 +36,12 @@ export function PayDesk() {
     setLoading(true);
 
     try {
-      // const order = generateOrderEvent!();
-      // console.dir(order);
-      // // console.info('Publishing order')
-      // await publish!(order);
-      // setOrderEvent!(order);
+      const order = generateOrderEvent!();
+      console.dir(order);
+      // console.info('Publishing order')
+      await publish!(order);
+      setOrderEvent!(order);
+      alert('orden realizada');
       // router.push('/payment/' + order.id);
     } catch (e) {
       console.warn('Error publishing order');
@@ -40,27 +52,26 @@ export function PayDesk() {
 
   /** usEffects */
 
-  // useEffect(() => {
-  //   setAmount(sats);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sats]);
+  useEffect(() => {
+    setAmount(sats);
+  }, [sats]);
 
-  // useEffect(() => {
-  //   if (!destination || !destination.lud06) {
-  //     router.push('/');
-  //     console.info('No destination');
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!identity.data.username) {
+      // router.push('/');
+      console.info('No destination');
+      return;
+    }
 
-  //   setLUD06(destination.lud06);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [destination]);
+    getPayRequest(`${config.endpoints.lightningDomain}/.well-known/lnurlp/${identity.data.username}`).then((payReq) =>
+      setLUD06(payReq),
+    );
+  }, [identity.data]);
 
-  // // on mount
-  // useEffect(() => {
-  //   clear();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  // on mount
+  useEffect(() => {
+    clear();
+  }, []);
 
   return (
     <>
@@ -86,7 +97,7 @@ export function PayDesk() {
         <Divider y={24} />
         <Flex gap={8}>
           <Button onClick={handleClick} disabled={loading || sats === 0} loading={loading}>
-            {loading ? <BtnLoader /> : 'Generar'}
+            {'Generar'}
           </Button>
         </Flex>
         <Divider y={24} />

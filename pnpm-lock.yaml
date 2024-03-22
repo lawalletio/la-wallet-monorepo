@@ -411,15 +411,24 @@ importers:
       '@lawallet/ui':
         specifier: '*'
         version: link:../../packages/ui
+      '@nostr-dev-kit/ndk':
+        specifier: ^2.4.0
+        version: 2.4.0(typescript@5.3.3)
       next:
         specifier: 14.1.0
         version: 14.1.0(@babel/core@7.23.7)(react-dom@18.2.0)(react@18.2.0)
+      nostr-tools:
+        specifier: npm:@lawallet/nostr-tools
+        version: /@lawallet/nostr-tools@1.17.0(typescript@5.3.3)
       react:
         specifier: ^18
         version: 18.2.0
       react-dom:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
+      react-use-storage:
+        specifier: ^0.5.1
+        version: 0.5.1(react-dom@18.2.0)(react@18.2.0)
       styled-components:
         specifier: ^6.1.8
         version: 6.1.8(react-dom@18.2.0)(react@18.2.0)
@@ -13889,6 +13898,16 @@ packages:
       react: 18.2.0
       tslib: 2.6.2
     dev: true
+
+  /react-use-storage@0.5.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-CUIjDuTZzJU5jpzdLuR+1uGwqQ6CnjbJYJf5eDBT5AdhHEQMSNbBAEjbN9ZculWQPiw0t5S3vyF0qoZnq7eweg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /react-verification-input@4.1.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-RUYJjy2ZM9eMbWATIPNzrCfrxbp8vWNiTOFajxHx/DEK5AWMLAVpaQbhBMb68e13T91uGGragvL9LMAUOh2GrA==}
