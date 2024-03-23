@@ -1,34 +1,36 @@
 'use client';
 
 // React
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect } from 'react';
 
 // Types
-import type { Event, UnsignedEvent } from 'nostr-tools';
+import type { Event } from 'nostr-tools';
 
 // Utils
-import { generatePrivateKey, getEventHash, getPublicKey, getSignature, relayInit } from 'nostr-tools';
-import { useLocalStorage } from 'react-use-storage';
+import { relayInit } from 'nostr-tools';
 
 // Hooks
 import { useLN } from './LN';
 
 // Interfaces
 export interface INostrContext {
-  localPublicKey?: string;
-  localPrivateKey?: string;
   relays?: string[];
   ndk: NDK;
   getBalance: (pubkey: string) => Promise<number>;
-  generateZapEvent?: (amountMillisats: number, postEventId?: string) => NDKEvent;
+  generateZapEvent?: (amountMillisats: number, postEventId?: string) => Promise<NostrEvent>;
   subscribeZap?: (eventId: string) => NDKSubscription;
   getEvent?: (eventId: string) => Promise<NDKEvent | null>;
   publish?: (_event: Event) => Promise<Set<NDKRelay>>;
 }
 
-const NOSTR_RELAY = 'wss://relay.lawallet.ar';
+const NOSTR_RELAY = 'wss://relay.damus.io';
 
-const relays = [NOSTR_RELAY, 'wss://relay.damus.io', 'wss://nostr-pub.wellorder.net', 'wss://relay.nostr.info'];
+const relays = [
+  'wss://relay.lawallet.ar',
+  'wss://relay.damus.io',
+  'wss://nostr-pub.wellorder.net',
+  'wss://relay.nostr.info',
+];
 const relayPool = relayInit(NOSTR_RELAY);
 
 // Context
@@ -48,46 +50,40 @@ interface INostrProviderProps {
   children: React.ReactNode;
 }
 
-import NDK, { NDKEvent, NDKKind, type NDKRelay, type NDKSubscription } from '@nostr-dev-kit/ndk';
-import { useConfig } from '@lawallet/react';
+import { useConfig, useNostrContext, useWalletContext } from '@lawallet/react';
+import NDK, { NDKEvent, NDKKind, NostrEvent, type NDKRelay, type NDKSubscription } from '@nostr-dev-kit/ndk';
 
 export const NostrProvider = ({ children }: INostrProviderProps) => {
   const { zapEmitterPubKey } = useLN();
   // const [privateKey, setPrivateKey] = useState<string>()
-  const [privateKey] = useLocalStorage('nostrPrivateKey', generatePrivateKey());
-  const [publicKey, setPublicKey] = useState<string>();
+  // const [privateKey] = useLocalStorage('nostrPrivateKey', generatePrivateKey());
+  // const [publicKey, setPublicKey] = useState<string>();
+  const {
+    account: { identity },
+  } = useWalletContext();
+
+  const { signEvent } = useNostrContext();
 
   /** Functions */
-  const generateZapEvent = useCallback(
-    (amountMillisats: number, postEventId?: string): NDKEvent => {
-      const unsignedEvent: UnsignedEvent = {
-        kind: 9734,
-        content: '',
-        pubkey: publicKey!,
-        created_at: Math.round(Date.now() / 1000),
-        tags: [
-          ['relays', ...relays],
-          ['amount', amountMillisats.toString()],
-          ['lnurl', 'lnurl'],
-          ['p', zapEmitterPubKey],
-        ] as string[][],
-      };
+  const generateZapEvent = async (amountMillisats: number, postEventId?: string): Promise<NostrEvent> => {
+    const unsignedEvent: NostrEvent = {
+      kind: 9734,
+      content: '',
+      pubkey: identity.data.hexpub,
+      created_at: Math.round(Date.now() / 1000),
+      tags: [
+        ['relays', ...relays],
+        ['amount', amountMillisats.toString()],
+        ['lnurl', 'lnurl'],
+        ['p', zapEmitterPubKey],
+      ] as string[][],
+    };
 
-      postEventId && unsignedEvent.tags.push(['e', postEventId]);
+    postEventId && unsignedEvent.tags.push(['e', postEventId]);
+    const signedEvent: NostrEvent = await signEvent(unsignedEvent);
 
-      const event = new NDKEvent(ndk, {
-        id: getEventHash(unsignedEvent),
-        sig: getSignature(unsignedEvent, privateKey!),
-        ...unsignedEvent,
-      });
-
-      console.info('zap event: ');
-      console.dir(event);
-
-      return event;
-    },
-    [zapEmitterPubKey, privateKey, publicKey],
-  );
+    return signedEvent;
+  };
 
   const config = useConfig();
 
@@ -150,18 +146,9 @@ export const NostrProvider = ({ children }: INostrProviderProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    // Generate Public key
-    const _publicKey = getPublicKey(privateKey!);
-
-    setPublicKey(_publicKey);
-  }, [privateKey]);
-
   return (
     <NostrContext.Provider
       value={{
-        localPublicKey: publicKey,
-        localPrivateKey: privateKey,
         relays,
         ndk,
         getBalance,

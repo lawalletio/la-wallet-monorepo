@@ -77,7 +77,8 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
       });
 
       return bolt11;
-    } catch {
+    } catch (e) {
+      console.log(e);
       setInvoice({ ...invoice, loading: false });
       return undefined;
     }

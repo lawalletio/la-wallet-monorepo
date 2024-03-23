@@ -7,7 +7,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import type { Dispatch, SetStateAction } from 'react';
 import type { Event, UnsignedEvent } from 'nostr-tools';
 import { useLN } from './LN';
-import type { NDKEvent } from '@nostr-dev-kit/ndk';
+import type { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
 import { ProductQtyData } from '../types/product';
 import { IPayment, IPaymentCache } from '../types/order';
 
@@ -17,7 +17,7 @@ import { useLocalStorage } from 'react-use-storage';
 
 // Utils
 import { getEventHash, getSignature, validateEvent } from 'nostr-tools';
-import { decodeInvoice } from '@lawallet/react';
+import { decodeInvoice, useConfig, useNostrContext, useWalletContext, useZap } from '@lawallet/react';
 
 // Interface
 export interface IOrderContext {
@@ -45,7 +45,6 @@ export interface IOrderContext {
   setOrderEvent?: Dispatch<SetStateAction<Event | undefined>>;
   generateOrderEvent?: () => Event;
   setFiatAmount: Dispatch<SetStateAction<number>>;
-  requestZapInvoice?: (amountMillisats: number, orderEventId: string) => Promise<string>;
 }
 
 const parseZapInvoice = (event: Event) => {
@@ -96,9 +95,12 @@ interface IOrderProviderProps {
 
 export const OrderProvider = ({ children }: IOrderProviderProps) => {
   // Hooks
-  const { relays, localPublicKey, localPrivateKey, generateZapEvent } = useNostr();
+  const {
+    account: { identity },
+  } = useWalletContext();
+
+  const { subscribeZap, relays, generateZapEvent, publish } = useNostr();
   const { lud06, zapEmitterPubKey, requestInvoice, setLUD06 } = useLN();
-  const { subscribeZap, publish } = useNostr();
 
   // Local states
   const [orderId, setOrderId] = useState<string>();
@@ -118,11 +120,11 @@ export const OrderProvider = ({ children }: IOrderProviderProps) => {
     const unsignedEvent: UnsignedEvent = {
       kind: 1,
       content: '',
-      pubkey: localPublicKey!,
+      pubkey: identity.data.hexpub,
       created_at: Math.round(Date.now() / 1000),
       tags: [
         ['relays', ...relays!],
-        ['p', localPublicKey],
+        ['p', identity.data.hexpub],
         ['t', 'order'],
         [
           'description',
@@ -137,7 +139,7 @@ export const OrderProvider = ({ children }: IOrderProviderProps) => {
 
     const event: Event = {
       id: getEventHash(unsignedEvent),
-      sig: getSignature(unsignedEvent, localPrivateKey!),
+      sig: getSignature(unsignedEvent, identity.data.privateKey),
       ...unsignedEvent,
     };
 
@@ -156,19 +158,7 @@ export const OrderProvider = ({ children }: IOrderProviderProps) => {
     setPaymentsCache(paymentsCache);
 
     return event;
-  }, [
-    localPublicKey,
-    relays,
-    memo,
-    amount,
-    products,
-    localPrivateKey,
-    isPaid,
-    lud06,
-    isPrinted,
-    paymentsCache,
-    setPaymentsCache,
-  ]);
+  }, [relays, memo, amount, products, isPaid, lud06, isPrinted, paymentsCache, setPaymentsCache]);
 
   // Load order from cache
   const loadOrder = useCallback(
@@ -205,8 +195,7 @@ export const OrderProvider = ({ children }: IOrderProviderProps) => {
 
   const requestZapInvoice = useCallback(
     async (amountMillisats: number, orderEventId: string): Promise<string> => {
-      // Generate ZapRequestEvent
-      const zapEvent = generateZapEvent!(amountMillisats, orderEventId);
+      const zapEvent: NostrEvent = await generateZapEvent!(amountMillisats, orderEventId);
 
       console.info('zapEvent');
       console.dir(zapEvent);
@@ -214,7 +203,7 @@ export const OrderProvider = ({ children }: IOrderProviderProps) => {
       // Request new invoice
       const invoice = await requestInvoice!({
         amountMillisats,
-        zapEvent: (await zapEvent.toNostrEvent()) as Event,
+        zapEvent: zapEvent as Event,
       });
 
       return invoice;
@@ -295,7 +284,6 @@ export const OrderProvider = ({ children }: IOrderProviderProps) => {
     setPaymentsCache(paymentsCache);
   }, [orderId, isPaid, isPrinted, paymentsCache]);
 
-  // Subscribe for zaps
   useEffect(() => {
     if (!orderId || !zapEmitterPubKey || isPaid) {
       return;
@@ -319,15 +307,16 @@ export const OrderProvider = ({ children }: IOrderProviderProps) => {
       return;
     }
 
-    requestZapInvoice!(amount * 1000, orderId)
+    requestZapInvoice(amount * 1000, orderId)
       .then((_invoice) => {
         setCurrentInvoice!(_invoice);
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         setEmergency(true);
         alert("Couldn't generate invoice.");
       });
-  }, [amount, orderId, zapEmitterPubKey, requestZapInvoice]);
+  }, [amount, orderId, zapEmitterPubKey]);
 
   return (
     <OrderContext.Provider
@@ -354,7 +343,6 @@ export const OrderProvider = ({ children }: IOrderProviderProps) => {
         checkOut,
         setAmount,
         setFiatAmount,
-        requestZapInvoice,
         generateOrderEvent,
         setOrderEvent,
       }}

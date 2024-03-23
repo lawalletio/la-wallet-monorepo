@@ -6,7 +6,7 @@ import { TokenList } from '../../components/TokenList';
 import { useOrder } from '../../context/Order';
 import { useNostr } from '../../context/Nostr';
 import { useLN } from '../../context/LN';
-import { getPayRequest } from '@lawallet/react/actions';
+import { broadcastEvent, getPayRequest } from '@lawallet/react/actions';
 import { useRouter } from 'next/navigation';
 
 export function PayDesk() {
@@ -29,9 +29,6 @@ export function PayDesk() {
   const [loading, setLoading] = useState<boolean>(false);
   const sats = numpadData.intAmount['SAT'];
 
-  /** Functions */
-  // const router = useRouter();
-
   const handleClick = async () => {
     if (sats === 0 || loading) return;
 
@@ -41,7 +38,8 @@ export function PayDesk() {
       const order = generateOrderEvent!();
       console.dir(order);
       // console.info('Publishing order')
-      await publish!(order);
+      // await publish!(order);
+      await broadcastEvent(order, config);
       setOrderEvent!(order);
       router.push('../payment/' + order.id);
     } catch (e) {

@@ -3,18 +3,52 @@ import BackButton from '@/components/BackButton';
 import { PLUGINS } from '@/plugins';
 import { Navbar } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-const getDynamicView = (pluginName: string, pathStr: string) => {
-  const route = PLUGINS[pluginName].routes.find(({ path, component }) => {
-    if (path === pathStr) return component;
-  });
+type RouteWithParams = {
+  component: React.ComponentType<React.JSX.Element>;
+  params: Record<string, string>;
+};
 
-  if (!route) {
+const getDynamicView = (pluginName: string, pathStr: string): RouteWithParams => {
+  const plugin = PLUGINS[pluginName];
+  let routeWithParams: RouteWithParams | undefined;
+
+  for (const route of plugin.routes) {
+    const { path, component } = route;
+    const isDynamicRoute = path.includes(':');
+
+    if (isDynamicRoute) {
+      const pattern = path.replace(/:[^/]+/g, '([^/]+)');
+      const regex = new RegExp(`^${pattern}$`);
+      const match = pathStr.match(regex);
+
+      if (match) {
+        const params: Record<string, string> = {};
+        const pathSegments = path.split('/');
+        const matchSegments = pathStr.split('/');
+
+        pathSegments.forEach((segment, index) => {
+          if (segment.startsWith(':')) {
+            const paramName = segment.substring(1);
+            params[paramName] = matchSegments[index];
+          }
+        });
+
+        routeWithParams = { component, params };
+        break;
+      }
+    } else if (path === pathStr) {
+      routeWithParams = { component, params: {} };
+      break;
+    }
+  }
+
+  if (!routeWithParams) {
     throw new Error('Route not found');
   }
 
-  return route.component;
+  return routeWithParams;
 };
 
 export default function Page({ params }) {
@@ -22,7 +56,8 @@ export default function Page({ params }) {
   const [pluginRoute, setPluginRoute] = useState<string>('/');
 
   const pluginName = params.pluginName[0];
-  const Component = useMemo(() => {
+
+  const ComponentInfo = useMemo(() => {
     return getDynamicView(pluginName, pluginRoute);
   }, [pluginName, pluginRoute]);
 
@@ -37,10 +72,10 @@ export default function Page({ params }) {
     }
   }, [params.pluginName]);
 
-  return Component ? (
+  return ComponentInfo ? (
     <>
       <Navbar title={PLUGINS[pluginName].metadata.title} leftButton={<BackButton />} />
-      <Component />
+      <ComponentInfo.component props={ComponentInfo.params} type="" key="" />
     </>
   ) : (
     router.push('/plugins')

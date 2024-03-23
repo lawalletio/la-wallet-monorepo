@@ -8,6 +8,7 @@ import type { InvoiceRequest } from '../types/lightning';
 
 // Utils
 import { LNURLResponse } from '../types/lnurl';
+import axios from 'axios';
 
 // Interface
 export interface ILNContext {
@@ -65,7 +66,7 @@ export const LNProvider = ({ children }: ILNProviderProps) => {
       const url = `${callbackUrl}?amount=${amountMillisats}&nostr=${encodedZapEvent}&lnurl=${destinationPubKey}`;
       console.info('url');
       console.dir(url);
-      const response = await fetch(url).then((res) => res.json());
+      const response = await axios.get(url);
       return response.data.pr as string;
     },
     [callbackUrl, destinationPubKey],
