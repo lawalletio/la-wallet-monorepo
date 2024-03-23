@@ -172,13 +172,13 @@ export function PaymentPage({ props }: { props?: { id: string } }) {
   }, [orderIdFromUrl, orderId, loadOrder]);
 
   // // on Invoice ready
-  // useEffect(() => {
-  //   if (!invoice || !zapEmitterPubKey || !isAvailable) {
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!invoice || !isAvailable) {
+      return;
+    }
 
-  //   startRead();
-  // }, [invoice, zapEmitterPubKey]);
+    startRead();
+  }, [invoice, zapEmitterPubKey]);
 
   // on card scanStatus change
   useEffect(() => {
