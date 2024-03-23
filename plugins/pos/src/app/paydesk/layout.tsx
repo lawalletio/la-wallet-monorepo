@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { LNProvider } from '../../context/LN';
 import { NostrProvider } from '../../context/Nostr';
 import { OrderProvider } from '../../context/Order';
-import { PayDesk } from '.';
+import { PayDesk } from './page';
 
-export const PayDeskLayout = () => {
+export const PayDeskLayout = ({ children }: { children: ReactNode }) => {
   return (
     <LNProvider>
       <NostrProvider>
-        <OrderProvider>
-          <PayDesk />
-        </OrderProvider>
+        <OrderProvider>{children}</OrderProvider>
       </NostrProvider>
     </LNProvider>
   );

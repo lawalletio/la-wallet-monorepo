@@ -34,6 +34,11 @@
       "nostr-tools": "npm:@lawallet/nostr-tools"
     }
   },
+  "resolutions": {
+    "@types/node": "20.11.17",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.19"
+  },
   "engines": {
     "node": ">=18"
   },

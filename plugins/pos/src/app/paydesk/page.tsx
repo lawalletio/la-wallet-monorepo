@@ -7,6 +7,7 @@ import { useOrder } from '../../context/Order';
 import { useNostr } from '../../context/Nostr';
 import { useLN } from '../../context/LN';
 import { getPayRequest } from '@lawallet/react/actions';
+import { useRouter } from 'next/navigation';
 
 export function PayDesk() {
   // Hooks
@@ -20,6 +21,7 @@ export function PayDesk() {
   } = useWalletContext();
 
   const config = useConfig();
+  const router = useRouter();
 
   const numpadData = useNumpad(settings.props.currency);
 
@@ -41,8 +43,7 @@ export function PayDesk() {
       // console.info('Publishing order')
       await publish!(order);
       setOrderEvent!(order);
-      alert('orden realizada');
-      // router.push('/payment/' + order.id);
+      router.push('../payment/' + order.id);
     } catch (e) {
       console.warn('Error publishing order');
       console.warn(e);
