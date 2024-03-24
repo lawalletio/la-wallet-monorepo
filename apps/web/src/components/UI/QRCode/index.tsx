@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import ReactQRCode from 'react-qr-code';
+import ReactQRCode from 'qrcode.react';
 
 import { copy } from '@/utils/share';
 

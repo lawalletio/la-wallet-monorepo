@@ -4,6 +4,7 @@ import { PLUGINS } from '@/plugins';
 
 import { ArrowRightIcon, Button, Card, Container, Divider, Flex, Heading, Icon, Text } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export default function Page() {
   // const { t } = useTranslation();
@@ -19,8 +20,8 @@ export default function Page() {
           const value: { title: string; description: string } = PLUGINS[key].metadata;
 
           return (
-            <>
-              <Card key={key}>
+            <React.Fragment key={key}>
+              <Card>
                 <Flex gap={16} justify="space-between" align="center">
                   <div>
                     <Text isBold>{value.title}</Text>
@@ -36,7 +37,7 @@ export default function Page() {
                 </Flex>
               </Card>
               <Divider y={16} />
-            </>
+            </React.Fragment>
           );
         })}
         <Divider y={8} />

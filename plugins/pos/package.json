@@ -44,12 +44,12 @@
     "react-dom": "^18",
     "styled-components": "^6.1.8",
     "@bitcoin-design/bitcoin-icons-react": "^0.1.10",
-    "confetti-js": "^0.0.18"
+    "confetti-js": "^0.0.18",
+    "qrcode.react": "^3.1.0"
   },
   "dependencies": {
     "axios": "^1.6.7",
     "lnurl-pay": "^3.0.1",
-    "qrcode.react": "^3.1.0",
     "react-use-storage": "^0.5.1",
     "use-nfc-hook": "^1.0.4"
   },
