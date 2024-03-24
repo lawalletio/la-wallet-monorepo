@@ -35,24 +35,23 @@
     }
   },
   "peerDependencies": {
+    "@lawallet/react": "*",
+    "@lawallet/ui": "*",
+    "@nostr-dev-kit/ndk": "^2.4.0",
+    "next": "14.1.0",
+    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0",
     "react": "^18",
     "react-dom": "^18",
-    "@lawallet/ui": "*",
-    "@lawallet/react": "*",
-    "next": "14.1.0",
-    "styled-components": "^6.1.8",
-    "@nostr-dev-kit/ndk": "^2.4.0",
-    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0",
-    "react-qr-code": "^2.0.12"
+    "styled-components": "^6.1.8"
   },
   "dependencies": {
-    "react-use-storage": "^0.5.1",
     "axios": "^1.6.7",
-    "use-nfc-hook": "^1.0.4",
-    "lnurl-pay": "^3.0.1"
+    "lnurl-pay": "^3.0.1",
+    "qrcode.react": "^3.1.0",
+    "react-use-storage": "^0.5.1",
+    "use-nfc-hook": "^1.0.4"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -64,6 +63,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-react": "^7.33.2"
+    "eslint-plugin-react": "^7.33.2",
+    "typescript": "^5"
   }
 }

@@ -429,15 +429,15 @@ importers:
       nostr-tools:
         specifier: npm:@lawallet/nostr-tools
         version: /@lawallet/nostr-tools@1.17.0(typescript@5.3.3)
+      qrcode.react:
+        specifier: ^3.1.0
+        version: 3.1.0(react@18.2.0)
       react:
         specifier: ^18
         version: 18.2.0
       react-dom:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
-      react-qr-code:
-        specifier: ^2.0.12
-        version: 2.0.12(react@18.2.0)
       react-use-storage:
         specifier: ^0.5.1
         version: 0.5.1(react-dom@18.2.0)(react@18.2.0)
@@ -13787,6 +13787,14 @@ packages:
 
   /qr.js@0.0.0:
     resolution: {integrity: sha512-c4iYnWb+k2E+vYpRimHqSu575b1/wKl4XFeJGpFmrJQz5I88v9aY2czh7s0w36srfCM1sXgC/xpoJz5dJfq+OQ==}
+    dev: false
+
+  /qrcode.react@3.1.0(react@18.2.0):
+    resolution: {integrity: sha512-oyF+Urr3oAMUG/OiOuONL3HXM+53wvuH3mtIWQrYmsXoAq0DkvZp2RYUWFSMFtbdOpuS++9v+WAkzNVkMlNW6Q==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /qs@6.11.0:
