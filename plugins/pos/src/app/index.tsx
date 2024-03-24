@@ -3,6 +3,7 @@ import { Container, Divider, Flex, Heading, Icon, Text } from '@lawallet/ui';
 import Link from 'next/link';
 import React from 'react';
 import { Box } from '../components/Box';
+import { PantheonIcon, SharedWalletIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 export const AppIndex = () => {
   const { account } = useWalletContext();
@@ -20,7 +21,9 @@ export const AppIndex = () => {
             <Flex gap={8}>
               <Box>
                 <Link href="./paydesk">
-                  <Icon>{/* <PantheonIcon /> */}X</Icon>
+                  <Icon>
+                    <PantheonIcon />
+                  </Icon>
                   <Flex direction="column" gap={4}>
                     <Heading as="h5">Caja</Heading>
                     <Text size="small">Medio de cobro para tu negocio.</Text>
@@ -29,7 +32,9 @@ export const AppIndex = () => {
               </Box>
               <Box color="secondary">
                 <Link href="#">
-                  <Icon>{/* <SharedWalletIcon /> */}X</Icon>
+                  <Icon>
+                    <SharedWalletIcon />
+                  </Icon>
                   <Flex direction="column" gap={4}>
                     <Heading as="h5">Arbolito</Heading>
                     <Text size="small">Transferi dinero de una tarjeta a otra.</Text>
