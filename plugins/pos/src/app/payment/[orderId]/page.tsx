@@ -15,6 +15,7 @@ import axios from 'axios';
 import { useCard } from '../../../hooks/useCard';
 import { generateInternalTransactionEvent } from '../../../lib/utils';
 import { QRCode } from '../../../components/QRCode';
+import Confetti from '../../../components/Confetti';
 
 export function PaymentPage({ props }: { props?: { id: string } }) {
   // Hooks
@@ -229,7 +230,7 @@ export function PaymentPage({ props }: { props?: { id: string } }) {
 
       {isPaid ? (
         <>
-          {/* <Confetti /> */}
+          <Confetti />
           <Container size="small">
             <Divider y={24} />
             <Flex direction="column" justify="center" flex={1} align="center" gap={8}>

@@ -423,6 +423,9 @@ importers:
       axios:
         specifier: ^1.6.7
         version: 1.6.8
+      confetti-js:
+        specifier: ^0.0.18
+        version: 0.0.18
       lnurl-pay:
         specifier: ^3.0.1
         version: 3.0.1
