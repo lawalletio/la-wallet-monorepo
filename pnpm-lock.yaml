@@ -77,7 +77,7 @@ importers:
         version: link:../../plugins/plugin-template
       '@lawallet/pos':
         specifier: '*'
-        version: link:../../plugins/pos
+        version: link:../../plugins/pos-plugin
       '@lawallet/react':
         specifier: '*'
         version: link:../../packages/react
@@ -424,7 +424,7 @@ importers:
         specifier: ^5
         version: 5.3.3
 
-  plugins/pos:
+  plugins/pos-plugin:
     dependencies:
       '@bitcoin-design/bitcoin-icons-react':
         specifier: ^0.1.10
