@@ -10,6 +10,7 @@ import { TransferTypes } from '@lawallet/react/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import CardWithData from './CardWithData';
 import { useRouter } from 'next/navigation';
+import { TokenList } from '@/components/TokenList';
 
 type SummaryProps = {
   isLoading: boolean;
@@ -77,6 +78,8 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
               <Text>SAT</Text>
             </Flex>
           )}
+          <Divider y={8} />
+          <TokenList />
         </Flex>
         <Divider y={16} />
       </Container>
