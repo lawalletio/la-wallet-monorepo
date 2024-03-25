@@ -20,15 +20,15 @@
   "devDependencies": {
     "@types/node": "^20.11.17",
     "@types/react": "^18.2.55",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.3"
   },
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "@nostr-dev-kit/ndk": "^2.5.1",
+    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "dependencies": {
-    "@lawallet/utils": "*",
-    "@nostr-dev-kit/ndk": "^2.4.0",
-    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
+    "@lawallet/utils": "*"
   },
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"

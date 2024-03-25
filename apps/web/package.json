@@ -17,22 +17,22 @@
     "@lawallet/pos": "*",
     "@lawallet/react": "*",
     "@lawallet/ui": "*",
-    "@nostr-dev-kit/ndk": "^2.4.0",
+    "@nostr-dev-kit/ndk": "^2.5.1",
     "@serwist/next": "^8.4.4",
     "@serwist/precaching": "^8.4.4",
     "@serwist/sw": "^8.4.4",
     "confetti-js": "^0.0.18",
-    "date-fns": "^3.3.1",
+    "date-fns": "^3.6.0",
     "lottie-react": "^2.4.0",
     "negotiator": "^0.6.3",
-    "next": "14.1.0",
+    "next": "14.1.4",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0",
     "qr-scanner": "^1.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "qrcode.react": "^3.1.0",
-    "react-verification-input": "^4.1.0",
+    "react-verification-input": "^4.1.1",
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
@@ -43,12 +43,12 @@
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "autoprefixer": "10.4.17",
-    "eslint": "8.56.0",
-    "eslint-config-next": "14.1.0",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.1.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "prettier": "^3.2.5",
-    "typescript": "5.3.3"
+    "typescript": "5.4.3"
   },
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"

@@ -19,15 +19,15 @@
   "author": "LaWallet Labs",
   "license": "MIT",
   "devDependencies": {
-    "@scure/base": "1.1.5",
-    "@noble/secp256k1": "^2.0.0",
-    "@types/node": "^20.11.17",
-    "typescript": "^5.3.3",
-    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
+    "@scure/base": "1.1.6",
+    "@noble/secp256k1": "^2.1.0",
+    "@types/node": "^20.11.30",
+    "typescript": "^5.4.3"
   },
-  "dependencies": {
-    "@nostr-dev-kit/ndk": "^2.4.0",
-    "date-fns": "^3.3.1"
+  "peerDependencies": {
+    "date-fns": "^3.6.0",
+    "@nostr-dev-kit/ndk": "^2.5.1",
+    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
