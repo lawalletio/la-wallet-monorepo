@@ -72,9 +72,9 @@ importers:
       '@formatjs/intl-localematcher':
         specifier: ^0.5.4
         version: 0.5.4
-      '@lawallet/boltz':
+      '@lawallet/plugin-template':
         specifier: '*'
-        version: link:../../plugins/boltz
+        version: link:../../plugins/plugin-template
       '@lawallet/pos':
         specifier: '*'
         version: link:../../plugins/pos
@@ -348,23 +348,41 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
-  plugins/boltz:
+  plugins/plugin-template:
     dependencies:
+      '@bitcoin-design/bitcoin-icons-react':
+        specifier: ^0.1.10
+        version: 0.1.10(react@18.2.0)
       '@lawallet/react':
         specifier: '*'
         version: link:../../packages/react
       '@lawallet/ui':
         specifier: '*'
         version: link:../../packages/ui
+      '@nostr-dev-kit/ndk':
+        specifier: ^2.4.0
+        version: 2.4.0(typescript@5.3.3)
+      confetti-js:
+        specifier: ^0.0.18
+        version: 0.0.18
       next:
         specifier: 14.1.0
         version: 14.1.0(@babel/core@7.23.7)(react-dom@18.2.0)(react@18.2.0)
+      nostr-tools:
+        specifier: npm:@lawallet/nostr-tools
+        version: /@lawallet/nostr-tools@1.17.0(typescript@5.3.3)
+      qrcode.react:
+        specifier: ^3.1.0
+        version: 3.1.0(react@18.2.0)
       react:
         specifier: ^18
         version: 18.2.0
       react-dom:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
+      styled-components:
+        specifier: ^6.1.8
+        version: 6.1.8(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@types/node':
         specifier: 20.11.17

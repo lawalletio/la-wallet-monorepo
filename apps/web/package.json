@@ -13,7 +13,7 @@
     "@bitcoin-design/bitcoin-icons-react": "^0.1.10",
     "@feririarte/plugin": "*",
     "@formatjs/intl-localematcher": "^0.5.4",
-    "@lawallet/boltz": "*",
+    "@lawallet/plugin-template": "*",
     "@lawallet/pos": "*",
     "@lawallet/react": "*",
     "@lawallet/ui": "*",

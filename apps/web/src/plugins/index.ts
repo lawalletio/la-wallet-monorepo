@@ -1,8 +1,8 @@
 import { PluginProps } from '@/types/plugins';
-import { boltzPlugin } from './boltz';
+import { templatePlugin } from './template';
 import { posPlugin } from './pos';
 
 export const PLUGINS: Record<string, PluginProps> = {
-  boltz: boltzPlugin,
+  boltz: templatePlugin,
   pos: posPlugin,
 };
