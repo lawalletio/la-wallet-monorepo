@@ -5,7 +5,6 @@ import { useServerInsertedHTML } from 'next/navigation';
 import { ServerStyleSheet } from 'styled-components';
 import { ThemeProps, baseTheme } from '../theme';
 import { Provider } from '../provider';
-import { GlobalStyle } from '../style';
 import GlobalStyles from './GlobalStyles';
 
 export function NextProvider({ children, theme = baseTheme }: { children: ReactNode; theme?: ThemeProps }) {
