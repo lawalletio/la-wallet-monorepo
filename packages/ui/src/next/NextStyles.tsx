@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
+import { ThemeProps } from '../theme';
 
-const GlobalStyles = createGlobalStyle`
+const NextStyles = (theme: ThemeProps) => createGlobalStyle`
   * {
     box-sizing: border-box;
     
@@ -22,9 +23,9 @@ const GlobalStyles = createGlobalStyle`
     min-width: 100vw;
     min-height: 100dvh;
 
-    background: ${(props) => props.theme.colors.background};
+    background: ${theme.colors.background};
 
-    color: ${(props) => props.theme.colors.text};
+    color: ${theme.colors.text};
     font-size: 1em;
     font-weight: 400;
     font-family: var(--font-secondary);
@@ -48,4 +49,4 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-export default GlobalStyles;
+export default NextStyles;

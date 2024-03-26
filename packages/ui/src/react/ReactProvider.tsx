@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
-import { ThemeProvider, StyleSheetManager } from 'styled-components';
+import { StyleSheetManager, ThemeProvider } from 'styled-components';
 
-import { ThemeProps } from './theme/types';
-import { baseTheme } from './theme';
+import { baseTheme } from '../theme';
+import { ThemeProps } from '../theme/types';
 
 interface ProviderProps {
   children: ReactNode;
@@ -10,7 +10,7 @@ interface ProviderProps {
   sheet?: any;
 }
 
-export function Provider(props: ProviderProps) {
+export function ReactProvider(props: ProviderProps) {
   const { children, theme = baseTheme, sheet } = props;
 
   return (

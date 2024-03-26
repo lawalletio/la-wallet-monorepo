@@ -4,8 +4,8 @@ import React, { ReactNode, useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
 import { ServerStyleSheet } from 'styled-components';
 import { ThemeProps, baseTheme } from '../theme';
-import { Provider } from '../provider';
-import GlobalStyles from './GlobalStyles';
+import { ReactProvider } from '../react/ReactProvider';
+import NextStyles from './NextStyles';
 
 export function NextProvider({ children, theme = baseTheme }: { children: ReactNode; theme?: ThemeProps }) {
   // Only create stylesheet once with lazy initial state
@@ -19,11 +19,13 @@ export function NextProvider({ children, theme = baseTheme }: { children: ReactN
   });
 
   const sheet = typeof window === 'undefined' ? styledComponentsStyleSheet.instance : undefined;
+  const StylesComponent = NextStyles(theme);
 
   return (
-    <Provider theme={theme} sheet={sheet}>
-      <GlobalStyles />
+    <ReactProvider theme={theme} sheet={sheet}>
+      <StylesComponent />
+
       {children}
-    </Provider>
+    </ReactProvider>
   );
 }
