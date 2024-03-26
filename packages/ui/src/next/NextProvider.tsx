@@ -1,11 +1,10 @@
 'use client';
 
-import React, { ReactNode, useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
+import React, { ReactNode, useState } from 'react';
 import { ServerStyleSheet } from 'styled-components';
-import { ThemeProps, baseTheme } from '../theme';
 import { ReactProvider } from '../react/ReactProvider';
-import NextStyles from './NextStyles';
+import { ThemeProps, baseTheme } from '../theme';
 
 export function NextProvider({ children, theme = baseTheme }: { children: ReactNode; theme?: ThemeProps }) {
   // Only create stylesheet once with lazy initial state
@@ -19,12 +18,9 @@ export function NextProvider({ children, theme = baseTheme }: { children: ReactN
   });
 
   const sheet = typeof window === 'undefined' ? styledComponentsStyleSheet.instance : undefined;
-  const StylesComponent = NextStyles(theme);
 
   return (
     <ReactProvider theme={theme} sheet={sheet}>
-      <StylesComponent />
-
       {children}
     </ReactProvider>
   );

@@ -1,7 +1,7 @@
 import { TokenList } from '@/components/TokenList';
 import { Confetti, Keyboard, QRCode } from '@/components/UI';
 import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';

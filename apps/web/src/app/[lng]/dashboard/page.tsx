@@ -42,7 +42,7 @@ import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
 import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import Link from 'next/link';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 
 export default function Page() {
   const config = useConfig();

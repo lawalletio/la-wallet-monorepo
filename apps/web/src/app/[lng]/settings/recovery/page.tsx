@@ -11,7 +11,7 @@ import { InfoCopy } from '@/components/UI';
 import { Button, Container, Divider, Flex, Label, Text, ToggleSwitch } from '@lawallet/ui';
 
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { useConfig, useWalletContext } from '@lawallet/react';
 
 export default function Page() {

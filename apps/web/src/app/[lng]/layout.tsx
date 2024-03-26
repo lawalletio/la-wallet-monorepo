@@ -1,14 +1,14 @@
 'use client';
-import { TranslateProvider } from '@/context/TranslateContext';
-import { ReactNode } from 'react';
-import { AvailableLanguages } from '@lawallet/react/types';
-import { LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
+import { config, appTheme } from '@/config/exports';
+import { fontPrimary, fontSecondary } from '@/config/exports/fonts';
 import { NotificationsProvider } from '@/context/NotificationsContext';
-import { appTheme, config } from '@/config';
-import Script from 'next/script';
+import { TranslateProvider } from '@/context/TranslateContext';
+import { LaWalletProvider, defaultLocale } from '@lawallet/react';
+import { AvailableLanguages } from '@lawallet/react/types';
 import { NextProvider } from '@lawallet/ui/next';
-import { fontPrimary, fontSecondary } from '@/styles/fonts';
+import Script from 'next/script';
+import { ReactNode } from 'react';
 
 interface ProviderProps {
   children: ReactNode;

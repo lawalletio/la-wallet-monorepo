@@ -3,7 +3,7 @@ import HomeDescription from '@/app/[lng]/start/components/HomeDescription';
 import Logo from '@/components/Logo';
 import { Button, CardAlert, Container, Divider, Feedback, Flex, Text } from '@lawallet/ui';
 
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { useTranslation } from '@/context/TranslateContext';
 import { checkIOS } from '@/utils';
 import { Loader } from '@lawallet/ui';

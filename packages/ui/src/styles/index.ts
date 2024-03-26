@@ -1,7 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
-import { ThemeProps } from '../theme';
 
-const NextStyles = (theme: ThemeProps) => createGlobalStyle`
+const GlobalStyles = createGlobalStyle`
   * {
     box-sizing: border-box;
     
@@ -23,16 +22,16 @@ const NextStyles = (theme: ThemeProps) => createGlobalStyle`
     min-width: 100vw;
     min-height: 100dvh;
 
-    background: ${theme.colors.background};
+    background: ${(props) => props.theme.colors.background};
 
-    color: ${theme.colors.text};
+    color: ${(props) => props.theme.colors.text};
     font-size: 1em;
     font-weight: 400;
-    font-family: var(--font-secondary);
+    font-family: ${(props) => props.theme.font.secondary};
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-primary);
+    font-family: ${(props) => props.theme.font.primary};
   }
 
   ul {
@@ -45,8 +44,8 @@ const NextStyles = (theme: ThemeProps) => createGlobalStyle`
 
   a, 
   button {
-    font-family: var(--font-secondary);
+    font-family: ${(props) => props.theme.font.secondary};
   }
 `;
 
-export default NextStyles;
+export default GlobalStyles;

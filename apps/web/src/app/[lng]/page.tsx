@@ -5,7 +5,7 @@ import { Button, Divider, Container, Flex, Text } from '@lawallet/ui';
 import { useTranslation } from '@/context/TranslateContext';
 
 import { useRouter } from 'next/navigation';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 
 export default function Page() {
   const { t } = useTranslation();

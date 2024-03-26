@@ -3,7 +3,7 @@
 import { useTranslation } from '@/context/TranslateContext';
 import { Flex, Heading, Text } from '@lawallet/ui';
 
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { HomeDescription } from './style';
 
 export default function Component() {
