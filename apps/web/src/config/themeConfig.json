@@ -22,5 +22,9 @@
     },
     "borders": {
         "buttonRadius": "50px"
+    },
+    "font": {
+        "primary": "var(--font-primary)",
+        "secondary": "var(--font-secondary)"
     }
 }

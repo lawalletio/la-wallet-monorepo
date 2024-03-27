@@ -29,6 +29,10 @@ export interface ThemeProps {
   borders: {
     buttonRadius: string;
   };
+  font: {
+    primary: string;
+    secondary: string;
+  };
 }
 
 export interface CreateThemeParameters {
@@ -55,5 +59,9 @@ export interface CreateThemeParameters {
   };
   borders?: {
     buttonRadius?: string;
+  };
+  font?: {
+    primary?: string;
+    secondary?: string;
   };
 }

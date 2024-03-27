@@ -10,7 +10,7 @@ import { useTranslation } from '@/context/TranslateContext';
 import { QRCode } from '@/components/UI';
 import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
 
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { useNotifications } from '@/context/NotificationsContext';
 import { formatAddress, lnurl_encode, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import InvoiceSheet from './components/InvoiceSheet';

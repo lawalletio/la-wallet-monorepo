@@ -1,6 +1,6 @@
 'use client';
 
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { styled } from 'styled-components';
 
 interface NavbarProps {}

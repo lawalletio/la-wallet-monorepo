@@ -19,7 +19,7 @@ import {
 } from '@lawallet/ui';
 
 import { lightningAddresses } from '@/constants/constants';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
