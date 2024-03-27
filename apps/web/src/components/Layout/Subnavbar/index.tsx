@@ -9,7 +9,7 @@ import { useTranslation } from '@/context/TranslateContext';
 import { ReactNode } from 'react';
 import { SubnavbarPrimitive } from './style';
 import ButtonCTA from '@/components/ButtonCTA';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 
 interface ComponentProps {
   children?: ReactNode;
