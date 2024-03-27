@@ -19,9 +19,7 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
-    "build": "node esbuild.config.js && tsc",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build": "node esbuild.config.js && tsc"
   },
   "author": "LaWallet Labs",
   "license": "MIT",
