@@ -30,12 +30,12 @@ import { useRouter } from 'next/navigation';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import { appTheme } from '@/config';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
 import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import Link from 'next/link';
+import { appTheme } from '@/config/exports';
 
 export default function Page() {
   const config = useConfig();

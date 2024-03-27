@@ -36,4 +36,8 @@ export const baseTheme: ThemeProps = {
   borders: {
     buttonRadius: '50px',
   },
+  font: {
+    primary: 'Inter',
+    secondary: 'Inter',
+  },
 };

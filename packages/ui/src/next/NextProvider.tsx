@@ -1,13 +1,10 @@
-'use client';
-
-import React, { useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
+import React, { ReactNode, useState } from 'react';
 import { ServerStyleSheet } from 'styled-components';
-import { Provider } from '@lawallet/ui';
-import GlobalStyles from '@/styles/GlobalStyles';
-import { appTheme } from '@/config';
+import { ReactProvider } from '../react/ReactProvider';
+import { ThemeProps, baseTheme } from '../theme';
 
-export default function StyledComponentsRegistry({ children }) {
+export function NextProvider({ children, theme = baseTheme }: { children: ReactNode; theme?: ThemeProps }) {
   // Only create stylesheet once with lazy initial state
   // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
@@ -21,9 +18,8 @@ export default function StyledComponentsRegistry({ children }) {
   const sheet = typeof window === 'undefined' ? styledComponentsStyleSheet.instance : undefined;
 
   return (
-    <Provider theme={appTheme} sheet={sheet}>
-      <GlobalStyles />
+    <ReactProvider theme={theme} sheet={sheet}>
       {children}
-    </Provider>
+    </ReactProvider>
   );
 }

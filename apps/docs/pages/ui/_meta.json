@@ -1,0 +1,20 @@
+{
+    "-- Introduction": {
+        "type": "separator",
+        "title": "Introduction"
+    },
+    "index": "Getting started",
+    "-- Configuration": {
+        "type": "separator",
+        "title": "Configuration"
+    },
+    "createTheme": {
+        "title": "createTheme"
+    },
+    "ReactProvider": {
+        "title": "ReactProvider"
+    },
+    "NextProvider": {
+        "title": "NextProvider"
+    }
+}

@@ -1,5 +1,5 @@
 'use client';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { regexComment } from '@/constants/constants';
 import { useCardsContext } from '@/context/CardsContext';
 import { useTranslation } from '@/context/TranslateContext';

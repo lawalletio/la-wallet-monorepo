@@ -2,7 +2,7 @@ import { baseTheme } from './theme';
 import { ThemeProps, CreateThemeParameters } from './types';
 
 export function createTheme(parameters: CreateThemeParameters = {}): ThemeProps {
-  const { colors = {}, borders = {} } = parameters;
+  const { colors = {}, borders = {}, font = {} } = parameters;
 
   return {
     ...baseTheme,
@@ -18,6 +18,10 @@ export function createTheme(parameters: CreateThemeParameters = {}): ThemeProps 
     borders: {
       ...baseTheme.borders,
       ...borders,
+    },
+    font: {
+      ...baseTheme.font,
+      ...font,
     },
   };
 }

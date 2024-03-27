@@ -1,16 +1,14 @@
 'use client';
-import StyledComponentsRegistry from '@/utils/registry';
-
-import { TranslateProvider } from '@/context/TranslateContext';
-import { ReactNode } from 'react';
-import { AvailableLanguages } from '@lawallet/react/types';
-import { LaWalletProvider, defaultLocale } from '@lawallet/react';
 import AuthProvider from '@/components/Auth/AuthProvider';
+import { config, appTheme } from '@/config/exports';
+import { fontPrimary, fontSecondary } from '@/config/exports/fonts';
 import { NotificationsProvider } from '@/context/NotificationsContext';
-
-import { fontPrimary, fontSecondary } from '@/styles/fonts';
-import { config } from '@/config';
+import { TranslateProvider } from '@/context/TranslateContext';
+import { LaWalletProvider, defaultLocale } from '@lawallet/react';
+import { AvailableLanguages } from '@lawallet/react/types';
+import { NextProvider } from '@lawallet/ui/next';
 import Script from 'next/script';
+import { ReactNode } from 'react';
 
 interface ProviderProps {
   children: ReactNode;
@@ -63,7 +61,7 @@ const Providers = (props: ProviderProps) => {
       </head>
 
       <body>
-        <StyledComponentsRegistry>
+        <NextProvider theme={appTheme}>
           <LaWalletProvider config={config}>
             <AuthProvider lng={params.lng}>
               <TranslateProvider lng={params.lng}>
@@ -71,7 +69,7 @@ const Providers = (props: ProviderProps) => {
               </TranslateProvider>
             </AuthProvider>
           </LaWalletProvider>
-        </StyledComponentsRegistry>
+        </NextProvider>
       </body>
     </html>
   );

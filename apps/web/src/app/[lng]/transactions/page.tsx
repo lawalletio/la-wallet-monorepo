@@ -1,7 +1,7 @@
 'use client';
 import BackButton from '@/components/BackButton';
 import TransactionItem from '@/components/TransactionItem';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { useTranslation } from '@/context/TranslateContext';
 import { useWalletContext } from '@lawallet/react';
 import { Transaction } from '@lawallet/react/types';

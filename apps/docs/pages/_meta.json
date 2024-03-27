@@ -6,7 +6,13 @@
   },
   "react": {
     "title": "React Hooks",
-    "type": "page"
+    "type": "page",
+    "href": "/react"
+  },
+  "ui": {
+    "title": "UI Kit",
+    "type": "page",
+    "href": "/ui"
   },
   "get-started": {
     "title": "Clone repository",

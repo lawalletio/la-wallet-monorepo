@@ -19,7 +19,7 @@ import {
 } from '@lawallet/ui';
 
 import BackButton from '@/components/BackButton';
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { lightningAddresses } from '@/constants/constants';
 import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';

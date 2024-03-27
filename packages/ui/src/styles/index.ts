@@ -1,4 +1,3 @@
-import { appTheme } from '@/config';
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
@@ -23,16 +22,16 @@ const GlobalStyles = createGlobalStyle`
     min-width: 100vw;
     min-height: 100dvh;
 
-    background: ${appTheme.colors.background};
+    background: ${(props) => props.theme.colors.background};
 
-    color: ${appTheme.colors.text};
+    color: ${(props) => props.theme.colors.text};
     font-size: 1em;
     font-weight: 400;
-    font-family: var(--font-secondary);
+    font-family: ${(props) => props.theme.font.secondary};
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-primary);
+    font-family: ${(props) => props.theme.font.primary};
   }
 
   ul {
@@ -45,7 +44,7 @@ const GlobalStyles = createGlobalStyle`
 
   a, 
   button {
-    font-family: var(--font-secondary);
+    font-family: ${(props) => props.theme.font.secondary};
   }
 `;
 

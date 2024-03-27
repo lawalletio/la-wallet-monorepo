@@ -2,7 +2,7 @@ import * as esbuild from 'esbuild';
 import styledComponentsPlugin from 'esbuild-plugin-styled-components';
 
 export const esbuildConfig = {
-  entryPoints: ['src/index.tsx'],
+  entryPoints: ['src/index.tsx', 'src/next/index.ts'],
   bundle: true,
   minify: true,
   splitting: true,

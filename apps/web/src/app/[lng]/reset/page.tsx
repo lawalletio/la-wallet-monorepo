@@ -2,7 +2,7 @@
 import Logo from '@/components/Logo';
 import { Loader } from '@lawallet/ui';
 
-import { appTheme } from '@/config';
+import { appTheme } from '@/config/exports';
 import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
 import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';
