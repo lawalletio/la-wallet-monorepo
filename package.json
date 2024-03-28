@@ -19,8 +19,8 @@
     "docs:start": "pnpm --filter @lawallet/docs start:docs"
   },
   "devDependencies": {
-    "@lawallet/eslint-config": "1.0.3",
-    "@lawallet/typescript-config": "1.0.0",
+    "@lawallet/eslint-config": "^1.0.0",
+    "@lawallet/typescript-config": "^1.0.0",
     "prettier": "^3.2.5",
     "turbo": "^1.12.5"
   },
@@ -38,6 +38,7 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "config/*"
   ]
 }
