@@ -113,13 +113,13 @@ export default function Page() {
         </Flex>
         <Divider y={16} />
 
-        <Feedback show={errors.errorInfo.visible} status={'error'}>
-          <Flex flex={1} align="center" justify="center">
+        <Flex flex={1} align="center" justify="center">
+          <Feedback show={errors.errorInfo.visible} status={'error'}>
             {errors.errorInfo.text}
-          </Flex>
+          </Feedback>
+        </Flex>
 
-          <Divider y={16} />
-        </Feedback>
+        <Divider y={16} />
 
         <Flex>
           <Button color="error" variant="bezeled" onClick={logoutSession}>
