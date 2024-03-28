@@ -69,7 +69,6 @@ export default function Page() {
     }
 
     const formattedLNURLData = await formatLNURLData(cleanData);
-    console.log(formattedLNURLData);
     if (formattedLNURLData.type === TransferTypes.NONE || formattedLNURLData.type === TransferTypes.INVOICE) {
       errors.modifyError('INVALID_RECIPIENT');
       setLoading(false);
@@ -103,6 +102,7 @@ export default function Page() {
         tx.direction === TransactionDirection.OUTGOING &&
         tx.metadata &&
         tx.metadata.receiver &&
+        tx.metadata.receiver.includes('@') &&
         tx.metadata.receiver.length < 40 &&
         !receiversList.includes(tx.metadata.receiver)
       )
