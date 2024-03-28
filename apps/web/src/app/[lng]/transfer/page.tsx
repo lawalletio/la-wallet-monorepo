@@ -57,6 +57,8 @@ export default function Page() {
     const cleanData: string = data.trim();
     const type: TransferTypes = detectTransferType(cleanData);
 
+    console.log(type);
+
     switch (type) {
       case TransferTypes.NONE:
         errors.modifyError('INVALID_RECIPIENT');
@@ -69,6 +71,7 @@ export default function Page() {
     }
 
     const formattedLNURLData = await formatLNURLData(cleanData);
+    console.log(formattedLNURLData);
     if (formattedLNURLData.type === TransferTypes.NONE || formattedLNURLData.type === TransferTypes.INVOICE) {
       errors.modifyError('INVALID_RECIPIENT');
       setLoading(false);

@@ -233,11 +233,11 @@ export const formatLNURLData = async (data: string, config: ConfigProps = baseCo
   const decodedTransferType: TransferTypes = detectTransferType(cleanStr);
   if (decodedTransferType === TransferTypes.NONE) return defaultLNURLTransfer;
 
-  switch (decodedTransferType) {
-    case TransferTypes.INVOICE:
+  switch (true) {
+    case decodedTransferType === TransferTypes.INVOICE:
       return defaultLNURLTransfer;
 
-    case TransferTypes.LUD16:
+    case decodedTransferType === TransferTypes.LUD16 || decodedTransferType === TransferTypes.INTERNAL:
       return parseLUD16Info(cleanStr, config);
 
     default:
