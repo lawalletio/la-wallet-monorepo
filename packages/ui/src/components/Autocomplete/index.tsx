@@ -55,7 +55,7 @@ export function Autocomplete(props: AutocompleteProps) {
           {!value && data?.length ? <BtnLoader /> : null}
           {value &&
             data?.slice(0, 3).map((lud16: string) => (
-              <button onClick={() => handleSelect(lud16)}>
+              <button key={lud16} onClick={() => handleSelect(lud16)}>
                 <Item lud16={lud16} />
               </button>
             ))}
