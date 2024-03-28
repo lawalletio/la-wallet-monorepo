@@ -1,6 +1,7 @@
 {
   "extends": "@lawallet/typescript-config/base.json",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "declaration": false,
   }
 }
