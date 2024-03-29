@@ -1,7 +1,6 @@
 'use client';
 import AuthProvider from '@/components/Auth/AuthProvider';
-import { config, appTheme } from '@/config/exports';
-import { fontPrimary, fontSecondary } from '@/config/exports/fonts';
+import { appTheme, config } from '@/config/exports';
 import { NotificationsProvider } from '@/context/NotificationsContext';
 import { TranslateProvider } from '@/context/TranslateContext';
 import { LaWalletProvider, defaultLocale } from '@lawallet/react';
@@ -9,6 +8,7 @@ import { AvailableLanguages } from '@lawallet/react/types';
 import { NextProvider } from '@lawallet/ui/next';
 import Script from 'next/script';
 import { ReactNode } from 'react';
+import '@lawallet/ui/styles.css';
 
 interface ProviderProps {
   children: ReactNode;
@@ -22,7 +22,7 @@ const APP_DESCRIPTION = 'https://lawallet.ar/';
 const Providers = (props: ProviderProps) => {
   const { children, params } = props;
   return (
-    <html lang={params.lng ?? defaultLocale} className={`${fontPrimary.variable} ${fontSecondary.variable}`}>
+    <html lang={params.lng ?? defaultLocale}>
       <head>
         <title>{APP_NAME}</title>
         <meta name="application-name" content={APP_NAME} />

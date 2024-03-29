@@ -3,7 +3,7 @@ import { StyleSheetManager, ThemeProvider } from 'styled-components';
 
 import { baseTheme } from '../theme';
 import { ThemeProps } from '../theme/types';
-import GlobalStyles from '../styles';
+import GlobalStyles from '../css';
 
 interface ProviderProps {
   children: ReactNode;

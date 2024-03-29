@@ -22,6 +22,16 @@ export const esbuildConfig = {
 
 async function build() {
   await esbuild.build(esbuildConfig);
+
+  await esbuild
+    .build({
+      entryPoints: ['src/css/main.css'],
+      bundle: true,
+      outfile: 'dist/main.css',
+      format: 'esm',
+      minify: true,
+    })
+    .catch(() => process.exit(1));
 }
 
 build();

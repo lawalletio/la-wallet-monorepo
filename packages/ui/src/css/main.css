@@ -1,0 +1,18 @@
+@font-face {
+    font-family: 'IAAB3-Mono';
+    src: url('https://static.lawallet.io/fonts/IAAB3.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'SF Pro Text';
+    src: url('https://static.lawallet.io/fonts/SF-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'SF Pro Text';
+    src: url('https://static.lawallet.io/fonts/SF-Bold.woff2') format('woff2');
+    font-style: bold;
+    font-weight: 700;
+}

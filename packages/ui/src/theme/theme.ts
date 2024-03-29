@@ -37,7 +37,7 @@ export const baseTheme: ThemeProps = {
     buttonRadius: '50px',
   },
   font: {
-    primary: 'Inter',
-    secondary: 'Inter',
+    primary: 'IAAB3-Mono',
+    secondary: 'SF Pro Text',
   },
 };
