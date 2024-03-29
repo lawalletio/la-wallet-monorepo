@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/ui",
-  "version": "0.1.25",
+  "version": "0.1.27",
   "description": "",
   "private": false,
   "repository": {
@@ -13,8 +13,7 @@
   "types": "dist/index.d.ts",
   "style": "dist/global.css",
   "files": [
-    "dist/*.{css, js, jsx, tsx, ts}",
-    "src/styles.css"
+    "dist"
   ],
   "scripts": {
     "dev": "tsc && node watch.config.js",
@@ -43,7 +42,7 @@
   "exports": {
     ".": "./dist/index.js",
     "./next": "./dist/next/index.js",
-    "./styles.css": "./dist/main.css"
+    "./styles": "./dist/main.css"
   },
   "typesVersions": {
     "*": {

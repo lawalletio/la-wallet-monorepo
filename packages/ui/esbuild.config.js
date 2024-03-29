@@ -21,8 +21,6 @@ export const esbuildConfig = {
 };
 
 async function build() {
-  await esbuild.build(esbuildConfig);
-
   await esbuild
     .build({
       entryPoints: ['src/css/main.css'],
@@ -32,6 +30,8 @@ async function build() {
       minify: true,
     })
     .catch(() => process.exit(1));
+
+  await esbuild.build(esbuildConfig);
 }
 
 build();

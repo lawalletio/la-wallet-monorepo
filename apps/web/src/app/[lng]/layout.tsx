@@ -6,9 +6,9 @@ import { NotificationsProvider } from '@/context/NotificationsContext';
 import { TranslateProvider } from '@/context/TranslateContext';
 import { LaWalletProvider, defaultLocale } from '@lawallet/react';
 import { AvailableLanguages } from '@lawallet/react/types';
-import { NextProvider } from '@lawallet/ui/next';
 import Script from 'next/script';
 import { ReactNode } from 'react';
+import { NextProvider } from '@lawallet/ui/next';
 
 interface ProviderProps {
   children: ReactNode;
