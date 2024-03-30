@@ -1,4 +1,6 @@
-import { useState, createContext, type PropsWithChildren, createElement, useEffect, useCallback } from 'react';
+'use client';
+
+import React from 'react';
 import type { LNRequestResponse } from '../exports/types.js';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
 
@@ -12,7 +14,7 @@ interface ProfileCacheReturns {
 
 const STATIC_LAWALLET_ENDPOINT = 'https://static.lawallet.io'; // TODO: Add it to .env
 
-export const ProfileCacheContext = createContext({} as ProfileCacheReturns);
+export const ProfileCacheContext = React.createContext({} as ProfileCacheReturns);
 
 export interface ProfileData {
   lud16?: LNRequestResponse;
@@ -27,12 +29,12 @@ export type WaliasCache = {
   [walias: string]: ProfileData;
 };
 
-export function ProfileCacheProvider({ children }: PropsWithChildren<ProfileCacheParameter>) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [domainAvatars, setDomainAvatars] = useState<{ [domain: string]: string }>({});
-  const [waliasCache, setWaliasCache] = useState<WaliasCache>({});
+export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCacheParameter>) {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [domainAvatars, setDomainAvatars] = React.useState<{ [domain: string]: string }>({});
+  const [waliasCache, setWaliasCache] = React.useState<WaliasCache>({});
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetch(`${STATIC_LAWALLET_ENDPOINT}/domains.json`)
       .then((res) => {
         return res.json();
@@ -49,7 +51,7 @@ export function ProfileCacheProvider({ children }: PropsWithChildren<ProfileCach
       });
   }, []);
 
-  const updateCache = useCallback((walias: string, data: WaliasCache) => {
+  const updateCache = React.useCallback((walias: string, data: WaliasCache) => {
     setWaliasCache((prev: any) => {
       return {
         ...prev,
@@ -58,7 +60,7 @@ export function ProfileCacheProvider({ children }: PropsWithChildren<ProfileCach
     });
   }, []);
 
-  return createElement(
+  return React.createElement(
     ProfileCacheContext.Provider,
     {
       value: {
@@ -68,6 +70,19 @@ export function ProfileCacheProvider({ children }: PropsWithChildren<ProfileCach
         updateCache,
       },
     },
-    children,
+    props.children,
   );
 }
+
+export const useProfileCache = (): ProfileCacheReturns => {
+  const profile = React.useContext(ProfileCacheContext);
+
+  const { domainAvatars, isLoading, updateCache, waliasCache } = profile;
+
+  return {
+    domainAvatars,
+    isLoading,
+    updateCache,
+    waliasCache,
+  };
+};
