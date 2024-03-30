@@ -3,7 +3,7 @@ import { useNostrContext } from '../context/NostrContext.js';
 import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import type { LNRequestResponse } from '../exports/types.js';
-import { ProfileCacheContext } from '../context/ProfileCacheContext.js';
+import { useProfileCache } from '../context/ProfileCacheContext.js';
 
 const FALLBACK_AVATAR_URL = 'https://static.lawallet.io/img/domains/default.png'; // TODO: Add it to .env
 
@@ -29,7 +29,8 @@ export const useProfile = (
 ): UseProfileReturns => {
   // Hooks
   const { ndk } = useNostrContext({});
-  const { domainAvatars, updateCache, waliasCache, isLoading: isDomainAvatarLoading } = useContext(ProfileCacheContext);
+  const profile = useProfileCache();
+  const { domainAvatars, isLoading: isDomainAvatarLoading } = profile;
 
   // Global loading
   const [isLoading, setIsLoading] = useState(true);
