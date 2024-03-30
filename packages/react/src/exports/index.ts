@@ -22,5 +22,5 @@ export { type UseLNURLReturns, useLNURL } from '../hooks/useLNURL.js';
 
 export { type NostrContext, NostrProvider, useNostrContext } from '../context/NostrContext.js';
 export { type WalletContext, WalletProvider, useWalletContext } from '../context/WalletContext.js';
-export { type ProfileCacheContext, ProfileCacheProvider } from '../context/ProfileCacheContext.js';
+export { type ProfileCacheContext, ProfileCacheProvider, useProfileCache } from '../context/ProfileCacheContext.js';
 export { LaWalletConfig, LaWalletProvider } from '../context/providers.js';
