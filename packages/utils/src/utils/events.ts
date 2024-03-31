@@ -25,6 +25,8 @@ export enum LaWalletTags {
   CARD_ACTIVATION_REQUEST = 'card-activation-request',
   CARD_TRANSFER_DONATION = 'card-transfer-donation',
   CARD_TRANSFER_ACCEPTANCE = 'card-transfer-acceptance',
+  BUY_HANDLE_REQUEST = 'buy-handle-request',
+  CREATE_NONCE = 'create-nonce',
 }
 
 export type GenerateIdentityReturns = {
@@ -131,6 +133,29 @@ type TransactionProps = {
   tags: NDKTag[];
 };
 
+export const buildBuyHandleRequest = (adminPubkey: string, encryptedNonce: string): NostrEvent => {
+  return {
+    pubkey: adminPubkey,
+    kind: LaWalletKinds.REGULAR,
+    content: encryptedNonce,
+    tags: [['t', LaWalletTags.BUY_HANDLE_REQUEST]],
+    created_at: nowInSeconds(),
+  };
+};
+
+export const buildCreateNonceEvent = (adminPubkey: string, randomNonce: string): NostrEvent => {
+  return {
+    pubkey: adminPubkey,
+    kind: LaWalletKinds.REGULAR,
+    content: '',
+    tags: [
+      ['t', LaWalletTags.CREATE_NONCE],
+      ['nonce', randomNonce],
+    ],
+    created_at: nowInSeconds(),
+  };
+};
+
 export const buildTxStartEvent = (props: TransactionProps, config: ConfigProps = baseConfig): NostrEvent => {
   const { tokenName, amount, senderPubkey, comment, tags = [] } = props;
 
@@ -151,6 +176,7 @@ export const buildTxStartEvent = (props: TransactionProps, config: ConfigProps =
     created_at: nowInSeconds(),
   };
 };
+
 export const buildCardConfigEvent = async (multiNip04Event: NostrEvent): Promise<NostrEvent> => {
   return {
     ...multiNip04Event,
