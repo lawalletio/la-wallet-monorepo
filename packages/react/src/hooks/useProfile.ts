@@ -21,6 +21,9 @@ export interface UseProfileReturns {
   nip05Avatar?: string;
   domainAvatar: string;
   isLoading: boolean;
+  isNip05Loading: boolean;
+  isLud16Loading: boolean;
+  isDomainAvatarLoading: boolean;
 }
 
 export const useProfile = (
@@ -125,6 +128,9 @@ export const useProfile = (
     nip05Avatar,
     lud16Avatar,
     domainAvatar,
+    isNip05Loading,
+    isLud16Loading,
+    isDomainAvatarLoading,
   };
 };
 
