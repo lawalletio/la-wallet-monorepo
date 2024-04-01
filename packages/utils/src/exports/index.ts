@@ -14,6 +14,8 @@ export {
   buildZapRequestEvent,
   buildCardTransferAcceptEvent,
   buildCardTransferDonationEvent,
+  buildBuyHandleRequest,
+  buildCreateNonceEvent,
 } from '../utils/events.js';
 
 export { type CreateConfigParameters, createConfig } from '../createConfig.js';
