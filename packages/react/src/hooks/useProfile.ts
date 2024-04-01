@@ -25,7 +25,7 @@ export interface UseProfileReturns {
 
 export const useProfile = (
   { walias, pubkey: _pubkey }: UseProfileParams,
-  options?: UseProfileConfig,
+  _options?: UseProfileConfig,
 ): UseProfileReturns => {
   // Hooks
   const { ndk } = useNostrContext({});
