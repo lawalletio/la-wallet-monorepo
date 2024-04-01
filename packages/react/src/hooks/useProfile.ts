@@ -36,7 +36,7 @@ export const useProfile = (
   const [isLoading, setIsLoading] = useState(true);
 
   // Individual loading
-  const [isNip05Loading, setIsNip05Loading] = useState(true);
+  const [isNip05Loading, setIsNip05Loading] = useState(false);
   const [isLud16Loading, setIsLud16Loading] = useState(true);
 
   // Data
@@ -62,6 +62,7 @@ export const useProfile = (
       return;
     }
 
+    setIsNip05Loading(true);
     resolveNip05(walias).then((pubkey) => {
       if (!pubkey) {
         setIsNip05Loading(false);
