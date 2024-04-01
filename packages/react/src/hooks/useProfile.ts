@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNostrContext } from '../context/NostrContext.js';
 import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
