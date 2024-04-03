@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNostrContext } from '../context/NostrContext.js';
 import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
@@ -21,11 +21,14 @@ export interface UseProfileReturns {
   nip05Avatar?: string;
   domainAvatar: string;
   isLoading: boolean;
+  isNip05Loading: boolean;
+  isLud16Loading: boolean;
+  isDomainAvatarLoading: boolean;
 }
 
 export const useProfile = (
   { walias, pubkey: _pubkey }: UseProfileParams,
-  options?: UseProfileConfig,
+  _options?: UseProfileConfig,
 ): UseProfileReturns => {
   // Hooks
   const { ndk } = useNostrContext({});
@@ -36,7 +39,7 @@ export const useProfile = (
   const [isLoading, setIsLoading] = useState(true);
 
   // Individual loading
-  const [isNip05Loading, setIsNip05Loading] = useState(true);
+  const [isNip05Loading, setIsNip05Loading] = useState(false);
   const [isLud16Loading, setIsLud16Loading] = useState(true);
 
   // Data
@@ -62,6 +65,7 @@ export const useProfile = (
       return;
     }
 
+    setIsNip05Loading(true);
     resolveNip05(walias).then((pubkey) => {
       if (!pubkey) {
         setIsNip05Loading(false);
@@ -124,6 +128,9 @@ export const useProfile = (
     nip05Avatar,
     lud16Avatar,
     domainAvatar,
+    isNip05Loading,
+    isLud16Loading,
+    isDomainAvatarLoading,
   };
 };
 
