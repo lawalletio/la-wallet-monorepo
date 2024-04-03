@@ -1,7 +1,8 @@
 'use client';
 import { QRCode } from '@/components/UI';
+import useErrors from '@/hooks/useErrors';
 import { useConfig, useSubscription } from '@lawallet/react';
-import { Button, Container, Divider, Flex, Heading, Loader, Text } from '@lawallet/ui';
+import { Button, Container, Divider, Feedback, Flex, Heading, Loader, Text } from '@lawallet/ui';
 import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -22,6 +23,7 @@ const SignUp = () => {
 
   const [nonce, setNonce] = useState<string>('');
   const router = useRouter();
+  const errors = useErrors();
 
   const { events } = useSubscription({
     filters: [
@@ -37,25 +39,32 @@ const SignUp = () => {
   });
 
   const requestPayment = async () => {
-    const response = await fetch(`/api/signup/request`);
-    const { zapRequest, invoice }: ZapRequestInfo = await response.json();
-    if (!zapRequest || !invoice) return;
+    try {
+      const response = await fetch(`/api/signup/request`);
+      const { zapRequest, invoice }: ZapRequestInfo = await response.json();
+      if (!zapRequest || !invoice) return;
 
-    setZapRequestInfo({ zapRequest, invoice, payed: false });
+      setZapRequestInfo({ zapRequest, invoice, payed: false });
+    } catch {
+      errors.modifyError('UNEXPECTED_ERROR');
+    }
   };
 
   const claimNonce = async (zapReceipt: NDKEvent) => {
-    const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
-    console.log(nostrEvent);
+    try {
+      const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
 
-    const response = await fetch('/api/signup/claim', {
-      method: 'POST',
-      body: JSON.stringify(nostrEvent),
-    });
-    const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
-    if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
+      const response = await fetch('/api/signup/claim', {
+        method: 'POST',
+        body: JSON.stringify(nostrEvent),
+      });
+      const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
+      if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
 
-    setNonce(responseJSON.data.nonce.nonce);
+      setNonce(responseJSON.data.nonce.nonce);
+    } catch {
+      errors.modifyError('UNEXPECTED_ERROR');
+    }
   };
 
   useEffect(() => {
@@ -132,6 +141,10 @@ const SignUp = () => {
           )}
         </Container>
       )}
+
+      <Feedback show={errors.errorInfo.visible} status={'error'}>
+        {errors.errorInfo.text}
+      </Feedback>
     </Container>
   );
 };
