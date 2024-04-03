@@ -14,8 +14,6 @@ export async function GET() {
     const adminPubkey: string = getPublicKey(ADMIN_SIGNUP_KEY);
     const randomNonce: string = randomBytes(32).toString('hex');
 
-    console.log(randomNonce);
-
     const encryptedNonce: string = await nip04.encrypt(ADMIN_SIGNUP_KEY, adminPubkey, randomNonce);
     const ndk: NDK = await initializeNDK(signupRelays, new NDKPrivateKeySigner(ADMIN_SIGNUP_KEY));
 
