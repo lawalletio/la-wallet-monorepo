@@ -90,3 +90,12 @@ export const existIdentity = async (name: string, config: ConfigProps = baseConf
     return false;
   }
 };
+
+export const createNonce = async (event: NostrEvent) =>
+  fetch(`${baseConfig.endpoints.lightningDomain}/api/nonce/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(event),
+  });

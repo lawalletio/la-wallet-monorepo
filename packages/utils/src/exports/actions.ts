@@ -13,6 +13,7 @@ export {
   getUsername,
   claimIdentity,
   existIdentity,
+  createNonce,
 } from '../interceptors/identity.js';
 
 export { broadcastEvent } from '../interceptors/publish.js';

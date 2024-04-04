@@ -111,16 +111,13 @@ export const buildZapRequestEvent = (
   receiverPubkey: string,
   amount: number,
   config: ConfigProps = baseConfig,
+  tags: NDKTag[] = [],
 ): NostrEvent => {
   return {
     pubkey: senderPubkey,
     content: '',
     kind: NDKKind.ZapRequest,
-    tags: [
-      ['p', receiverPubkey],
-      ['amount', amount.toString()],
-      ['relays', ...config.relaysList],
-    ],
+    tags: [['p', receiverPubkey], ['amount', amount.toString()], ['relays', ...config.relaysList], ...tags],
     created_at: nowInSeconds(),
   };
 };

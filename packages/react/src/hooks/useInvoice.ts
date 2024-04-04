@@ -5,7 +5,7 @@ import {
   type DecodedInvoiceReturns,
   type InvoiceTransferType,
 } from '@lawallet/utils/types';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 
 export interface UseInvoiceReturns {
   txInfo: InvoiceTransferType;
@@ -17,8 +17,8 @@ interface UseInvoiceParameters extends ConfigParameter {
 }
 
 export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
-  const [txInfo, setTxInfo] = useState<InvoiceTransferType>(defaultInvoiceTransfer);
-  const [decodedInvoice, setDecodedInvoice] = useState<DecodedInvoiceReturns | undefined>(undefined);
+  const [txInfo, setTxInfo] = React.useState<InvoiceTransferType>(defaultInvoiceTransfer);
+  const [decodedInvoice, setDecodedInvoice] = React.useState<DecodedInvoiceReturns | undefined>(undefined);
 
   const initializeInvoice = async (data: string) => {
     const decoded = decodeInvoice(data);
@@ -31,7 +31,7 @@ export const useInvoice = (params: UseInvoiceParameters): UseInvoiceReturns => {
     setTxInfo(transferInfo);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (params.bolt11) initializeInvoice(params.bolt11);
   }, [params.bolt11]);
 

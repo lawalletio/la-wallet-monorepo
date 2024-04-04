@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import { useNostrContext } from '../context/NostrContext.js';
 import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
@@ -36,22 +36,22 @@ export const useProfile = (
   const { domainAvatars, isLoading: isDomainAvatarLoading } = profile;
 
   // Global loading
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   // Individual loading
-  const [isNip05Loading, setIsNip05Loading] = useState(false);
-  const [isLud16Loading, setIsLud16Loading] = useState(true);
+  const [isNip05Loading, setIsNip05Loading] = React.useState(false);
+  const [isLud16Loading, setIsLud16Loading] = React.useState(true);
 
   // Data
-  const [pubkey, setPubkey] = useState<string | undefined>(_pubkey);
-  const [nip05, setNip05] = useState<NDKUserProfile | undefined>();
-  const [lud16, setLud16] = useState<LNRequestResponse | undefined>();
-  const [lud16Avatar, setLud16Avatar] = useState<string | undefined>();
-  const [nip05Avatar, setNip05Avatar] = useState<string | undefined>();
-  const [domainAvatar, setDomainAvatar] = useState<string>(FALLBACK_AVATAR_URL);
+  const [pubkey, setPubkey] = React.useState<string | undefined>(_pubkey);
+  const [nip05, setNip05] = React.useState<NDKUserProfile | undefined>();
+  const [lud16, setLud16] = React.useState<LNRequestResponse | undefined>();
+  const [lud16Avatar, setLud16Avatar] = React.useState<string | undefined>();
+  const [nip05Avatar, setNip05Avatar] = React.useState<string | undefined>();
+  const [domainAvatar, setDomainAvatar] = React.useState<string>(FALLBACK_AVATAR_URL);
 
   // Marge all loadings into isLoading
-  useEffect(() => {
+  React.useEffect(() => {
     if (isNip05Loading || isLud16Loading || isDomainAvatarLoading) {
       return;
     }
@@ -60,7 +60,7 @@ export const useProfile = (
   }, [isNip05Loading, isLud16Loading, isDomainAvatarLoading]);
 
   // Resolve NIP05 Pubkey and LUD16
-  useEffect(() => {
+  React.useEffect(() => {
     if (!walias) {
       return;
     }
@@ -88,7 +88,7 @@ export const useProfile = (
   }, [walias]);
 
   // Fetch NIP05 pubkey metadata
-  useEffect(() => {
+  React.useEffect(() => {
     if (!pubkey) {
       return;
     }
@@ -113,7 +113,7 @@ export const useProfile = (
   }, [pubkey]);
 
   // Fetch domain avatar
-  useEffect(() => {
+  React.useEffect(() => {
     if (!walias) {
       return;
     }
