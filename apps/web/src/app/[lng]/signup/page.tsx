@@ -106,7 +106,7 @@ const SignUp = () => {
         <Flex direction="column" align="center" justify="center" flex={1}>
           <Logo />
           <Divider y={8} />
-          <Text align="center">No te quedes afuera, probanos.</Text>
+          <Text align="center">Tu wallet en 10 segundos, sin KYC ni boludeces.</Text>
 
           {!zapRequestInfo.invoice ? (
             <>
