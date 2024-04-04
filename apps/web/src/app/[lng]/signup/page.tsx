@@ -1,11 +1,28 @@
 'use client';
-import { QRCode } from '@/components/UI';
-import useErrors from '@/hooks/useErrors';
-import { useConfig, useSubscription } from '@lawallet/react';
-import { Button, Container, Divider, Feedback, Flex, Heading, Loader, Text } from '@lawallet/ui';
-import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
-import { useRouter } from 'next/navigation';
+
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
+import { useConfig, useSubscription } from '@lawallet/react';
+import {
+  Button,
+  Container,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  Loader,
+  Text,
+  Icon,
+  SatoshiIcon,
+  CheckIcon,
+} from '@lawallet/ui';
+import { CardV2 } from '@/components/CardV2';
+
+import useErrors from '@/hooks/useErrors';
+
+import { QRCode } from '@/components/UI';
+import { appTheme } from '@/config/exports';
 
 type ZapRequestInfo = {
   zapRequest: NostrEvent | null;
@@ -84,68 +101,91 @@ const SignUp = () => {
   }, [events.length]);
 
   return (
-    <Container>
-      <Heading align="center">Sign Up</Heading>
+    <>
+      <Divider y={60} />
+      <Container size="small">
+        <Heading align="center">Sign Up</Heading>
+        <Divider y={8} />
+        <Text align="center">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna aliqua.
+        </Text>
 
-      <Divider y={20} />
+        <Divider y={16} />
 
-      <Text align="center">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua.
-      </Text>
-
-      <Divider y={20} />
-      <Divider y={20} />
-
-      {!zapRequestInfo.invoice ? (
-        <>
-          <Text align="center">Costo: 21 sats</Text>
-
-          <Flex flex={1} align="center">
-            <Button onClick={requestPayment}>Quiero una cuenta</Button>
-          </Flex>
-        </>
-      ) : !zapRequestInfo.payed ? (
-        <Flex flex={1} justify="center">
-          <QRCode value={zapRequestInfo.invoice} size={250} />
-        </Flex>
-      ) : (
-        <Container>
-          <Flex justify="center">
-            <Text>Pago recibido</Text>
-          </Flex>
-
-          <Divider y={16} />
-
-          {nonce ? (
-            <Container>
-              <Text align="center">Ya podes crear tu billetera!</Text>
-
-              <Divider y={12} />
-
-              {/* <Text align="center">{`${window.location.origin}/start?i=${nonce}`}</Text> */}
-              {/* <Divider y={12} /> */}
-
-              <Flex flex={1} justify="center">
-                <Button onClick={() => router.push(`/start?i=${nonce}`)}>Crear billetera</Button>
+        {!zapRequestInfo.invoice ? (
+          <>
+            <Flex direction="column" align="center" gap={8}>
+              <Text color={appTheme.colors.gray50}>Costo</Text>
+              <Flex align="center" gap={4} justify="center">
+                <Icon>
+                  <SatoshiIcon />
+                </Icon>
+                <Heading>221</Heading>
+                <Text size="small">SAT</Text>
               </Flex>
-            </Container>
-          ) : (
-            <Container>
-              <Text align="center">Estamos generando el cupon para crear tu cuenta...</Text>
+            </Flex>
 
-              <Flex flex={1} justify="center">
+            <Divider y={12} />
+            <Flex>
+              <Button onClick={requestPayment}>Quiero una cuenta</Button>
+            </Flex>
+          </>
+        ) : !zapRequestInfo.payed ? (
+          <>
+            <Divider y={48} />
+            <Flex justify="center">
+              <QRCode value={zapRequestInfo.invoice} size={250} />
+            </Flex>
+          </>
+        ) : (
+          <>
+            <CardV2 variant="filled" spacing={4}>
+              <Flex gap={16}>
+                <Icon color={appTheme.colors.primary}>
+                  <CheckIcon />
+                </Icon>
+                <Flex direction="column" gap={8}>
+                  <Text isBold color={appTheme.colors.primary}>
+                    Pago recibido
+                  </Text>
+                  <Text size="small">Ya podes crear tu billetera!</Text>
+                </Flex>
+              </Flex>
+            </CardV2>
+
+            <Divider y={16} />
+
+            {nonce ? (
+              <>
+                <Text align="center" size="small">
+                  Ya podes crear tu billetera!
+                </Text>
+
+                <Divider y={16} />
+
+                <Flex justify="center">
+                  <Button color="secondary" onClick={() => router.push(`/start?i=${nonce}`)}>
+                    Crear billetera
+                  </Button>
+                </Flex>
+              </>
+            ) : (
+              <Flex direction="column" align="center">
                 <Loader />
+                <Text align="center" color={appTheme.colors.gray50}>
+                  Estamos generando el cupon para crear tu cuenta...
+                </Text>
               </Flex>
-            </Container>
-          )}
-        </Container>
-      )}
+            )}
+          </>
+        )}
 
-      <Feedback show={errors.errorInfo.visible} status={'error'}>
-        {errors.errorInfo.text}
-      </Feedback>
-    </Container>
+        <Feedback show={errors.errorInfo.visible} status={'error'}>
+          {errors.errorInfo.text}
+        </Feedback>
+      </Container>
+    </>
   );
 };
 
