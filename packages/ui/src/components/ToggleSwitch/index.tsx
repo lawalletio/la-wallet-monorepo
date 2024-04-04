@@ -21,7 +21,7 @@ export function ToggleSwitch(props: ToggleSwitchProps) {
   return (
     <ToggleSwitchPrimitive>
       {label ? <Text>{label}</Text> : null}
-      <input checked={active} id={id} type="checkbox" />
+      <input onChange={() => null} checked={active} id={id} type="checkbox" />
       <label htmlFor={id} onClick={handleChange}>
         Toggle
       </label>
