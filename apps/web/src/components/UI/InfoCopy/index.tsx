@@ -1,4 +1,4 @@
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { copy } from '@/utils/share';
 
 import { Button, Flex, Text } from '@lawallet/ui';
@@ -16,7 +16,7 @@ interface ComponentProps {
 export default function Component(props: ComponentProps) {
   const { title, value, onCopy = null } = props;
 
-  const { t } = useTranslation();
+  const t = useTranslations();
   const notifications = useNotifications();
 
   const handleCopy = () => {

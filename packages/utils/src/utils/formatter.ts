@@ -3,11 +3,7 @@ import { enUS, es } from 'date-fns/locale';
 import type { AvailableLanguages } from '../types/translations.js';
 import type { AvailableCurrencies } from '../types/userConfig.js';
 
-export const formatter = (
-  minDecimals: number = 2,
-  maxDecimals: number = 2,
-  lng: AvailableLanguages,
-): Intl.NumberFormat =>
+export const formatter = (minDecimals: number = 2, maxDecimals: number = 2, lng: string): Intl.NumberFormat =>
   new Intl.NumberFormat(lng === 'en' ? 'en-US' : 'es-AR', {
     // These options are needed to round to whole numbers if that's what you want.
     minimumFractionDigits: minDecimals, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
@@ -60,7 +56,7 @@ export const formatAddress = (address: string, size: number = 22): string => {
   return address;
 };
 
-export const dateFormatter = (lng: AvailableLanguages, date: Date | number, strFormat?: string): string => {
+export const dateFormatter = (lng: string, date: Date | number, strFormat?: string): string => {
   return format(date, strFormat ?? 'MMM d, yyyy. HH:mm a', {
     locale: lng === 'es' ? es : enUS,
   });
@@ -72,7 +68,7 @@ export const lowerText = (text: string): string => (text ? text.toLowerCase() : 
 export const formatToPreference = (
   currency: AvailableCurrencies,
   amount: number,
-  lng: AvailableLanguages,
+  lng: string,
   round?: boolean,
 ): string => {
   const maxDecimals: number = decimalsToUse(currency);

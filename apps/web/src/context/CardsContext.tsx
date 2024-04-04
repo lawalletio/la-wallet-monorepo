@@ -3,7 +3,7 @@ import { CardConfigReturns, useCards, useConfig } from '@lawallet/react';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNotifications } from './NotificationsContext';
-import { useTranslation } from './TranslateContext';
+import { useTranslations } from 'next-intl';
 
 interface CardContextType extends CardConfigReturns {
   encodeDonationEvent: (uuid: string) => Promise<string | undefined>;
@@ -22,7 +22,7 @@ export function CardsProvider(props: React.PropsWithChildren) {
   });
 
   const notifications = useNotifications();
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   const notifyCardDonation = () => {
     notifications.showAlert({

@@ -3,17 +3,17 @@ import Logo from '@/components/Logo';
 import { Loader } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
 import useErrors from '@/hooks/useErrors';
 import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';
 import { cardResetCaim, generateUserIdentity } from '@lawallet/react/actions';
 import { Container, Feedback, Flex, Heading, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
+import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function Page() {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const {
     account: { identity },
   } = useWalletContext();

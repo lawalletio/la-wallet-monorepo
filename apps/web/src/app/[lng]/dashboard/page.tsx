@@ -31,22 +31,23 @@ import {
 } from '@lawallet/ui';
 
 // Harcode data
-import { useTranslation } from '@/context/TranslateContext';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 
 // Animations
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
+import { appTheme } from '@/config/exports';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
 import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import Link from 'next/link';
-import { appTheme } from '@/config/exports';
 
 export default function Page() {
   const config = useConfig();
-  const { t, lng } = useTranslation();
+  const t = useTranslations();
+  const lng = useLocale();
   const [showBanner, setShowBanner] = useState<'backup' | 'none'>('none');
 
   const router = useRouter();

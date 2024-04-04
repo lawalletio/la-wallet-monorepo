@@ -3,7 +3,6 @@ import Navbar from '@/components/Layout/Navbar';
 import { appTheme } from '@/config/exports';
 import { regexComment } from '@/constants/constants';
 import { useCardsContext } from '@/context/CardsContext';
-import { useTranslation } from '@/context/TranslateContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { formatToPreference, roundToDown } from '@lawallet/react';
@@ -21,6 +20,7 @@ import {
   Text,
   ToggleSwitch,
 } from '@lawallet/ui';
+import { useLocale, useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import LimitInput from '../components/LimitInput/LimitInput';
@@ -49,7 +49,8 @@ const NAME_MAX_LENGTH = 32;
 const DESC_MAX_LENGTH = 64;
 
 const page = () => {
-  const { t, lng } = useTranslation();
+  const lng = useLocale();
+  const t = useTranslations();
 
   const errors = useErrors();
   const router = useRouter();

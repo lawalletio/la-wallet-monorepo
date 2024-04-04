@@ -5,19 +5,18 @@ import { useMemo, useState } from 'react';
 
 import { copy } from '@/utils/share';
 
-import { useTranslation } from '@/context/TranslateContext';
-
 import { QRCode } from '@/components/UI';
 import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
 import { useNotifications } from '@/context/NotificationsContext';
 import { formatAddress, lnurl_encode, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
+import { useTranslations } from 'next-intl';
 import InvoiceSheet from './components/InvoiceSheet';
 
 export default function Page() {
   const config = useConfig();
-  const { t } = useTranslation();
+  const t = useTranslations();
   const notifications = useNotifications();
   const {
     account: { identity },

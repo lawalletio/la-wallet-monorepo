@@ -3,8 +3,8 @@ import { useWalletContext } from '@lawallet/react';
 import { TransactionDirection } from '@lawallet/react/types';
 import { Alert } from '@lawallet/ui';
 import { differenceInSeconds } from 'date-fns';
+import { useTranslations } from 'next-intl';
 import React, { createContext, useContext, useEffect } from 'react';
-import { useTranslation } from './TranslateContext';
 
 const NotificationsContext = createContext({} as UseAlertReturns);
 
@@ -13,7 +13,7 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     account: { transactions },
   } = useWalletContext();
 
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   const notifications = useAlert();
 

@@ -5,7 +5,7 @@ import { CreditCardIcon, LightningIcon, TransferIcon } from '@bitcoin-design/bit
 import { Accordion, AccordionBody, Flex, Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
+import { useLocale, useTranslations } from 'next-intl';
 import { dateFormatter, defaultCurrency, formatToPreference, unescapingText, useWalletContext } from '@lawallet/react';
 import { Transaction, TransactionDirection, TransactionStatus } from '@lawallet/react/types';
 import { BtnLoader } from '@lawallet/ui';
@@ -24,7 +24,9 @@ const defaultTransferText: string = 'Lightning';
 
 export default function Component({ transaction }: ComponentProps) {
   if (!transaction) return null;
-  const { lng, t } = useTranslation();
+  const lng = useLocale();
+  const t = useTranslations();
+
   const { status, type } = transaction;
   const {
     settings: {

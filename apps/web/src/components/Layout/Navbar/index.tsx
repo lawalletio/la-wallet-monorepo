@@ -7,7 +7,7 @@ import { Flex, Container, Icon, Heading } from '@lawallet/ui';
 
 import { Navbar, BackButton, Left, Right } from './style';
 import { ReactNode } from 'react';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 
 interface ComponentProps {
   children?: ReactNode;
@@ -20,7 +20,7 @@ export default function Component(props: ComponentProps) {
   const { children, showBackPage = false, title, overrideBack = '' } = props;
 
   const router = useRouter();
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   const onlyChildren = !children;
 

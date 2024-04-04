@@ -4,7 +4,7 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import { Button, Container, Divider, Feedback, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 
-import { useTranslation } from '@/context/TranslateContext';
+import { useLocale, useTranslations } from 'next-intl';
 import { formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -23,7 +23,9 @@ type SummaryProps = {
 };
 
 export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {
-  const { lng, t } = useTranslation();
+  const lng = useLocale();
+  const t = useTranslations();
+
   const router = useRouter();
   const [insufficientBalance, setInsufficientBalance] = useState<boolean>(false);
 
