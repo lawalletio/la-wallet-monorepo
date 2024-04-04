@@ -17,6 +17,7 @@ import useErrors from '@/hooks/useErrors';
 
 import { QRCode } from '@/components/UI';
 import { appTheme } from '@/config/exports';
+import { useTranslations } from 'next-intl';
 
 type ZapRequestInfo = {
   zapRequest: NostrEvent | null;
@@ -114,6 +115,8 @@ const SignUp = () => {
     }
   }, [events.length]);
 
+  const t = useTranslations();
+
   return (
     <>
       <Divider y={60} />
@@ -121,13 +124,13 @@ const SignUp = () => {
         <Flex direction="column" align="center" justify="center" flex={1}>
           <Logo />
           <Divider y={8} />
-          <Text align="center">Tu wallet en 10 segundos, sin KYC ni boludeces.</Text>
+          <Text align="center">{t('YOUR_WALLET_IN_10_SECONDS')}</Text>
 
           {!zapRequestInfo.invoice ? (
             <>
               <Divider y={16} />
               <Flex direction="column" align="center" gap={8}>
-                <Text color={appTheme.colors.gray50}>Costo</Text>
+                <Text color={appTheme.colors.gray50}>{t('COST')}</Text>
                 <Flex align="center" gap={4} justify="center">
                   <Icon>
                     <SatoshiIcon />
@@ -144,7 +147,7 @@ const SignUp = () => {
                 <QRCode value={zapRequestInfo.invoice} size={250} />
                 {window.webln && (
                   <Button onClick={() => payWithWebLN(zapRequestInfo.invoice!)} variant="bezeled" disabled={isPaying}>
-                    Pagar con Alby
+                    {t('PAY_WITH_ALBY')}
                   </Button>
                 )}
               </Flex>
@@ -160,9 +163,9 @@ const SignUp = () => {
                   </Icon>
                   <Flex direction="column" gap={8}>
                     <Text isBold color={appTheme.colors.primary}>
-                      Pago recibido
+                      {t('RECEIVED_PAYMENT')}
                     </Text>
-                    <Text size="small">Ya podes crear tu billetera!</Text>
+                    <Text size="small">{t('YOU_CAN_CREATE_WALLET')}</Text>
                   </Flex>
                 </Flex>
               </CardV2>
@@ -182,13 +185,13 @@ const SignUp = () => {
                   <Loader />
                 </Icon>
               ) : (
-                'Quiero una cuenta'
+                t('I_WANT_AN_ACCOUNT')
               )}
             </Button>
           </Flex>
         ) : nonce ? (
           <Flex justify="center">
-            <Button onClick={() => router.push(`/start?i=${nonce}`)}>Crear billetera</Button>
+            <Button onClick={() => router.push(`/start?i=${nonce}`)}>{t('CREATE_WALLET')}</Button>
           </Flex>
         ) : (
           zapRequestInfo.payed && (
@@ -197,7 +200,7 @@ const SignUp = () => {
                 <Loader />
               </Icon>
               <Text align="center" color={appTheme.colors.gray50}>
-                Estamos generando el cupón para crear tu cuenta...
+                {t('GENERATING_COUPON')}
               </Text>
             </Flex>
           )
