@@ -148,19 +148,6 @@ const SignUp = () => {
               </CardV2>
 
               <Divider y={16} />
-
-              {/* {nonce ? (
-                <Flex justify="center">
-                  <Button onClick={() => router.push(`/start?i=${nonce}`)}>Crear billetera</Button>
-                </Flex>
-              ) : (
-                <Flex direction="column" align="center" gap={8}>
-                  <Loader />
-                  <Text align="center" color={appTheme.colors.gray50}>
-                    Estamos generando el cupon para crear tu cuenta...
-                  </Text>
-                </Flex>
-              )} */}
             </>
           )}
         </Flex>
