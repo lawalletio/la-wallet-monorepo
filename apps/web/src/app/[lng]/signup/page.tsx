@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useConfig, useSubscription } from '@lawallet/react';
@@ -37,6 +37,7 @@ const SignUp = () => {
 
   const [nonce, setNonce] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [isPaying, setIsPaying] = useState<boolean>(false);
 
   const { events } = useSubscription({
     filters: [
@@ -83,6 +84,20 @@ const SignUp = () => {
     }
   };
 
+  const payWithWebLN = useCallback(async (invoice: string) => {
+    try {
+      setIsPaying(true);
+      if (!window.webln) {
+        throw new Error('WebLN not detected');
+      }
+      await window.webln.enable();
+      await window.webln.sendPayment(invoice);
+    } catch (e) {
+      alert((e as Error).message);
+      setIsPaying(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (events.length) {
       events.map((event) => {
@@ -125,8 +140,13 @@ const SignUp = () => {
           ) : !zapRequestInfo.payed ? (
             <>
               <Divider y={48} />
-              <Flex justify="center">
+              <Flex justify="center" align="center" direction="column" gap={8}>
                 <QRCode value={zapRequestInfo.invoice} size={250} />
+                {window.webln && (
+                  <Button onClick={() => payWithWebLN(zapRequestInfo.invoice!)} variant="bezeled" disabled={isPaying}>
+                    Pagar con Alby
+                  </Button>
+                )}
               </Flex>
             </>
           ) : (
