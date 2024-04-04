@@ -1,5 +1,5 @@
 import { InputGroup, InputGroupRight, InputWithLabel, Text } from '@lawallet/ui';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import React, { ReactEventHandler } from 'react';
 
 const LimitInput = ({
@@ -11,7 +11,7 @@ const LimitInput = ({
   currency: string;
   onChange: ReactEventHandler;
 }) => {
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   return (
     <InputGroup>

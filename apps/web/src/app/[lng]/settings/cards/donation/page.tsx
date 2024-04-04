@@ -3,7 +3,7 @@ import Countdown from '@/components/Countdown/Countdown';
 import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import { useNotifications } from '@/context/NotificationsContext';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { buildCardTransferAcceptEvent, nowInSeconds, useWalletContext } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
 import { Button, Flex, Text } from '@lawallet/ui';
@@ -23,7 +23,7 @@ const page = () => {
     timeLeft: 0,
     encoded: '',
   });
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   const notifications = useNotifications();
   const router = useRouter();

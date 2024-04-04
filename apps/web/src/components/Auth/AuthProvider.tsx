@@ -1,15 +1,13 @@
-import { AvailableLanguages } from '@lawallet/react/types';
 import { useWalletContext } from '@lawallet/react';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useLayoutEffect, useMemo } from 'react';
 import SpinnerView from '../Spinner/SpinnerView';
-import { loadingMessages } from '@/context/TranslateContext';
 
 // const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
 
 const protectedRoutes: string[] = ['/dashboard', '/transfer', '/deposit', '/scan', '/settings', '/transactions'];
 
-const AuthProvider = ({ children, lng }: { children: React.ReactNode; lng: AvailableLanguages }) => {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const {
     account: { identity },
   } = useWalletContext();
@@ -61,7 +59,7 @@ const AuthProvider = ({ children, lng }: { children: React.ReactNode; lng: Avail
     return false;
   }, [identity.isLoading, pathname]);
 
-  return !hydrateApp ? <SpinnerView loadingText={loadingMessages[lng]['LOADING_ACCOUNT']} /> : children;
+  return !hydrateApp ? <SpinnerView /> : children;
 };
 
 export default AuthProvider;

@@ -4,14 +4,14 @@ import Logo from '@/components/Logo';
 import { Button, CardAlert, Container, Divider, Feedback, Flex, Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { checkIOS } from '@/utils';
 import { Loader } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const [isIOS, setIsIOS] = useState<boolean>(false);
 
   const router = useRouter();

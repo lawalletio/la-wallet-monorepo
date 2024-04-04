@@ -6,6 +6,9 @@
 //   register: true
 // })
 
+const createNextIntlPlugin = require('next-intl/plugin');
+const withNextIntl = createNextIntlPlugin();
+
 const { version } = require('./package.json');
 
 const withSerwist = require('@serwist/next').default({
@@ -28,4 +31,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withSerwist(nextConfig);
+module.exports = withNextIntl(withSerwist(nextConfig));

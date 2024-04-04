@@ -171,5 +171,13 @@
   "LIMIT_CARD_PER_DAY": "Your card will have a limit of {{ sats }} SAT per day",
   "NO_LIMIT_SET": "Your card will not have any limits on payments",
   "TIME_LEFT": "Time left",
-  "DONATION_CARD_SUCCESS": "Your card was transferred successfully"
+  "DONATION_CARD_SUCCESS": "Your card was transferred successfully",
+  "YOUR_WALLET_IN_10_SECONDS": "Your wallet in 10 seconds, no KYC or bullshit.",
+  "COST": "Cost",
+  "PAY_WITH_ALBY": "Pay with Alby",
+  "RECEIVED_PAYMENT": "Payment received",
+  "YOU_CAN_CREATE_WALLET": "You can now create your wallet!",
+  "CREATE_WALLET": "Create wallet",
+  "GENERATING_COUPON": "We are generating the coupon to create your account...",
+  "I_WANT_AN_ACCOUNT": "I want an account"
 }

@@ -2,7 +2,7 @@ import { buildIdentityEvent, defaultIdentity, parseContent } from '@lawallet/uti
 import { claimIdentity, generateUserIdentity, getUsername, type IdentityResponse } from '@lawallet/utils/actions';
 import type { ConfigParameter, UserIdentity } from '@lawallet/utils/types';
 import { getPublicKey, nip19 } from 'nostr-tools';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 import { useConfig } from './useConfig.js';
 import NDK, { NDKEvent, NDKPrivateKeySigner, type NostrEvent } from '@nostr-dev-kit/ndk';
@@ -37,8 +37,8 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
   const { privateKey, pubkey, storage = true } = parameters;
   const config = useConfig(parameters);
 
-  const [data, setData] = useState<UserIdentity>(defaultIdentity);
-  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = React.useState<UserIdentity>(defaultIdentity);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const resetIdentity = () => {
     setData(defaultIdentity);
@@ -170,15 +170,15 @@ export const useIdentity = (parameters: UseIdentityParameters): UseIdentityRetur
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (storage && !privateKey) loadIdentityFromStorage();
   }, [storage]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (pubkey) loadIdentityFromPubkey(pubkey);
   }, [pubkey]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (privateKey) initializeFromPrivateKey(privateKey);
   }, [privateKey]);
 

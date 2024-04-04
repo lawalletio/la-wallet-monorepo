@@ -20,7 +20,7 @@ import {
 
 import { lightningAddresses } from '@/constants/constants';
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import {
@@ -36,7 +36,7 @@ import { useMemo, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
 
 export default function Page() {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const {
     account: { transactions },
   } = useWalletContext();

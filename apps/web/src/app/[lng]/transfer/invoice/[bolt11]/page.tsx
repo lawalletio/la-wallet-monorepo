@@ -1,6 +1,6 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import { useConfig, useInvoice, useTransfer } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
@@ -9,7 +9,7 @@ import { FinishTransfer } from '../../components/Finish';
 import { Summary } from '../../components/Summary';
 
 const TransferWithInvoice = ({ params }) => {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const config = useConfig();
 
   const { txInfo } = useInvoice({

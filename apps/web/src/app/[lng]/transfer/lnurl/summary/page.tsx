@@ -1,7 +1,7 @@
 'use client';
 import Navbar from '@/components/Layout/Navbar';
 import { useLNURLContext } from '@/context/LNURLContext';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import { TransferTypes } from '@lawallet/react/types';
 import { ErrorTransfer } from '../../components/Error';
@@ -9,7 +9,7 @@ import { FinishTransfer } from '../../components/Finish';
 import { Summary } from '../../components/Summary';
 
 const page = () => {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const { LNURLTransferInfo, isSuccess, isError, execute, isLoading } = useLNURLContext();
 
   useActionOnKeypress('Enter', execute, [LNURLTransferInfo]);

@@ -8,7 +8,7 @@ import {
   useNostrContext,
 } from '../exports/index.js';
 import { useSubscription } from './useSubscription.js';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 import { useStatusVars, type UseStatusVarsReturns } from './useStatusVars.js';
 import { broadcastEvent } from '../exports/actions.js';
 import type { ConfigParameter } from '../exports/types.js';
@@ -37,7 +37,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
   const config = useConfig(params);
   const statusVars = useStatusVars(params);
 
-  const [startEvent, setStartEvent] = useState<NostrEvent | null>(null);
+  const [startEvent, setStartEvent] = React.useState<NostrEvent | null>(null);
   const { ndk, signer, signerInfo, signEvent } = useNostrContext({ config });
 
   const { events } = useSubscription({
@@ -131,7 +131,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (events.length) processStatusTransfer(events[0]!);
   }, [events]);
 

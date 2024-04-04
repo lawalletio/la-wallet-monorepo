@@ -1,13 +1,13 @@
 'use client';
 
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { Flex, Heading, Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
 import { HomeDescription } from './style';
 
 export default function Component() {
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   return (
     <HomeDescription>

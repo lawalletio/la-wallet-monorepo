@@ -9,7 +9,7 @@ import { Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
 import { useNotifications } from '@/context/NotificationsContext';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { QRCode, Toast } from './style';
 
 interface ComponentProps {
@@ -22,7 +22,7 @@ interface ComponentProps {
 
 export default function Component({ value, size = 150, borderSize = 40, showCopy = true, textToCopy }: ComponentProps) {
   const [showToast, setShowToast] = useState(true);
-  const { t } = useTranslation();
+  const t = useTranslations();
   const notifications = useNotifications();
 
   const handleCopy = (text: string) => {

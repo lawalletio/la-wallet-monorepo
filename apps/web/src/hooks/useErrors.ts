@@ -1,4 +1,4 @@
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { ReplacementParams } from '@lawallet/react/types';
 import { useState } from 'react';
 
@@ -20,7 +20,7 @@ export const initialErrorState: IError = {
 };
 
 export default function useErrors(): IUseErrors {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const [errorInfo, setErrorInfo] = useState<IError>(initialErrorState);
 
   const getError = (errorCode: string, params?: ReplacementParams): string => {

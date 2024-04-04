@@ -8,7 +8,7 @@ import { TokenList } from '@/components/TokenList';
 import { Keyboard } from '@/components/UI';
 import { regexComment } from '@/constants/constants';
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
+import { useLocale, useTranslations } from 'next-intl';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
@@ -24,7 +24,8 @@ type SelectTransferAmountType = {
 };
 
 export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment }: SelectTransferAmountType) => {
-  const { lng, t } = useTranslation();
+  const lng = useLocale();
+  const t = useTranslations();
 
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
