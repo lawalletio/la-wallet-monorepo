@@ -7,6 +7,8 @@ import { randomBytes } from 'crypto';
 import { NextResponse } from 'next/server';
 import { getPublicKey, nip04, nip19 } from 'nostr-tools';
 
+export const revalidate = 0;
+
 export async function GET() {
   if (!ADMIN_SIGNUP_KEY.length) return NextResponse.json({ data: 'Missing admin key' }, { status: 401 });
 
