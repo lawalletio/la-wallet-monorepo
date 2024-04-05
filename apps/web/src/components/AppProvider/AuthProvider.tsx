@@ -1,7 +1,8 @@
 import { useWalletContext } from '@lawallet/react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import React, { useLayoutEffect, useMemo } from 'react';
 import SpinnerView from '../Spinner/SpinnerView';
+import { usePathname, useRouter } from '@/navigation';
 
 // const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
 

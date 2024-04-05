@@ -4,7 +4,7 @@ import { SelectTransferAmount } from '../components/SelectAmount';
 import Navbar from '@/components/Layout/Navbar';
 import { useLNURLContext } from '@/context/LNURLContext';
 import { TransferTypes } from '@lawallet/react/types';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { useTranslations } from 'next-intl';
 
 const TransferWithLNURL = () => {

@@ -1,6 +1,7 @@
 import AppProvider from '@/components/AppProvider/AppProvider';
 import { fontPrimary, fontSecondary } from '@/config/exports/fonts';
 import { AvailableLanguages } from '@lawallet/react/types';
+import { Metadata } from 'next';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import Script from 'next/script';
@@ -10,6 +11,10 @@ interface ProviderProps {
   children: ReactNode;
   params: { lng: AvailableLanguages };
 }
+
+export const metadata: Metadata = {
+  title: 'LaWallet',
+};
 
 // Metadata
 const APP_NAME = 'LaWallet';

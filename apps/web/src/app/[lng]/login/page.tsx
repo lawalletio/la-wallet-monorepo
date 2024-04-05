@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 
 import Navbar from '@/components/Layout/Navbar';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';

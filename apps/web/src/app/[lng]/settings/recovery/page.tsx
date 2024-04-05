@@ -1,7 +1,7 @@
 'use client';
 
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { useState } from 'react';
 
 import { useTranslations } from 'next-intl';

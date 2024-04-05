@@ -8,7 +8,7 @@ import { useWalletContext } from '@lawallet/react';
 import { Transaction } from '@lawallet/react/types';
 import { Button, Container, Divider, Flex, Footer, Loader, Text } from '@lawallet/ui';
 import { differenceInCalendarDays } from 'date-fns';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 

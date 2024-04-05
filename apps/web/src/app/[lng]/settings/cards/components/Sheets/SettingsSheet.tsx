@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { ActionSheet, Button } from '@lawallet/ui';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import React, { useState } from 'react';
 import { CardProps } from '../DebitCard';
 import TransferSheet from './TransferSheet';

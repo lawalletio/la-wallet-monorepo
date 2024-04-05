@@ -2,7 +2,7 @@
 
 import { Divider, Container, Flex, Heading, LinkButton, Text } from '@lawallet/ui';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 
 export const ErrorTransfer = () => {
   const t = useTranslations();

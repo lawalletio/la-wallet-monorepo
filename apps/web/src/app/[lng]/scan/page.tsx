@@ -16,7 +16,7 @@ import { TransferTypes } from '@lawallet/react/types';
 import { Button, Flex, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import NimiqQrScanner from 'qr-scanner';
 import { useState } from 'react';
 

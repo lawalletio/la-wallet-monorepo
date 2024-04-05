@@ -6,10 +6,11 @@ import { useTranslations } from 'next-intl';
 import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AlertTypes } from '@/hooks/useAlerts';
 import { useNotifications } from '@/context/NotificationsContext';
+import { usePathname, useRouter } from '@/navigation';
 
 export type NewCard = {
   card: string;

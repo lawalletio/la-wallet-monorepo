@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useConfig, useSubscription } from '@lawallet/react';
 import { Button, Container, Divider, Feedback, Flex, Heading, Text, Icon, SatoshiIcon, CheckIcon } from '@lawallet/ui';

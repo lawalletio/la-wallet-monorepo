@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { CaretLeftIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import { Flex, Container, Icon, Heading } from '@lawallet/ui';

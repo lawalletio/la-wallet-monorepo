@@ -3,9 +3,9 @@
 import Logo from '@/components/Logo';
 import { Button, Divider, Container, Flex, Text } from '@lawallet/ui';
 
-import { useRouter } from 'next/navigation';
 import { appTheme } from '@/config/exports';
 import { useTranslations } from 'next-intl';
+import { useRouter } from '@/navigation';
 
 export default function Page() {
   const t = useTranslations();

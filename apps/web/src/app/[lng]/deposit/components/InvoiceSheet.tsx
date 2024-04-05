@@ -21,7 +21,7 @@ import {
   Text,
 } from '@lawallet/ui';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { useEffect, useState } from 'react';
 
 type SheetTypes = 'amount' | 'qr' | 'finished';

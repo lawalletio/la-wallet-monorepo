@@ -22,7 +22,7 @@ import { appTheme } from '@/config/exports';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useConfig, useWalletContext } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { startTransition, useState } from 'react';
 import { AvailableLanguages } from '@lawallet/react/types';
 

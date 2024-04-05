@@ -7,7 +7,7 @@ import { appTheme } from '@/config/exports';
 import { useTranslations } from 'next-intl';
 import { checkIOS } from '@/utils';
 import { Loader } from '@lawallet/ui';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { useEffect, useState } from 'react';
 
 const StartView = ({ onClick, verifyingNonce, isValidNonce }) => {

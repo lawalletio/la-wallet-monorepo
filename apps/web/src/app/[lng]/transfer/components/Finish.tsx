@@ -9,7 +9,7 @@ import { formatAddress, formatToPreference, splitHandle, useWalletContext } from
 import { TransferInformation, TransferTypes } from '@lawallet/react/types';
 import { Avatar, Container, Divider, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { useMemo } from 'react';
 
 export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInformation }) => {

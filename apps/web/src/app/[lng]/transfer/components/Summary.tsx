@@ -9,7 +9,7 @@ import { formatToPreference, useWalletContext } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import CardWithData from './CardWithData';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { TokenList } from '@/components/TokenList';
 
 type SummaryProps = {

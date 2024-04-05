@@ -32,7 +32,7 @@ import {
 
 // Harcode data
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/navigation';
 
 // Animations
 import Animations from '@/components/Animations';
@@ -42,7 +42,6 @@ import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
 import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
-import Link from 'next/link';
 
 export default function Page() {
   const config = useConfig();

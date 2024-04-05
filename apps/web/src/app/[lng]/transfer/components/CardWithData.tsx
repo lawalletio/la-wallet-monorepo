@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { CrossIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { formatAddress, splitHandle, useConfig } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
