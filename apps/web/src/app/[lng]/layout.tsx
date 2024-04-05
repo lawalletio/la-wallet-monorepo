@@ -1,3 +1,4 @@
+import AppProvider from '@/components/AppProvider/AppProvider';
 import { fontPrimary, fontSecondary } from '@/config/exports/fonts';
 import { AvailableLanguages } from '@lawallet/react/types';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
@@ -61,7 +62,7 @@ const Providers = (props: ProviderProps) => {
 
       <body>
         <NextIntlClientProvider locale={params.lng} messages={messages}>
-          {children}
+          <AppProvider>{children}</AppProvider>
         </NextIntlClientProvider>
       </body>
     </html>
