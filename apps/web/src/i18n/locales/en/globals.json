@@ -180,5 +180,19 @@
   "CREATE_WALLET": "Create wallet",
   "GENERATING_COUPON": "We are generating the coupon to create your account...",
   "I_WANT_AN_ACCOUNT": "I want an account",
-  "LOADING": "Loading..."
+  "LOADING": "Loading...",
+  "metadata": {
+    "HOME_TITLE": "Home",
+    "DASHBOARD_TITLE": "Dashboard",
+    "DEPOSIT_TITLE": "Deposit",
+    "LOGIN_TITLE": "Login",
+    "RESET_TITLE": "Reset account",
+    "SCAN_TITLE": "Scan QR",
+    "SETTINGS_TITLE": "Settings",
+    "CARDS_TITLE": "My Cards",
+    "BUY_ADDRESS_TITLE": "Buy LN Address",
+    "SIGNUP_TITLE": "Sign Up",
+    "TRANSACTIONS_TITLE": "My Transactions",
+    "TRANSFER_TITLE": "Transfer"
+  }
 }

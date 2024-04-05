@@ -1,9 +1,9 @@
 import AppProvider from '@/components/AppProvider/AppProvider';
 import { fontPrimary, fontSecondary } from '@/config/exports/fonts';
+import { APP_NAME } from '@/constants/constants';
 import { AvailableLanguages } from '@lawallet/react/types';
-import { Metadata } from 'next';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import Script from 'next/script';
 import { ReactNode } from 'react';
 
@@ -12,13 +12,16 @@ interface ProviderProps {
   params: { lng: AvailableLanguages };
 }
 
-export const metadata: Metadata = {
-  title: 'LaWallet',
-};
-
 // Metadata
-const APP_NAME = 'LaWallet';
 const APP_DESCRIPTION = 'https://lawallet.ar/';
+
+export async function generateMetadata({ params: { lng } }) {
+  const t = await getTranslations({ locale: lng, namespace: 'metadata' });
+
+  return {
+    title: `${t('HOME_TITLE')} - ${APP_NAME}`,
+  };
+}
 
 const Providers = (props: ProviderProps) => {
   const { children, params } = props;

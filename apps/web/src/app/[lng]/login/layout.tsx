@@ -1,8 +1,13 @@
-import type { Metadata } from 'next';
+import { APP_NAME } from '@/constants/constants';
+import { getTranslations } from 'next-intl/server';
 
-export const metadata: Metadata = {
-  title: 'Ingresar - LaWallet',
-};
+export async function generateMetadata({ params: { lng } }) {
+  const t = await getTranslations({ locale: lng, namespace: 'metadata' });
+
+  return {
+    title: `${t('LOGIN_TITLE')} - ${APP_NAME}`,
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;

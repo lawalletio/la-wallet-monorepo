@@ -180,5 +180,19 @@
   "CREATE_WALLET": "Crear billetera",
   "GENERATING_COUPON": "Estamos generando el cupón para crear tu cuenta...",
   "I_WANT_AN_ACCOUNT": "Quiero una cuenta",
-  "LOADING": "Cargando..."
+  "LOADING": "Cargando...",
+  "metadata": {
+    "HOME_TITLE": "Inicio",
+    "DASHBOARD_TITLE": "Panel",
+    "DEPOSIT_TITLE": "Depositar",
+    "LOGIN_TITLE": "Ingresar",
+    "RESET_TITLE": "Recuperar cuenta",
+    "SCAN_TITLE": "Escanear QR",
+    "SETTINGS_TITLE": "Configuración",
+    "CARDS_TITLE": "Mis tarjetas",
+    "BUY_ADDRESS_TITLE": "Comprar LN Address",
+    "SIGNUP_TITLE": "Crear cuenta",
+    "TRANSACTIONS_TITLE": "Mi actividad",
+    "TRANSFER_TITLE": "Transferir"
+  }
 }
