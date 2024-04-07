@@ -179,19 +179,14 @@ export default function Page() {
                   <div>
                     <Link href="https://massacre.lawallet.io/" target="_blank">
                       <Button size="small" color="secondary" variant="borderless">
-                        Quiero jugar
+                        {t('PLAY_NOW')}
                       </Button>
                     </Link>
                   </div>
                 </Flex>
                 <Flex direction="column" gap={4}>
-                  <Text size="small">
-                    ¡Acumulá Satoshis, sobreviví a los bloques y asegurá tu premio en el halving de Bitcoin!
-                  </Text>
-                  <Text size="small">¿Serás el último en pie?</Text>
-                </Flex>
-                <Flex>
-                  <Button variant="bezeled">Cerrar mensaje</Button>
+                  <Text size="small">{t('BANNER_DESC')}</Text>
+                  <Text size="small">{t('BANNER_DESC2')}</Text>
                 </Flex>
               </Flex>
             </Card>
