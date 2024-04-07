@@ -20,6 +20,7 @@ import {
   BannerAlert,
   BtnLoader,
   Button,
+  Card,
   Container,
   Divider,
   Flex,
@@ -43,6 +44,7 @@ import { copy } from '@/utils/share';
 import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import Link from 'next/link';
 import { appTheme } from '@/config/exports';
+import Image from 'next/image';
 
 export default function Page() {
   const config = useConfig();
@@ -168,7 +170,34 @@ export default function Page() {
             </Link>
             <Divider y={16} />
           </>
-        ) : null}
+        ) : (
+          <>
+            <Card>
+              <Flex direction="column" gap={16}>
+                <Flex align="center" justify="space-between">
+                  <Image src="/plugins/halving-massacre.png" height={23} width={100} alt="Halving Massacre" />
+                  <div>
+                    <Link href="https://massacre.lawallet.io/" target="_blank">
+                      <Button size="small" color="secondary" variant="borderless">
+                        Quiero jugar
+                      </Button>
+                    </Link>
+                  </div>
+                </Flex>
+                <Flex direction="column" gap={4}>
+                  <Text size="small">
+                    ¡Acumulá Satoshis, sobreviví a los bloques y asegurá tu premio en el halving de Bitcoin!
+                  </Text>
+                  <Text size="small">¿Serás el último en pie?</Text>
+                </Flex>
+                <Flex>
+                  <Button variant="bezeled">Cerrar mensaje</Button>
+                </Flex>
+              </Flex>
+            </Card>
+            <Divider y={16} />
+          </>
+        )}
 
         {transactions.length === 0 ? (
           <Flex direction="column" justify="center" align="center" flex={1}>
