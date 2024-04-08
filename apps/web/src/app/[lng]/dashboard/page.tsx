@@ -177,7 +177,10 @@ export default function Page() {
                 <Flex align="center" justify="space-between">
                   <Image src="/plugins/halving-massacre.png" height={23} width={100} alt="Halving Massacre" />
                   <div>
-                    <Link href="https://massacre.lawallet.io/" target="_blank">
+                    <Link
+                      href={`https://massacre.lawallet.io/?address=${`${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`}`}
+                      target="_blank"
+                    >
                       <Button size="small" color="secondary" variant="borderless">
                         {t('PLAY_NOW')}
                       </Button>
