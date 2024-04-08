@@ -1,10 +1,10 @@
 'use client';
 
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { useState } from 'react';
 
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 
 import Navbar from '@/components/Layout/Navbar';
 import { InfoCopy } from '@/components/UI';
@@ -15,7 +15,7 @@ import { appTheme } from '@/config/exports';
 import { useConfig, useWalletContext } from '@lawallet/react';
 
 export default function Page() {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const config = useConfig();
   const router: AppRouterInstance = useRouter();
 

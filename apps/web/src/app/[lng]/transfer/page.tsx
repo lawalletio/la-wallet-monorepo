@@ -20,7 +20,7 @@ import {
 
 import { lightningAddresses } from '@/constants/constants';
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import {
@@ -36,7 +36,7 @@ import { useMemo, useState } from 'react';
 import RecipientElement from './components/RecipientElement';
 
 export default function Page() {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const {
     account: { transactions },
   } = useWalletContext();
@@ -69,7 +69,6 @@ export default function Page() {
     }
 
     const formattedLNURLData = await formatLNURLData(cleanData);
-    console.log(formattedLNURLData);
     if (formattedLNURLData.type === TransferTypes.NONE || formattedLNURLData.type === TransferTypes.INVOICE) {
       errors.modifyError('INVALID_RECIPIENT');
       setLoading(false);
@@ -103,6 +102,7 @@ export default function Page() {
         tx.direction === TransactionDirection.OUTGOING &&
         tx.metadata &&
         tx.metadata.receiver &&
+        tx.metadata.receiver.includes('@') &&
         tx.metadata.receiver.length < 40 &&
         !receiversList.includes(tx.metadata.receiver)
       )

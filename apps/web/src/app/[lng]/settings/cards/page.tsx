@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 
 import Navbar from '@/components/Layout/Navbar';
 import { useCardsContext } from '@/context/CardsContext';
@@ -15,7 +15,7 @@ export default function Page() {
   const notifications = useNotifications();
   const { cardsData, cardsConfig, loadInfo, toggleCardStatus } = useCardsContext();
 
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   const handleToggleStatus = async (uuid: string) => {
     const toggled: boolean = await toggleCardStatus(uuid);

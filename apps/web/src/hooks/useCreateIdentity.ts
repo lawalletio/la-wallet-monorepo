@@ -4,7 +4,7 @@ import { useConfig, useWalletContext, buildCardActivationEvent, CreateIdentityRe
 
 import { UserIdentity } from '@lawallet/react/types';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { Dispatch, SetStateAction, useState } from 'react';
 import useErrors, { IUseErrors } from './useErrors';
 

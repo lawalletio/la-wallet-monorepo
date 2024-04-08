@@ -4,7 +4,6 @@ import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import QrScanner from '@/components/UI/Scanner/Scanner';
 import { regexURL } from '@/constants/constants';
-import { useTranslation } from '@/context/TranslateContext';
 import {
   LaWalletTags,
   detectTransferType,
@@ -16,13 +15,14 @@ import {
 import { TransferTypes } from '@lawallet/react/types';
 import { Button, Flex, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/navigation';
 import NimiqQrScanner from 'qr-scanner';
 import { useState } from 'react';
 
 export default function Page() {
   const [urlScanned, setUrlScanned] = useState<string>('');
-  const { t } = useTranslation();
+  const t = useTranslations();
   const router = useRouter();
   const config = useConfig();
 

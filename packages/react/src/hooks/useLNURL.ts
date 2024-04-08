@@ -1,5 +1,5 @@
 import { TransferTypes, type ConfigParameter, type LNURLTransferType } from '@lawallet/utils/types';
-import { useEffect, useState } from 'react';
+import * as React from 'react';
 
 import { defaultLNURLTransfer, formatLNURLData, lnurl_decode } from '@lawallet/utils';
 import { useConfig } from './useConfig.js';
@@ -21,7 +21,7 @@ export interface UseLNURLReturns {
 
 export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
   const config = useConfig(params);
-  const [LNURLInfo, setLNURLInfo] = useState<LNURLType>({
+  const [LNURLInfo, setLNURLInfo] = React.useState<LNURLType>({
     lnurl: '',
     decoded_lnurl: '',
     transferInfo: defaultLNURLTransfer,
@@ -48,7 +48,7 @@ export const useLNURL = (params: UseLNURLParameters): UseLNURLReturns => {
     return true;
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (LNURLInfo.lnurl) decodeLNURL(LNURLInfo.lnurl);
   }, [LNURLInfo.lnurl]);
 

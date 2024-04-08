@@ -1,12 +1,9 @@
-'use client';
-import AuthProvider from '@/components/Auth/AuthProvider';
-import { config, appTheme } from '@/config/exports';
+import AppProvider from '@/components/AppProvider/AppProvider';
 import { fontPrimary, fontSecondary } from '@/config/exports/fonts';
-import { NotificationsProvider } from '@/context/NotificationsContext';
-import { TranslateProvider } from '@/context/TranslateContext';
-import { LaWalletProvider, defaultLocale } from '@lawallet/react';
+import { APP_NAME } from '@/constants/constants';
 import { AvailableLanguages } from '@lawallet/react/types';
-import { NextProvider } from '@lawallet/ui/next';
+import { NextIntlClientProvider, useMessages } from 'next-intl';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import Script from 'next/script';
 import { ReactNode } from 'react';
 
@@ -16,13 +13,24 @@ interface ProviderProps {
 }
 
 // Metadata
-const APP_NAME = 'LaWallet';
 const APP_DESCRIPTION = 'https://lawallet.ar/';
+
+export async function generateMetadata({ params: { lng } }) {
+  const t = await getTranslations({ locale: lng, namespace: 'metadata' });
+
+  return {
+    title: `${t('HOME_TITLE')} - ${APP_NAME}`,
+  };
+}
 
 const Providers = (props: ProviderProps) => {
   const { children, params } = props;
+
+  unstable_setRequestLocale(params.lng);
+  const messages = useMessages();
+
   return (
-    <html lang={params.lng ?? defaultLocale} className={`${fontPrimary.variable} ${fontSecondary.variable}`}>
+    <html lang={params.lng} className={`${fontPrimary.variable} ${fontSecondary.variable}`}>
       <head>
         <title>{APP_NAME}</title>
         <meta name="application-name" content={APP_NAME} />
@@ -61,15 +69,9 @@ const Providers = (props: ProviderProps) => {
       </head>
 
       <body>
-        <NextProvider theme={appTheme}>
-          <LaWalletProvider config={config}>
-            <AuthProvider lng={params.lng}>
-              <TranslateProvider lng={params.lng}>
-                <NotificationsProvider>{children}</NotificationsProvider>
-              </TranslateProvider>
-            </AuthProvider>
-          </LaWalletProvider>
-        </NextProvider>
+        <NextIntlClientProvider locale={params.lng} messages={messages}>
+          <AppProvider>{children}</AppProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

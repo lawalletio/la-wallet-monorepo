@@ -1,11 +1,11 @@
 'use client';
 
 import { Divider, Container, Flex, Heading, LinkButton, Text } from '@lawallet/ui';
-import { useTranslation } from '@/context/TranslateContext';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/navigation';
 
 export const ErrorTransfer = () => {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const router = useRouter();
 
   return (

@@ -69,8 +69,13 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
     const showReceiver: boolean = Boolean(receiver.length && !receiver.toLowerCase().startsWith('lnurl'));
     const showSender: boolean = Boolean(identity.data.username.length);
 
+    const receiverInfo: string =
+      showReceiver && LNURLInfo.transferInfo.data.includes('@')
+        ? LNURLInfo.transferInfo.data
+        : `${LNURLInfo.transferInfo.data}@${normalizeLNDomain(config.endpoints.lightningDomain)}`;
+
     const metadataMessage: { sender?: string; receiver?: string } = {
-      ...(showReceiver ? { receiver: LNURLInfo.transferInfo.data } : {}),
+      ...(showReceiver ? { receiver: receiverInfo } : {}),
       ...(showSender
         ? {
             sender: `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`,

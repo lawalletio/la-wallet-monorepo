@@ -3,19 +3,19 @@
 import Navbar from '@/components/Layout/Navbar';
 import TransactionItem from '@/components/TransactionItem';
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { useWalletContext } from '@lawallet/react';
 import { Transaction } from '@lawallet/react/types';
 import { Button, Container, Divider, Flex, Footer, Loader, Text } from '@lawallet/ui';
 import { differenceInCalendarDays } from 'date-fns';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 let dateToRender: Date | null = null;
 
 export default function Page() {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const {
     account: { transactions },
   } = useWalletContext();

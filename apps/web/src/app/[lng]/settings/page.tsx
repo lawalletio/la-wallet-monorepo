@@ -3,7 +3,7 @@
 import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
 import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
-import { useTranslation } from '@/context/TranslateContext';
+import { useLocale, useTranslations } from 'next-intl';
 import useErrors from '@/hooks/useErrors';
 import {
   Button,
@@ -22,12 +22,14 @@ import { appTheme } from '@/config/exports';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useConfig, useWalletContext } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter } from '@/navigation';
+import { startTransition, useState } from 'react';
+import { AvailableLanguages } from '@lawallet/react/types';
 
 export default function Page() {
   const config = useConfig();
-  const { lng, t, changeLanguage } = useTranslation();
+  const t = useTranslations();
+  const lng = useLocale();
 
   const {
     account: { identity },
@@ -36,6 +38,14 @@ export default function Page() {
   const [sheetLanguage, setSheetLanguage] = useState<boolean>(false);
   const router: AppRouterInstance = useRouter();
   const errors = useErrors();
+
+  function changeLanguage(lng: AvailableLanguages) {
+    startTransition(() => {
+      const expire = new Date(Date.now() + 86400 * 365 * 1000).toUTCString();
+      document.cookie = `NEXT_LOCALE=${lng}; expires=${expire}; path=/`;
+      window.location.reload();
+    });
+  }
 
   const logoutSession = () => {
     const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.data.hexpub}`);

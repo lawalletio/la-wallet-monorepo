@@ -18,7 +18,7 @@ import {
 } from '@lawallet/utils/types';
 
 import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { useEffect, useMemo, useState } from 'react';
+import * as React from 'react';
 import { useNostrContext } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
@@ -42,15 +42,15 @@ export interface UseCardsParameters extends ConfigParameter {}
 export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
   const config = useConfig(parameters);
 
-  const [cardsData, setCardsData] = useState<CardDataPayload>({});
-  const [cardsConfig, setCardsConfig] = useState<CardConfigPayload>({} as CardConfigPayload);
-  const [loadInfo, setLoadInfo] = useState<CardLoadingType>({
+  const [cardsData, setCardsData] = React.useState<CardDataPayload>({});
+  const [cardsConfig, setCardsConfig] = React.useState<CardConfigPayload>({} as CardConfigPayload);
+  const [loadInfo, setLoadInfo] = React.useState<CardLoadingType>({
     loadedAt: 0,
     loading: true,
   });
 
   const { encrypt, decrypt, signerInfo, signEvent } = useNostrContext();
-  const pubkey = useMemo(() => (signerInfo ? signerInfo.pubkey : ''), [signerInfo]);
+  const pubkey = React.useMemo(() => (signerInfo ? signerInfo.pubkey : ''), [signerInfo]);
 
   const { subscription } = useSubscription({
     filters: [
@@ -65,7 +65,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
       closeOnEose: false,
       cacheUsage: NDKSubscriptionCacheUsage.PARALLEL,
     },
-    enabled: true,
+    enabled: Boolean(pubkey.length),
     config,
   });
 
@@ -153,13 +153,13 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     subscription?.on('event', (data) => {
       processReceivedEvent(data);
     });
   }, [subscription]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setTimeout(() => {
       if (loadInfo.loading)
         setLoadInfo((prev) => {

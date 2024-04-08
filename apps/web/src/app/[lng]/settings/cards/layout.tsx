@@ -1,9 +1,14 @@
 import { CardsProvider } from '@/context/CardsContext';
-import type { Metadata } from 'next';
+import { APP_NAME } from '@/constants/constants';
+import { getTranslations } from 'next-intl/server';
 
-export const metadata: Metadata = {
-  title: 'Cards - LaWallet',
-};
+export async function generateMetadata({ params: { lng } }) {
+  const t = await getTranslations({ locale: lng, namespace: 'metadata' });
+
+  return {
+    title: `${t('CARDS_TITLE')} - ${APP_NAME}`,
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <CardsProvider>{children}</CardsProvider>;

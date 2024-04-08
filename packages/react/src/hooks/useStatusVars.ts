@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import * as React from 'react';
 
 export interface StatusVarsTypes {
   error: string;
@@ -38,7 +38,7 @@ const defaultError = {
 };
 
 export const useStatusVars = (params?: UseStatusVarsParameters): UseStatusVarsReturns => {
-  const [information, setInformation] = useState<InformationTypes>({
+  const [information, setInformation] = React.useState<InformationTypes>({
     loading: params?.initialState?.isLoading ?? false,
     error: {
       existError: params?.initialState?.isError ?? false,

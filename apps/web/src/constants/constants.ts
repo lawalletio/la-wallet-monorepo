@@ -2,6 +2,8 @@ export const STORAGE_IDENTITY_KEY = 'identity';
 export const CACHE_TXS_KEY = 'cache_txs';
 export const CACHE_BACKUP_KEY = 'backup';
 
+export const APP_NAME = 'LaWallet';
+
 export const MAX_INVOICE_AMOUNT = 10 ** 7;
 
 export const regexUserName: RegExp = /^[A-Za-z0123456789]+$/;

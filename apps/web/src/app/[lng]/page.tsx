@@ -2,13 +2,13 @@
 
 import Logo from '@/components/Logo';
 import { Button, Divider, Container, Flex, Text } from '@lawallet/ui';
-import { useTranslation } from '@/context/TranslateContext';
 
-import { useRouter } from 'next/navigation';
 import { appTheme } from '@/config/exports';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/navigation';
 
 export default function Page() {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const router = useRouter();
 
   // const { handleCreateIdentity, loading } = useCreateIdentity()

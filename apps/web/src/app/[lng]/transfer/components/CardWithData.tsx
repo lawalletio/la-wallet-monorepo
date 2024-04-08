@@ -1,16 +1,16 @@
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { CrossIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { formatAddress, splitHandle, useConfig } from '@lawallet/react';
 import { TransferTypes } from '@lawallet/react/types';
 import { Avatar, Card, Flex, Text, Button } from '@lawallet/ui';
 
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 
 import { extractFirstTwoChars } from '@/utils';
 
 const CardWithData = ({ type, data }: { type: TransferTypes; data: string }) => {
   const router = useRouter();
-  const { t } = useTranslation();
+  const t = useTranslations();
   const config = useConfig();
   const [transferUsername, transferDomain] = splitHandle(data, config);
 

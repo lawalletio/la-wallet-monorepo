@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/utils",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "",
   "private": false,
   "repository": {
@@ -63,12 +63,8 @@
   },
   "typesVersions": {
     "*": {
-      "actions": [
-        "./dist/types/exports/actions.d.ts"
-      ],
-      "types": [
-        "./dist/types/exports/types.d.ts"
-      ]
+      "actions": ["./dist/types/exports/actions.d.ts"],
+      "types": ["./dist/types/exports/types.d.ts"]
     }
   }
 }

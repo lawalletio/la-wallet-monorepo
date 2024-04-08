@@ -1,6 +1,6 @@
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { ActionSheet, Button } from '@lawallet/ui';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import React, { useState } from 'react';
 import { CardProps } from '../DebitCard';
 import TransferSheet from './TransferSheet';
@@ -8,7 +8,7 @@ import TransferSheet from './TransferSheet';
 export type SettingsSheetProps = { isOpen: boolean; card: CardProps; onClose: () => void };
 
 const SettingsSheet = ({ card, onClose, isOpen }: SettingsSheetProps) => {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const router = useRouter();
   const [showTransfer, setShowTransfer] = useState(false);
 

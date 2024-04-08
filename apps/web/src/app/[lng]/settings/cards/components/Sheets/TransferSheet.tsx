@@ -1,7 +1,7 @@
 import Countdown from '@/components/Countdown/Countdown';
 import { QRCode } from '@/components/UI';
 import { useCardsContext } from '@/context/CardsContext';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { ActionSheet, Button, Divider, Flex, Text } from '@lawallet/ui';
 import { useState } from 'react';
 import { SettingsSheetProps } from './SettingsSheet';
@@ -12,7 +12,7 @@ const defaultQRInfo = {
 };
 
 const TransferSheet = ({ card, isOpen, onClose }: SettingsSheetProps) => {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const { encodeDonationEvent } = useCardsContext();
 
   const [qrInfo, setQrInfo] = useState(defaultQRInfo);

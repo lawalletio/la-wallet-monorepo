@@ -28,6 +28,7 @@ export function createConfig(parameters: CreateConfigParameters = {}): ConfigPro
       storage: typeof window !== 'undefined' && window.localStorage ? window.localStorage : noopStorage,
     }),
     signer,
+    relaysList,
   } = parameters;
 
   return {
@@ -43,5 +44,6 @@ export function createConfig(parameters: CreateConfigParameters = {}): ConfigPro
     },
     storage,
     signer,
+    relaysList,
   } as ConfigProps;
 }

@@ -14,7 +14,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "declaration": true,
+    "declaration": false,
+    "declarationMap": false,
     "sourceMap": true,
     "removeComments": true,
     "plugins": [

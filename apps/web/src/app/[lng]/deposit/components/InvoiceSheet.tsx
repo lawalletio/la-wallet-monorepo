@@ -1,8 +1,7 @@
 import { TokenList } from '@/components/TokenList';
 import { Confetti, Keyboard, QRCode } from '@/components/UI';
-import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
+import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
@@ -21,7 +20,8 @@ import {
   Sheet,
   Text,
 } from '@lawallet/ui';
-import { useRouter } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
+import { useRouter } from '@/navigation';
 import { useEffect, useState } from 'react';
 
 type SheetTypes = 'amount' | 'qr' | 'finished';
@@ -35,7 +35,8 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
   const errors = useErrors();
   const [sheetStep, setSheetStep] = useState<SheetTypes>('amount');
 
-  const { lng, t } = useTranslation();
+  const t = useTranslations();
+  const lng = useLocale();
 
   const {
     account: { identity },

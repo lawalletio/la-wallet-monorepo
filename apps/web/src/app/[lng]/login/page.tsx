@@ -1,14 +1,14 @@
 'use client';
-import { useTranslation } from '@/context/TranslateContext';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 
 import Navbar from '@/components/Layout/Navbar';
-import { Button, Container, Divider, Feedback, Flex, Heading, Textarea } from '@lawallet/ui';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useConfig, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
+import { Button, Container, Divider, Feedback, Flex, Heading, Textarea } from '@lawallet/ui';
+import { useTranslations } from 'next-intl';
 import { getPublicKey } from 'nostr-tools';
 import { ChangeEvent, useState } from 'react';
 
@@ -20,7 +20,7 @@ export default function Page() {
   const [keyInput, setKeyInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { t } = useTranslation();
+  const t = useTranslations();
   const config = useConfig();
   const router = useRouter();
   const errors = useErrors();

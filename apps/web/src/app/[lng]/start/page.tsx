@@ -18,7 +18,7 @@ import {
   Text,
 } from '@lawallet/ui';
 
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import { useCreateIdentity } from '@/hooks/useCreateIdentity';
 import { validateNonce } from '@lawallet/react/actions';
@@ -27,7 +27,7 @@ import { normalizeLNDomain, useConfig } from '@lawallet/react';
 
 export default function Page() {
   const config = useConfig();
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   const [activeStartView, setActiveStartView] = useState<boolean>(true);
 

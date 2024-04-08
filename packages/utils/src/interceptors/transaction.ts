@@ -45,16 +45,3 @@ export const requestInvoice = (callback: string) =>
     .then((invoiceInfo) => (invoiceInfo && invoiceInfo.pr ? invoiceInfo.pr.toLowerCase() : ''))
     .catch(() => '');
 
-// export const isInternalInvoice = (
-//   invoiceHash: string
-// ): Promise<CheckInvoiceReturns | null> =>
-//   fetch(`${config.API_GATEWAY_ENDPOINT}/invoice/${invoiceHash}`)
-//     .then(res => {
-//       if (res.status !== 200) return null
-//       return res.json()
-//     })
-//     .then(invoiceResponse => {
-//       if (!invoiceResponse) return null
-//       return invoiceResponse
-//     })
-//     .catch(() => null)

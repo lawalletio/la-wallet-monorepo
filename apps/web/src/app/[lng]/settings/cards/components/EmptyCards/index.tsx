@@ -1,10 +1,10 @@
 import { appTheme } from '@/config/exports';
-import { useTranslation } from '@/context/TranslateContext';
+import { useTranslations } from 'next-intl';
 import { Container, Flex, Text } from '@lawallet/ui';
 import EmptySvg from './EmptySvg';
 
 const EmptyCards = () => {
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   return (
     <Container size="medium">
