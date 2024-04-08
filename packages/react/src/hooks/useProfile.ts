@@ -1,9 +1,9 @@
+'use client';
+
 import * as React from 'react';
-import { useNostrContext } from '../context/NostrContext.js';
-import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import type { LNRequestResponse } from '../exports/types.js';
-import { useProfileCache } from '../context/ProfileCacheContext.js';
+import { resolveDomainAvatar, useProfileCache } from '../context/ProfileCacheContext.js';
 
 const FALLBACK_AVATAR_URL = 'https://static.lawallet.io/img/domains/default.png'; // TODO: Add it to .env
 
@@ -11,7 +11,6 @@ export interface UseProfileConfig {}
 
 export interface UseProfileParams {
   walias?: string;
-  pubkey?: string;
 }
 
 export interface UseProfileReturns {
@@ -26,24 +25,18 @@ export interface UseProfileReturns {
   isDomainAvatarLoading: boolean;
 }
 
-export const useProfile = (
-  { walias, pubkey: _pubkey }: UseProfileParams,
-  _options?: UseProfileConfig,
-): UseProfileReturns => {
+export const useProfile = ({ walias }: UseProfileParams, _options?: UseProfileConfig): UseProfileReturns => {
   // Hooks
-  const { ndk } = useNostrContext({});
-  const profile = useProfileCache();
-  const { domainAvatars, isLoading: isDomainAvatarLoading } = profile;
+  const { domainAvatars, isLoading: isDomainAvatarLoading, getNip05, getLud16 } = useProfileCache();
 
   // Global loading
   const [isLoading, setIsLoading] = React.useState(true);
 
   // Individual loading
   const [isNip05Loading, setIsNip05Loading] = React.useState(false);
-  const [isLud16Loading, setIsLud16Loading] = React.useState(true);
+  const [isLud16Loading, setIsLud16Loading] = React.useState(false);
 
   // Data
-  const [pubkey, setPubkey] = React.useState<string | undefined>(_pubkey);
   const [nip05, setNip05] = React.useState<NDKUserProfile | undefined>();
   const [lud16, setLud16] = React.useState<LNRequestResponse | undefined>();
   const [lud16Avatar, setLud16Avatar] = React.useState<string | undefined>();
@@ -66,15 +59,22 @@ export const useProfile = (
     }
 
     setIsNip05Loading(true);
-    resolveNip05(walias).then((pubkey) => {
-      if (!pubkey) {
-        setIsNip05Loading(false);
-        return;
-      }
-      setPubkey(pubkey);
-    });
+    setIsLud16Loading(true);
 
-    resolveLud16(walias)
+    // Get NIP05
+    getNip05(walias)
+      .then((profile) => {
+        if (!profile) {
+          return;
+        }
+
+        setNip05Avatar(profile.image);
+        setNip05(profile);
+      })
+      .finally(() => setIsNip05Loading(false));
+
+    // Get LUD16
+    getLud16(walias)
       .then((lud16) => {
         if (!lud16) {
           return;
@@ -86,31 +86,6 @@ export const useProfile = (
       })
       .finally(() => setIsLud16Loading(false));
   }, [walias]);
-
-  // Fetch NIP05 pubkey metadata
-  React.useEffect(() => {
-    if (!pubkey) {
-      return;
-    }
-
-    const fetchProfile = async () => {
-      try {
-        const user = ndk.getUser({
-          pubkey: pubkey,
-        });
-
-        const profile = await user.fetchProfile();
-        if (profile) {
-          setNip05Avatar(profile.image);
-        }
-        setNip05(profile || undefined);
-      } finally {
-        setIsNip05Loading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [pubkey]);
 
   // Fetch domain avatar
   React.useEffect(() => {
@@ -133,34 +108,3 @@ export const useProfile = (
     isDomainAvatarLoading,
   };
 };
-
-export async function resolveNip05(address: string): Promise<string | undefined> {
-  const profile = await queryProfile(address);
-  if (!profile) {
-    return;
-  }
-  return profile.pubkey;
-}
-
-export async function resolveLud16(address: string): Promise<LNRequestResponse | undefined> {
-  const match = address.match(NIP05_REGEX);
-  if (!match) return;
-
-  const [_, name = '_', domain] = match;
-
-  try {
-    const url = `https://${domain}/.well-known/lnurlp/${name}`;
-    const res = await (await fetch(url, { redirect: 'error' })).json();
-    return res;
-  } catch (_e) {
-    return;
-  }
-}
-
-export async function resolveDomainAvatar(
-  address: string,
-  domainAvatars: { [domain: string]: string } = {},
-): Promise<string> {
-  const [, domain] = address.split('@');
-  return domainAvatars[domain!] || domainAvatars.default || FALLBACK_AVATAR_URL;
-}

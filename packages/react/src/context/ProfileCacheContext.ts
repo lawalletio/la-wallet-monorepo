@@ -1,38 +1,30 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import type { LNRequestResponse } from '../exports/types.js';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
+import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
+import type NDK from '@nostr-dev-kit/ndk';
+import { useNostrContext } from './NostrContext.js';
 
 interface ProfileCacheParameter {}
 interface ProfileCacheReturns {
   isLoading: boolean;
   domainAvatars: { [domain: string]: string };
-  waliasCache: WaliasCache;
-  updateCache: (walias: string, data: WaliasCache) => void;
+  getNip05: (walias: string) => Promise<NDKUserProfile | null>;
+  getLud16: (walias: string) => Promise<LNRequestResponse | null>;
 }
 
 const STATIC_LAWALLET_ENDPOINT = 'https://static.lawallet.io'; // TODO: Add it to .env
+const FALLBACK_AVATAR_URL = 'https://static.lawallet.io/img/domains/default.png'; // TODO: Add it to .env
 
 export const ProfileCacheContext = React.createContext({} as ProfileCacheReturns);
-
-export interface ProfileData {
-  lud16?: LNRequestResponse;
-  nip05?: NDKUserProfile;
-  lud16Avatar5?: string;
-  nip05Avatar?: string;
-  defaultAvatar?: string;
-  expiry: number;
-}
-
-export type WaliasCache = {
-  [walias: string]: ProfileData;
-};
 
 export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCacheParameter>) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [domainAvatars, setDomainAvatars] = React.useState<{ [domain: string]: string }>({});
-  const [waliasCache, setWaliasCache] = React.useState<WaliasCache>({});
+
+  const { ndk } = useNostrContext({});
 
   React.useEffect(() => {
     fetch(`${STATIC_LAWALLET_ENDPOINT}/domains.json`)
@@ -51,14 +43,34 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
       });
   }, []);
 
-  const updateCache = React.useCallback((walias: string, data: WaliasCache) => {
-    setWaliasCache((prev: any) => {
-      return {
-        ...prev,
-        [walias]: data,
-      };
-    });
-  }, []);
+  const [nip05Cache] = useState<{ [walias: string]: Promise<NDKUserProfile | null> }>({});
+  const [lud16Cache] = useState<{ [walias: string]: Promise<LNRequestResponse | null> }>({});
+
+  const getNip05 = React.useCallback(
+    async (walias: string): Promise<NDKUserProfile | null> => {
+      if (!nip05Cache[walias]) {
+        console.info(`Cache miss. Generating NIP05 for ${walias}`);
+        return (nip05Cache[walias] = resolveNip05(walias, ndk));
+      } else {
+        console.info(`NIP05 cache hit for ${walias}`);
+        return nip05Cache[walias]!;
+      }
+    },
+    [nip05Cache],
+  );
+
+  const getLud16 = React.useCallback(
+    async (walias: string): Promise<LNRequestResponse | null> => {
+      if (!lud16Cache[walias]) {
+        console.info(`Cache miss. Generating LUD16 for ${walias}`);
+        return lud16Cache[walias] || (lud16Cache[walias] = resolveLud16(walias));
+      } else {
+        console.info(`LUD16 cache hit for ${walias}`);
+        return lud16Cache[walias]!;
+      }
+    },
+    [lud16Cache],
+  );
 
   return React.createElement(
     ProfileCacheContext.Provider,
@@ -66,8 +78,8 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
       value: {
         isLoading,
         domainAvatars,
-        waliasCache,
-        updateCache,
+        getNip05,
+        getLud16,
       },
     },
     props.children,
@@ -76,13 +88,48 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
 
 export const useProfileCache = (): ProfileCacheReturns => {
   const profile = React.useContext(ProfileCacheContext);
-
-  const { domainAvatars, isLoading, updateCache, waliasCache } = profile;
+  const { domainAvatars, isLoading, getNip05, getLud16 } = profile;
 
   return {
     domainAvatars,
     isLoading,
-    updateCache,
-    waliasCache,
+    getNip05,
+    getLud16,
   };
 };
+
+export async function resolveNip05(walias: string, ndk: NDK): Promise<NDKUserProfile | null> {
+  const profile = await queryProfile(walias);
+  if (!profile) {
+    return null;
+  }
+
+  const user = ndk.getUser({
+    pubkey: profile.pubkey,
+  });
+
+  return user.fetchProfile();
+}
+
+export async function resolveLud16(address: string): Promise<LNRequestResponse | null> {
+  const match = address.match(NIP05_REGEX);
+  if (!match) return null;
+
+  const [_, name = '_', domain] = match;
+
+  try {
+    const url = `https://${domain}/.well-known/lnurlp/${name}`;
+    const res = await (await fetch(url, { redirect: 'error' })).json();
+    return res;
+  } catch (_e) {
+    return null;
+  }
+}
+
+export async function resolveDomainAvatar(
+  address: string,
+  domainAvatars: { [domain: string]: string } = {},
+): Promise<string> {
+  const [, domain] = address.split('@');
+  return domainAvatars[domain!] || domainAvatars.default || FALLBACK_AVATAR_URL;
+}
