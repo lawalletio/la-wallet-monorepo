@@ -43,12 +43,7 @@ import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
 import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
-<<<<<<< HEAD
-=======
-import Link from 'next/link';
-import { appTheme } from '@/config/exports';
 import Image from 'next/image';
->>>>>>> d797594130b69f3728d14fb6b25514f77dad27e1
 
 export default function Page() {
   const config = useConfig();

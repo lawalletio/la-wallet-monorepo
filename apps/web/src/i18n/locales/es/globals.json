@@ -172,7 +172,6 @@
   "NO_LIMIT_SET": "Tu tarjeta no tendrá ningún limite en los pagos",
   "TIME_LEFT": "Tiempo restante",
   "DONATION_CARD_SUCCESS": "Tu tarjeta fue transferida correctamente",
-<<<<<<< HEAD:apps/web/src/i18n/locales/es/globals.json
   "YOUR_WALLET_IN_10_SECONDS": "Tu wallet en 10 segundos, sin KYC ni boludeces.",
   "COST": "Costo",
   "PAY_WITH_ALBY": "Pagar con Alby",
@@ -195,10 +194,8 @@
     "SIGNUP_TITLE": "Crear cuenta",
     "TRANSACTIONS_TITLE": "Mi actividad",
     "TRANSFER_TITLE": "Transferir"
-  }
-=======
+  },
   "BANNER_DESC": "¡Acumulá Satoshis, sobreviví a los bloques y asegurá tu premio en el halving de Bitcoin!",
   "BANNER_DESC2": "¿Serás el último en pie?",
   "PLAY_NOW": "Jugar ahora"
->>>>>>> d797594130b69f3728d14fb6b25514f77dad27e1:apps/web/src/constants/locales/es/globals.json
 }
