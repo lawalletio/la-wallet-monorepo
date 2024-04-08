@@ -20,6 +20,7 @@ import {
   BannerAlert,
   BtnLoader,
   Button,
+  Card,
   Container,
   Divider,
   Flex,
@@ -42,6 +43,12 @@ import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
 import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
+<<<<<<< HEAD
+=======
+import Link from 'next/link';
+import { appTheme } from '@/config/exports';
+import Image from 'next/image';
+>>>>>>> d797594130b69f3728d14fb6b25514f77dad27e1
 
 export default function Page() {
   const config = useConfig();
@@ -168,7 +175,29 @@ export default function Page() {
             </Link>
             <Divider y={16} />
           </>
-        ) : null}
+        ) : (
+          <>
+            <Card>
+              <Flex direction="column" gap={16}>
+                <Flex align="center" justify="space-between">
+                  <Image src="/plugins/halving-massacre.png" height={23} width={100} alt="Halving Massacre" />
+                  <div>
+                    <Link href="https://massacre.lawallet.io/" target="_blank">
+                      <Button size="small" color="secondary" variant="borderless">
+                        {t('PLAY_NOW')}
+                      </Button>
+                    </Link>
+                  </div>
+                </Flex>
+                <Flex direction="column" gap={4}>
+                  <Text size="small">{t('BANNER_DESC')}</Text>
+                  <Text size="small">{t('BANNER_DESC2')}</Text>
+                </Flex>
+              </Flex>
+            </Card>
+            <Divider y={16} />
+          </>
+        )}
 
         {transactions.length === 0 ? (
           <Flex direction="column" justify="center" align="center" flex={1}>
