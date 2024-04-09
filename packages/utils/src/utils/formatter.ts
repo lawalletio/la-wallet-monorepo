@@ -1,7 +1,9 @@
-import { format } from 'date-fns';
+import { format, formatDistance } from 'date-fns';
 import { enUS, es } from 'date-fns/locale';
 import type { AvailableLanguages } from '../types/translations.js';
 import type { AvailableCurrencies } from '../types/userConfig.js';
+import { formatDistanceES } from './dateFormat/formatDistanceES.js';
+import { formatDistanceEN } from './dateFormat/formatDistanceEN.js';
 
 export const formatter = (minDecimals: number = 2, maxDecimals: number = 2, lng: string): Intl.NumberFormat =>
   new Intl.NumberFormat(lng === 'en' ? 'en-US' : 'es-AR', {
@@ -62,6 +64,13 @@ export const dateFormatter = (lng: string, date: Date | number, strFormat?: stri
   });
 };
 
+export const distanceFormatter = (date: Date, baseDate: Date, locale: string) => {
+  return formatDistance(date, baseDate, {
+    locale:
+      locale === 'es' ? { ...es, formatDistance: formatDistanceES } : { ...enUS, formatDistance: formatDistanceEN },
+  });
+};
+
 export const upperText = (text: string): string => (text ? text.toUpperCase() : '');
 export const lowerText = (text: string): string => (text ? text.toLowerCase() : '');
 
@@ -69,10 +78,11 @@ export const formatToPreference = (
   currency: AvailableCurrencies,
   amount: number,
   lng: string,
-  round?: boolean,
+  minDecimal?: number,
+  maxDecimal?: number,
 ): string => {
-  const maxDecimals: number = decimalsToUse(currency);
-  const minDecimals: number = round ? 2 : maxDecimals;
+  const maxDecimals: number = maxDecimal ?? decimalsToUse(currency);
+  const minDecimals: number = minDecimal ?? maxDecimals;
 
   const formattedAmount: string = formatter(
     minDecimals,

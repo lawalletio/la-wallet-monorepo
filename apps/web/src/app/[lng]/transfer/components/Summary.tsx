@@ -4,13 +4,13 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import { Button, Container, Divider, Feedback, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 
+import { TokenList } from '@/components/TokenList';
+import { useRouter } from '@/navigation';
+import { useFormatter, useWalletContext } from '@lawallet/react';
+import { AvailableLanguages, TransferTypes } from '@lawallet/react/types';
 import { useLocale, useTranslations } from 'next-intl';
-import { formatToPreference, useWalletContext } from '@lawallet/react';
-import { TransferTypes } from '@lawallet/react/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import CardWithData from './CardWithData';
-import { useRouter } from '@/navigation';
-import { TokenList } from '@/components/TokenList';
 
 type SummaryProps = {
   isLoading: boolean;
@@ -37,10 +37,12 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
     converter: { pricesData, convertCurrency },
   } = useWalletContext();
 
+  const { formatAmount } = useFormatter({ currency, locale: lng as AvailableLanguages });
+
   const convertedAmount: string = useMemo(() => {
     const convertedInt: number = convertCurrency(amount, 'SAT', currency);
 
-    return formatToPreference(currency, convertedInt, lng);
+    return formatAmount(convertedInt);
   }, [amount, pricesData, currency]);
 
   const detectInsufficientBalance = useCallback(() => {

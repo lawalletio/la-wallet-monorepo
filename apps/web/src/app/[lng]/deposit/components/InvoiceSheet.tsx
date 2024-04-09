@@ -5,8 +5,10 @@ import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
+import { useRouter } from '@/navigation';
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { formatToPreference, useWalletContext, useZap } from '@lawallet/react';
+import { useFormatter, useWalletContext, useZap } from '@lawallet/react';
+import { AvailableLanguages } from '@lawallet/react/types';
 import {
   BtnLoader,
   Button,
@@ -21,7 +23,6 @@ import {
   Text,
 } from '@lawallet/ui';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from '@/navigation';
 import { useEffect, useState } from 'react';
 
 type SheetTypes = 'amount' | 'qr' | 'finished';
@@ -48,6 +49,8 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
 
   const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.data.hexpub });
 
+  const { formatAmount } = useFormatter({ currency, locale: lng as AvailableLanguages });
+
   const numpadData = useNumpad(currency);
   const router = useRouter();
 
@@ -61,7 +64,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
 
       errors.modifyError('ERROR_INVOICE_AMOUNT', {
         minAmount: convertedMinAmount.toString(),
-        maxAmount: formatToPreference(currency, convertedMaxAmount, lng),
+        maxAmount: formatAmount(convertedMaxAmount),
         currency: currency,
       });
       return;
@@ -119,7 +122,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
                 ) : (
                   <Text>$</Text>
                 )}
-                <Heading>{formatToPreference(currency, numpadData.intAmount[numpadData.usedCurrency], lng)}</Heading>
+                <Heading>{formatAmount(numpadData.intAmount[numpadData.usedCurrency])}</Heading>
               </Flex>
 
               <TokenList />
@@ -165,7 +168,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
                 ) : (
                   <Text>$</Text>
                 )}
-                <Heading>{formatToPreference(currency, numpadData.intAmount[numpadData.usedCurrency], lng)} </Heading>
+                <Heading>{formatAmount(numpadData.intAmount[numpadData.usedCurrency])} </Heading>
 
                 <Text>{currency}</Text>
               </Flex>
@@ -202,7 +205,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
                 ) : (
                   <Text>$</Text>
                 )}
-                <Heading>{formatToPreference(currency, numpadData.intAmount[numpadData.usedCurrency], lng)}</Heading>
+                <Heading>{formatAmount(numpadData.intAmount[numpadData.usedCurrency])}</Heading>
               </Flex>
             </Flex>
             <Flex gap={8}>

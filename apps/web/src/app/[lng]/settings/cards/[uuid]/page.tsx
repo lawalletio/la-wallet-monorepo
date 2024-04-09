@@ -5,8 +5,8 @@ import { regexComment } from '@/constants/constants';
 import { useCardsContext } from '@/context/CardsContext';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { formatToPreference, roundToDown } from '@lawallet/react';
-import { CardPayload, CardStatus, Limit } from '@lawallet/react/types';
+import { roundToDown, useFormatter } from '@lawallet/react';
+import { AvailableLanguages, CardPayload, CardStatus, Limit } from '@lawallet/react/types';
 import {
   Button,
   Container,
@@ -49,7 +49,7 @@ const NAME_MAX_LENGTH = 32;
 const DESC_MAX_LENGTH = 64;
 
 const page = () => {
-  const lng = useLocale();
+  const lng = useLocale() as AvailableLanguages;
   const t = useTranslations();
 
   const errors = useErrors();
@@ -151,6 +151,8 @@ const page = () => {
     setNewConfig(preloadConfig);
   }, [cardsConfig.cards]);
 
+  const { formatAmount } = useFormatter({ currency: 'SAT', locale: lng });
+
   useActionOnKeypress('Enter', handleSaveConfig, [newConfig]);
 
   if (!loadInfo.loading && !cardsData?.[uuid]) return null;
@@ -244,7 +246,7 @@ const page = () => {
             <Text color={appTheme.colors.warning}>
               {newConfig.limits.length && Number(newConfig.limits[0].amount) > 0
                 ? t(`LIMIT_CARD_PER_${selectedLimit === 'tx' ? 'TX' : 'DAY'}`, {
-                    sats: formatToPreference('SAT', Number(newConfig.limits[0].amount) / 1000, lng).toString(),
+                    sats: formatAmount(Number(newConfig.limits[0].amount) / 1000),
                   })
                 : t('NO_LIMIT_SET')}
             </Text>

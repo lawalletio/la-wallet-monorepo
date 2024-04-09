@@ -58,6 +58,7 @@ export {
   escapingBrackets,
   unescapingText,
   extractEscappedMessage,
+  distanceFormatter,
 } from '../utils/formatter.js';
 
 export { createSignerWithPrivateKey } from '../createSigner.js';

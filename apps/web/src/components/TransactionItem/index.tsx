@@ -5,10 +5,10 @@ import { CreditCardIcon, LightningIcon, TransferIcon } from '@bitcoin-design/bit
 import { Accordion, AccordionBody, Flex, Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
-import { useLocale, useTranslations } from 'next-intl';
-import { dateFormatter, defaultCurrency, formatToPreference, unescapingText, useWalletContext } from '@lawallet/react';
-import { Transaction, TransactionDirection, TransactionStatus } from '@lawallet/react/types';
+import { dateFormatter, defaultCurrency, unescapingText, useFormatter, useWalletContext } from '@lawallet/react';
+import { AvailableLanguages, Transaction, TransactionDirection, TransactionStatus } from '@lawallet/react/types';
 import { BtnLoader } from '@lawallet/ui';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 interface ComponentProps {
@@ -53,6 +53,8 @@ export default function Component({ transaction }: ComponentProps) {
     () => convertCurrency(satsAmount, 'SAT', currency === 'SAT' ? defaultCurrency : currency),
     [pricesData, currency],
   );
+
+  const { customFormat } = useFormatter({ locale: lng as AvailableLanguages });
 
   const handleOpenAccordion = async () => {
     setLudInfo({ ...ludInfo, loading: true });
@@ -118,19 +120,14 @@ export default function Component({ transaction }: ComponentProps) {
                       transaction.status === TransactionStatus.ERROR ||
                       transaction.status === TransactionStatus.REVERTED
                     ) && <>{!isFromMe ? '+ ' : '- '}</>}
-                    {formatToPreference('SAT', satsAmount, lng)} SAT
+                    {customFormat({ amount: satsAmount, currency: 'SAT' })} SAT
                   </>
                 )}
               </Text>
               <Text size="small" color={appTheme.colors.gray50}>
                 {hideBalance
                   ? '*****'
-                  : `$${formatToPreference(
-                      currency === 'SAT' ? defaultCurrency : currency,
-                      convertedFiatAmount,
-                      lng,
-                      true,
-                    )} ${currency === 'SAT' ? defaultCurrency : currency}`}
+                  : `$${customFormat({ amount: convertedFiatAmount, currency: currency === 'SAT' ? defaultCurrency : currency, minDecimals: 2 })} ${currency === 'SAT' ? defaultCurrency : currency}`}
               </Text>
             </Flex>
           </Flex>
