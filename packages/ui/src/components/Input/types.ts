@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { ReactNode, InputHTMLAttributes } from 'react';
 
-export interface InputProps {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   placeholder: string;
   value?: string;
   type?: 'text' | 'password' | 'number' | 'email';
