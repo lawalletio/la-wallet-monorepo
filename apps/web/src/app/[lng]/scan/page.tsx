@@ -82,11 +82,11 @@ export default function Page() {
       if (scanType === TransferTypes.NONE) return;
 
       if (scanType === TransferTypes.INVOICE) {
-        router.push(`/transfer/invoice/${result.data.toLowerCase()}`);
+        router.push(`/transfer/invoice/${cleanScan.toLowerCase()}`);
         return;
       }
 
-      router.push(`/transfer/lnurl?data=${result.data.toLowerCase()}`);
+      router.push(`/transfer/lnurl?data=${cleanScan.toLowerCase()}`);
     }
   };
 
