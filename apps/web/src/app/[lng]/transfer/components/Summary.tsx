@@ -15,6 +15,7 @@ import CardWithData from './CardWithData';
 type SummaryProps = {
   isLoading: boolean;
   isSuccess: boolean;
+  isPending: boolean;
   data: string;
   type: TransferTypes;
   amount: number;
@@ -22,7 +23,16 @@ type SummaryProps = {
   onClick: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
-export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {
+export const Summary = ({
+  isLoading,
+  isSuccess,
+  isPending,
+  data,
+  type,
+  amount,
+  expired = false,
+  onClick,
+}: SummaryProps) => {
   const lng = useLocale();
   const t = useTranslations();
 
@@ -107,8 +117,10 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
             <Button
               color="secondary"
               onClick={onClick}
-              disabled={!type || isLoading || expired || (type !== TransferTypes.LNURLW && insufficientBalance)}
-              loading={isLoading}
+              disabled={
+                !type || isLoading || isPending || expired || (type !== TransferTypes.LNURLW && insufficientBalance)
+              }
+              loading={isLoading || isPending}
             >
               {type === TransferTypes.LNURLW ? t('CLAIM') : t('TRANSFER')}
             </Button>

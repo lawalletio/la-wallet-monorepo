@@ -22,6 +22,7 @@ type InternalTransferParameters = {
 };
 
 interface UseTransferReturns extends UseStatusVarsReturns {
+  isPending: boolean;
   execInternalTransfer: (params: InternalTransferParameters) => Promise<boolean>;
   execOutboundTransfer: (params: OutboundTransferParameters) => Promise<boolean>;
 }
@@ -127,6 +128,8 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
 
           refundEvent ? statusVars.handleMarkError() : statusVars.handleMarkSuccess();
         }
+
+        setStartEvent(null);
       }
     }
   };
@@ -137,6 +140,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
 
   return {
     ...statusVars,
+    isPending: Boolean(startEvent),
     execInternalTransfer,
     execOutboundTransfer,
   };

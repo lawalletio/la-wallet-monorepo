@@ -20,6 +20,7 @@ interface ILNURLContext {
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
+  isPending: boolean;
   setAmountToPay: (amount: number) => void;
   setComment: (comment: string) => void;
   execute: () => void;
@@ -44,6 +45,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     isSuccess,
     isError,
+    isPending,
     handleMarkSuccess,
     handleMarkError,
     handleMarkLoading,
@@ -160,6 +162,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     isError,
     isSuccess,
+    isPending,
     setAmountToPay,
     setComment,
     execute,
