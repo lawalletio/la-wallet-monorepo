@@ -7,7 +7,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { TokenList } from '@/components/TokenList';
 import { Keyboard } from '@/components/UI';
 import { appTheme } from '@/config/exports';
-import { regexComment } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
@@ -93,11 +92,11 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
       return;
     }
 
-    const isValidComment = regexComment.test(text);
-    if (!isValidComment) {
-      errors.modifyError('ERROR_ON_COMMENT');
-      return;
-    }
+    // const isValidComment = regexComment.test(text);
+    // if (!isValidComment) {
+    //   errors.modifyError('ERROR_ON_COMMENT');
+    //   return;
+    // }
 
     setComment(text);
   };
