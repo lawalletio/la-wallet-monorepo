@@ -56,7 +56,7 @@ export const Summary = ({
   }, [amount, pricesData, currency]);
 
   const detectInsufficientBalance = useCallback(() => {
-    setInsufficientBalance(!isLoading && !isSuccess && balance.amount < amount);
+    setInsufficientBalance(!isLoading && !isSuccess && !isPending && balance.amount < amount);
   }, [balance.amount, amount, isLoading, isSuccess]);
 
   useEffect(() => {
