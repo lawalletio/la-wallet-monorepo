@@ -56,7 +56,8 @@ export const useSubscription = ({ filters, options, enabled, config }: Subscript
 
   React.useEffect(() => {
     if (enabled && !subscription) {
-      restartSubscription();
+      if (events.length) setEvents([]);
+      startSubscription();
     }
 
     if (!enabled) stopSubscription();
