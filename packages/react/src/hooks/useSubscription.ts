@@ -7,6 +7,7 @@ export interface UseSubscriptionReturns {
   loading: boolean;
   subscription: NDKSubscription | undefined;
   events: NDKEvent[];
+  restartSubscription: () => void;
 }
 
 export interface SubscriptionProps extends ConfigParameter {
@@ -45,10 +46,17 @@ export const useSubscription = ({ filters, options, enabled, config }: Subscript
     }
   }, [subscription]);
 
+  const restartSubscription = React.useCallback(() => {
+    stopSubscription();
+
+    if (events.length) setEvents([]);
+
+    startSubscription();
+  }, [events]);
+
   React.useEffect(() => {
     if (enabled && !subscription) {
-      if (events.length) setEvents([]);
-      startSubscription();
+      restartSubscription();
     }
 
     if (!enabled) stopSubscription();
@@ -58,5 +66,6 @@ export const useSubscription = ({ filters, options, enabled, config }: Subscript
     loading,
     subscription,
     events,
+    restartSubscription,
   };
 };
