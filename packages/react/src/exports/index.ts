@@ -10,6 +10,8 @@ export { type UseSubscriptionReturns, useSubscription } from '../hooks/useSubscr
 export { type UseBalanceReturns, useBalance } from '../hooks/useBalance.js';
 export { type UseAccountReturns, useAccount } from '../hooks/useAccount.js';
 
+export { type IUseNumpad, useNumpad } from '../hooks/useNumpad.js';
+
 export { useTransfer } from '../hooks/useTransfer.js';
 export { useProfile } from '../hooks/useProfile.js';
 

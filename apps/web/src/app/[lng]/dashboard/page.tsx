@@ -1,17 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import {
-  GearIcon,
-  HiddenIcon,
-  QrCodeIcon,
-  SatoshiV2Icon,
-  SendIcon,
-  VisibleIcon,
-} from '@bitcoin-design/bitcoin-icons-react/filled';
+import { GearIcon, HiddenIcon, SatoshiV2Icon, SendIcon, VisibleIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { useEffect, useMemo, useState } from 'react';
 
-import ButtonCTA from '@/components/ButtonCTA';
 import Navbar from '@/components/Layout/Navbar';
 import { TokenList } from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
@@ -37,6 +29,7 @@ import { useLocale, useTranslations } from 'next-intl';
 // Animations
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
+import Subnavbar from '@/components/Layout/Subnavbar';
 import { appTheme } from '@/config/exports';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { extractFirstTwoChars } from '@/utils';
@@ -225,11 +218,7 @@ export default function Page() {
         <Divider y={64} />
       </Container>
 
-      <ButtonCTA>
-        <Button color="secondary" onClick={() => router.push('/scan')}>
-          <QrCodeIcon />
-        </Button>
-      </ButtonCTA>
+      <Subnavbar path="home" />
     </>
   );
 }

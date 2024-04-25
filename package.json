@@ -11,6 +11,7 @@
     "build:utils": "pnpm --filter @lawallet/utils build",
     "build:ui": "pnpm --filter @lawallet/ui build",
     "build:libs": "pnpm build:utils && pnpm build:react && pnpm build:ui",
+    "build:modules": "pnpm --filter @lawallet/plugin-template build && pnpm --filter @lawallet/pos build",
     "web:build": "pnpm --filter lawallet-front build",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
@@ -39,6 +40,7 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "config/*"
+    "config/*",
+    "plugins/*"
   ]
 }

@@ -1,6 +1,7 @@
-import { CurrenciesList, decimalsToUse, useCurrencyConverter } from '@lawallet/react';
-import type { AvailableCurrencies } from '@lawallet/react/types';
-import { useEffect, useState } from 'react';
+import type { AvailableCurrencies } from '@lawallet/utils/types';
+import { decimalsToUse, CurrenciesList } from '@lawallet/utils';
+import * as React from 'react';
+import { useCurrencyConverter } from './useCurrencyConverter.js';
 
 type AmountType = Record<AvailableCurrencies, number>;
 const defaultIntAmount: AmountType = { SAT: 0, ARS: 0, USD: 0 };
@@ -19,7 +20,7 @@ export interface IUseNumpad {
 
 export const useNumpad = (currency: AvailableCurrencies, maxAmount: number = -1): IUseNumpad => {
   const { convertCurrency } = useCurrencyConverter();
-  const [usedCurrency, setUsedCurrency] = useState<AvailableCurrencies>(currency);
+  const [usedCurrency, setUsedCurrency] = React.useState<AvailableCurrencies>(currency);
 
   const modifyCurrency = (new_currency: AvailableCurrencies) => {
     setCustomAmount(intAmount[new_currency], new_currency);
@@ -28,8 +29,8 @@ export const useNumpad = (currency: AvailableCurrencies, maxAmount: number = -1)
 
   const multiplier = (currency: AvailableCurrencies) => 10 ** decimalsToUse(currency);
 
-  const [intAmount, setIntAmount] = useState<AmountType>(defaultIntAmount);
-  const [strAmount, setStrAmount] = useState<string>('0');
+  const [intAmount, setIntAmount] = React.useState<AmountType>(defaultIntAmount);
+  const [strAmount, setStrAmount] = React.useState<string>('0');
 
   const updateNumpadAmount = (new_amount: string) => {
     const castAmount: number = Number(new_amount);
@@ -92,7 +93,7 @@ export const useNumpad = (currency: AvailableCurrencies, maxAmount: number = -1)
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (usedCurrency !== currency) modifyCurrency(currency);
   }, [currency, usedCurrency]);
 

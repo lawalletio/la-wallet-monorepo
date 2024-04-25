@@ -6,7 +6,15 @@ import { usePathname, useRouter } from '@/navigation';
 
 // const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
 
-const protectedRoutes: string[] = ['/dashboard', '/transfer', '/deposit', '/scan', '/settings', '/transactions'];
+const protectedRoutes: string[] = [
+  '/dashboard',
+  '/transfer',
+  '/extensions',
+  '/deposit',
+  '/scan',
+  '/settings',
+  '/transactions',
+];
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const {
