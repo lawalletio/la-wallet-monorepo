@@ -324,7 +324,7 @@ importers:
         version: 18.2.55
       '@types/react-dom':
         specifier: ^18.2.22
-        version: 18.2.25
+        version: 18.3.0
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.21.0
         version: 6.21.0(@typescript-eslint/parser@6.20.0)(eslint@8.57.0)(typescript@5.4.3)
@@ -411,8 +411,8 @@ importers:
         specifier: 18.2.48
         version: 18.2.48
       '@types/react-dom':
-        specifier: ^18
-        version: 18.2.25
+        specifier: 18.2.19
+        version: 18.2.19
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.21.0
         version: 6.21.0(@typescript-eslint/parser@6.20.0)(eslint@8.57.0)(typescript@5.4.3)
@@ -2166,8 +2166,8 @@ packages:
       '@types/react': 18.2.55
     dev: true
 
-  /@types/react-dom@18.2.25:
-    resolution: {integrity: sha512-o/V48vf4MQh7juIKZU2QGDfli6p1+OOi5oXx36Hffpc9adsHeXjVp8rHuPkjd8VT8sOJ2Zp05HR7CdpGTIUFUA==}
+  /@types/react-dom@18.3.0:
+    resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
     dependencies:
       '@types/react': 18.2.55
     dev: true
