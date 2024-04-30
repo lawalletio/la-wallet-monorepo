@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from '@/navigation';
-import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useConfig, useSubscription } from '@lawallet/react';
-import { Button, Container, Divider, Feedback, Flex, Heading, Text, Icon, SatoshiIcon, CheckIcon } from '@lawallet/ui';
+import { Button, CheckIcon, Container, Divider, Feedback, Flex, Heading, Icon, SatoshiIcon, Text } from '@lawallet/ui';
+import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
+import { useCallback, useEffect, useState } from 'react';
 
 // Generic components
 import Logo from '@/components/Logo';
@@ -17,12 +17,17 @@ import useErrors from '@/hooks/useErrors';
 
 import { QRCode } from '@/components/UI';
 import { appTheme } from '@/config/exports';
+import { signupPubkey } from '@/constants/buyAddress';
 import { useTranslations } from 'next-intl';
+
+const SIGN_UP_CACHE_KEY: string = 'signup-cache';
 
 type ZapRequestInfo = {
   zapRequest: NostrEvent | null;
   invoice: string | null;
   payed: boolean;
+  nonce: string;
+  expiry?: number;
 };
 
 const SignUp = () => {
@@ -34,9 +39,11 @@ const SignUp = () => {
     zapRequest: null,
     invoice: null,
     payed: false,
+    nonce: '',
+    expiry: 0,
   });
 
-  const [nonce, setNonce] = useState<string>('');
+  // const [nonce, setNonce] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [isPaying, setIsPaying] = useState<boolean>(false);
 
@@ -46,12 +53,21 @@ const SignUp = () => {
         authors: [config.modulePubkeys.ledger, config.modulePubkeys.urlx],
         kinds: [9735],
         since: zapRequestInfo.zapRequest?.created_at ?? 0,
+        '#p': [signupPubkey],
       },
     ],
     options: {},
     enabled: Boolean(zapRequestInfo.invoice) && !zapRequestInfo.payed,
     config,
   });
+
+  const saveZapRequestInfo = (new_info: ZapRequestInfo) => {
+    const zrExpiration: number = Date.now() + 2 * 60 * 1000;
+    const ZR: ZapRequestInfo = { ...new_info, expiry: zrExpiration };
+
+    config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify(ZR));
+    setZapRequestInfo(ZR);
+  };
 
   const requestPayment = async () => {
     setLoading(true);
@@ -61,7 +77,7 @@ const SignUp = () => {
       if (!zapRequest || !invoice) return;
 
       setLoading(false);
-      setZapRequestInfo({ zapRequest, invoice, payed: false });
+      saveZapRequestInfo({ zapRequest, invoice, payed: false, nonce: '' });
     } catch {
       setLoading(false);
       errors.modifyError('UNEXPECTED_ERROR');
@@ -79,7 +95,7 @@ const SignUp = () => {
       const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
       if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
 
-      setNonce(responseJSON.data.nonce.nonce);
+      saveZapRequestInfo({ ...zapRequestInfo, nonce: responseJSON.data?.nonce.nonce ?? '' });
     } catch {
       errors.modifyError('UNEXPECTED_ERROR');
     }
@@ -99,21 +115,46 @@ const SignUp = () => {
     }
   }, []);
 
-  useEffect(() => {
+  const loadCachedSignUpRequest = async () => {
+    try {
+      const cachedStorage = await config.storage.getItem(SIGN_UP_CACHE_KEY);
+      if (!cachedStorage) return;
+
+      const cachedZapRequest: ZapRequestInfo = JSON.parse(cachedStorage);
+      if (!cachedZapRequest || (cachedZapRequest.expiry ?? 0) < Date.now()) return;
+
+      setZapRequestInfo(cachedZapRequest);
+    } catch {
+      return;
+    }
+  };
+
+  const validateEvents = useCallback(() => {
     if (events.length) {
       events.map((event) => {
         const boltTag = event.getMatchingTags('bolt11')[0]?.[1];
 
         if (boltTag === zapRequestInfo.invoice) {
-          setZapRequestInfo((prev) => {
-            return { ...prev, payed: true };
-          });
+          saveZapRequestInfo({ ...zapRequestInfo, payed: true });
 
           claimNonce(event);
+          return;
         }
       });
     }
+  }, [events, zapRequestInfo]);
+
+  useEffect(() => {
+    validateEvents();
   }, [events.length]);
+
+  useEffect(() => {
+    if (zapRequestInfo.payed && zapRequestInfo.nonce) router.push(`/start?i=${zapRequestInfo.nonce}`);
+  }, [zapRequestInfo]);
+
+  useEffect(() => {
+    loadCachedSignUpRequest();
+  }, []);
 
   const t = useTranslations();
 
@@ -189,9 +230,9 @@ const SignUp = () => {
               )}
             </Button>
           </Flex>
-        ) : nonce ? (
+        ) : zapRequestInfo.nonce ? (
           <Flex justify="center">
-            <Button onClick={() => router.push(`/start?i=${nonce}`)}>{t('CREATE_WALLET')}</Button>
+            <Button onClick={() => router.push(`/start?i=${zapRequestInfo.nonce}`)}>{t('CREATE_WALLET')}</Button>
           </Flex>
         ) : (
           zapRequestInfo.payed && (
