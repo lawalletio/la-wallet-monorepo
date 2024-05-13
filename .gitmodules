@@ -1,6 +1,0 @@
-[submodule "plugins/plugin-template"]
-	path = plugins/plugin-template
-	url = https://github.com/lawalletio/plugin-template.git
-[submodule "plugins/pos-plugin"]
-	path = plugins/pos-plugin
-	url = https://github.com/lawalletio/pos-plugin.git
