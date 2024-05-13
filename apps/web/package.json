@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "pnpm prettier --write ."
+    "format": "pnpm prettier --write .",
+    "build:plugins": "node ./.scripts/generatePluginsConfig.ts"
   },
   "dependencies": {
     "@bitcoin-design/bitcoin-icons-react": "^0.1.10",

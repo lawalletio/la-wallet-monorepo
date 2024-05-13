@@ -2,6 +2,7 @@
 
 # Dependencies
 node_modules
+plugins
 .pnp
 .pnp.js
 ignoreddoc.md

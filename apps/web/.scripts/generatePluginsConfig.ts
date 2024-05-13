@@ -1,0 +1,49 @@
+const fs = require('fs');
+const path = require('path');
+
+const config = require('../lawallet.config');
+const pluginsDir = './src/plugins';
+
+console.log('Generating plugin configuration...');
+
+if (!fs.existsSync(pluginsDir)) {
+  fs.mkdirSync(pluginsDir);
+}
+
+config.plugins.forEach((plugin) => {
+  const { name, path: pluginPath, metadataPath, routesPath } = plugin;
+
+  const pluginConfig = `import SpinnerView from '@/components/Spinner/SpinnerView';
+import { PluginRoutes } from '${routesPath}';
+import { metadata } from '${metadataPath}';
+import dynamic from 'next/dynamic';
+import { PluginProps } from './plugins.d';
+
+export const ${name}Plugin: PluginProps = {
+  metadata,
+  routes: PluginRoutes.map((route: string) => ({
+    path: route,
+    component: dynamic(() => import('${pluginPath}').then((mod) => mod.App[route]), {
+      ssr: false,
+      loading: () => <SpinnerView />,
+    }),
+  })),
+};
+`;
+
+  fs.writeFileSync(path.join(pluginsDir, `${name}.tsx`), pluginConfig);
+
+  console.log(`Added ${name} plugin`);
+});
+
+const indexContent = `import { PluginProps } from './plugins.d';
+${config.plugins.map((plugin) => `import { ${plugin.name}Plugin } from './${plugin.name}';`).join('\n')}
+
+export const PLUGINS: Record<string, PluginProps> = {
+  ${config.plugins.map((plugin) => `${plugin.name}: ${plugin.name}Plugin,`).join('\n  ')}
+};
+`;
+
+fs.writeFileSync(path.join(pluginsDir, 'index.ts'), indexContent);
+
+console.log('Plugin configuration generated successfully.');
