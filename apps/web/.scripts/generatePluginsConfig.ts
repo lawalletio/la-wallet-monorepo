@@ -4,7 +4,7 @@ const path = require('path');
 const config = require('../lawallet.config');
 const pluginsDir = './src/plugins';
 
-console.log('Generating plugin configuration...');
+console.log('\x1b[33m%s\x1b[0m', 'Generating plugin configuration...');
 
 if (!fs.existsSync(pluginsDir)) {
   fs.mkdirSync(pluginsDir);
@@ -33,7 +33,7 @@ export const ${name}Plugin: PluginProps = {
 
   fs.writeFileSync(path.join(pluginsDir, `${name}.tsx`), pluginConfig);
 
-  console.log(`Added ${name} plugin`);
+  console.log('\x1b[32m', `Added ${name} plugin`);
 });
 
 const indexContent = `import { PluginProps } from './plugins.d';
@@ -46,4 +46,4 @@ export const PLUGINS: Record<string, PluginProps> = {
 
 fs.writeFileSync(path.join(pluginsDir, 'index.ts'), indexContent);
 
-console.log('Plugin configuration generated successfully.');
+console.log('\x1b[33m%s\x1b[0m', 'Plugin configuration generated successfully.');
