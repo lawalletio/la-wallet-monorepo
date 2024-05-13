@@ -4,17 +4,27 @@ const path = require('path');
 const config = require('../lawallet.config');
 const pluginsDir = './src/plugins';
 
+interface IPlugins {
+  name: string;
+  path: string;
+}
+
+console.log('\x1b[33m%s\x1b[0m', '╭───────────────────────────────────────────────────────────────────────╮');
+console.log('\x1b[33m%s\x1b[0m', '│                         CONFIG PLUGINS                                │');
+console.log('\x1b[33m%s\x1b[0m', '╰───────────────────────────────────────────────────────────────────────╯');
+
 console.log('\x1b[33m%s\x1b[0m', 'Generating plugin configuration...');
 
 if (!fs.existsSync(pluginsDir)) {
   fs.mkdirSync(pluginsDir);
 }
 
-config.plugins.forEach((plugin) => {
-  const { name, path: pluginPath, metadataPath, routesPath } = plugin;
+config.plugins.forEach((plugin: IPlugins) => {
+  const { name, path: pluginPath } = plugin;
+  const metadataPath: string = `${pluginPath}/metadata`;
 
-  const pluginConfig = `import SpinnerView from '@/components/Spinner/SpinnerView';
-import { PluginRoutes } from '${routesPath}';
+  const pluginConfig: string = `import SpinnerView from '@/components/Spinner/SpinnerView';
+import { PluginRoutes } from '${pluginPath}';
 import { metadata } from '${metadataPath}';
 import dynamic from 'next/dynamic';
 import { PluginProps } from './plugins.d';
@@ -37,10 +47,10 @@ export const ${name}Plugin: PluginProps = {
 });
 
 const indexContent = `import { PluginProps } from './plugins.d';
-${config.plugins.map((plugin) => `import { ${plugin.name}Plugin } from './${plugin.name}';`).join('\n')}
+${config.plugins.map((plugin: IPlugins) => `import { ${plugin.name}Plugin } from './${plugin.name}';`).join('\n')}
 
 export const PLUGINS: Record<string, PluginProps> = {
-  ${config.plugins.map((plugin) => `${plugin.name}: ${plugin.name}Plugin,`).join('\n  ')}
+  ${config.plugins.map((plugin: IPlugins) => `${plugin.name}: ${plugin.name}Plugin,`).join('\n  ')}
 };
 `;
 

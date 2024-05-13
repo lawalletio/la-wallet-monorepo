@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpm build:plugins && next build",
     "start": "next start",
     "lint": "next lint",
     "format": "pnpm prettier --write .",
@@ -16,7 +16,6 @@
     "@lawallet/react": "*",
     "@lawallet/ui": "*",
     "@lawallet/pos": "0.0.1",
-    "@lawallet/plugin-template": "*",
     "@nostr-dev-kit/ndk": "^2.4.0",
     "@serwist/next": "^8.4.4",
     "@serwist/precaching": "^8.4.4",
