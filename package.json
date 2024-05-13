@@ -10,13 +10,13 @@
     "build:react": "pnpm --filter @lawallet/react build",
     "build:utils": "pnpm --filter @lawallet/utils build",
     "build:ui": "pnpm --filter @lawallet/ui build",
-    "build:libs": "pnpm build:utils && pnpm build:react && pnpm build:ui",
-    "build:modules": "pnpm --filter @lawallet/plugin-template build && pnpm --filter @lawallet/pos build",
-    "web:build": "pnpm --filter lawallet-front build",
+    "build:libs": "pnpm build --filter=./packages/*",
+    "build:plugins": "pnpm build --filter=./plugins/* && pnpm --filter lawallet-front build:plugins",
+    "build:web": "pnpm --filter lawallet-front build",
+    "build:docs": "pnpm --filter @lawallet/docs build",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
-    "docs:build": "pnpm --filter @lawallet/docs build",
     "docs:start": "pnpm --filter @lawallet/docs start:docs"
   },
   "devDependencies": {
