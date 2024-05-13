@@ -44,4 +44,3 @@ export const requestInvoice = (callback: string) =>
     .then((res) => res.json())
     .then((invoiceInfo) => (invoiceInfo && invoiceInfo.pr ? invoiceInfo.pr.toLowerCase() : ''))
     .catch(() => '');
-
