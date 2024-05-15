@@ -2,7 +2,7 @@
 
 import BackButton from '@/components/BackButton';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import { PLUGINS } from '@/plugins';
+import { PLUGINS } from '@/config/exports/extensions';
 import { ArrowRightIcon, Button, Card, Container, Divider, Flex, Icon, Navbar, Text } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
 import React from 'react';

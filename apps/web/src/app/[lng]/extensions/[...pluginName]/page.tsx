@@ -1,6 +1,6 @@
 'use client';
 import BackButton from '@/components/BackButton';
-import { PLUGINS } from '@/plugins';
+import { PLUGINS } from '@/config/exports/extensions';
 import { Navbar } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';

@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const config = require('../lawallet.config');
-const pluginsDir = './src/plugins';
+const pluginsDir = './src/config/exports/extensions';
 
 console.log('\x1b[33m%s\x1b[0m', '╭───────────────────────────────────────────────────────────────────────╮');
 console.log('\x1b[33m%s\x1b[0m', '│                         CONFIG PLUGINS                                │');
