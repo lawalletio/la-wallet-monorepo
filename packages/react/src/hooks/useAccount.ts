@@ -1,11 +1,9 @@
-import { UserIdentity, parseContent } from '@lawallet/utils';
+import { UserIdentity } from '@lawallet/utils';
 import { type ConfigParameter, type TokenBalance, type Transaction } from '@lawallet/utils/types';
 import React from 'react';
-import { STORAGE_IDENTITY_KEY } from '../constants/constants.js';
 import { useBalance } from './useBalance.js';
 import { useConfig } from './useConfig.js';
 import { useTransactions } from './useTransactions.js';
-import { useNostrContext } from '../context/NostrContext.js';
 
 export interface UseAccountReturns {
   identity: UserIdentity;
@@ -16,7 +14,6 @@ export interface UseAccountReturns {
 export interface UseAccountParameters extends ConfigParameter {
   pubkey?: string;
   privateKey?: string;
-  storage?: boolean;
 }
 
 export const useAccount = (params: UseAccountParameters): UseAccountReturns => {
@@ -24,8 +21,6 @@ export const useAccount = (params: UseAccountParameters): UseAccountReturns => {
 
   const config = useConfig(params);
   const [identity] = React.useState<UserIdentity>(new UserIdentity({ config: params.config }));
-
-  const { initializeSigner } = useNostrContext();
 
   const { transactions } = useTransactions({
     pubkey: identity.hexpub,
@@ -40,23 +35,6 @@ export const useAccount = (params: UseAccountParameters): UseAccountReturns => {
     enabled: enableSubscriptions,
     config,
   });
-
-  const loadIdentityFromStorage = async () => {
-    const storageIdentity = config.storage.getItem(STORAGE_IDENTITY_KEY);
-    if (!storageIdentity) {
-      identity.reset();
-      return;
-    }
-
-    const parsedIdentity: { privateKey: string } = parseContent(storageIdentity as string);
-    const initialized: boolean = await identity.initializeFromPrivateKey(parsedIdentity.privateKey);
-    if (initialized) initializeSigner(identity.signer);
-    return;
-  };
-
-  React.useEffect(() => {
-    if (params.storage) loadIdentityFromStorage();
-  }, []);
 
   React.useEffect(() => {
     if (params.pubkey && !identity.hexpub) {

@@ -157,7 +157,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
         };
 
       initializeSigner(identity.signer);
-      config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify({ privateKey: randomHexPKey }));
+      await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify({ privateKey: randomHexPKey }));
 
       return {
         success: true,

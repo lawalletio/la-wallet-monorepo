@@ -55,8 +55,8 @@ export default function Page() {
             <InfoCopy
               title={t('PRIVATE_KEY')}
               value={userStoragedKey}
-              onCopy={() => {
-                config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+              onCopy={async () => {
+                await config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
               }}
             />
             <Divider y={16} />

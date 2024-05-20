@@ -50,10 +50,10 @@ export default function Page() {
         return;
       }
 
-      identity.initializeFromPrivateKey(keyInput, username).then((res) => {
+      identity.initializeFromPrivateKey(keyInput, username).then(async (res) => {
         if (res) {
-          config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify({ privateKey: keyInput }));
-          config.storage.setItem(`${CACHE_BACKUP_KEY}_${hexpub}`, '1');
+          await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify({ privateKey: keyInput }));
+          await config.storage.setItem(`${CACHE_BACKUP_KEY}_${hexpub}`, '1');
           initializeSigner(identity.signer);
           router.push('/dashboard');
         }

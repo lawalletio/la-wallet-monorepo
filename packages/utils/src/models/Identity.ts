@@ -64,12 +64,11 @@ export class UserIdentity {
   }
 
   reset() {
+    this.loading = false;
     this.hexpub = '';
     this.npub = '';
     this.username = '';
     this.lud16 = '';
-
-    if (this.loading) this.loading = false;
     return;
   }
 

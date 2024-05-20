@@ -54,7 +54,7 @@ export const useCurrencyConverter = (): UseConverterReturns => {
       const updatedPrices: PricesInfo | false = await requestUpdatedPrices();
       if (!updatedPrices) return;
 
-      config.storage.setItem('prices', JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
+      await config.storage.setItem('prices', JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
 
       setPricesData(updatedPrices);
     } catch (err) {
@@ -62,8 +62,8 @@ export const useCurrencyConverter = (): UseConverterReturns => {
     }
   };
 
-  const loadPrices = () => {
-    const storagedPrices: string = config.storage.getItem('prices') as string;
+  const loadPrices = async () => {
+    const storagedPrices: string = (await config.storage.getItem('prices')) as string;
     if (!storagedPrices) {
       updatePrices();
       return;

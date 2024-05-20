@@ -47,8 +47,8 @@ export default function Page() {
     });
   }
 
-  const logoutSession = () => {
-    const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`);
+  const logoutSession = async () => {
+    const cachedBackup = await config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`);
 
     if (!cachedBackup) {
       errors.modifyError('ERROR_MADE_BACKUP');
@@ -58,7 +58,7 @@ export default function Page() {
     const confirmation: boolean = confirm(t('CONFIRM_LOGOUT'));
 
     if (confirmation) {
-      config.storage.removeItem(STORAGE_IDENTITY_KEY);
+      await config.storage.removeItem(STORAGE_IDENTITY_KEY);
       identity.reset();
       router.push('/login');
     }

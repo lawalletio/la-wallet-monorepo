@@ -65,10 +65,16 @@ export default function Page() {
     return formatToPreference(currency, amount, lng);
   }, [balance, pricesData, currency]);
 
-  useEffect(() => {
-    const userMadeBackup: boolean = Boolean(config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`) || false);
+  const checkBackup = async () => {
+    const userMadeBackup: boolean = Boolean(
+      (await config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`)) || false,
+    );
 
     setShowBanner(!userMadeBackup ? 'backup' : 'none');
+  };
+
+  useEffect(() => {
+    checkBackup();
   }, []);
 
   return (
@@ -88,7 +94,7 @@ export default function Page() {
                   if (identity.lud16) copy(identity.lud16);
                 }}
               >
-                {loading ? <Text> -- </Text> : <Text>{identity.username ? identity.lud16 : t('ANONYMOUS')}</Text>}
+                <Text>{loading ? '--' : identity.lud16 ? identity.lud16 : t('ANONYMOUS')}</Text>
               </Flex>
             </Flex>
           </Flex>

@@ -18,7 +18,7 @@ export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) 
   const config = useConfig(props);
   const { signerInfo } = useNostrContext({ config });
 
-  const account: UseAccountReturns = useAccount({ pubkey: signerInfo?.pubkey ?? '', storage: true, config });
+  const account: UseAccountReturns = useAccount({ pubkey: signerInfo?.pubkey ?? '', config });
   const settings: UseSettingsReturns = useSettings();
   const converter: UseConverterReturns = useCurrencyConverter();
 
