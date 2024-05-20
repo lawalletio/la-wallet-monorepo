@@ -28,9 +28,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useLayoutEffect(() => {
-    if (!identity.isLoading) {
+    console.log(identity.loading);
+    if (!identity.loading) {
       const protectedFlag = isProtectedRoute(pathname);
-      const userLogged: boolean = Boolean(identity.data.hexpub.length);
+      const userLogged: boolean = Boolean(identity.hexpub.length);
       const nonce: string = params.get('i') || '';
       const card: string = params.get('c') || '';
 
@@ -48,17 +49,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           break;
       }
     }
-  }, [pathname, identity.data.hexpub, identity.isLoading]);
+  }, [pathname, identity.hexpub, identity.loading]);
 
   const hydrateApp = useMemo((): boolean => {
-    if (identity.isLoading) return false;
+    if (identity.loading) return false;
 
     const protectedFlag: boolean = isProtectedRoute(pathname);
-    if (identity.data.hexpub.length && protectedFlag) return true;
-    if (!identity.data.hexpub && !protectedFlag) return true;
+    if (identity.hexpub.length && protectedFlag) return true;
+    if (!identity.hexpub && !protectedFlag) return true;
 
     return false;
-  }, [identity.isLoading, pathname]);
+  }, [identity.loading, pathname]);
 
   return !hydrateApp ? <SpinnerView /> : children;
 };

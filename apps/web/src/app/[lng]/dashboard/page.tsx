@@ -66,9 +66,7 @@ export default function Page() {
   }, [balance, pricesData, currency]);
 
   useEffect(() => {
-    const userMadeBackup: boolean = Boolean(
-      config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.data.hexpub}`) || false,
-    );
+    const userMadeBackup: boolean = Boolean(config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`) || false);
 
     setShowBanner(!userMadeBackup ? 'backup' : 'none');
   }, []);
@@ -79,7 +77,7 @@ export default function Page() {
         <Navbar>
           <Flex align="center" gap={8}>
             <Avatar>
-              <Text size="small">{identity.data.username ? extractFirstTwoChars(identity.data.username) : 'AN'}</Text>
+              <Text size="small">{identity.username ? extractFirstTwoChars(identity.username) : 'AN'}</Text>
             </Avatar>
             <Flex direction="column">
               <Text size="small" color={appTheme.colors.gray50}>
@@ -87,16 +85,16 @@ export default function Page() {
               </Text>
               <Flex
                 onClick={() => {
-                  if (identity.data.username)
-                    copy(`${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`);
+                  if (identity.username)
+                    copy(`${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`);
                 }}
               >
                 {loading ? (
                   <Text> -- </Text>
                 ) : (
                   <Text>
-                    {identity.data.username
-                      ? `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
+                    {identity.username
+                      ? `${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
                       : t('ANONYMOUS')}
                   </Text>
                 )}
@@ -177,7 +175,7 @@ export default function Page() {
           //         <Image src="/plugins/halving-massacre.png" height={23} width={100} alt="Halving Massacre" />
           //         <div>
           //           <Link
-          //             href={`https://massacre.lawallet.io/?address=${`${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`}`}
+          //             href={`https://massacre.lawallet.io/?address=${`${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`}`}
           //             target="_blank"
           //           >
           //             <Button size="small" color="secondary" variant="borderless">

@@ -2,10 +2,10 @@
 import { useRouter } from '@/navigation';
 
 import Navbar from '@/components/Layout/Navbar';
-import { CACHE_BACKUP_KEY } from '@/constants/constants';
+import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useConfig, useWalletContext } from '@lawallet/react';
+import { useConfig, useNostrContext, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { Button, Container, Divider, Feedback, Flex, Heading, Textarea } from '@lawallet/ui';
 import { useTranslations } from 'next-intl';
@@ -16,6 +16,8 @@ export default function Page() {
   const {
     account: { identity },
   } = useWalletContext();
+
+  const { initializeSigner } = useNostrContext();
 
   const [keyInput, setKeyInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,9 +50,11 @@ export default function Page() {
         return;
       }
 
-      identity.initializeCustomIdentity(keyInput, username).then((res) => {
+      identity.initializeFromPrivateKey(keyInput, username).then((res) => {
         if (res) {
+          config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify({ privateKey: keyInput }));
           config.storage.setItem(`${CACHE_BACKUP_KEY}_${hexpub}`, '1');
+          initializeSigner(identity.signer);
           router.push('/dashboard');
         }
       });

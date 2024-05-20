@@ -23,6 +23,8 @@ export { type BaseStorage, type CreateStorageParameters, createStorage } from '.
 
 export { lnurl_decode, lnurl_encode } from '../libs/lnurl.js';
 
+export { UserIdentity } from '../models/Identity.js';
+
 export {
   type MultiNip04Content,
   extendedMultiNip04Encrypt,

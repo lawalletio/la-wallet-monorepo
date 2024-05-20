@@ -1,3 +1,6 @@
+import { STORAGE_IDENTITY_KEY } from '@/constants/constants';
+import { BaseStorage } from '@lawallet/react';
+
 export function checkIOS(navigator: Navigator) {
   if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
     return true;
@@ -25,4 +28,12 @@ export const extractFirstTwoChars = (str: string): string => {
   } catch {
     return '--';
   }
+};
+
+export const getUserStoragedKey = async (storage: BaseStorage) => {
+  const storagedKey = await storage.getItem(STORAGE_IDENTITY_KEY);
+  if (!storagedKey) return '';
+
+  const { privateKey } = parseContent(storagedKey);
+  return privateKey ?? '';
 };

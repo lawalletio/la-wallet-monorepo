@@ -16,9 +16,9 @@ export const WalletContext = React.createContext({} as WalletContextType);
 
 export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const config = useConfig(props);
-  const { signerInfo, authWithPrivateKey } = useNostrContext({ config });
+  const { signerInfo } = useNostrContext({ config });
 
-  const account: UseAccountReturns = useAccount({ pubkey: signerInfo?.pubkey ?? '', config });
+  const account: UseAccountReturns = useAccount({ pubkey: signerInfo?.pubkey ?? '', storage: true, config });
   const settings: UseSettingsReturns = useSettings();
   const converter: UseConverterReturns = useCurrencyConverter();
 
@@ -27,15 +27,6 @@ export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) 
     settings,
     converter,
   };
-
-  React.useEffect(() => {
-    const {
-      data: { privateKey },
-      isLoading,
-    } = account.identity;
-
-    if (!isLoading && privateKey) authWithPrivateKey(privateKey);
-  }, [account.identity.data.privateKey]);
 
   return React.createElement(WalletContext.Provider, { value }, props.children);
 }

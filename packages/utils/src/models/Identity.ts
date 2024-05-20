@@ -1,0 +1,81 @@
+import { getPublicKey, nip19 } from 'nostr-tools';
+import { baseConfig } from '../constants/constants.js';
+import { getUsername } from '../interceptors/identity.js';
+import type { ConfigParameter, ConfigProps } from '../types/config.js';
+import { NDKEvent, NDKPrivateKeySigner, type NDKSigner, type NostrEvent } from '@nostr-dev-kit/ndk';
+import NDK from '@nostr-dev-kit/ndk';
+
+export type SignerTypes = NDKSigner | undefined;
+
+export class UserIdentity {
+  username: string = '';
+  hexpub: string = '';
+  npub: string = '';
+  loading: boolean = true;
+  signer: SignerTypes = undefined;
+  #config: ConfigProps = baseConfig;
+
+  constructor(params: ConfigParameter) {
+    this.#config = params.config ?? baseConfig;
+  }
+
+  async initializeFromPrivateKey(NsecOrPrivateKey: string, username?: string) {
+    if (!NsecOrPrivateKey || !NsecOrPrivateKey.length) return false;
+
+    try {
+      const pubkey: string = getPublicKey(NsecOrPrivateKey);
+
+      this.hexpub = pubkey;
+      this.username = username ?? (await getUsername(pubkey, this.#config));
+      this.npub = nip19.npubEncode(pubkey);
+
+      this.signer = new NDKPrivateKeySigner(NsecOrPrivateKey);
+      this.loading = false;
+
+      return true;
+    } catch {
+      this.loading = false;
+      return false;
+    }
+  }
+
+  async initializeIdentityFromPubkey(pubkey: string) {
+    if (!pubkey.length) return false;
+
+    try {
+      const username: string = await getUsername(pubkey, this.#config);
+
+      if (username.length) this.username = username;
+      this.hexpub = pubkey;
+      this.npub = nip19.npubEncode(pubkey);
+      this.signer = undefined;
+      this.loading = false;
+
+      return true;
+    } catch {
+      this.loading = false;
+      return false;
+    }
+  }
+
+  reset() {
+    this.hexpub = '';
+    this.npub = '';
+    this.username = '';
+
+    if (this.loading) this.loading = false;
+    return;
+  }
+
+  async signEvent(event: NostrEvent) {
+    if (!this.signer) {
+      throw new Error('You need to initialize a signer to sign an event');
+    }
+
+    const ndk = new NDK({ explicitRelayUrls: this.#config.relaysList, signer: this.signer });
+    const eventToSign: NDKEvent = new NDKEvent(ndk, event);
+
+    await eventToSign.sign();
+    return eventToSign.toNostrEvent();
+  }
+}

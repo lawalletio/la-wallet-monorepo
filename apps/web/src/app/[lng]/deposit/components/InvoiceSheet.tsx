@@ -47,7 +47,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
     converter: { convertCurrency },
   } = useWalletContext();
 
-  const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.data.hexpub });
+  const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.hexpub });
 
   const { formatAmount } = useFormatter({ currency, locale: lng as AvailableLanguages });
 
@@ -81,7 +81,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
   };
 
   const handleCloseSheet = () => {
-    if (sheetStep === 'finished' || !identity.data.username.length) {
+    if (sheetStep === 'finished' || !identity.username.length) {
       router.push('/dashboard');
     } else {
       numpadData.resetAmount();
@@ -106,7 +106,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
       title={
         sheetStep === 'amount' ? t('DEFINE_AMOUNT') : sheetStep === 'qr' ? t('WAITING_PAYMENT') : t('PAYMENT_RECEIVED')
       }
-      isOpen={isOpen || !identity.data.username.length}
+      isOpen={isOpen || !identity.username.length}
       closeText={t('CLOSE')}
       onClose={handleCloseSheet}
     >

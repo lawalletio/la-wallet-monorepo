@@ -2,7 +2,7 @@
 
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from '@/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useTranslations } from 'next-intl';
 
@@ -13,11 +13,14 @@ import { Button, Container, Divider, Flex, Label, Text, ToggleSwitch } from '@la
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { appTheme } from '@/config/exports';
 import { useConfig, useWalletContext } from '@lawallet/react';
+import { getUserStoragedKey } from '@/utils';
 
 export default function Page() {
   const t = useTranslations();
   const config = useConfig();
   const router: AppRouterInstance = useRouter();
+
+  const [userStoragedKey, setUserStoragedKey] = useState<string>('');
 
   const {
     account: { identity },
@@ -31,6 +34,17 @@ export default function Page() {
     if (switchOne || switchTwo) setShowRecovery(true);
   };
 
+  const loadStoragedKey = async () => {
+    const storagedKey = await getUserStoragedKey(config.storage);
+    if (!storagedKey) return;
+
+    setUserStoragedKey(storagedKey);
+  };
+
+  useEffect(() => {
+    loadStoragedKey();
+  }, []);
+
   return (
     <>
       <Navbar title={t('BACKUP_ACCOUNT')} showBackPage={true} overrideBack={'/settings'} />
@@ -40,9 +54,9 @@ export default function Page() {
           <Container size="small">
             <InfoCopy
               title={t('PRIVATE_KEY')}
-              value={identity.data.privateKey}
+              value={userStoragedKey}
               onCopy={() => {
-                config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.data.hexpub}`, '1');
+                config.storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
               }}
             />
             <Divider y={16} />

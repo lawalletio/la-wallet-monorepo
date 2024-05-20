@@ -69,7 +69,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
 
   const defineMetadata = async (receiver: string): Promise<NDKTag> => {
     const showReceiver: boolean = Boolean(receiver.length && !receiver.toLowerCase().startsWith('lnurl'));
-    const showSender: boolean = Boolean(identity.data.username.length);
+    const showSender: boolean = Boolean(identity.username.length);
 
     const receiverInfo: string =
       showReceiver && LNURLInfo.transferInfo.data.includes('@')
@@ -80,7 +80,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
       ...(showReceiver ? { receiver: receiverInfo } : {}),
       ...(showSender
         ? {
-            sender: `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`,
+            sender: `${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`,
           }
         : {}),
     };

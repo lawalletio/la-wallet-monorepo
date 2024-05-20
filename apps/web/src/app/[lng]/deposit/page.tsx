@@ -37,7 +37,7 @@ export default function Page() {
     () =>
       lnurl_encode(
         `${config.endpoints.lightningDomain}/.well-known/lnurlp/${
-          identity.data.username ? identity.data.username : identity.data.npub
+          identity.username ? identity.username : identity.npub
         }`,
       ).toUpperCase(),
     [identity],
@@ -47,14 +47,14 @@ export default function Page() {
     <>
       <Navbar showBackPage={true} title={t('DEPOSIT')} />
 
-      {identity.data.username.length ? (
+      {identity.username.length ? (
         <>
           <Flex flex={1} justify="center" align="center">
             <QRCode
               size={300}
               borderSize={30}
               value={('lightning:' + LNURLEncoded).toUpperCase()}
-              textToCopy={`${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`}
+              textToCopy={`${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`}
             />
           </Flex>
           <Flex>
@@ -68,8 +68,8 @@ export default function Page() {
                   </Text>
                   <Flex>
                     <Text>
-                      {identity.data.username
-                        ? `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
+                      {identity.username
+                        ? `${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
                         : formatAddress(LNURLEncoded, 20)}
                     </Text>
                   </Flex>
@@ -80,8 +80,8 @@ export default function Page() {
                     variant="bezeled"
                     onClick={() =>
                       handleCopy(
-                        identity.data.username
-                          ? `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
+                        identity.username
+                          ? `${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
                           : LNURLEncoded,
                       )
                     }

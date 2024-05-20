@@ -1,16 +1,17 @@
 'use client';
-import { Button, Flex, Text } from '@lawallet/ui';
 import { Modal } from '@/components/UI';
+import { Button, Flex, Text } from '@lawallet/ui';
 import { useTranslations } from 'next-intl';
 // import { AlertTypes } from '@/hooks/useAlerts';
-import { buildCardActivationEvent, useConfig, useWalletContext } from '@lawallet/react';
+import { useNotifications } from '@/context/NotificationsContext';
+import { AlertTypes } from '@/hooks/useAlerts';
+import { usePathname, useRouter } from '@/navigation';
+import { getUserStoragedKey } from '@/utils';
+import { buildCardActivationEvent, useConfig } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { AlertTypes } from '@/hooks/useAlerts';
-import { useNotifications } from '@/context/NotificationsContext';
-import { usePathname, useRouter } from '@/navigation';
 
 export type NewCard = {
   card: string;
@@ -32,10 +33,6 @@ const AddNewCardModal = () => {
   const config = useConfig();
   const notifications = useNotifications();
 
-  const {
-    account: { identity },
-  } = useWalletContext();
-
   const resetCardInfo = () => {
     setNewCardInfo(defaultNewCard);
     router.replace(pathname);
@@ -50,25 +47,32 @@ const AddNewCardModal = () => {
     resetCardInfo();
   };
 
-  const handleActivateCard = () => {
+  const handleActivateCard = async () => {
     if (newCardInfo.loading) return;
     setNewCardInfo({
       ...newCardInfo,
       loading: true,
     });
 
-    buildCardActivationEvent(newCardInfo.card, identity.data.privateKey, config)
-      .then((cardEvent: NostrEvent) => {
-        requestCardActivation(cardEvent, config).then((cardActivated) => {
-          const description: string = cardActivated ? t('ACTIVATE_SUCCESS') : t('ACTIVATE_ERROR');
-          const type: AlertTypes = cardActivated ? 'success' : 'error';
-
-          sendNotification(description, type);
-        });
-      })
-      .catch(() => {
+    try {
+      const storagedKey: string = await getUserStoragedKey(config.storage);
+      if (!storagedKey) {
         sendNotification(t('ACTIVATE_ERROR'), 'error');
-      });
+        return;
+      }
+
+      const cardEvent: NostrEvent = await buildCardActivationEvent(newCardInfo.card, storagedKey, config);
+      const cardActivated: boolean = await requestCardActivation(cardEvent, config);
+
+      const description: string = cardActivated ? t('ACTIVATE_SUCCESS') : t('ACTIVATE_ERROR');
+      const type: AlertTypes = cardActivated ? 'success' : 'error';
+
+      sendNotification(description, type);
+      return;
+    } catch {
+      sendNotification(t('ACTIVATE_ERROR'), 'error');
+      return;
+    }
   };
 
   useEffect(() => {

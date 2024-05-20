@@ -48,7 +48,7 @@ export default function Page() {
   }
 
   const logoutSession = () => {
-    const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.data.hexpub}`);
+    const cachedBackup = config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`);
 
     if (!cachedBackup) {
       errors.modifyError('ERROR_MADE_BACKUP');
@@ -59,7 +59,7 @@ export default function Page() {
 
     if (confirmation) {
       config.storage.removeItem(STORAGE_IDENTITY_KEY);
-      identity.resetIdentity();
+      identity.reset();
       router.push('/login');
     }
   };
@@ -93,7 +93,7 @@ export default function Page() {
           </ButtonSetting>
         </Flex>
 
-        {Boolean(identity.data.privateKey.length) && (
+        {Boolean(identity.signer) && (
           <>
             <Divider y={16} />
             <Text size="small" color={appTheme.colors.gray50}>
