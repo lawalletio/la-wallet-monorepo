@@ -3,7 +3,6 @@ import { getEventHash, getPublicKey, getSignature, nip26, type UnsignedEvent } f
 import { baseConfig } from '../constants/constants.js';
 import { ConfigTypes } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
-import { type UserIdentity } from '../types/identity.js';
 import { nowInSeconds } from './utilities.js';
 
 export enum LaWalletKinds {
@@ -28,11 +27,6 @@ export enum LaWalletTags {
   BUY_HANDLE_REQUEST = 'buy-handle-request',
   CREATE_NONCE = 'create-nonce',
 }
-
-export type GenerateIdentityReturns = {
-  identity: UserIdentity;
-  event: NostrEvent;
-};
 
 export const getTagValue = (tags: NDKTag[], keyTag: string): string => {
   const tag: NDKTag | undefined = tags.find((tag) => tag[0] === keyTag);

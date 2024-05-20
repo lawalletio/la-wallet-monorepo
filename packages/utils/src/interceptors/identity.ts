@@ -1,7 +1,6 @@
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
 import { generatePrivateKey, getPublicKey, nip19 } from 'nostr-tools';
 import { type ConfigProps } from '../types/config.js';
-import { type UserIdentity } from '../types/identity.js';
 import { baseConfig } from '../constants/constants.js';
 
 export type IdentityResponse = {
@@ -10,20 +9,6 @@ export type IdentityResponse = {
   pubkey?: string;
   reason?: string;
   error?: string;
-};
-
-export const generateUserIdentity = async (name?: string): Promise<UserIdentity> => {
-  const privateKey = generatePrivateKey();
-  const identityPubKey = getPublicKey(privateKey);
-
-  const identity: UserIdentity = {
-    username: name ?? '',
-    hexpub: identityPubKey,
-    npub: nip19.npubEncode(identityPubKey),
-    privateKey: privateKey,
-  };
-
-  return identity;
 };
 
 export const validateNonce = async (nonce: string, config: ConfigProps = baseConfig): Promise<boolean> => {

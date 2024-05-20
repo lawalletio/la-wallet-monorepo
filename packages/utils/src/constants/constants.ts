@@ -1,6 +1,5 @@
 import { noopStorage } from '../createStorage.js';
 import { type ConfigProps } from '../types/config.js';
-import type { UserIdentity } from '../types/identity.js';
 import { TransferTypes, type InvoiceTransferType, type LNURLTransferType } from '../types/transaction.js';
 import type { AvailableLanguages } from '../types/translations.js';
 import type { AvailableCurrencies, CurrencyMetadata, UserConfigProps } from '../types/userConfig.js';
@@ -42,13 +41,6 @@ export const defaultCurrency: AvailableCurrencies = 'ARS';
 export const defaultUserConfig: UserConfigProps = {
   hideBalance: false,
   currency: 'SAT',
-};
-
-export const defaultIdentity: UserIdentity = {
-  username: '',
-  hexpub: '',
-  privateKey: '',
-  npub: '',
 };
 
 export const defaultInvoiceTransfer: InvoiceTransferType = {

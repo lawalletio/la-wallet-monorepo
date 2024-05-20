@@ -41,7 +41,7 @@ import { appTheme } from '@/config/exports';
 import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
-import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
+import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
 
 export default function Page() {
   const config = useConfig();
@@ -85,19 +85,10 @@ export default function Page() {
               </Text>
               <Flex
                 onClick={() => {
-                  if (identity.username)
-                    copy(`${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`);
+                  if (identity.lud16) copy(identity.lud16);
                 }}
               >
-                {loading ? (
-                  <Text> -- </Text>
-                ) : (
-                  <Text>
-                    {identity.username
-                      ? `${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
-                      : t('ANONYMOUS')}
-                  </Text>
-                )}
+                {loading ? <Text> -- </Text> : <Text>{identity.username ? identity.lud16 : t('ANONYMOUS')}</Text>}
               </Flex>
             </Flex>
           </Flex>
@@ -159,40 +150,14 @@ export default function Page() {
         </Flex>
         <Divider y={16} />
 
-        {
-          showBanner === 'backup' ? (
-            <>
-              <Link href="/settings/recovery">
-                <BannerAlert title={t('RECOMMEND_BACKUP')} description={t('RECOMMEND_BACKUP_REASON')} color="error" />
-              </Link>
-              <Divider y={16} />
-            </>
-          ) : null
-          // <>
-          //   <Card>
-          //     <Flex direction="column" gap={16}>
-          //       <Flex align="center" justify="space-between">
-          //         <Image src="/plugins/halving-massacre.png" height={23} width={100} alt="Halving Massacre" />
-          //         <div>
-          //           <Link
-          //             href={`https://massacre.lawallet.io/?address=${`${identity.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`}`}
-          //             target="_blank"
-          //           >
-          //             <Button size="small" color="secondary" variant="borderless">
-          //               {t('PLAY_NOW')}
-          //             </Button>
-          //           </Link>
-          //         </div>
-          //       </Flex>
-          //       <Flex direction="column" gap={4}>
-          //         <Text size="small">{t('BANNER_DESC')}</Text>
-          //         <Text size="small">{t('BANNER_DESC2')}</Text>
-          //       </Flex>
-          //     </Flex>
-          //   </Card>
-          //   <Divider y={16} />
-          // </>
-        }
+        {showBanner === 'backup' ? (
+          <>
+            <Link href="/settings/recovery">
+              <BannerAlert title={t('RECOMMEND_BACKUP')} description={t('RECOMMEND_BACKUP_REASON')} color="error" />
+            </Link>
+            <Divider y={16} />
+          </>
+        ) : null}
 
         {transactions.length === 0 ? (
           <Flex direction="column" justify="center" align="center" flex={1}>

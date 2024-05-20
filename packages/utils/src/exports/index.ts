@@ -1,7 +1,6 @@
 export * from '../constants/constants.js';
 
 export {
-  type GenerateIdentityReturns,
   LaWalletKinds,
   LaWalletTags,
   getTag,
