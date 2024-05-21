@@ -1,9 +1,8 @@
 import { format, formatDistance } from 'date-fns';
 import { enUS, es } from 'date-fns/locale';
-import type { AvailableLanguages } from '../types/translations.js';
 import type { AvailableCurrencies } from '../types/userConfig.js';
-import { formatDistanceES } from './dateFormat/formatDistanceES.js';
 import { formatDistanceEN } from './dateFormat/formatDistanceEN.js';
+import { formatDistanceES } from './dateFormat/formatDistanceES.js';
 
 export const formatter = (minDecimals: number = 2, maxDecimals: number = 2, lng: string): Intl.NumberFormat =>
   new Intl.NumberFormat(lng === 'en' ? 'en-US' : 'es-AR', {
@@ -16,6 +15,12 @@ export const decimalsToUse = (currency: AvailableCurrencies): number => {
   switch (currency) {
     case 'SAT':
       return 0;
+
+    case 'MSAT':
+      return 0;
+
+    case 'BTC':
+      return 8;
 
     case 'ARS':
       return 2;
