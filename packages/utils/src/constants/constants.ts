@@ -30,6 +30,12 @@ export const CurrenciesMetadata: Record<AvailableCurrencies, CurrencyMetadata> =
   SAT: {
     locale: 'es-AR',
   },
+  MSAT: {
+    locale: 'es-AR',
+  },
+  BTC: {
+    locale: 'en-US',
+  },
   USD: {
     locale: 'en-US',
   },
