@@ -1,4 +1,4 @@
-import { STORAGE_IDENTITY_KEY, regexUserName } from '@/constants/constants';
+import { regexUserName } from '@/constants/constants';
 import {
   buildCardActivationEvent,
   buildIdentityEvent,
@@ -8,9 +8,11 @@ import {
 } from '@lawallet/react';
 import { IdentityResponse, claimIdentity, existIdentity, requestCardActivation } from '@lawallet/react/actions';
 
+import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
 import { useRouter } from '@/navigation';
+import { saveIdentityToStorage } from '@/utils';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
-import { generatePrivateKey } from 'nostr-tools';
+import { generatePrivateKey, getPublicKey } from 'nostr-tools';
 import { Dispatch, SetStateAction, useState } from 'react';
 import useErrors, { IUseErrors } from './useErrors';
 
@@ -156,8 +158,14 @@ export const useCreateIdentity = (): UseIdentityReturns => {
           message: createdAccount.reason!,
         };
 
+      const identityToSave: StoragedIdentityInfo = {
+        username: name,
+        hexpub: getPublicKey(randomHexPKey),
+        privateKey: randomHexPKey,
+      };
+
+      await saveIdentityToStorage(config.storage, identityToSave);
       initializeSigner(identity.signer);
-      await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify({ privateKey: randomHexPKey }));
 
       return {
         success: true,

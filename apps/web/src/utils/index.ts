@@ -1,4 +1,5 @@
-import { STORAGE_IDENTITY_KEY } from '@/constants/constants';
+import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
+import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
 import { BaseStorage } from '@lawallet/react';
 
 export function checkIOS(navigator: Navigator) {
@@ -30,10 +31,26 @@ export const extractFirstTwoChars = (str: string): string => {
   }
 };
 
-export const getUserStoragedKey = async (storage: BaseStorage) => {
+export const getUserStoragedKey = async (storage: BaseStorage, index: number = 0) => {
   const storagedKey = await storage.getItem(STORAGE_IDENTITY_KEY);
   if (!storagedKey) return '';
 
-  const { privateKey } = parseContent(storagedKey);
-  return privateKey ?? '';
+  const Identity: StoragedIdentityInfo[] = parseContent(storagedKey);
+  return Identity[index]?.privateKey ?? '';
+};
+
+export const saveIdentityToStorage = async (storage: BaseStorage, identity: StoragedIdentityInfo) => {
+  const storagedIdentity = await storage.getItem(STORAGE_IDENTITY_KEY);
+
+  if (storagedIdentity) {
+    const identityList: StoragedIdentityInfo[] = parseContent(storagedIdentity);
+    identityList.push(identity);
+
+    await storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identityList));
+    await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+  } else {
+    const identityToSave: StoragedIdentityInfo[] = [identity];
+    await storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identityToSave));
+    await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+  }
 };

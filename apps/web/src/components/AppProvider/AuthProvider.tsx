@@ -8,7 +8,7 @@ import SpinnerView from '../Spinner/SpinnerView';
 // const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
 const protectedRoutes: string[] = ['/dashboard', '/transfer', '/deposit', '/scan', '/settings', '/transactions'];
 
-type StoragedIdentityInfo = {
+export type StoragedIdentityInfo = {
   username: string;
   hexpub: string;
   privateKey: string;
@@ -52,8 +52,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const storageIdentity = await config.storage.getItem(STORAGE_IDENTITY_KEY);
 
       if (storageIdentity) {
-        const parsedIdentity: string[] = parseContent(storageIdentity as string);
-        const auth: boolean = await authenticate(parsedIdentity[0]);
+        const parsedIdentity: StoragedIdentityInfo[] = parseContent(storageIdentity as string);
+        const auth: boolean = await authenticate(parsedIdentity[0]?.privateKey);
         return auth;
       } else {
         // ******************************************
@@ -64,6 +64,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const localStorageKey = localStorage.getItem(STORAGE_IDENTITY_KEY);
         if (!localStorageKey) {
           identity.reset();
+          setIsLoading(false);
           return false;
         }
 
@@ -79,16 +80,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             },
           ];
 
-          await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify([IdentityToSave]));
+          await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(IdentityToSave));
         }
         return auth;
         // ******************************************
         // After removing the patch, leave only this lines:
         // identity.reset();
+        // setIsLoading(false);
         // return false;
         // ******************************************
       }
     } catch {
+      setIsLoading(false);
       return false;
     }
   };

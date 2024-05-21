@@ -10,8 +10,10 @@ import { Container, Feedback, Flex, Heading, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { generatePrivateKey } from 'nostr-tools';
+import { generatePrivateKey, getPublicKey } from 'nostr-tools';
 import { useEffect } from 'react';
+import { saveIdentityToStorage } from '@/utils';
+import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
 
 export default function Page() {
   const t = useTranslations();
@@ -43,8 +45,16 @@ export default function Page() {
 
           if (res.name) {
             identity.initializeFromPrivateKey(randomHexPKey, res.name).then(() => {
-              initializeSigner(identity.signer);
-              router.push('/dashboard');
+              const identityToSave: StoragedIdentityInfo = {
+                username: res.name,
+                hexpub: getPublicKey(randomHexPKey),
+                privateKey: randomHexPKey,
+              };
+
+              saveIdentityToStorage(config.storage, identityToSave).then(() => {
+                initializeSigner(identity.signer);
+                router.push('/dashboard');
+              });
             });
           } else {
             errors.modifyError('ERROR_ON_RESET_ACCOUNT');

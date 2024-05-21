@@ -1,10 +1,11 @@
 'use client';
 import { useRouter } from '@/navigation';
 
+import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
 import Navbar from '@/components/Layout/Navbar';
-import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
+import { saveIdentityToStorage } from '@/utils';
 import { useConfig, useNostrContext, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { Button, Container, Divider, Feedback, Flex, Heading, Textarea } from '@lawallet/ui';
@@ -50,12 +51,18 @@ export default function Page() {
         return;
       }
 
-      identity.initializeFromPrivateKey(keyInput, username).then(async (res) => {
+      identity.initializeFromPrivateKey(keyInput, username).then((res) => {
         if (res) {
-          await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify({ privateKey: keyInput }));
-          await config.storage.setItem(`${CACHE_BACKUP_KEY}_${hexpub}`, '1');
-          initializeSigner(identity.signer);
-          router.push('/dashboard');
+          const IdentityToSave: StoragedIdentityInfo = {
+            username,
+            hexpub,
+            privateKey: keyInput,
+          };
+
+          saveIdentityToStorage(config.storage, IdentityToSave).then(() => {
+            initializeSigner(identity.signer);
+            router.push('/dashboard');
+          });
         }
       });
     } catch (err) {

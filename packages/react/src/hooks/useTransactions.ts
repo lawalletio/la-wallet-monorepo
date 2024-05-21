@@ -360,7 +360,14 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
       return;
     }
 
-    if (storage) loadCachedTransactions();
+    storage
+      ? loadCachedTransactions()
+      : setActivityInfo((prev) => {
+          return {
+            ...prev,
+            loading: false,
+          };
+        });
   }, [pubkey, storage]);
 
   const saveTransactions = async (txs: Transaction[]) => {
