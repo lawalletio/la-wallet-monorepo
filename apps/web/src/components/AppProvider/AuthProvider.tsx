@@ -8,6 +8,12 @@ import SpinnerView from '../Spinner/SpinnerView';
 // const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
 const protectedRoutes: string[] = ['/dashboard', '/transfer', '/deposit', '/scan', '/settings', '/transactions'];
 
+type StoragedIdentityInfo = {
+  username: string;
+  hexpub: string;
+  privateKey: string;
+};
+
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const {
     account: { identity },
@@ -42,11 +48,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loadIdentityFromStorage = async () => {
     try {
+      // If you have the identity saved in IndexedDB, we load from here.
       const storageIdentity = await config.storage.getItem(STORAGE_IDENTITY_KEY);
 
       if (storageIdentity) {
-        const parsedIdentity: { privateKey: string } = parseContent(storageIdentity as string);
-        const auth: boolean = await authenticate(parsedIdentity.privateKey);
+        const parsedIdentity: string[] = parseContent(storageIdentity as string);
+        const auth: boolean = await authenticate(parsedIdentity[0]);
         return auth;
       } else {
         // ******************************************
@@ -55,14 +62,25 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Remove this code after migrating the identity provider.
         // ******************************************
         const localStorageKey = localStorage.getItem(STORAGE_IDENTITY_KEY);
-        if (!localStorageKey) identity.reset();
+        if (!localStorageKey) {
+          identity.reset();
+          return false;
+        }
 
-        const parsedIdentity: { privateKey: string } = parseContent(localStorageKey as string);
+        const parsedIdentity: StoragedIdentityInfo = parseContent(localStorageKey as string);
         const auth: boolean = await authenticate(parsedIdentity.privateKey);
 
-        if (auth)
-          await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify({ privateKey: parsedIdentity.privateKey }));
+        if (auth) {
+          const IdentityToSave: StoragedIdentityInfo[] = [
+            {
+              username: parsedIdentity?.username ?? '',
+              hexpub: parsedIdentity?.hexpub ?? '',
+              privateKey: parsedIdentity.privateKey,
+            },
+          ];
 
+          await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify([IdentityToSave]));
+        }
         return auth;
         // ******************************************
         // After removing the patch, leave only this lines:
@@ -78,10 +96,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     loadIdentityFromStorage();
   }, []);
-
-  // useEffect(() => {
-  //   if (isLoading) setIsLoading(false);
-  // }, [identity.hexpub]);
 
   useEffect(() => {
     if (!isLoading) {
