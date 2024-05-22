@@ -1,5 +1,5 @@
+import { decimalsToUse } from '@lawallet/utils';
 import type { AvailableCurrencies } from '@lawallet/utils/types';
-import { decimalsToUse, CurrenciesList } from '@lawallet/utils';
 import * as React from 'react';
 import { useCurrencyConverter } from './useCurrencyConverter.js';
 

@@ -4,7 +4,6 @@ import { Button } from '../Button';
 import { Flex } from '../Flex';
 import { Container } from '../Layout/Container';
 import { TokenListStyle } from './style';
-// import { CurrenciesList } from '@lawallet/react';
 
 export function TokensList({
   currenciesList,
@@ -33,7 +32,6 @@ export function TokensList({
               </Button>
             );
           })}
-          {/* () => settings.changeCurrency(currency) */}
         </Flex>
       </Container>
     </TokenListStyle>

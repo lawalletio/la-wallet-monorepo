@@ -16,7 +16,6 @@
     "@formatjs/intl-localematcher": "^0.5.4",
     "@lawallet/react": "*",
     "@lawallet/ui": "*",
-    "@lawallet/pos": "0.0.1",
     "@nostr-dev-kit/ndk": "^2.4.0",
     "@serwist/next": "^8.4.4",
     "@serwist/precaching": "^8.4.4",
@@ -54,10 +53,5 @@
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
   },
-  "pluginsList": [
-    {
-      "route": "pos",
-      "package": "@lawallet/pos"
-    }
-  ]
+  "pluginsList": []
 }

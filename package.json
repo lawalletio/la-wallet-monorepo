@@ -22,8 +22,10 @@
     "create-plugin": "node ./.scripts/addPlugin.js"
   },
   "devDependencies": {
-    "@lawallet/eslint-config": "^1.0.0",
-    "@lawallet/typescript-config": "^1.0.0",
+    "inquirer": "^9.2.22",
+    "@lacrypta/eslint-config": "^1.0.0",
+    "@lacrypta/prettier-config": "^1.0.0",
+    "@lacrypta/typescript-config": "^1.0.0",
     "prettier": "^3.2.5",
     "simple-git": "^3.24.0",
     "turbo": "^1.12.5"
@@ -43,6 +45,7 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "config/*"
+    "config/*",
+    "plugins/*"
   ]
 }
