@@ -1,10 +1,18 @@
 import { regexUserName } from '@/constants/constants';
-import { existIdentity, generateUserIdentity, requestCardActivation } from '@lawallet/react/actions';
-import { useConfig, useWalletContext, buildCardActivationEvent, CreateIdentityReturns } from '@lawallet/react';
+import {
+  buildCardActivationEvent,
+  buildIdentityEvent,
+  useConfig,
+  useNostrContext,
+  useWalletContext,
+} from '@lawallet/react';
+import { IdentityResponse, claimIdentity, existIdentity, requestCardActivation } from '@lawallet/react/actions';
 
-import { UserIdentity } from '@lawallet/react/types';
-import { NostrEvent } from '@nostr-dev-kit/ndk';
+import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
 import { useRouter } from '@/navigation';
+import { saveIdentityToStorage } from '@/utils';
+import { NostrEvent } from '@nostr-dev-kit/ndk';
+import { generatePrivateKey, getPublicKey } from 'nostr-tools';
 import { Dispatch, SetStateAction, useState } from 'react';
 import useErrors, { IUseErrors } from './useErrors';
 
@@ -13,6 +21,17 @@ export interface AccountProps {
   card: string;
   name: string;
 }
+
+export type CreateIdentityProps = {
+  nonce: string;
+  name: string;
+};
+
+export type CreateIdentityReturns = {
+  success: boolean;
+  message: string;
+  randomHexPKey?: string;
+};
 
 interface CreateIdentityParams extends AccountProps {
   isValidNonce: boolean;
@@ -44,9 +63,9 @@ export const useCreateIdentity = (): UseIdentityReturns => {
   } = useWalletContext();
 
   const config = useConfig();
-
   const [loading, setLoading] = useState<boolean>(false);
 
+  const { initializeSigner } = useNostrContext();
   const [accountInfo, setAccountInfo] = useState<CreateIdentityParams>(defaultAccount);
 
   const errors = useErrors();
@@ -103,11 +122,61 @@ export const useCreateIdentity = (): UseIdentityReturns => {
   const createNostrAccount = async () => {
     setLoading(true);
 
-    const generatedIdentity: UserIdentity = await generateUserIdentity();
-    if (generatedIdentity) {
-      identity.initializeFromPrivateKey(generatedIdentity.privateKey);
+    const randomHexPKey: string = generatePrivateKey();
+    if (randomHexPKey) {
+      identity.initializeFromPrivateKey(randomHexPKey);
       router.push('/dashboard');
       setLoading(false);
+    }
+  };
+
+  const createIdentity = async ({ nonce, name }: CreateIdentityProps): Promise<CreateIdentityReturns> => {
+    try {
+      const randomHexPKey: string = generatePrivateKey();
+      const initialized: boolean = await identity.initializeFromPrivateKey(randomHexPKey, name);
+
+      if (!randomHexPKey || !initialized)
+        return {
+          success: false,
+          message: 'ERROR_WITH_SIGNER',
+        };
+
+      const eventToSign: NostrEvent = buildIdentityEvent(nonce, name, identity.hexpub);
+      const signedEvent: NostrEvent | undefined = await identity.signEvent(eventToSign);
+
+      if (!signedEvent)
+        return {
+          success: false,
+          message: 'ERROR_WITH_IDENTITY_EVENT',
+        };
+
+      const createdAccount: IdentityResponse = await claimIdentity(signedEvent, config);
+
+      if (!createdAccount.success)
+        return {
+          success: false,
+          message: createdAccount.reason!,
+        };
+
+      const identityToSave: StoragedIdentityInfo = {
+        username: name,
+        hexpub: getPublicKey(randomHexPKey),
+        privateKey: randomHexPKey,
+      };
+
+      await saveIdentityToStorage(config.storage, identityToSave);
+      initializeSigner(identity.signer);
+
+      return {
+        success: true,
+        message: 'ok',
+        randomHexPKey,
+      };
+    } catch {
+      return {
+        success: false,
+        message: 'ERROR_ON_CREATE_ACCOUNT',
+      };
     }
   };
 
@@ -132,14 +201,12 @@ export const useCreateIdentity = (): UseIdentityReturns => {
       .then((nameWasTaken: boolean) => {
         if (nameWasTaken) return errors.modifyError('NAME_ALREADY_TAKEN');
 
-        return identity.createIdentity({ nonce, name }).then((response_identity: CreateIdentityReturns) => {
-          const { success, newIdentity, message } = response_identity;
+        return createIdentity({ nonce, name }).then((response_identity: CreateIdentityReturns) => {
+          const { success, randomHexPKey, message } = response_identity;
 
-          if (success && newIdentity) {
-            identity.initializeCustomIdentity(newIdentity.privateKey, newIdentity.username);
-
+          if (success && randomHexPKey) {
             if (props.card) {
-              buildCardActivationEvent(props.card, newIdentity.privateKey, config)
+              buildCardActivationEvent(props.card, randomHexPKey, config)
                 .then((cardEvent: NostrEvent) => {
                   requestCardActivation(cardEvent, config).then(() => {
                     router.push('/dashboard');

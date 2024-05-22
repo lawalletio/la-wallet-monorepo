@@ -10,6 +10,7 @@
   },
   "main": "dist/index.js",
   "type": "module",
+  "prettier": "@lacrypta/prettier-config",
   "types": "dist/index.d.ts",
   "style": "dist/global.css",
   "files": [
@@ -22,7 +23,7 @@
     "lint:fix": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
     "build": "node esbuild.config.js && tsc"
   },
-  "author": "LaWallet Labs",
+  "author": "La Crypta Labs",
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^18.2.48",

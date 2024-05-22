@@ -5,7 +5,9 @@ import { useConfig } from './useConfig.js';
 
 const ENDPOINT_PRICE_BTC: string = 'https://api.yadio.io/exrates/btc';
 const UPDATE_PRICES_TIME: number = 60 * 1000;
-const scaledBTC: number = 10 ** 8;
+
+const mSats: number = 1000;
+const scaledBTC_to_mSats: number = 10 ** 8 * mSats;
 
 type PricesInfo = Record<AvailableCurrencies, number>;
 
@@ -19,7 +21,9 @@ export const useCurrencyConverter = (): UseConverterReturns => {
   const [pricesData, setPricesData] = React.useState<PricesInfo>({
     ARS: 0,
     USD: 0,
-    SAT: 1,
+    MSAT: 1,
+    SAT: 1 / mSats,
+    BTC: scaledBTC_to_mSats,
   });
 
   const convertCurrency = (amount: number, currencyA: AvailableCurrencies, currencyB: AvailableCurrencies): number => {
@@ -40,9 +44,11 @@ export const useCurrencyConverter = (): UseConverterReturns => {
         if (!BTCPrices) return false;
 
         const updatedPrices: PricesInfo = {
-          ARS: BTCPrices.ARS / scaledBTC,
-          USD: BTCPrices.USD / scaledBTC,
-          SAT: 1,
+          MSAT: 1,
+          SAT: 1 / mSats,
+          BTC: scaledBTC_to_mSats,
+          ARS: BTCPrices.ARS / scaledBTC_to_mSats,
+          USD: BTCPrices.USD / scaledBTC_to_mSats,
         };
 
         return updatedPrices;
@@ -54,7 +60,7 @@ export const useCurrencyConverter = (): UseConverterReturns => {
       const updatedPrices: PricesInfo | false = await requestUpdatedPrices();
       if (!updatedPrices) return;
 
-      config.storage.setItem('prices', JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
+      await config.storage.setItem('prices', JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
 
       setPricesData(updatedPrices);
     } catch (err) {
@@ -62,8 +68,8 @@ export const useCurrencyConverter = (): UseConverterReturns => {
     }
   };
 
-  const loadPrices = () => {
-    const storagedPrices: string = config.storage.getItem('prices') as string;
+  const loadPrices = async () => {
+    const storagedPrices: string = (await config.storage.getItem('prices')) as string;
     if (!storagedPrices) {
       updatePrices();
       return;

@@ -3,7 +3,6 @@ import { getEventHash, getPublicKey, getSignature, nip26, type UnsignedEvent } f
 import { baseConfig } from '../constants/constants.js';
 import { ConfigTypes } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
-import { type UserIdentity } from '../types/identity.js';
 import { nowInSeconds } from './utilities.js';
 
 export enum LaWalletKinds {
@@ -29,11 +28,6 @@ export enum LaWalletTags {
   CREATE_NONCE = 'create-nonce',
 }
 
-export type GenerateIdentityReturns = {
-  identity: UserIdentity;
-  event: NostrEvent;
-};
-
 export const getTagValue = (tags: NDKTag[], keyTag: string): string => {
   const tag: NDKTag | undefined = tags.find((tag) => tag[0] === keyTag);
   return tag ? tag[1]! : '';
@@ -53,17 +47,17 @@ export const getMultipleTagsValues = (tags: NDKTag[], keyTag: string) => {
   return values;
 };
 
-export const buildIdentityEvent = (nonce: string, identity: UserIdentity): NostrEvent => {
+export const buildIdentityEvent = (nonce: string, username: string, pubkey: string): NostrEvent => {
   return {
-    pubkey: identity.hexpub,
+    pubkey,
     kind: LaWalletKinds.REGULAR,
     content: JSON.stringify({
-      name: identity.username,
-      pubkey: identity.hexpub,
+      name: username,
+      pubkey,
     }),
     tags: [
       ['t', LaWalletTags.CREATE_IDENTITY],
-      ['name', identity.username],
+      ['name', username],
       ['nonce', nonce],
     ],
     created_at: nowInSeconds(),

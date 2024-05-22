@@ -2,6 +2,7 @@
   "name": "lawallet-monorepo",
   "private": true,
   "type": "module",
+  "prettier": "@lacrypta/prettier-config",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -23,7 +24,6 @@
   "devDependencies": {
     "@lawallet/eslint-config": "^1.0.0",
     "@lawallet/typescript-config": "^1.0.0",
-    "inquirer": "^9.2.22",
     "prettier": "^3.2.5",
     "simple-git": "^3.24.0",
     "turbo": "^1.12.5"
@@ -43,7 +43,6 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "config/*",
-    "plugins/*"
+    "config/*"
   ]
 }

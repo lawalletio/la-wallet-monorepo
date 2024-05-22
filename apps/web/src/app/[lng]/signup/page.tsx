@@ -61,11 +61,11 @@ const SignUp = () => {
     config,
   });
 
-  const saveZapRequestInfo = (new_info: ZapRequestInfo) => {
+  const saveZapRequestInfo = async (new_info: ZapRequestInfo) => {
     const zrExpiration: number = Date.now() + 2 * 60 * 1000;
     const ZR: ZapRequestInfo = { ...new_info, expiry: zrExpiration };
 
-    config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify(ZR));
+    await config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify(ZR));
     setZapRequestInfo(ZR);
   };
 

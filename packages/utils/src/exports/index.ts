@@ -1,7 +1,6 @@
 export * from '../constants/constants.js';
 
 export {
-  type GenerateIdentityReturns,
   LaWalletKinds,
   LaWalletTags,
   getTag,
@@ -22,6 +21,8 @@ export { type CreateConfigParameters, createConfig } from '../createConfig.js';
 export { type BaseStorage, type CreateStorageParameters, createStorage } from '../createStorage.js';
 
 export { lnurl_decode, lnurl_encode } from '../libs/lnurl.js';
+
+export { UserIdentity } from '../models/Identity.js';
 
 export {
   type MultiNip04Content,
