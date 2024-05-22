@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const config = require('../lawallet.config');
+const { pluginsList } = require('../package.json');
 const pluginsDir = './src/config/exports/extensions';
 
 console.log('\x1b[33m%s\x1b[0m', '╭───────────────────────────────────────────────────────────────────────╮');
@@ -14,21 +14,21 @@ if (!fs.existsSync(pluginsDir)) {
   fs.mkdirSync(pluginsDir);
 }
 
-config.plugins.forEach((plugin) => {
-  const { name, path: pluginPath } = plugin;
-  const metadataPath = `${pluginPath}/metadata`;
+pluginsList.forEach((plugin) => {
+  const { route, package: pluginPackage } = plugin;
+  const metadataPath = `${pluginPackage}/metadata`;
 
   const pluginConfig = `import SpinnerView from '@/components/Spinner/SpinnerView';
-import { PluginRoutes } from '${pluginPath}';
+import { PluginRoutes } from '${pluginPackage}';
 import { metadata } from '${metadataPath}';
 import dynamic from 'next/dynamic';
 import { PluginProps } from './plugins.d';
 
-export const ${name}Plugin: PluginProps = {
+export const ${route}Plugin: PluginProps = {
   metadata,
   routes: PluginRoutes.map((route: string) => ({
     path: route,
-    component: dynamic(() => import('${pluginPath}').then((mod) => mod.App[route]), {
+    component: dynamic(() => import('${pluginPackage}').then((mod) => mod.App[route]), {
       ssr: false,
       loading: () => <SpinnerView />,
     }),
@@ -36,16 +36,16 @@ export const ${name}Plugin: PluginProps = {
 };
 `;
 
-  fs.writeFileSync(path.join(pluginsDir, `${name}.tsx`), pluginConfig);
+  fs.writeFileSync(path.join(pluginsDir, `${route}.tsx`), pluginConfig);
 
-  console.log('\x1b[32m', `Added ${name} plugin`);
+  console.log('\x1b[32m', `Added ${route} plugin`);
 });
 
 const indexContent = `import { PluginProps } from './plugins.d';
-${config.plugins.map((plugin) => `import { ${plugin.name}Plugin } from './${plugin.name}';`).join('\n')}
+${pluginsList.map((plugin) => `import { ${plugin.route}Plugin } from './${plugin.route}';`).join('\n')}
 
 export const PLUGINS: Record<string, PluginProps> = {
-  ${config.plugins.map((plugin) => `${plugin.name}: ${plugin.name}Plugin,`).join('\n  ')}
+  ${pluginsList.map((plugin) => `${plugin.route}: ${plugin.route}Plugin,`).join('\n  ')}
 };
 `;
 
