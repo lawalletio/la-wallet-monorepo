@@ -41,6 +41,9 @@ export const ${route}Plugin: PluginProps = {
   console.log('\x1b[32m', `Added ${route} plugin`);
 });
 
+const emptyContent = `export const PLUGINS = {};
+`;
+
 const indexContent = pluginsList.length
   ? `import { PluginProps } from './plugins.d';
 ${pluginsList.map((plugin) => `import { ${plugin.route}Plugin } from './${plugin.route}';`).join('\n')}
@@ -49,7 +52,7 @@ export const PLUGINS: Record<string, PluginProps> = {
   ${pluginsList.map((plugin) => `${plugin.route}: ${plugin.route}Plugin,`).join('\n  ')}
 };
 `
-  : `export const PLUGINS = {};`;
+  : emptyContent;
 
 fs.writeFileSync(path.join(pluginsDir, 'index.ts'), indexContent);
 

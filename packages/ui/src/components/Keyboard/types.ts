@@ -1,6 +1,4 @@
-import { type IUseNumpad } from '@lawallet/react';
-
 export type KeyboardProps = {
-  numpadData: IUseNumpad;
+  numpadData: any;
   disableKeydown?: boolean;
 };
