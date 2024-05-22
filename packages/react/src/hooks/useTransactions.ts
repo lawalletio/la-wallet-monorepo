@@ -305,9 +305,9 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
     });
   }
 
-  const loadCachedTransactions = () => {
+  const loadCachedTransactions = async () => {
     if (pubkey.length) {
-      const storagedData: string = (config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`) as string) || '';
+      const storagedData: string = ((await config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`)) as string) || '';
 
       if (!storage || !storagedData) {
         setActivityInfo({ ...defaultActivity, loading: false });
@@ -360,12 +360,22 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
       return;
     }
 
-    if (storage) loadCachedTransactions();
+    storage
+      ? loadCachedTransactions()
+      : setActivityInfo((prev) => {
+          return {
+            ...prev,
+            loading: false,
+          };
+        });
   }, [pubkey, storage]);
 
+  const saveTransactions = async (txs: Transaction[]) => {
+    await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(txs));
+  };
+
   React.useEffect(() => {
-    if (storage && transactions.length)
-      config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(transactions));
+    if (storage && transactions.length) saveTransactions(transactions);
   }, [transactions]);
 
   return {

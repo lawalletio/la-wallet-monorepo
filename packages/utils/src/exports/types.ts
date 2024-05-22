@@ -9,7 +9,6 @@ export {
   CardStatus,
   ConfigTypes,
 } from '../types/card.js';
-export { type UserIdentity } from '../types/identity.js';
 export {
   type Transaction,
   type TokensAmount,

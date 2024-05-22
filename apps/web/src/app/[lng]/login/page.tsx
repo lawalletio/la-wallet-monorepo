@@ -1,11 +1,12 @@
 'use client';
 import { useRouter } from '@/navigation';
 
+import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
 import Navbar from '@/components/Layout/Navbar';
-import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useConfig, useWalletContext } from '@lawallet/react';
+import { saveIdentityToStorage } from '@/utils';
+import { useConfig, useNostrContext, useWalletContext } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { Button, Container, Divider, Feedback, Flex, Heading, Textarea } from '@lawallet/ui';
 import { useTranslations } from 'next-intl';
@@ -16,6 +17,8 @@ export default function Page() {
   const {
     account: { identity },
   } = useWalletContext();
+
+  const { initializeSigner } = useNostrContext();
 
   const [keyInput, setKeyInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,10 +51,18 @@ export default function Page() {
         return;
       }
 
-      identity.initializeCustomIdentity(keyInput, username).then((res) => {
+      identity.initializeFromPrivateKey(keyInput, username).then((res) => {
         if (res) {
-          config.storage.setItem(`${CACHE_BACKUP_KEY}_${hexpub}`, '1');
-          router.push('/dashboard');
+          const IdentityToSave: StoragedIdentityInfo = {
+            username,
+            hexpub,
+            privateKey: keyInput,
+          };
+
+          saveIdentityToStorage(config.storage, IdentityToSave).then(() => {
+            initializeSigner(identity.signer);
+            router.push('/dashboard');
+          });
         }
       });
     } catch (err) {

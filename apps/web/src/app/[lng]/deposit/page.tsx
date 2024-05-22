@@ -10,7 +10,7 @@ import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
 import { useNotifications } from '@/context/NotificationsContext';
-import { formatAddress, lnurl_encode, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
+import { formatAddress, lnurl_encode, useConfig, useWalletContext } from '@lawallet/react';
 import { useTranslations } from 'next-intl';
 import InvoiceSheet from './components/InvoiceSheet';
 
@@ -37,7 +37,7 @@ export default function Page() {
     () =>
       lnurl_encode(
         `${config.endpoints.lightningDomain}/.well-known/lnurlp/${
-          identity.data.username ? identity.data.username : identity.data.npub
+          identity.username ? identity.username : identity.npub
         }`,
       ).toUpperCase(),
     [identity],
@@ -47,14 +47,14 @@ export default function Page() {
     <>
       <Navbar showBackPage={true} title={t('DEPOSIT')} />
 
-      {identity.data.username.length ? (
+      {identity.username.length ? (
         <>
           <Flex flex={1} justify="center" align="center">
             <QRCode
               size={300}
               borderSize={30}
               value={('lightning:' + LNURLEncoded).toUpperCase()}
-              textToCopy={`${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`}
+              textToCopy={identity.lud16}
             />
           </Flex>
           <Flex>
@@ -67,24 +67,14 @@ export default function Page() {
                     {t('USER')}
                   </Text>
                   <Flex>
-                    <Text>
-                      {identity.data.username
-                        ? `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
-                        : formatAddress(LNURLEncoded, 20)}
-                    </Text>
+                    <Text>{identity.lud16 ? identity.lud16 : formatAddress(LNURLEncoded, 20)}</Text>
                   </Flex>
                 </Flex>
                 <div>
                   <Button
                     size="small"
                     variant="bezeled"
-                    onClick={() =>
-                      handleCopy(
-                        identity.data.username
-                          ? `${identity.data.username}@${normalizeLNDomain(config.endpoints.lightningDomain)}`
-                          : LNURLEncoded,
-                      )
-                    }
+                    onClick={() => handleCopy(identity.lud16 ? identity.lud16 : LNURLEncoded)}
                   >
                     {t('COPY')}
                   </Button>

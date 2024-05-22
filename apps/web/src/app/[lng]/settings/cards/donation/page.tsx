@@ -4,12 +4,13 @@ import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import { useNotifications } from '@/context/NotificationsContext';
 import { useTranslations } from 'next-intl';
-import { buildCardTransferAcceptEvent, nowInSeconds, useWalletContext } from '@lawallet/react';
+import { buildCardTransferAcceptEvent, nowInSeconds, useConfig, useWalletContext } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
 import { Button, Flex, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { getUserStoragedKey } from '@/utils';
 
 type EventDonationInfo = {
   event: NostrEvent | undefined;
@@ -25,6 +26,7 @@ const page = () => {
   });
   const t = useTranslations();
 
+  const config = useConfig();
   const notifications = useNotifications();
   const router = useRouter();
   const params = useSearchParams();
@@ -32,28 +34,40 @@ const page = () => {
     account: { identity },
   } = useWalletContext();
 
-  const handleAcceptCardTransfer = () => {
+  const handleAcceptCardTransfer = async () => {
     try {
       const event: NostrEvent = JSON.parse(atob(eventInfo.encoded));
-      buildCardTransferAcceptEvent(event.pubkey, event, identity.data.privateKey).then((buildedEvent) => {
-        requestCardActivation(buildedEvent).then((res) => {
-          notifications.showAlert({
-            title: '',
-            description: !res ? t('ACTIVATE_ERROR') : t('ACTIVATE_SUCCESS'),
-            type: !res ? 'error' : 'success',
-          });
 
-          router.push('/settings/cards');
-        });
+      const storagedKey = await getUserStoragedKey(config.storage);
+      if (!storagedKey) return;
+
+      const buildedEvent: NostrEvent = await buildCardTransferAcceptEvent(event.pubkey, event, storagedKey);
+      const res = await requestCardActivation(buildedEvent);
+
+      if (!res) throw new Error();
+
+      notifications.showAlert({
+        title: '',
+        description: t('ACTIVATE_SUCCESS'),
+        type: 'success',
       });
+
+      router.push('/settings/cards');
+      return;
     } catch {
+      notifications.showAlert({
+        title: '',
+        description: t('ACTIVATE_ERROR'),
+        type: 'error',
+      });
+
       return;
     }
   };
 
   useEffect(() => {
     const encodedEvent: string = params.get('event') ?? '';
-    if (!encodedEvent || !identity.data.privateKey) return;
+    if (!encodedEvent || !identity.signer) return;
 
     try {
       const event: NostrEvent = JSON.parse(atob(encodedEvent));
@@ -72,7 +86,7 @@ const page = () => {
     } catch {
       router.push('/settings/cards');
     }
-  }, [identity.data.privateKey]);
+  }, [identity.signer]);
 
   return (
     <>

@@ -1,9 +1,10 @@
-import { CurrenciesList, decimalsToUse, useCurrencyConverter } from '@lawallet/react';
+import { decimalsToUse, useCurrencyConverter } from '@lawallet/react';
 import type { AvailableCurrencies } from '@lawallet/react/types';
 import { useEffect, useState } from 'react';
 
 type AmountType = Record<AvailableCurrencies, number>;
-const defaultIntAmount: AmountType = { SAT: 0, ARS: 0, USD: 0 };
+const defaultIntAmount: AmountType = { MSAT: 0, BTC: 0, SAT: 0, ARS: 0, USD: 0 };
+const NumpadCurrenciesList: AvailableCurrencies[] = ['MSAT', 'BTC', 'SAT', 'USD', 'ARS'];
 
 export interface IUseNumpad {
   usedCurrency: AvailableCurrencies;
@@ -38,12 +39,11 @@ export const useNumpad = (currency: AvailableCurrencies, maxAmount: number = -1)
 
     const formattedAmounts: AmountType = { ...defaultIntAmount };
 
-    CurrenciesList.map((currency) => {
+    NumpadCurrenciesList.map((currency) => {
       if (currency === usedCurrency) {
         formattedAmounts[usedCurrency] = updatedAmount;
       } else {
         const convertedAmount: number = convertCurrency(updatedAmount, usedCurrency, currency);
-
         formattedAmounts[currency] = convertedAmount;
       }
     });
