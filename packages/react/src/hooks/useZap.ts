@@ -1,4 +1,4 @@
-import { buildZapRequestEvent } from '@lawallet/utils';
+import { buildZapRequestEvent, escapingBrackets } from '@lawallet/utils';
 import { requestInvoice } from '@lawallet/utils/actions';
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
 import React from 'react';
@@ -24,7 +24,7 @@ const defaultDeposit: InvoiceProps = {
 
 export interface useZapReturns {
   invoice: InvoiceProps;
-  createZapInvoice: (sats: number) => Promise<string | undefined>;
+  createZapInvoice: (sats: number, comment?: string) => Promise<string | undefined>;
   resetInvoice: () => void;
 }
 
@@ -51,7 +51,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
     config,
   });
 
-  const createZapInvoice = async (sats: number): Promise<string | undefined> => {
+  const createZapInvoice = async (sats: number, comment?: string): Promise<string | undefined> => {
     if (!signerInfo) return;
     setInvoice({ ...invoice, loading: true });
 
@@ -64,7 +64,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
       const zapRequestURI: string = encodeURI(JSON.stringify(zapRequestEvent));
 
       const bolt11 = await requestInvoice(
-        `${config.endpoints.gateway}/lnurlp/${nip19.npubEncode(parameters.receiverPubkey)}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}`,
+        `${config.endpoints.gateway}/lnurlp/${nip19.npubEncode(parameters.receiverPubkey)}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}${comment ? `&comment=${escapingBrackets(comment)}` : ''}`,
       );
 
       if (!bolt11) return undefined;

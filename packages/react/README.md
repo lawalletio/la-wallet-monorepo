@@ -10,4 +10,4 @@ pnpm add @lawallet/react
 
 ## Documentation
 
-For documentation and guides, visit [react.lawallet.io](https://react.lawallet.io).
+For documentation and guides, visit [frontend.lawallet.io](https://frontend.lawallet.io).

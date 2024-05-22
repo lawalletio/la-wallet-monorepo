@@ -4,8 +4,10 @@ import { useNostrContext } from '../context/NostrContext.js';
 import type { ConfigParameter } from '../exports/types.js';
 
 export interface UseSubscriptionReturns {
+  loading: boolean;
   subscription: NDKSubscription | undefined;
   events: NDKEvent[];
+  restartSubscription: () => void;
 }
 
 export interface SubscriptionProps extends ConfigParameter {
@@ -19,11 +21,17 @@ export const useSubscription = ({ filters, options, enabled, config }: Subscript
 
   const [subscription, setSubscription] = React.useState<NDKSubscription>();
   const [events, setEvents] = React.useState<NDKEvent[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const startSubscription = React.useCallback(() => {
     if (ndk && enabled && !subscription) {
+      setLoading(true);
       const newSubscription = ndk.subscribe(filters, options);
       newSubscription.on('event', async (event: NDKEvent) => setEvents((prev) => [...prev, event]));
+
+      newSubscription.on('eose', () => {
+        setLoading(false);
+      });
 
       setSubscription(newSubscription);
       return;
@@ -38,6 +46,14 @@ export const useSubscription = ({ filters, options, enabled, config }: Subscript
     }
   }, [subscription]);
 
+  const restartSubscription = React.useCallback(() => {
+    stopSubscription();
+
+    if (events.length) setEvents([]);
+
+    startSubscription();
+  }, [events]);
+
   React.useEffect(() => {
     if (enabled && !subscription) {
       if (events.length) setEvents([]);
@@ -48,7 +64,9 @@ export const useSubscription = ({ filters, options, enabled, config }: Subscript
   }, [enabled, subscription]);
 
   return {
+    loading,
     subscription,
     events,
+    restartSubscription,
   };
 };

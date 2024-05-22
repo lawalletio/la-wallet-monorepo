@@ -6,15 +6,14 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { TokenList } from '@/components/TokenList';
 import { Keyboard } from '@/components/UI';
-import { regexComment } from '@/constants/constants';
 import { appTheme } from '@/config/exports';
-import { useLocale, useTranslations } from 'next-intl';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useNumpad } from '@/hooks/useNumpad';
-import { decimalsToUse, formatToPreference, useWalletContext } from '@lawallet/react';
-import { LNURLTransferType, TransferTypes } from '@lawallet/react/types';
+import { decimalsToUse, useFormatter, useWalletContext } from '@lawallet/react';
+import { AvailableLanguages, LNURLTransferType, TransferTypes } from '@lawallet/react/types';
 import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text } from '@lawallet/ui';
+import { useLocale, useTranslations } from 'next-intl';
 import CardWithData from './CardWithData';
 
 type SelectTransferAmountType = {
@@ -93,11 +92,11 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
       return;
     }
 
-    const isValidComment = regexComment.test(text);
-    if (!isValidComment) {
-      errors.modifyError('ERROR_ON_COMMENT');
-      return;
-    }
+    // const isValidComment = regexComment.test(text);
+    // if (!isValidComment) {
+    //   errors.modifyError('ERROR_ON_COMMENT');
+    //   return;
+    // }
 
     setComment(text);
   };
@@ -114,6 +113,8 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
 
   useActionOnKeypress('Enter', handleClick, [numpadData, transferInfo]);
 
+  const { formatAmount, customFormat } = useFormatter({ currency: userCurrency, locale: lng as AvailableLanguages });
+
   return (
     <>
       <Container size="small">
@@ -128,14 +129,14 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
             ) : (
               <Text>$</Text>
             )}
-            <Heading>{formatToPreference(userCurrency, numpadData.intAmount[numpadData.usedCurrency], lng)}</Heading>
+            <Heading>{formatAmount(numpadData.intAmount[numpadData.usedCurrency])}</Heading>
           </Flex>
 
           {!hideBalance && (
             <Flex justify="center" align="center" gap={4}>
               <Heading as="h6" color={appTheme.colors.gray50}>
                 {userCurrency !== 'SAT' && '$'}
-                {formatToPreference(userCurrency, maxAvailableAmount, lng)} {t('AVAILABLE')}.
+                {formatAmount(maxAvailableAmount)} {t('AVAILABLE')}.
               </Heading>
             </Flex>
           )}
@@ -146,8 +147,8 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
             <Flex justify="center">
               <Feedback show={true} status={'success'}>
                 {t('SENDABLE_AMOUNT', {
-                  minSendable: formatToPreference('SAT', transferInfo.request.minSendable! / 1000, lng),
-                  maxSendable: formatToPreference('SAT', transferInfo.request.maxSendable! / 1000, lng),
+                  minSendable: customFormat({ amount: transferInfo.request.minSendable! / 1000, currency: 'SAT' }),
+                  maxSendable: customFormat({ amount: transferInfo.request.maxSendable! / 1000, currency: 'SAT' }),
                 })}
               </Feedback>
             </Flex>

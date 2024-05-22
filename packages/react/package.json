@@ -1,6 +1,7 @@
 {
   "name": "@lawallet/react",
-  "version": "0.1.5",
+  "version": "0.1.60",
+  "prettier": "@lacrypta/prettier-config",
   "private": false,
   "repository": {
     "type": "git",
@@ -15,7 +16,7 @@
     "clean": "rm -rf dist",
     "lint": "eslint ."
   },
-  "author": "LaWallet Labs",
+  "author": "La Crypta Labs",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.17",
@@ -38,7 +39,14 @@
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
   "typings": "./dist/types/exports/index.d.ts",
-  "files": ["dist/**", "!dist/**/*.tsbuildinfo", "src/**/*.ts", "!src/**/*.test.ts", "!src/**/*.test-d.ts", "/utils"],
+  "files": [
+    "dist/**",
+    "!dist/**/*.tsbuildinfo",
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "!src/**/*.test-d.ts",
+    "/utils"
+  ],
   "exports": {
     ".": {
       "types": "./dist/types/exports/index.d.ts",
@@ -56,8 +64,12 @@
   },
   "typesVersions": {
     "*": {
-      "types": ["./dist/types/exports/types.d.ts"],
-      "actions": ["./dist/types/exports/actions.d.ts"]
+      "types": [
+        "./dist/types/exports/types.d.ts"
+      ],
+      "actions": [
+        "./dist/types/exports/actions.d.ts"
+      ]
     }
   }
 }

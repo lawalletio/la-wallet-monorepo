@@ -49,10 +49,10 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
   const getNip05 = React.useCallback(
     async (walias: string): Promise<NDKUserProfile | null> => {
       if (!nip05Cache[walias]) {
-        console.info(`Cache miss. Generating NIP05 for ${walias}`);
+        // console.info(`Cache miss. Generating NIP05 for ${walias}`);
         return (nip05Cache[walias] = resolveNip05(walias, ndk));
       } else {
-        console.info(`NIP05 cache hit for ${walias}`);
+        // console.info(`NIP05 cache hit for ${walias}`);
         return nip05Cache[walias]!;
       }
     },
@@ -62,10 +62,10 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
   const getLud16 = React.useCallback(
     async (walias: string): Promise<LNRequestResponse | null> => {
       if (!lud16Cache[walias]) {
-        console.info(`Cache miss. Generating LUD16 for ${walias}`);
+        // console.info(`Cache miss. Generating LUD16 for ${walias}`);
         return lud16Cache[walias] || (lud16Cache[walias] = resolveLud16(walias));
       } else {
-        console.info(`LUD16 cache hit for ${walias}`);
+        // console.info(`LUD16 cache hit for ${walias}`);
         return lud16Cache[walias]!;
       }
     },

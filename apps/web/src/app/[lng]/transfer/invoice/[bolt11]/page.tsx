@@ -17,7 +17,10 @@ const TransferWithInvoice = ({ params }) => {
     config,
   });
 
-  const { isLoading, isError, isSuccess, execOutboundTransfer } = useTransfer({ ...params, tokenName: 'BTC' });
+  const { isLoading, isError, isPending, isSuccess, execOutboundTransfer } = useTransfer({
+    ...params,
+    tokenName: 'BTC',
+  });
 
   const executePayment = async () => {
     if (!txInfo.data || txInfo.type !== TransferTypes.INVOICE || txInfo.expired) return false;
@@ -40,6 +43,7 @@ const TransferWithInvoice = ({ params }) => {
           <Summary
             isLoading={isLoading}
             isSuccess={isSuccess}
+            isPending={isPending}
             data={txInfo.data}
             type={TransferTypes.INVOICE}
             amount={txInfo.amount}

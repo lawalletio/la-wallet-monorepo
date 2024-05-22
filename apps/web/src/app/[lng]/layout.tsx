@@ -56,14 +56,14 @@ const Providers = (props: ProviderProps) => {
         <link rel="preload" href="/fonts/SF-Regular.woff2" as="font" type="font/woff2" />
         <link rel="preload" href="/fonts/SF-Bold.woff2" as="font" type="font/woff2" /> */}
 
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_TAG_ID}`} />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_TAG_ID}`} />
         <Script id="google-analytics">
           {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
         
-          gtag('config', '${process.env.GOOGLE_TAG_ID}');
+          gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_TAG_ID}');
         `}
         </Script>
       </head>

@@ -2,11 +2,12 @@
   "name": "lawallet-monorepo",
   "private": true,
   "type": "module",
+  "prettier": "@lacrypta/prettier-config",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,mdx}\"",
     "build:react": "pnpm --filter @lawallet/react build",
     "build:utils": "pnpm --filter @lawallet/utils build",
     "build:ui": "pnpm --filter @lawallet/ui build",
@@ -19,8 +20,9 @@
     "docs:start": "pnpm --filter @lawallet/docs start:docs"
   },
   "devDependencies": {
-    "@lawallet/eslint-config": "^1.0.0",
-    "@lawallet/typescript-config": "^1.0.0",
+    "@lacrypta/eslint-config": "^1.0.0",
+    "@lacrypta/prettier-config": "^1.0.0",
+    "@lacrypta/typescript-config": "^1.0.0",
     "prettier": "^3.2.5",
     "turbo": "^1.12.5"
   },
@@ -40,5 +42,8 @@
     "apps/*",
     "packages/*",
     "config/*"
-  ]
+  ],
+  "dependencies": {
+    "eslint-config-turbo": "^1.13.3"
+  }
 }

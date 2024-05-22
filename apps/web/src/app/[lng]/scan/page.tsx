@@ -4,6 +4,7 @@ import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import QrScanner from '@/components/UI/Scanner/Scanner';
 import { regexURL } from '@/constants/constants';
+import { useRouter } from '@/navigation';
 import {
   LaWalletTags,
   detectTransferType,
@@ -16,7 +17,6 @@ import { TransferTypes } from '@lawallet/react/types';
 import { Button, Flex, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/navigation';
 import NimiqQrScanner from 'qr-scanner';
 import { useState } from 'react';
 
@@ -55,7 +55,7 @@ export default function Page() {
     const cardParameter = url.searchParams.get('c');
 
     if (cardParameter) {
-      router.push(`/cards?c=${cardParameter}`);
+      router.push(`/settings/cards?c=${cardParameter}`);
       return;
     } else {
       if (url.origin.startsWith(originURL)) {
@@ -82,11 +82,11 @@ export default function Page() {
       if (scanType === TransferTypes.NONE) return;
 
       if (scanType === TransferTypes.INVOICE) {
-        router.push(`/transfer/invoice/${result.data.toLowerCase()}`);
+        router.push(`/transfer/invoice/${cleanScan.toLowerCase()}`);
         return;
       }
 
-      router.push(`/transfer/lnurl?data=${result.data.toLowerCase()}`);
+      router.push(`/transfer/lnurl?data=${cleanScan.toLowerCase()}`);
     }
   };
 

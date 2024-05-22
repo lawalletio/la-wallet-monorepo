@@ -4,12 +4,12 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import Navbar from '@/components/Layout/Navbar';
 import { Confetti } from '@/components/UI';
+import { useRouter } from '@/navigation';
 import { extractFirstTwoChars } from '@/utils';
-import { formatAddress, formatToPreference, splitHandle, useWalletContext } from '@lawallet/react';
-import { TransferInformation, TransferTypes } from '@lawallet/react/types';
+import { formatAddress, splitHandle, useFormatter, useWalletContext } from '@lawallet/react';
+import { AvailableLanguages, TransferInformation, TransferTypes } from '@lawallet/react/types';
 import { Avatar, Container, Divider, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from '@/navigation';
 import { useMemo } from 'react';
 
 export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInformation }) => {
@@ -23,10 +23,12 @@ export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInforma
     converter: { pricesData, convertCurrency },
   } = useWalletContext();
 
+  const { formatAmount } = useFormatter({ currency, locale: lng as AvailableLanguages });
+
   const convertedAmount: string = useMemo(() => {
     const convertion: number = convertCurrency(transferInfo.amount, 'SAT', currency);
 
-    return formatToPreference(currency, convertion, lng);
+    return formatAmount(convertion);
   }, [pricesData]);
 
   const router = useRouter();

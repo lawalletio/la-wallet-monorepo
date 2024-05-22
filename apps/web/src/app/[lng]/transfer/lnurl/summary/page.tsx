@@ -10,7 +10,7 @@ import { Summary } from '../../components/Summary';
 
 const page = () => {
   const t = useTranslations();
-  const { LNURLTransferInfo, isSuccess, isError, execute, isLoading } = useLNURLContext();
+  const { LNURLTransferInfo, isSuccess, isPending, isError, execute, isLoading } = useLNURLContext();
 
   useActionOnKeypress('Enter', execute, [LNURLTransferInfo]);
 
@@ -36,6 +36,7 @@ const page = () => {
           <Summary
             isLoading={isLoading}
             isSuccess={isSuccess}
+            isPending={isPending}
             data={LNURLTransferInfo.data}
             type={LNURLTransferInfo.type}
             amount={LNURLTransferInfo.amount}

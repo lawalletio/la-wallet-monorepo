@@ -1,5 +1,5 @@
 {
-  "extends": "@lawallet/typescript-config/base.json",
+  "extends": "@lacrypta/typescript-config/base.json",
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test-d.ts"],
   "compilerOptions": {

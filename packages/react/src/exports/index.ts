@@ -13,6 +13,8 @@ export { type UseAccountReturns, useAccount } from '../hooks/useAccount.js';
 export { useTransfer } from '../hooks/useTransfer.js';
 export { useProfile } from '../hooks/useProfile.js';
 
+export { type UseFormatterReturns, useFormatter } from '../hooks/useFormatter.js';
+
 export { type useZapReturns, useZap } from '../hooks/useZap.js';
 
 export { useConfig } from '../hooks/useConfig.js';

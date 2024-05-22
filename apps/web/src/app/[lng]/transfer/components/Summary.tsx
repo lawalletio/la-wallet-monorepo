@@ -4,17 +4,18 @@ import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import { Button, Container, Divider, Feedback, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 
+import { TokenList } from '@/components/TokenList';
+import { useRouter } from '@/navigation';
+import { useFormatter, useWalletContext } from '@lawallet/react';
+import { AvailableLanguages, TransferTypes } from '@lawallet/react/types';
 import { useLocale, useTranslations } from 'next-intl';
-import { formatToPreference, useWalletContext } from '@lawallet/react';
-import { TransferTypes } from '@lawallet/react/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import CardWithData from './CardWithData';
-import { useRouter } from '@/navigation';
-import { TokenList } from '@/components/TokenList';
 
 type SummaryProps = {
   isLoading: boolean;
   isSuccess: boolean;
+  isPending: boolean;
   data: string;
   type: TransferTypes;
   amount: number;
@@ -22,7 +23,16 @@ type SummaryProps = {
   onClick: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
-export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = false, onClick }: SummaryProps) => {
+export const Summary = ({
+  isLoading,
+  isSuccess,
+  isPending,
+  data,
+  type,
+  amount,
+  expired = false,
+  onClick,
+}: SummaryProps) => {
   const lng = useLocale();
   const t = useTranslations();
 
@@ -37,14 +47,16 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
     converter: { pricesData, convertCurrency },
   } = useWalletContext();
 
+  const { formatAmount } = useFormatter({ currency, locale: lng as AvailableLanguages });
+
   const convertedAmount: string = useMemo(() => {
     const convertedInt: number = convertCurrency(amount, 'SAT', currency);
 
-    return formatToPreference(currency, convertedInt, lng);
+    return formatAmount(convertedInt);
   }, [amount, pricesData, currency]);
 
   const detectInsufficientBalance = useCallback(() => {
-    setInsufficientBalance(!isLoading && !isSuccess && balance.amount < amount);
+    setInsufficientBalance(!isLoading && !isSuccess && !isPending && balance.amount < amount);
   }, [balance.amount, amount, isLoading, isSuccess]);
 
   useEffect(() => {
@@ -105,8 +117,10 @@ export const Summary = ({ isLoading, isSuccess, data, type, amount, expired = fa
             <Button
               color="secondary"
               onClick={onClick}
-              disabled={!type || isLoading || expired || (type !== TransferTypes.LNURLW && insufficientBalance)}
-              loading={isLoading}
+              disabled={
+                !type || isLoading || isPending || expired || (type !== TransferTypes.LNURLW && insufficientBalance)
+              }
+              loading={isLoading || isPending}
             >
               {type === TransferTypes.LNURLW ? t('CLAIM') : t('TRANSFER')}
             </Button>
