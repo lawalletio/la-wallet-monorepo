@@ -198,5 +198,6 @@
   },
   "BANNER_DESC": "¡Acumulá Satoshis, sobreviví a los bloques y asegurá tu premio en el halving de Bitcoin!",
   "BANNER_DESC2": "¿Serás el último en pie?",
-  "PLAY_NOW": "Jugar ahora"
+  "PLAY_NOW": "Jugar ahora",
+  "PLUGINS_EMPTY": "No hay plugins disponibles"
 }

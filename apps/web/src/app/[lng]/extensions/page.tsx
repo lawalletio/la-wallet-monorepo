@@ -4,6 +4,7 @@ import BackButton from '@/components/BackButton';
 import Subnavbar from '@/components/Layout/Subnavbar';
 import { PLUGINS } from '@/config/exports/extensions';
 import { ArrowRightIcon, Button, Card, Container, Divider, Flex, Icon, Navbar, Text } from '@lawallet/ui';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -11,6 +12,7 @@ const pluginKeys: string[] = Object.keys(PLUGINS);
 
 export default function Page() {
   const router = useRouter();
+  const t = useTranslations();
 
   return (
     <>
@@ -18,7 +20,7 @@ export default function Page() {
       <Container size="small">
         <Divider y={24} />
         {!pluginKeys.length ? (
-          <Text>No hay plugins disponibles</Text>
+          <Text align="center">{t('PLUGINS_EMPTY')}</Text>
         ) : (
           pluginKeys.map((key) => {
             const value: { title: string; description: string } = PLUGINS[key].metadata;
