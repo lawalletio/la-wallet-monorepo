@@ -61,13 +61,16 @@ const SignUp = () => {
     config,
   });
 
-  const saveZapRequestInfo = (new_info: ZapRequestInfo) => {
-    const zrExpiration: number = Date.now() + 2 * 60 * 1000;
-    const ZR: ZapRequestInfo = { ...new_info, expiry: zrExpiration };
+  const saveZapRequestInfo = useCallback(
+    (new_info: ZapRequestInfo) => {
+      const zrExpiration: number = Date.now() + 2 * 60 * 1000;
+      const ZR: ZapRequestInfo = { ...new_info, expiry: zrExpiration };
 
-    config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify(ZR));
-    setZapRequestInfo(ZR);
-  };
+      config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify(ZR));
+      setZapRequestInfo(ZR);
+    },
+    [zapRequestInfo],
+  );
 
   const requestPayment = async () => {
     setLoading(true);
@@ -84,22 +87,25 @@ const SignUp = () => {
     }
   };
 
-  const claimNonce = async (zapReceipt: NDKEvent) => {
-    try {
-      const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
+  const claimNonce = useCallback(
+    async (zapReceipt: NDKEvent) => {
+      try {
+        const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
 
-      const response = await fetch('/api/signup/claim', {
-        method: 'POST',
-        body: JSON.stringify(nostrEvent),
-      });
-      const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
-      if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
+        const response = await fetch('/api/signup/claim', {
+          method: 'POST',
+          body: JSON.stringify(nostrEvent),
+        });
+        const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
+        if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
 
-      saveZapRequestInfo({ ...zapRequestInfo, nonce: responseJSON.data?.nonce.nonce ?? '' });
-    } catch {
-      errors.modifyError('UNEXPECTED_ERROR');
-    }
-  };
+        saveZapRequestInfo({ ...zapRequestInfo, nonce: responseJSON.data?.nonce.nonce ?? '' });
+      } catch {
+        errors.modifyError('UNEXPECTED_ERROR');
+      }
+    },
+    [zapRequestInfo],
+  );
 
   const payWithWebLN = useCallback(async (invoice: string) => {
     try {
@@ -136,7 +142,6 @@ const SignUp = () => {
 
         if (boltTag === zapRequestInfo.invoice) {
           saveZapRequestInfo({ ...zapRequestInfo, payed: true });
-
           claimNonce(event);
           return;
         }
