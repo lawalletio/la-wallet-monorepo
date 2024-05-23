@@ -1,0 +1,53 @@
+# Next Provider
+
+NextJS Context Provider for LaWallet UI.
+
+You will need to use this provider if you want to use the UI package directly in NextJS.
+
+## Import
+
+```ts
+import { NextProvider } from '@lawallet/ui/next';
+```
+
+## Usage
+
+```ts filename="App.tsx"
+import { NextProvider } from '@lawallet/ui/next';
+import '@lawallet/ui/styles' // import css to enable LaWallet fonts
+
+function App() {
+  return (
+    <NextProvider>
+      {/** your app **/}
+    </NextProvider>
+  );
+}
+```
+
+## Parameters
+
+### theme
+
+[`Theme`](/ui/createTheme#theme) object to inject with context.
+
+- This parameter is optional. If theme is not sent, the default parameters will be used.
+
+```ts filename="App.tsx"
+import { createTheme } from '@lawallet/ui';
+import { NextProvider } from '@lawallet/ui/next';
+
+const theme = createTheme({
+  borders: {
+    borderRadius: '10px',
+  },
+});
+
+function App() {
+  return (
+    <NextProvider theme={theme}>
+      {/** your app **/}
+    </NextProvider>
+  );
+}
+```

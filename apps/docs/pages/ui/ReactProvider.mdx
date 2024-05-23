@@ -1,0 +1,49 @@
+# React Provider
+
+React Context Provider for LaWallet UI.
+
+## Import
+
+```ts
+import { ReactProvider } from '@lawallet/ui';
+```
+
+## Usage
+
+```ts filename="App.tsx"
+import { ReactProvider } from '@lawallet/ui';
+
+function App() {
+  return (
+    <ReactProvider>
+      {/** your app **/}
+    </ReactProvider>
+  );
+}
+```
+
+## Parameters
+
+### theme
+
+[`Theme`](/ui/createTheme#theme) object to inject with context.
+
+- This parameter is optional. If theme is not sent, the default parameters will be used.
+
+```ts filename="App.tsx"
+import { createTheme, ReactProvider } from '@lawallet/ui';
+
+const theme = createTheme({
+  borders: {
+    borderRadius: '10px',
+  },
+});
+
+function App() {
+  return (
+    <ReactProvider theme={theme}>
+      {/** your app **/}
+    </ReactProvider>
+  );
+}
+```
