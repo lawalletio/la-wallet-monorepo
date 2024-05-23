@@ -37,10 +37,6 @@
         "title": "useCards",
         "href": "/react/hooks/useCards"
     },
-    "useIdentity": {
-        "title": "useIdentity",
-        "href": "/react/hooks/useIdentity"
-    },
     "useInvoice": {
         "title": "useInvoice",
         "href": "/react/hooks/useInvoice"
@@ -68,6 +64,14 @@
     "useZap": {
         "title": "useZap",
         "href": "/react/hooks/useZap"
+    },
+    "-- Models": {
+        "type": "separator",
+        "title": "Models"
+    },
+    "Identity": {
+        "title": "Identity",
+        "href": "/react/Identity"
     },
     "-- Glossary": {
         "type": "separator",

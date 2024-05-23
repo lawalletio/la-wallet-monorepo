@@ -8,17 +8,27 @@ import { normalizeLNDomain } from '../utils/utilities.js';
 
 export type SignerTypes = NDKSigner | undefined;
 
+interface IdentityConsctuctorParameters extends ConfigParameter {
+  pubkey?: string;
+  privateKey?: string;
+}
+
 export class UserIdentity {
   username: string = '';
   hexpub: string = '';
   npub: string = '';
   lud16: string = '';
+  federationId = '';
   loading: boolean = true;
   signer: SignerTypes = undefined;
   #config: ConfigProps = baseConfig;
 
-  constructor(params: ConfigParameter) {
+  constructor(params: IdentityConsctuctorParameters) {
     this.#config = params.config ?? baseConfig;
+    this.federationId = this.#config.federationId;
+
+    if (params.pubkey) this.initializeIdentityFromPubkey(params.pubkey);
+    if (params.privateKey) this.initializeFromPrivateKey(params.privateKey);
   }
 
   async initializeFromPrivateKey(NsecOrPrivateKey: string, username?: string) {
