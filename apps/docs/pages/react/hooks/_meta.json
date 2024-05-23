@@ -8,9 +8,6 @@
     "useCards": {
         "display": "hidden"
     },
-    "useIdentity": {
-        "display": "hidden"
-    },
     "useInvoice": {
         "display": "hidden"
     },

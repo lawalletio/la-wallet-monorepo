@@ -1,0 +1,135 @@
+# UserIdentity
+
+Identity instance
+
+## Import
+
+```ts
+import { UserIdentity } from '@lawallet/react';
+```
+
+## Usage
+
+```tsx filename="index.tsx"
+import { UserIdentity } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const identity = new UserIdentity({
+    privateKey: '17efe7a5f1...53936f68b',
+    config,
+  });
+}
+```
+
+## Parameters
+
+```ts
+import { type IdentityConstructorParameters } from '@lawallet/react';
+```
+
+### privateKey
+
+`String | undefined`
+
+- Private key of the account for which you want to check the identity
+
+```tsx [index.tsx]
+import { UserIdentity } from '@lawallet/react';
+
+function App() {
+  const { identity } = new UserIdentity({
+    privateKey: '9a9787e...191e28d59',
+  });
+}
+```
+
+### pubkey
+
+`String | undefined`
+
+- Public key of the account for which you want to check the identity
+
+```tsx [index.tsx]
+import { UserIdentity } from '@lawallet/react';
+
+function App() {
+  const { identity } = new UserIdentity({
+    privateKey: '9a9787e...191e28d59',
+  });
+}
+```
+
+### config
+
+`Config | undefined`
+
+[`Config`](/react/createConfig#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/LaWalletConfig).
+
+```tsx [index.tsx]
+import { UserIdentity } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const identity = new UserIdentity({
+    privateKey: '17efe7a5f1...53936f68b',
+    config,
+  });
+}
+```
+
+## Return Type
+
+```ts
+import { type UseIdentityReturns } from '@lawallet/react';
+```
+
+### username
+
+`string`
+
+Returns a string that defines the username of the identity
+
+### hexpub
+
+`string`
+
+Returns a string that defines the public key of the identity
+
+### hexpub
+
+`string`
+
+Returns a string that defines the public key of the identity
+
+### loading
+
+`boolean`
+
+Returns a boolean that identifies whether the identity is being loaded
+
+### initializeFromPrivateKey
+
+`(privateKey: string) => Promise<boolean>`
+
+- Load an identity from your private key
+- Returns a boolean variable that validates whether it was executed correctly
+
+### initializeIdentityFromPubkey
+
+`(pubKey: string) => Promise<boolean>`
+
+- Load an identity from public key
+- Returns a boolean variable that validates whether it was executed correctly
+
+### signEvent
+
+`(event: NostrEvent) => Promise<NostrEvent | undefined>`
+
+- Request the signature of an event to the identity
+
+### reset
+
+`() => void`
+
+- Set the identity to default parameters (empty)

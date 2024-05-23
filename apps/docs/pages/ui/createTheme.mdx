@@ -1,0 +1,124 @@
+# createTheme
+
+Create a modified LaWallet UI theme
+
+## Import
+
+```ts
+import { createTheme } from '@lawallet/ui';
+```
+
+## Usage
+
+```ts
+import { createTheme } from '@lawallet/ui';
+
+const theme = createTheme({
+  colors: {
+    primary: '#FFFFFF',
+    secondary: '#009EE3',
+  },
+});
+```
+
+## Parameters
+
+### colors
+
+```json
+"colors": {
+  // Base
+  "black": "#1C1C1C",
+  "white": "#f1f1f1",
+
+  // Brand
+  "primary": "#FFFFFF",
+  "secondary": "#009EE3",
+
+  // Grays
+  "gray5": "#0D0D0D",
+  "gray10": "#1A1A1A",
+  "gray15": "#262626",
+  "gray20": "#333333",
+  "gray25": "#404040",
+  "gray30": "#4D4D4D",
+  "gray35": "#595959",
+  "gray40": "#666666",
+  "gray45": "#737373",
+  "gray50": "#808080",
+
+  // Validations
+  "success": "#56B68C",
+  "warning": "#F9B550",
+  "error": "#E95053",
+
+  // General
+  "background": "#1C1C1C",
+  "text": "#f1f1f1"
+}
+```
+
+### borders
+
+```json
+"borders": {
+  "buttonRadius": "50px"
+}
+```
+
+### fonts
+
+```json
+"font": {
+  "primary": "IAAB3-Mono",
+  "secondary": "SF Pro Text",
+},
+```
+
+## Return Type
+
+### Theme
+
+Returns an object responsible for some of the application's styles.
+
+```json --filename="themeConfig.json"
+{
+  "colors": {
+    // Base
+    "black": "#1C1C1C",
+    "white": "#f1f1f1",
+
+    // Brand
+    "primary": "#FFFFFF",
+    "secondary": "#009EE3",
+
+    // Grays
+    "gray5": "#0D0D0D",
+    "gray10": "#1A1A1A",
+    "gray15": "#262626",
+    "gray20": "#333333",
+    "gray25": "#404040",
+    "gray30": "#4D4D4D",
+    "gray35": "#595959",
+    "gray40": "#666666",
+    "gray45": "#737373",
+    "gray50": "#808080",
+
+    // Validations
+    "success": "#56B68C",
+    "warning": "#F9B550",
+    "error": "#E95053",
+
+    // General
+    "background": "#1C1C1C",
+    "text": "#f1f1f1"
+  },
+  "borders": {
+    "buttonRadius": "50px"
+  },
+  "font": {
+    "primary": "IAAB3-Mono",
+    "secondary": "SF Pro Text"
+  }
+}
+```

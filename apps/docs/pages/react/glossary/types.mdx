@@ -65,17 +65,8 @@ Type that defines the return from using createIdentity()
 type CreateIdentityReturns = {
   success: boolean;
   message: string;
-  newIdentity?: UserIdentity;
+  identity?: UserIdentity;
 };
-```
-
-```ts filename="UserIdentity"
-interface UserIdentity {
-  username: string;
-  hexpub: string;
-  npub: string;
-  privateKey: string;
-}
 ```
 
 ## `DecodedInvoiceReturns`
