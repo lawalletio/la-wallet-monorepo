@@ -26,7 +26,6 @@ type ZapRequestInfo = {
   zapRequest: NostrEvent | null;
   invoice: string | null;
   payed: boolean;
-  nonce: string;
   expiry?: number;
 };
 
@@ -39,9 +38,10 @@ const SignUp = () => {
     zapRequest: null,
     invoice: null,
     payed: false,
-    nonce: '',
     expiry: 0,
   });
+
+  const [nonce, setNonce] = useState<string>('');
 
   // const [nonce, setNonce] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -61,13 +61,16 @@ const SignUp = () => {
     config,
   });
 
-  const saveZapRequestInfo = async (new_info: ZapRequestInfo) => {
-    const zrExpiration: number = Date.now() + 2 * 60 * 1000;
-    const ZR: ZapRequestInfo = { ...new_info, expiry: zrExpiration };
+  const saveZapRequestInfo = useCallback(
+    async (new_info: ZapRequestInfo, tmpNonce?: string) => {
+      const zrExpiration: number = Date.now() + 2 * 60 * 1000;
+      const ZR: ZapRequestInfo = { ...new_info, expiry: zrExpiration };
 
-    await config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify(ZR));
-    setZapRequestInfo(ZR);
-  };
+      await config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify({ ...ZR, nonce: tmpNonce }));
+      setZapRequestInfo(ZR);
+    },
+    [zapRequestInfo],
+  );
 
   const requestPayment = async () => {
     setLoading(true);
@@ -77,29 +80,32 @@ const SignUp = () => {
       if (!zapRequest || !invoice) return;
 
       setLoading(false);
-      saveZapRequestInfo({ zapRequest, invoice, payed: false, nonce: '' });
+      saveZapRequestInfo({ zapRequest, invoice, payed: false });
     } catch {
       setLoading(false);
       errors.modifyError('UNEXPECTED_ERROR');
     }
   };
 
-  const claimNonce = async (zapReceipt: NDKEvent) => {
-    try {
-      const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
+  const claimNonce = useCallback(
+    async (zapReceipt: NDKEvent) => {
+      try {
+        const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
 
-      const response = await fetch('/api/signup/claim', {
-        method: 'POST',
-        body: JSON.stringify(nostrEvent),
-      });
-      const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
-      if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
+        const response = await fetch('/api/signup/claim', {
+          method: 'POST',
+          body: JSON.stringify(nostrEvent),
+        });
+        const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
+        if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
 
-      saveZapRequestInfo({ ...zapRequestInfo, nonce: responseJSON.data?.nonce.nonce ?? '' });
-    } catch {
-      errors.modifyError('UNEXPECTED_ERROR');
-    }
-  };
+        setNonce(responseJSON.data?.nonce.nonce ?? '');
+      } catch {
+        errors.modifyError('UNEXPECTED_ERROR');
+      }
+    },
+    [zapRequestInfo],
+  );
 
   const payWithWebLN = useCallback(async (invoice: string) => {
     try {
@@ -120,10 +126,11 @@ const SignUp = () => {
       const cachedStorage = await config.storage.getItem(SIGN_UP_CACHE_KEY);
       if (!cachedStorage) return;
 
-      const cachedZapRequest: ZapRequestInfo = JSON.parse(cachedStorage);
+      const cachedZapRequest = JSON.parse(cachedStorage);
       if (!cachedZapRequest || (cachedZapRequest.expiry ?? 0) < Date.now()) return;
 
       setZapRequestInfo(cachedZapRequest);
+      setNonce(cachedZapRequest.nonce);
     } catch {
       return;
     }
@@ -136,7 +143,6 @@ const SignUp = () => {
 
         if (boltTag === zapRequestInfo.invoice) {
           saveZapRequestInfo({ ...zapRequestInfo, payed: true });
-
           claimNonce(event);
           return;
         }
@@ -149,8 +155,8 @@ const SignUp = () => {
   }, [events.length]);
 
   useEffect(() => {
-    if (zapRequestInfo.payed && zapRequestInfo.nonce) router.push(`/start?i=${zapRequestInfo.nonce}`);
-  }, [zapRequestInfo]);
+    if (zapRequestInfo.payed && nonce.length) router.push(`/start?i=${nonce}`);
+  }, [zapRequestInfo, nonce]);
 
   useEffect(() => {
     loadCachedSignUpRequest();
@@ -230,9 +236,9 @@ const SignUp = () => {
               )}
             </Button>
           </Flex>
-        ) : zapRequestInfo.nonce ? (
+        ) : nonce.length ? (
           <Flex justify="center">
-            <Button onClick={() => router.push(`/start?i=${zapRequestInfo.nonce}`)}>{t('CREATE_WALLET')}</Button>
+            <Button onClick={() => router.push(`/start?i=${nonce}`)}>{t('CREATE_WALLET')}</Button>
           </Flex>
         ) : (
           zapRequestInfo.payed && (
