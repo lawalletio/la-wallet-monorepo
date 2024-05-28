@@ -1,9 +1,18 @@
 'use client';
 
-import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+// Libraries
+import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-import Navbar from '@/components/Layout/Navbar';
+import { useTranslations } from 'next-intl';
+import {
+  detectTransferType,
+  formatLNURLData,
+  normalizeLNDomain,
+  removeDuplicateArray,
+  useConfig,
+  useWalletContext,
+} from '@lawallet/react';
+import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
 import {
   Autocomplete,
   Button,
@@ -17,29 +26,35 @@ import {
   LinkButton,
   Text,
 } from '@lawallet/ui';
+import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
-import { lightningAddresses } from '@/constants/constants';
+// Theme
 import { appTheme } from '@/config/exports';
-import { useTranslations } from 'next-intl';
+
+// Hooks and utils
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import {
-  detectTransferType,
-  formatLNURLData,
-  normalizeLNDomain,
-  removeDuplicateArray,
-  useConfig,
-  useWalletContext,
-} from '@lawallet/react';
-import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
-import { useMemo, useState } from 'react';
+import { lightningAddresses } from '@/constants/constants';
+
+// Components
+import Navbar from '@/components/Layout/Navbar';
 import RecipientElement from './components/RecipientElement';
 
+// Constans
+import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+
 export default function Page() {
-  const t = useTranslations();
+  const router = useRouter();
   const {
-    account: { transactions },
+    account: { transactions, balance },
   } = useWalletContext();
+
+  if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
+    router.push('/dashboard');
+    return null;
+  }
+
+  const t = useTranslations();
 
   const params = useSearchParams();
 
@@ -47,7 +62,6 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const errors = useErrors();
-  const router = useRouter();
   const config = useConfig();
 
   const initializeTransfer = async (data: string) => {
