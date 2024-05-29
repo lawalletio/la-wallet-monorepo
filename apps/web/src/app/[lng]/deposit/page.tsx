@@ -2,8 +2,6 @@
 
 // Libraries
 import { useMemo, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { formatAddress, lnurl_encode, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
 
 // Theme
@@ -11,9 +9,9 @@ import { appTheme } from '@/config/exports';
 
 // Hooks and utils
 import { useNotifications } from '@/context/NotificationsContext';
-import { formatAddress, lnurl_encode, useConfig, useWalletContext } from '@lawallet/react';
-import { useTranslations } from 'next-intl';
 import { useRouter } from '@/navigation';
+import { useTranslations } from 'next-intl';
+import { formatAddress, lnurl_encode, useConfig, useWalletContext } from '@lawallet/react';
 import { copy } from '@/utils/share';
 
 // Components

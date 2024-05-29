@@ -4,7 +4,6 @@
 // Libraries
 import { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { formatToPreference, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import {
   Avatar,
   BannerAlert,
@@ -39,10 +38,6 @@ import { Link, useRouter } from '@/navigation';
 // Components
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
-import { appTheme } from '@/config/exports';
-import { CACHE_BACKUP_KEY } from '@/constants/constants';
-import { extractFirstTwoChars } from '@/utils';
-import { copy } from '@/utils/share';
 import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
 import ButtonCTA from '@/components/ButtonCTA';
 import Navbar from '@/components/Layout/Navbar';

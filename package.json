@@ -43,14 +43,8 @@
     "apps/*",
     "packages/*",
     "config/*"
-  ]
-}
-  "workspaces": [
-  "apps/*",
-  "packages/*",
-  "config/*"
-],
-"dependencies": {
-  "eslint-config-turbo": "^1.13.3"
-}
+  ],
+  "dependencies": {
+    "eslint-config-turbo": "^1.13.3"
+  }
 }
