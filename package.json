@@ -19,6 +19,7 @@
     "web:start": "pnpm --filter lawallet-front start",
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
     "docs:start": "pnpm --filter @lawallet/docs start:docs",
+    "ui:dev": "pnpm --filter @lawallet/ui dev",
     "create-plugin": "node ./.scripts/addPlugin.js"
   },
   "devDependencies": {

@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { GearIcon, HiddenIcon, SatoshiV2Icon, SendIcon, VisibleIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useEffect, useMemo, useState } from 'react';
-
 import Navbar from '@/components/Layout/Navbar';
 import { TokenList } from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
+// Libraries
+import { useEffect, useMemo, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   Avatar,
   BannerAlert,
@@ -21,20 +21,32 @@ import {
   ReceiveIcon,
   Text,
 } from '@lawallet/ui';
+import {
+  GearIcon,
+  HiddenIcon,
+  QrCodeIcon,
+  SatoshiV2Icon,
+  SendIcon,
+  VisibleIcon,
+} from '@bitcoin-design/bitcoin-icons-react/filled';
 
-// Harcode data
+// Theme
+import { appTheme } from '@/config/exports';
+
+// Hooks and utils
+import { extractFirstTwoChars } from '@/utils';
+import { copy } from '@/utils/share';
 import { Link, useRouter } from '@/navigation';
-import { useLocale, useTranslations } from 'next-intl';
 
-// Animations
+// Components
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import { appTheme } from '@/config/exports';
-import { CACHE_BACKUP_KEY } from '@/constants/constants';
-import { extractFirstTwoChars } from '@/utils';
-import { copy } from '@/utils/share';
 import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
+import ButtonCTA from '@/components/ButtonCTA';
+
+// Constans
+import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
 
 export default function Page() {
   const config = useConfig();
@@ -92,9 +104,11 @@ export default function Page() {
             </Flex>
           </Flex>
           <Flex gap={4} justify="end">
-            <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
-              <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
-            </Button>
+            {Number(balance.amount) > 0 && (
+              <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
+                <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
+              </Button>
+            )}
             <Button variant="bezeled" size="small" onClick={() => router.push('/settings')}>
               <Icon size="small">
                 <GearIcon />
@@ -103,7 +117,9 @@ export default function Page() {
           </Flex>
         </Navbar>
 
-        <Flex direction="column" align="center" justify="center" flex={1}>
+        <Divider y={12} />
+
+        <Flex direction="column" align="center" justify="center">
           <Text size="small" color={appTheme.colors.gray50}>
             {t('BALANCE')}
           </Text>
@@ -129,18 +145,24 @@ export default function Page() {
 
           {!loading && <TokenList />}
         </Flex>
+
+        <Divider y={12} />
       </HeroCard>
 
       <Container size="small">
         <Divider y={16} />
         <Flex gap={8}>
-          <Button onClick={() => router.push('/deposit')}>
+          <Button onClick={() => router.push('/deposit')} disabled={EMERGENCY_LOCK_DEPOSIT}>
             <Icon>
               <ReceiveIcon />
             </Icon>
             {t('DEPOSIT')}
           </Button>
-          <Button onClick={() => router.push('/transfer')} color="secondary">
+          <Button
+            onClick={() => router.push('/transfer')}
+            color="secondary"
+            disabled={EMERGENCY_LOCK_TRANSFER || Number(balance.amount) === 0}
+          >
             <Icon>
               <SendIcon />
             </Icon>
@@ -188,6 +210,13 @@ export default function Page() {
       </Container>
 
       <Subnavbar path="home" />
+      {!EMERGENCY_LOCK_TRANSFER && Number(balance.amount) > 0 && (
+        <ButtonCTA>
+          <Button color="secondary" onClick={() => router.push('/scan')}>
+            <QrCodeIcon />
+          </Button>
+        </ButtonCTA>
+      )}
     </>
   );
 }
