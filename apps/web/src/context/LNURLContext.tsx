@@ -15,6 +15,9 @@ import { NDKTag } from '@nostr-dev-kit/ndk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 
+// Constans
+import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+
 interface ILNURLContext {
   LNURLTransferInfo: LNURLTransferType;
   isLoading: boolean;
@@ -30,15 +33,21 @@ const LNURLContext = createContext({} as ILNURLContext);
 
 export function LNURLProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const {
+    account: { identity, balance },
+  } = useWalletContext();
+
+  if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
+    router.push('/dashboard');
+    return null;
+  }
+
   const params = useSearchParams();
   const config = useConfig();
 
   const [LNURLTransferInfo, setLNURLTransferInfo] = useState<LNURLTransferType>(defaultLNURLTransfer);
 
   const { LNURLInfo, decodeLNURL } = useLNURL({ lnurlOrAddress: LNURLTransferInfo.data, config });
-  const {
-    account: { identity },
-  } = useWalletContext();
   const { signerInfo, signer, encrypt } = useNostrContext();
 
   const {
