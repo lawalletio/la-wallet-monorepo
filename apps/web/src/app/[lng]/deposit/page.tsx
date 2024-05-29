@@ -1,20 +1,37 @@
 'use client';
 
-import Navbar from '@/components/Layout/Navbar';
+// Libraries
 import { useMemo, useState } from 'react';
-
-import { copy } from '@/utils/share';
-
-import { QRCode } from '@/components/UI';
+import { useTranslations } from 'next-intl';
+import { formatAddress, lnurl_encode, normalizeLNDomain, useConfig, useWalletContext } from '@lawallet/react';
 import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
 
+// Theme
 import { appTheme } from '@/config/exports';
+
+// Hooks and utils
 import { useNotifications } from '@/context/NotificationsContext';
 import { formatAddress, lnurl_encode, useConfig, useWalletContext } from '@lawallet/react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from '@/navigation';
+import { copy } from '@/utils/share';
+
+// Components
+import { QRCode } from '@/components/UI';
+import Navbar from '@/components/Layout/Navbar';
 import InvoiceSheet from './components/InvoiceSheet';
 
+// Constans
+import { EMERGENCY_LOCK_DEPOSIT } from '@/constants/constants';
+
 export default function Page() {
+  const router = useRouter();
+
+  if (EMERGENCY_LOCK_DEPOSIT) {
+    router.push('/dashboard');
+    return null;
+  }
+
   const config = useConfig();
   const t = useTranslations();
   const notifications = useNotifications();

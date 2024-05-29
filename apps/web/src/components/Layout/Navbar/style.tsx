@@ -6,6 +6,7 @@ import { styled } from 'styled-components';
 interface NavbarProps {}
 
 export const Navbar = styled.div<NavbarProps>`
+  width: 100%;
   height: 60px;
   position: relative;
   z-index: 10;
@@ -31,3 +32,15 @@ const BoxIcons = styled.div`
 export const Left = styled(BoxIcons)``;
 
 export const Right = styled(BoxIcons)``;
+
+interface AlertSystemStyleProps {
+  $background: string;
+}
+
+export const AlertSystemStyle = styled.div<AlertSystemStyleProps>`
+  display: block;
+  width: 100%;
+  height: 60px;
+
+  background-color: ${(props) => props.$background};
+`;

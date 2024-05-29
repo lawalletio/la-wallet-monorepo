@@ -17,7 +17,8 @@
     "web:start": "pnpm --filter lawallet-front start",
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
     "docs:build": "pnpm --filter @lawallet/docs build",
-    "docs:start": "pnpm --filter @lawallet/docs start:docs"
+    "docs:start": "pnpm --filter @lawallet/docs start:docs",
+    "ui:dev": "pnpm --filter @lawallet/ui dev"
   },
   "devDependencies": {
     "@lacrypta/eslint-config": "^1.0.0",
@@ -42,8 +43,14 @@
     "apps/*",
     "packages/*",
     "config/*"
-  ],
-  "dependencies": {
-    "eslint-config-turbo": "^1.13.3"
-  }
+  ]
+}
+  "workspaces": [
+  "apps/*",
+  "packages/*",
+  "config/*"
+],
+"dependencies": {
+  "eslint-config-turbo": "^1.13.3"
+}
 }
