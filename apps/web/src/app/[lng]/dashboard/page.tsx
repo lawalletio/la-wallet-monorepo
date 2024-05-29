@@ -108,7 +108,7 @@ export default function Page() {
             </Flex>
           </Flex>
           <Flex gap={4} justify="end">
-            {Number(convertedBalance) > 0 && (
+            {Number(balance.amount) > 0 && (
               <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
                 <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
               </Button>
@@ -165,7 +165,7 @@ export default function Page() {
           <Button
             onClick={() => router.push('/transfer')}
             color="secondary"
-            disabled={EMERGENCY_LOCK_TRANSFER || Number(convertedBalance) === 0}
+            disabled={EMERGENCY_LOCK_TRANSFER || Number(balance.amount) === 0}
           >
             <Icon>
               <SendIcon />
@@ -239,7 +239,7 @@ export default function Page() {
         <Divider y={64} />
       </Container>
 
-      {!EMERGENCY_LOCK_TRANSFER && Number(convertedBalance) > 0 && (
+      {!EMERGENCY_LOCK_TRANSFER && Number(balance.amount) > 0 && (
         <ButtonCTA>
           <Button color="secondary" onClick={() => router.push('/scan')}>
             <QrCodeIcon />
