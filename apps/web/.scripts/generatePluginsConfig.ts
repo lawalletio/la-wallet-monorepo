@@ -41,7 +41,8 @@ export const ${route}Plugin: PluginProps = {
   console.log('\x1b[32m', `Added ${route} plugin`);
 });
 
-const emptyContent = `export const PLUGINS = {};
+const emptyContent = `import { PluginProps } from './plugins.d';
+export const PLUGINS: Record<string, PluginProps> = {};
 `;
 
 const indexContent = pluginsList.length
