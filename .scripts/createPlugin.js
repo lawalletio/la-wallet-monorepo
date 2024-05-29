@@ -26,7 +26,7 @@ function addDependencyToPackageJson(packageName, projectPath) {
   if (!packageJson.dependencies) packageJson.dependencies = {};
   if (!packageJson.pluginsList) packageJson.pluginsList = [];
 
-  packageJson.dependencies[packageName] = '*';
+  packageJson.dependencies[packageName] = 'workspace:*';
   packageJson.pluginsList.push({
     route: packageName,
     package: packageName,
@@ -102,14 +102,14 @@ const initializePluginRepository = async (packageName) => {
   const image = await askToUser('Ingresa la imagen:');
   const author = await askToUser('Ingresa el autor:');
 
-  const metadataPath = path.join(targetDir, './src/.metadata/metadata.ts');
+  const metadataPath = path.join(targetDir, './src/manifest/metadata.json');
   fs.writeFileSync(
     metadataPath,
-    `export const metadata = {
-      title: '${title}',
-      description: '${description}',
-      image: '${image}', 
-      author: '${author}',
+    `{
+      "title": "${title}",
+      "description": "${description}",
+      "image": "${image}", 
+      "author": "${author}"
   }`,
   );
 };

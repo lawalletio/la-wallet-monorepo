@@ -20,7 +20,7 @@ pluginsList.forEach((plugin) => {
 
   const pluginConfig = `import SpinnerView from '@/components/Spinner/SpinnerView';
 import { PluginRoutes } from '${pluginPackage}';
-import { metadata } from '${metadataPath}';
+import metadata from '${metadataPath}';
 import dynamic from 'next/dynamic';
 import { PluginProps } from './plugins.d';
 
