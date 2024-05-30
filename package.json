@@ -20,7 +20,8 @@
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
     "docs:start": "pnpm --filter @lawallet/docs start:docs",
     "ui:dev": "pnpm --filter @lawallet/ui dev",
-    "create-plugin": "node ./.scripts/createPlugin.js"
+    "create-plugin": "node ./.scripts/createPlugin.js",
+    "add-plugin": "node ./.scripts/addPlugin.js"
   },
   "devDependencies": {
     "inquirer": "^9.2.22",

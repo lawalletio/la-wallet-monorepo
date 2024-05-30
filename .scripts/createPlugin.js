@@ -1,59 +1,12 @@
-import { execSync } from 'child_process';
-import * as fs from 'fs';
 import inquirer from 'inquirer';
+import * as fs from 'fs';
 import * as path from 'path';
 import simpleGit from 'simple-git';
 import { fileURLToPath } from 'url';
+import { addPlugin } from './addPlugin.js';
+import { askToUser, installDependencies } from './utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-async function askToUser(message) {
-  const answers = await inquirer.prompt([
-    {
-      name: 'packageName',
-      type: 'input',
-      message,
-    },
-  ]);
-
-  return answers.packageName;
-}
-
-function addDependencyToPackageJson(packageName, projectPath) {
-  const packageJsonPath = path.join(projectPath, 'package.json');
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-
-  if (!packageJson.dependencies) packageJson.dependencies = {};
-  if (!packageJson.pluginsList) packageJson.pluginsList = [];
-
-  packageJson.dependencies[packageName] = 'workspace:*';
-  packageJson.pluginsList.push({
-    route: packageName,
-    package: packageName,
-  });
-
-  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-  console.log('\x1b[32m', `Dependencia ${packageName} agregada a ${packageJsonPath}`);
-}
-
-function buildPluginsAndConfiguration() {
-  try {
-    execSync('pnpm build:plugins', { stdio: 'inherit' });
-  } catch (error) {
-    console.error('Error al compilar los plugins:', error);
-    process.exit(1);
-  }
-}
-
-function installDependencies() {
-  try {
-    execSync('pnpm install', { stdio: 'inherit' });
-    console.log('Dependencias instaladas correctamente');
-  } catch (error) {
-    console.error('Error al instalar las dependencias:', error);
-    process.exit(1);
-  }
-}
 
 async function cloneRepository(targetDir, repoUrl) {
   const git = simpleGit();
@@ -63,13 +16,6 @@ async function cloneRepository(targetDir, repoUrl) {
     if (fs.existsSync(targetDir)) {
       console.error('Error: la carpeta de destino ya existe.');
       process.exit(0);
-
-      // const response = await askToUser('Desea saltearse este paso y continuar? (y/n):');
-      // if (response.toLowerCase() !== 'y') {
-      //   process.exit(0);
-      // } else {
-      //   return;
-      // }
     }
 
     await git.clone(repoUrl, targetDir);
@@ -119,11 +65,9 @@ async function main() {
   const projectPath = './apps/web';
 
   await initializePluginRepository(packageName);
+  installDependencies();
 
-  installDependencies();
-  addDependencyToPackageJson(packageName, projectPath);
-  buildPluginsAndConfiguration();
-  installDependencies();
+  addPlugin(packageName, projectPath);
 }
 
 main().catch((error) => console.error(error));
