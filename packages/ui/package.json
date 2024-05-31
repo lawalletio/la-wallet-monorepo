@@ -12,7 +12,6 @@
   "type": "module",
   "prettier": "@lacrypta/prettier-config",
   "types": "dist/index.d.ts",
-  "style": "dist/global.css",
   "files": [
     "dist"
   ],

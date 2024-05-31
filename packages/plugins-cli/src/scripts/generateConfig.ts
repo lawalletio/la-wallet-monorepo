@@ -21,9 +21,11 @@ export async function generateNextConfig(projectPath: string) {
     const metadataImportPath = `${pluginPackage}/metadata`;
     const pluginPath = path.join(pluginsDir, route);
 
-    const metadataContent = `import metadata from '${metadataImportPath}';\nexport default metadata;`;
+    const metadataContent = `/* eslint-disable prettier/prettier */
+    import metadata from '${metadataImportPath}';\nexport default metadata;`;
 
-    const routesContent = `import SpinnerView from '@/components/Spinner/SpinnerView';
+    const routesContent = `/* eslint-disable prettier/prettier */
+    import SpinnerView from '@/components/Spinner/SpinnerView';
     import { PluginRoutes } from '${pluginPackage}';
     import dynamic from 'next/dynamic';
   
