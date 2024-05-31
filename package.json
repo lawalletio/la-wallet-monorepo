@@ -4,7 +4,7 @@
   "type": "module",
   "prettier": "@lacrypta/prettier-config",
   "scripts": {
-    "build": "pnpm webapp-plugins-config && turbo build",
+    "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,mdx}\"",
