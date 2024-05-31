@@ -11,9 +11,9 @@ importers:
 
   .:
     dependencies:
-      '@lawallet/plugins-utils':
+      '@lawallet/plugins-cli':
         specifier: workspace:*
-        version: link:packages/plugins-utils
+        version: link:packages/plugins-cli
     devDependencies:
       '@lacrypta/eslint-config':
         specifier: ^1.0.0
@@ -174,7 +174,7 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
-  packages/plugins-utils:
+  packages/plugins-cli:
     devDependencies:
       '@types/async-retry':
         specifier: 1.4.2

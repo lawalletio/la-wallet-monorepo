@@ -1,12 +1,12 @@
 {
-    "name": "@lawallet/plugins-utils",
+    "name": "@lawallet/plugins-cli",
     "version": "0.0.1",
     "description": "Create LaWallet plugins with one command",
     "type": "module",
     "repository": {
         "type": "git",
         "url": "https://github.com/lawalletio/la-wallet-monorepo",
-        "directory": "packages/plugins-utils"
+        "directory": "packages/plugins-cli"
     },
     "author": "La Crypta Labs",
     "license": "MIT",
