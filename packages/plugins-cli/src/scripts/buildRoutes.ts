@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import path, { join } from 'path';
-import { fileURLToPath } from 'url';
 import UglifyJS from 'uglify-js';
 import { recursiveReadDir } from '../helpers/recursive-readdir.js';
 
@@ -282,9 +281,8 @@ function extractInterceptionRouteInformation(path: string) {
       // (...) will match the route segment in the root directory, so we need to use the root directory to prepend the intercepted route
       interceptedRoute = '/' + interceptedRoute;
       break;
-    case '(..)(..)':
+    case '(..)(..)': {
       // (..)(..) indicates that we should match at two levels up, so we need to remove the last two segments of the intercepting route
-
       const splitInterceptingRoute = interceptingRoute.split('/');
       if (splitInterceptingRoute.length <= 2) {
         throw new Error(
@@ -294,6 +292,8 @@ function extractInterceptionRouteInformation(path: string) {
 
       interceptedRoute = splitInterceptingRoute.slice(0, -2).concat(interceptedRoute).join('/');
       break;
+    }
+
     default:
       throw new Error('Invariant: unexpected marker');
   }

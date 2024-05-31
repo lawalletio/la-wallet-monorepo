@@ -1,0 +1,6 @@
+{
+  "extends": ["@lacrypta/eslint-config/library.js"],
+  "parserOptions": {
+    "sourceType": "module"
+}
+}

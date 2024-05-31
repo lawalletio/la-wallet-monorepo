@@ -23,11 +23,9 @@ export async function generateNextConfig(projectPath: string) {
 
     const metadataContent = `import metadata from '${metadataImportPath}';\nexport default metadata;`;
 
-    const routesContent = `
-    import SpinnerView from '@/components/Spinner/SpinnerView';
+    const routesContent = `import SpinnerView from '@/components/Spinner/SpinnerView';
     import { PluginRoutes } from '${pluginPackage}';
     import dynamic from 'next/dynamic';
-    import { PluginProps } from '../plugins.d';
   
     export default PluginRoutes.map((route) => ({
       path: route,

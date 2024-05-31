@@ -31,6 +31,7 @@
     "@lacrypta/eslint-config": "^1.0.0",
     "@lacrypta/prettier-config": "^1.0.0",
     "@lacrypta/typescript-config": "^1.0.0",
+    "eslint-config-turbo": "^1.13.3",
     "prettier": "^3.2.5",
     "turbo": "^1.12.5"
   },
