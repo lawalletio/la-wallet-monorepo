@@ -1,21 +1,23 @@
 'use client';
 import BackButton from '@/components/BackButton';
-import { PLUGINS } from '@/config/exports/extensions';
+import SpinnerView from '@/components/Spinner/SpinnerView';
 import { Navbar } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 type RouteWithParams = {
   component: React.ComponentType<React.JSX.Element>;
   params: Record<string, string>;
+  title: string;
 };
 
-const getDynamicView = (pluginName: string, pathStr: string): RouteWithParams => {
-  const plugin = PLUGINS[pluginName];
+const getDynamicView = async (pluginName: string, pathStr: string): Promise<RouteWithParams | null> => {
+  const metadata = await import(`@/config/exports/extensions/${pluginName}/metadata.ts`).then((res) => res.default);
+  const routes = await import(`@/config/exports/extensions/${pluginName}/routes.tsx`).then((res) => res.default);
   let routeWithParams: RouteWithParams | undefined;
 
-  for (const route of plugin.routes) {
-    const { path, component } = route;
+  for (const route of routes) {
+    const { path, getComponent } = route;
     const isDynamicRoute = path.includes(':');
 
     if (isDynamicRoute) {
@@ -35,11 +37,11 @@ const getDynamicView = (pluginName: string, pathStr: string): RouteWithParams =>
           }
         });
 
-        routeWithParams = { component, params };
+        routeWithParams = { component: getComponent(), params, title: metadata.title };
         break;
       }
     } else if (path === pathStr) {
-      routeWithParams = { component, params: {} };
+      routeWithParams = { component: getComponent(), params: {}, title: metadata.title };
       break;
     }
   }
@@ -53,12 +55,15 @@ const getDynamicView = (pluginName: string, pathStr: string): RouteWithParams =>
 
 export default function Page({ params }) {
   const router = useRouter();
+
+  const [ComponentInfo, setComponentInfo] = useState<RouteWithParams | null>(null);
   const [pluginRoute, setPluginRoute] = useState<string>('/');
 
   const pluginName = params.pluginName[0];
 
-  const ComponentInfo = useMemo(() => {
-    return getDynamicView(pluginName, pluginRoute);
+  const loadComponent = useCallback(async () => {
+    const comp = await getDynamicView(pluginName, pluginRoute);
+    comp ? setComponentInfo(comp) : router.push('/extensions');
   }, [pluginName, pluginRoute]);
 
   useEffect(() => {
@@ -72,12 +77,16 @@ export default function Page({ params }) {
     }
   }, [params.pluginName]);
 
+  useEffect(() => {
+    loadComponent();
+  }, [pluginName, pluginRoute]);
+
   return ComponentInfo ? (
     <>
-      <Navbar title={PLUGINS[pluginName].metadata.title} leftButton={<BackButton />} />
+      <Navbar title={ComponentInfo.title} leftButton={<BackButton />} />
       <ComponentInfo.component props={ComponentInfo.params} type="" key="" />
     </>
   ) : (
-    router.push('/plugins')
+    <SpinnerView />
   );
 }

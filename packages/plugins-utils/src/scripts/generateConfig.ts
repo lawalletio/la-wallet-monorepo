@@ -9,57 +9,45 @@ export async function generateNextConfig(projectPath: string) {
 
   console.log('\x1b[33m%s\x1b[0m', 'Generating plugin configuration...');
 
-  const packageJsonPath = path.join(projectPath, './package.json');
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-  if (!packageJson.pluginsList) packageJson.pluginsList = [];
+  const pluginsConfigPath = path.join(projectPath, './src/config/pluginsConfig.json');
+  const pluginsConfig = JSON.parse(fs.readFileSync(pluginsConfigPath, 'utf-8'));
+  if (!pluginsConfig.pluginsList) pluginsConfig.pluginsList = [];
 
   const pluginsDir = path.join(projectPath, './src/config/exports/extensions');
-  if (!fs.existsSync(pluginsDir)) {
-    fs.mkdirSync(pluginsDir);
-  }
+  if (!fs.existsSync(pluginsDir)) fs.mkdirSync(pluginsDir);
 
-  packageJson.pluginsList.forEach((plugin: PluginData) => {
+  pluginsConfig.pluginsList.forEach((plugin: PluginData) => {
     const { route, package: pluginPackage } = plugin;
-    const metadataPath = `${pluginPackage}/metadata`;
+    const metadataImportPath = `${pluginPackage}/metadata`;
+    const pluginPath = path.join(pluginsDir, route);
 
-    const pluginConfig = `import SpinnerView from '@/components/Spinner/SpinnerView';
+    const metadataContent = `import metadata from '${metadataImportPath}';\nexport default metadata;`;
+
+    const routesContent = `
+    import SpinnerView from '@/components/Spinner/SpinnerView';
     import { PluginRoutes } from '${pluginPackage}';
-    import metadata from '${metadataPath}';
     import dynamic from 'next/dynamic';
-    import { PluginProps } from './plugins.d';
-    
-    export const ${route}Plugin: PluginProps = {
-      metadata,
-      routes: PluginRoutes.map((route: string) => ({
-        path: route,
-        component: () => dynamic(() => import('${pluginPackage}').then((mod) => mod.App[route]), {
-          ssr: false,
-          loading: () => <SpinnerView />,
-        }),
-      })),
-    };
-    `;
+    import { PluginProps } from '../plugins.d';
+  
+    export default PluginRoutes.map((route) => ({
+      path: route,
+      getComponent: () => dynamic(() => import('${pluginPackage}').then((mod) => mod.App[route]), {
+        ssr: false,
+        loading: () => <SpinnerView />,
+      }),
+    }));
+  `;
 
-    fs.writeFileSync(path.join(pluginsDir, `${route}.tsx`), pluginConfig);
+    if (!fs.existsSync(pluginPath)) fs.mkdirSync(pluginPath, { recursive: true });
+
+    const metadataDirDest = path.join(pluginPath, `metadata.ts`);
+    const routeDirDest = path.join(pluginPath, `routes.tsx`);
+
+    fs.writeFileSync(metadataDirDest, metadataContent);
+    fs.writeFileSync(routeDirDest, routesContent);
 
     console.log('\x1b[32m', `Added ${route} plugin`);
   });
-
-  const emptyContent = `import { PluginProps } from './plugins.d';
-    export const PLUGINS: Record<string, PluginProps> = {};
-    `;
-
-  const indexContent = packageJson.pluginsList.length
-    ? `import { PluginProps } from './plugins.d';
-    ${packageJson.pluginsList.map((plugin: PluginData) => `import { ${plugin.route}Plugin } from './${plugin.route}';`).join('\n')}
-    
-    export const PLUGINS: Record<string, PluginProps> = {
-      ${packageJson.pluginsList.map((plugin: PluginData) => `${plugin.route}: ${plugin.route}Plugin,`).join('\n  ')}
-    };
-    `
-    : emptyContent;
-
-  fs.writeFileSync(path.join(pluginsDir, 'index.ts'), indexContent);
 
   console.log('\x1b[33m%s\x1b[0m', 'Plugin configuration generated successfully.');
 }

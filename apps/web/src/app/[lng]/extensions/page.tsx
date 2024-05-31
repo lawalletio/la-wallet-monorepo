@@ -1,58 +1,32 @@
-'use client';
+import pluginsConfig from '@/config/pluginsConfig.json';
+import { PluginsList } from './components/PluginsList';
 
-import BackButton from '@/components/BackButton';
-import Subnavbar from '@/components/Layout/Subnavbar';
-import { PLUGINS } from '@/config/exports/extensions';
-import { ArrowRightIcon, Button, Card, Container, Divider, Flex, Icon, Navbar, Text } from '@lawallet/ui';
-import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import React from 'react';
+export interface PluginMetadata {
+  author: string;
+  title: string;
+  description: string;
+  image: string;
+  route: string;
+}
 
-const pluginKeys: string[] = Object.keys(PLUGINS);
+const getPluginsInfo = async (): Promise<PluginMetadata[]> => {
+  const plugins: PluginMetadata[] = [];
 
-export default function Page() {
-  const router = useRouter();
-  const t = useTranslations();
+  await Promise.all([
+    pluginsConfig.pluginsList.map(async (plugin: { route: string; package: string }) => {
+      const metadata = await import(`@/config/exports/extensions/${plugin.route}/metadata.ts`).then(
+        (res) => res.default,
+      );
 
-  //traer METADATA dinamicamente. Exportarla por separado.
+      plugins.push({ ...metadata, route: plugin.route });
+    }),
+  ]);
 
-  return (
-    <>
-      <Navbar leftButton={<BackButton />} title="Plugins" />
-      <Container size="small">
-        <Divider y={24} />
-        {!pluginKeys.length ? (
-          <Text align="center">{t('PLUGINS_EMPTY')}</Text>
-        ) : (
-          pluginKeys.map((key) => {
-            const value: { title: string; description: string } = PLUGINS[key].metadata;
+  return plugins;
+};
 
-            return (
-              <React.Fragment key={key}>
-                <Card>
-                  <Flex gap={16} justify="space-between" align="center">
-                    <div>
-                      <Text isBold>{value.title}</Text>
-                      <Text>{value.description}</Text>
-                    </div>
-                    <div>
-                      <Button onClick={() => router.push(`/extensions/${key}`)} variant="borderless">
-                        <Icon>
-                          <ArrowRightIcon />
-                        </Icon>
-                      </Button>
-                    </div>
-                  </Flex>
-                </Card>
-                <Divider y={16} />
-              </React.Fragment>
-            );
-          })
-        )}
-        <Divider y={8} />
-      </Container>
+export default async function Page() {
+  const plugins = await getPluginsInfo();
 
-      <Subnavbar path="plugins" />
-    </>
-  );
+  return <PluginsList plugins={plugins} />;
 }

@@ -8,15 +8,18 @@ async function addPluginToPackageJson(packageName: string, projectPath: string, 
   const packageJsonPath = path.join(projectPath, 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
 
-  if (!packageJson.dependencies) packageJson.dependencies = {};
-  if (!packageJson.pluginsList) packageJson.pluginsList = [];
+  const pluginsConfigPath = path.join(projectPath, './src/config/pluginsConfig.json');
+  const pluginsConfig = JSON.parse(fs.readFileSync(pluginsConfigPath, 'utf-8'));
 
-  const existPlugin = packageJson.pluginsList.find((plugin: PluginData) => {
+  if (!packageJson.dependencies) packageJson.dependencies = {};
+  if (!pluginsConfig.pluginsList) pluginsConfig.pluginsList = [];
+
+  const existPlugin = pluginsConfig.pluginsList.find((plugin: PluginData) => {
     return plugin.package === packageName;
   });
 
   if (!existPlugin) {
-    packageJson.pluginsList.push({
+    pluginsConfig.pluginsList.push({
       route: normalizePluginName(packageName),
       package: packageName,
     });
@@ -28,7 +31,10 @@ async function addPluginToPackageJson(packageName: string, projectPath: string, 
   packageJson.dependencies[packageName] = isWorkspaceProject ? 'workspace:*' : 'latest';
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-  console.log('\x1b[32m', `Plugin ${packageName} added on ${packageJsonPath}`);
+  console.log('\x1b[32m', `Dependence ${packageName} added on ${packageJsonPath}`);
+
+  fs.writeFileSync(pluginsConfigPath, JSON.stringify(pluginsConfig, null, 2));
+  console.log('\x1b[32m', `Plugin ${packageName} added on ${pluginsConfigPath}`);
 }
 
 export async function addPlugin(projectPath: string, explicitName?: string, workspace?: boolean) {

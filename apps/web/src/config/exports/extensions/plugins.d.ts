@@ -1,6 +1,6 @@
 export type RouteProps = {
   path: string;
-  component: ComponentType;
+  getComponent: () => ComponentType;
 };
 
 export type PluginProps = {
