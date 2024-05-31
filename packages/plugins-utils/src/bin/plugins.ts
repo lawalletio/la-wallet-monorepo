@@ -4,6 +4,7 @@ import { createPlugin } from '../scripts/createPlugin.js';
 import path from 'path';
 import { addPlugin } from '../scripts/addPlugin.js';
 import { validateNpmName } from '../helpers/validate-pkg.js';
+import { generateNextConfig } from '../scripts/generateConfig.js';
 
 const program = new Command().name('lawallet-plugins').description('The LaWallet Plugins CLI.');
 
@@ -28,5 +29,12 @@ program
 
     addPlugin(webPath, nameFromParam && nameFromParam.valid ? name : undefined, isWorkspace);
   });
+
+program.command('webapp-config').action(() => {
+  const rootDir = process.cwd();
+  const webPath = path.resolve(rootDir, './apps/web');
+
+  generateNextConfig(webPath);
+});
 
 program.parse(process.argv);

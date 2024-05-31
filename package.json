@@ -4,7 +4,7 @@
   "type": "module",
   "prettier": "@lacrypta/prettier-config",
   "scripts": {
-    "build": "pnpm plugins-config && turbo build",
+    "build": "pnpm webapp-plugins-config && turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,mdx}\"",
@@ -12,8 +12,8 @@
     "build:utils": "pnpm --filter @lawallet/utils build && pnpm --filter @lawallet/plugins-utils build",
     "build:ui": "pnpm --filter @lawallet/ui build",
     "build:libs": "pnpm build --filter=./packages/*",
-    "build:plugins": "pnpm build --filter=./plugins/* && pnpm plugins-config",
-    "build:web": "pnpm plugins-config && pnpm --filter lawallet-front build",
+    "build:plugins": "pnpm build --filter=./plugins/* && pnpm webapp-plugins-config",
+    "build:web": "pnpm webapp-plugins-config && pnpm --filter lawallet-front build",
     "build:docs": "pnpm --filter @lawallet/docs build",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
@@ -22,7 +22,7 @@
     "ui:dev": "pnpm --filter @lawallet/ui dev",
     "add-plugin": "lawallet-plugins add",
     "create-plugin": "lawallet-plugins create",
-    "plugins-config": "lawallet-plugins webapp-config"
+    "webapp-plugins-config": "lawallet-plugins webapp-config"
   },
   "dependencies": {
     "@lawallet/plugins-utils": "workspace:*"
