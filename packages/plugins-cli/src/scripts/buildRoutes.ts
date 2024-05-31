@@ -313,26 +313,25 @@ function transformDynamicRoute(route: string) {
   return route.replace(/\[([^\]]+)\]/g, ':$1');
 }
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-async function checkComponentExport(route: string) {
-  const filePath = path.join(__dirname, route);
+async function checkComponentExport(componentPath: string) {
   try {
-    const fileContent = await fs.readFile(filePath, 'utf8');
+    const fileContent = await fs.readFile(componentPath, 'utf8');
 
     if (!fileContent.includes('export default')) {
-      console.warn(`Warning: 'export default' not found in ${filePath}`);
+      console.warn(`Warning: 'export default' not found in ${componentPath}`);
       throw new Error();
     }
   } catch {
-    throw new Error(`Error reading file ${filePath}`);
+    throw new Error(`Error reading file ${componentPath}`);
   }
 }
 
 const appDirectory = 'src/app';
 
 export async function buildRoutesMapping(projectPath: string) {
-  const rootPath = path.join(projectPath, `./${appDirectory}`);
+  const rootPath = path.resolve(projectPath, `./${appDirectory}`);
   recursiveReadDir(rootPath, { ignorePartFilter: (part) => part.startsWith('_') }).then((appPaths) => {
     const mappedAppPages = createPagesMapping({
       pagePaths: appPaths,
@@ -348,7 +347,7 @@ export async function buildRoutesMapping(projectPath: string) {
       const withoutAppDir = page.replace(appDirectory, '');
       const normalizedPath = normalizeAppPath(withoutAppDir);
 
-      checkComponentExport(`../${page}.tsx`);
+      checkComponentExport(path.resolve(rootPath, `./${page}.tsx`));
       importStatements += `import p${index} from './app${withoutAppDir}';\n`;
 
       if (withoutAppDir.endsWith('/layout')) {
