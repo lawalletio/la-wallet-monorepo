@@ -1,6 +1,6 @@
 {
     "name": "@lawallet/plugins-cli",
-    "version": "0.0.1",
+    "version": "0.0.15",
     "description": "Create LaWallet plugins with one command",
     "type": "module",
     "repository": {
@@ -21,29 +21,19 @@
         "clean": "rm -rf dist",
         "lint": "eslint ."
     },
+    "dependencies": {
+        "uglify-js": "^3.17.4",
+        "commander": "2.20.0",
+        "simple-git": "^3.24.0",
+        "prompts": "2.4.2",
+        "validate-npm-package-name": "3.0.0"
+    },
     "devDependencies": {
-        "@types/async-retry": "1.4.2",
-        "@types/ci-info": "2.0.0",
-        "@types/cross-spawn": "6.0.0",
-        "@types/inquirer": "^9.0.7",
         "@types/node": "^20.12.12",
         "@types/prompts": "2.4.2",
-        "@types/tar": "6.1.5",
         "@types/uglify-js": "^3.17.5",
         "@types/validate-npm-package-name": "3.0.0",
-        "async-retry": "1.3.1",
-        "commander": "2.20.0",
-        "conf": "10.2.0",
-        "cross-spawn": "7.0.3",
-        "fast-glob": "3.3.1",
-        "prettier-plugin-tailwindcss": "0.3.0",
-        "prompts": "2.4.2",
-        "simple-git": "^3.24.0",
-        "tar": "6.1.15",
-        "typescript": "5.3.3",
-        "uglify-js": "^3.17.4",
-        "update-check": "1.5.4",
-        "validate-npm-package-name": "3.0.0"
+        "typescript": "5.3.3"
     },
     "engines": {
         "node": ">=18.17.0"
