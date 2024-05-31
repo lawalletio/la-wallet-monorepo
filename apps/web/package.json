@@ -5,11 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm build:plugins && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "pnpm prettier --write .",
-    "build:plugins": "node ./.scripts/generatePluginsConfig.ts"
+    "format": "pnpm prettier --write ."
   },
   "dependencies": {
     "@bitcoin-design/bitcoin-icons-react": "^0.1.10",

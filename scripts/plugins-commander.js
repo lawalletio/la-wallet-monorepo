@@ -1,22 +1,26 @@
 import path from 'path';
-import { createPlugin, addPlugin } from '@lawallet/plugins-utils';
+import { createPlugin, addPlugin, generateNextConfig } from '@lawallet/plugins-utils';
 
 const rootDir = process.cwd();
 const args = process.argv.slice(2);
 const instruction = args[0];
 
+const webPath = path.resolve(rootDir, './apps/web');
+const pluginsPath = path.resolve(rootDir, './plugins');
+
 switch (instruction) {
-  case 'create': {
-    const pluginsPath = path.resolve(rootDir, './plugins');
+  case 'create':
     createPlugin(pluginsPath);
     break;
-  }
 
   case 'add':
-    const webPath = path.resolve(rootDir, './apps/web');
     addPlugin(webPath);
     break;
 
+  case 'webapp-config':
+    generateNextConfig(webPath);
+    break;
+
   default:
-    throw new Error('need argument: create | add');
+    throw new Error('need argument: create | add | webapp-config');
 }

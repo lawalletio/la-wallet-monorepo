@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { requestPrompt } from '../helpers/prompt.js';
-import { buildPlugins, installDependencies } from '../helpers/utils.js';
+import { buildPlugins, installDependencies, normalizePluginName, type PluginData } from '../helpers/utils.js';
 import { validateNpmName } from '../helpers/validate-pkg.js';
 import { Command } from 'commander';
 
@@ -13,6 +13,20 @@ async function addPluginToPackageJson(packageName: string, projectPath: string) 
 
   if (!packageJson.dependencies) packageJson.dependencies = {};
   if (!packageJson.pluginsList) packageJson.pluginsList = [];
+
+  const existPlugin = packageJson.pluginsList.find((plugin: PluginData) => {
+    return plugin.package === packageName;
+  });
+
+  if (!existPlugin) {
+    packageJson.pluginsList.push({
+      route: normalizePluginName(packageName),
+      package: packageName,
+    });
+  } else {
+    console.warn('The plugin already exists in the list.');
+    console.warn('Skipped the step of saving to pluginsList inside the package.json.');
+  }
 
   const isWorkspaceProject: boolean = process.argv.includes('--w')
     ? true
@@ -28,10 +42,6 @@ async function addPluginToPackageJson(packageName: string, projectPath: string) 
       );
 
   packageJson.dependencies[packageName] = isWorkspaceProject ? 'workspace:*' : 'latest';
-  packageJson.pluginsList.push({
-    route: packageName,
-    package: packageName,
-  });
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
   console.log('\x1b[32m', `Plugin ${packageName} added on ${packageJsonPath}`);

@@ -1,5 +1,13 @@
 import { execSync } from 'child_process';
-import inquirer from 'inquirer';
+
+export interface PluginData {
+  route: string;
+  package: string;
+}
+
+export function normalizePluginName(input: string): string {
+  return input.replace(/[^a-zA-Z]/g, '');
+}
 
 export function execCommand(command: string) {
   try {
