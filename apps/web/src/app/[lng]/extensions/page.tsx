@@ -14,6 +14,8 @@ export default function Page() {
   const router = useRouter();
   const t = useTranslations();
 
+  //traer METADATA dinamicamente. Exportarla por separado.
+
   return (
     <>
       <Navbar leftButton={<BackButton />} title="Plugins" />

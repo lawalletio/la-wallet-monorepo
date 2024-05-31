@@ -4,7 +4,7 @@
   "type": "module",
   "prettier": "@lacrypta/prettier-config",
   "scripts": {
-    "build": "pnpm plugins webapp-config && turbo build",
+    "build": "pnpm plugins-config && turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,mdx}\"",
@@ -12,20 +12,22 @@
     "build:utils": "pnpm --filter @lawallet/utils build && pnpm --filter @lawallet/plugins-utils build",
     "build:ui": "pnpm --filter @lawallet/ui build",
     "build:libs": "pnpm build --filter=./packages/*",
-    "build:plugins": "pnpm build --filter=./plugins/* && pnpm plugins webapp-config",
-    "build:web": "pnpm plugins webapp-config && pnpm --filter lawallet-front build",
+    "build:plugins": "pnpm build --filter=./plugins/* && pnpm plugins-config",
+    "build:web": "pnpm plugins-config && pnpm --filter lawallet-front build",
     "build:docs": "pnpm --filter @lawallet/docs build",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
     "docs:start": "pnpm --filter @lawallet/docs start:docs",
     "ui:dev": "pnpm --filter @lawallet/ui dev",
-    "plugins": "node ./scripts/plugins-commander.js",
-    "add-plugin": "pnpm plugins add",
-    "create-plugin": "pnpm plugins create"
+    "add-plugin": "lawallet-plugins add",
+    "create-plugin": "lawallet-plugins create",
+    "plugins-config": "lawallet-plugins webapp-config"
+  },
+  "dependencies": {
+    "@lawallet/plugins-utils": "workspace:*"
   },
   "devDependencies": {
-    "@lawallet/plugins-utils": "workspace:*",
     "@lacrypta/eslint-config": "^1.0.0",
     "@lacrypta/prettier-config": "^1.0.0",
     "@lacrypta/typescript-config": "^1.0.0",

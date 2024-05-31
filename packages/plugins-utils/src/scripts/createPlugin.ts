@@ -2,12 +2,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { simpleGit } from 'simple-git';
 import { TEMPLATE_PLUGIN_REPOSITORY } from '../helpers/contants.js';
-import { execCommand, installDependencies } from '../helpers/utils.js';
+import { execCommand, installDependencies, normalizePluginName } from '../helpers/utils.js';
 import { validateNpmName } from '../helpers/validate-pkg.js';
 import { requestPrompt } from '../helpers/prompt.js';
-import { addPlugin } from './addPlugin.js';
 
-let pluginPath: string = '';
+let pluginPackage: string = '';
 
 async function cloneRepository(targetDir: string, repoUrl: string) {
   const git = simpleGit();
@@ -50,7 +49,6 @@ export const initializePluginRepository = async (packageName: string, targetDir:
     message: 'Enter the description: ',
     initial: 'Plugin short description',
   });
-  // const image = await askToUser('Image:');
 
   const author = await requestPrompt({
     message: 'Enter the author: ',
@@ -86,16 +84,15 @@ export async function createPlugin(rootPath: string): Promise<void> {
     },
   });
 
-  if (typeof pluginName === 'string') pluginPath = pluginName.trim();
+  if (typeof pluginName === 'string') pluginPackage = pluginName.trim();
 
-  if (!pluginPath) {
+  if (!pluginPackage) {
     console.log('\nPlease specify the project directory');
     process.exit(1);
   }
 
-  const targetPath = path.resolve(rootPath, pluginPath);
-  await initializePluginRepository(pluginPath, targetPath);
+  const targetPath = path.resolve(rootPath, normalizePluginName(pluginPackage));
+  await initializePluginRepository(pluginPackage, targetPath);
 
-  // add plugin
-  execCommand(`pnpm plugins add --name "${pluginName}" --w`);
+  execCommand(`pnpm add-plugin --name "${pluginPackage}" --w`);
 }

@@ -32,7 +32,7 @@ export async function generateNextConfig(projectPath: string) {
       metadata,
       routes: PluginRoutes.map((route: string) => ({
         path: route,
-        component: dynamic(() => import('${pluginPackage}').then((mod) => mod.App[route]), {
+        component: () => dynamic(() => import('${pluginPackage}').then((mod) => mod.App[route]), {
           ssr: false,
           loading: () => <SpinnerView />,
         }),

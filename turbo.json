@@ -3,9 +3,6 @@
   "globalDependencies": [
     "**/.env.*local"
   ],
-  "globalEnv": [
-    "MONOREPO_ROOT: __dirname,"
-  ],
   "pipeline": {
     "build": {
       "dependsOn": [
@@ -24,6 +21,9 @@
       ]
     },
     "dev": {
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": false
     }
