@@ -10,18 +10,6 @@ export function execCommand(command: string) {
   }
 }
 
-export async function askToUser(message: string) {
-  const answers = await inquirer.prompt([
-    {
-      name: 'name',
-      type: 'input',
-      message,
-    },
-  ]);
-
-  return answers.name;
-}
-
 export function buildPlugins() {
   execCommand('pnpm build:plugins');
   console.log('Configuración de plugins generada correctamente');

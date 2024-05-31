@@ -20,7 +20,9 @@
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
     "docs:start": "pnpm --filter @lawallet/docs start:docs",
     "ui:dev": "pnpm --filter @lawallet/ui dev",
-    "create-plugin": "node ./scripts/create-plugin.js"
+    "plugins": "node ./scripts/plugins-commander.js",
+    "add-plugin": "pnpm plugins add",
+    "create-plugin": "pnpm plugins create"
   },
   "devDependencies": {
     "@lawallet/plugins-utils": "workspace:*",

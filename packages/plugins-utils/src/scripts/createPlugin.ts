@@ -1,40 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { simpleGit } from 'simple-git';
-import { installDependencies } from '../helpers/utils.js';
-import prompts, { type InitialReturnValue, type PromptType } from 'prompts';
-import { validateNpmName } from '../helpers/validate-pkg.js';
 import { TEMPLATE_PLUGIN_REPOSITORY } from '../helpers/contants.js';
+import { installDependencies } from '../helpers/utils.js';
+import { validateNpmName } from '../helpers/validate-pkg.js';
+import { requestPrompt } from '../helpers/prompt.js';
+import { addPlugin } from './addPlugin.js';
 
 let pluginPath: string = '';
-
-interface PromptProps {
-  message: string;
-  type?: string;
-  initial?: string;
-  customProps?: any;
-}
-
-const onPromptState = (state: { value: InitialReturnValue; aborted: boolean; exited: boolean }) => {
-  if (state.aborted) {
-    process.stdout.write('\x1B[?25h');
-    process.stdout.write('\n');
-    process.exit(1);
-  }
-};
-
-const requestPrompt = async ({ message, type = 'text', initial = '', customProps }: PromptProps) => {
-  const res = await prompts({
-    onState: onPromptState,
-    type: type as PromptType,
-    name: 'res_prompt',
-    message,
-    initial,
-    ...customProps,
-  });
-
-  return res['res_prompt'];
-};
 
 async function cloneRepository(targetDir: string, repoUrl: string) {
   const git = simpleGit();
@@ -121,5 +94,6 @@ export async function createPlugin(rootPath: string): Promise<void> {
   }
 
   const targetPath = path.resolve(rootPath, pluginPath);
-  initializePluginRepository(pluginPath, targetPath);
+  await initializePluginRepository(pluginPath, targetPath);
+  addPlugin(targetPath);
 }
