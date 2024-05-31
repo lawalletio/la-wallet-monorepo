@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
+import inquirer from 'inquirer';
 
-export function execCommand(command) {
+export function execCommand(command: string) {
   try {
     execSync(command, { stdio: 'inherit' });
   } catch (error) {
@@ -9,7 +10,7 @@ export function execCommand(command) {
   }
 }
 
-export async function askToUser(message) {
+export async function askToUser(message: string) {
   const answers = await inquirer.prompt([
     {
       name: 'name',

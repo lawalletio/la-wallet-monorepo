@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { askToUser, buildPlugins, installDependencies } from './utils.js';
+import { buildPlugins, installDependencies } from '../helpers/utils.js';
 
-function addPluginToPackageJson(packageName, projectPath) {
+function addPluginToPackageJson(packageName: string, projectPath: string) {
   const packageJsonPath = path.join(projectPath, 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
 
@@ -16,20 +16,11 @@ function addPluginToPackageJson(packageName, projectPath) {
   });
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-  console.log('\x1b[32m', `Plugin ${packageName} agregada a ${packageJsonPath}`);
+  console.log('\x1b[32m', `Plugin ${packageName} added on ${packageJsonPath}`);
 }
 
-export function addPlugin(packageName, projectPath) {
+export function addPlugin(packageName: string, projectPath: string) {
   addPluginToPackageJson(packageName, projectPath);
   buildPlugins();
   installDependencies();
 }
-
-async function initAddPlugin() {
-  const projectPath = './apps/web';
-  const packageName = await askToUser('Ingrese el nombre del paquete npm/workspace: ');
-
-  addPlugin(packageName, projectPath);
-}
-
-initAddPlugin();

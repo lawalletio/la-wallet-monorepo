@@ -20,16 +20,14 @@
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
     "docs:start": "pnpm --filter @lawallet/docs start:docs",
     "ui:dev": "pnpm --filter @lawallet/ui dev",
-    "create-plugin": "node ./.scripts/createPlugin.js",
-    "add-plugin": "node ./.scripts/addPlugin.js"
+    "create-plugin": "node ./scripts/create-plugin.js"
   },
   "devDependencies": {
-    "inquirer": "^9.2.22",
+    "@lawallet/plugins-utils": "workspace:*",
     "@lacrypta/eslint-config": "^1.0.0",
     "@lacrypta/prettier-config": "^1.0.0",
     "@lacrypta/typescript-config": "^1.0.0",
     "prettier": "^3.2.5",
-    "simple-git": "^3.24.0",
     "turbo": "^1.12.5"
   },
   "packageManager": "pnpm@8.9.0",
