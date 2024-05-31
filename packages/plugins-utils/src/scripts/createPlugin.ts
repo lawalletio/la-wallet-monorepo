@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { simpleGit } from 'simple-git';
 import { TEMPLATE_PLUGIN_REPOSITORY } from '../helpers/contants.js';
-import { installDependencies } from '../helpers/utils.js';
+import { execCommand, installDependencies } from '../helpers/utils.js';
 import { validateNpmName } from '../helpers/validate-pkg.js';
 import { requestPrompt } from '../helpers/prompt.js';
 import { addPlugin } from './addPlugin.js';
@@ -95,5 +95,7 @@ export async function createPlugin(rootPath: string): Promise<void> {
 
   const targetPath = path.resolve(rootPath, pluginPath);
   await initializePluginRepository(pluginPath, targetPath);
-  addPlugin(targetPath);
+
+  // add plugin
+  execCommand(`pnpm plugins add --name "${pluginName}" --w`);
 }
