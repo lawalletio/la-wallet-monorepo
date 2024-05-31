@@ -5,6 +5,7 @@ import path from 'path';
 import { addPlugin } from '../scripts/addPlugin.js';
 import { validateNpmName } from '../helpers/validate-pkg.js';
 import { generateNextConfig } from '../scripts/generateConfig.js';
+import { buildRoutesMapping } from '../scripts/buildRoutes.js';
 
 const program = new Command().name('lawallet-plugins').description('The LaWallet Plugins CLI.');
 
@@ -35,6 +36,11 @@ program.command('webapp-config').action(() => {
   const webPath = path.resolve(rootDir, './apps/web');
 
   generateNextConfig(webPath);
+});
+
+program.command('build-routes').action(() => {
+  const rootDir = process.cwd();
+  buildRoutesMapping(rootDir);
 });
 
 program.parse(process.argv);
