@@ -7,7 +7,7 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "postinstall": "pnpm link-plugins-cli && pnpm build:libs",
+    "postinstall": "pnpm build:libs",
     "format": "prettier --write \"**/*.{ts,tsx,md,mdx}\"",
     "build:react": "pnpm --filter @lawallet/react build",
     "build:utils": "pnpm --filter @lawallet/utils build && pnpm --filter @lawallet/plugins-cli build",
@@ -21,13 +21,12 @@
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
     "docs:start": "pnpm --filter @lawallet/docs start:docs",
     "ui:dev": "pnpm --filter @lawallet/ui dev",
-    "link-plugins-cli": "pnpm link @lawallet/plugins-cli",
     "add-plugin": "lawallet-plugins add",
     "create-plugin": "lawallet-plugins create",
     "webapp-plugins-config": "lawallet-plugins webapp-config"
   },
   "dependencies": {
-    "@lawallet/plugins-cli": "^0.0.15"
+    "@lawallet/plugins-cli": "workspace:*"
   },
   "devDependencies": {
     "@lacrypta/eslint-config": "^1.0.0",

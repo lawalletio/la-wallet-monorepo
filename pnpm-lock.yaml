@@ -12,7 +12,7 @@ importers:
   .:
     dependencies:
       '@lawallet/plugins-cli':
-        specifier: ^0.0.15
+        specifier: workspace:*
         version: link:packages/plugins-cli
     devDependencies:
       '@lacrypta/eslint-config':
