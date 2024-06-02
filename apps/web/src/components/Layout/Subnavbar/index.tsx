@@ -10,6 +10,8 @@ import { appTheme } from '@/config/exports';
 import { useTranslations } from 'next-intl';
 import { ReactNode } from 'react';
 import { SubnavbarPrimitive } from './style';
+import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { useWalletContext } from '@lawallet/react';
 
 interface ComponentProps {
   children?: ReactNode;
@@ -21,6 +23,10 @@ interface ComponentProps {
 
 export default function Subnavbar(props: ComponentProps) {
   const { path = 'home' } = props;
+
+  const {
+    account: { balance },
+  } = useWalletContext();
 
   const router = useRouter();
   const t = useTranslations();
@@ -38,11 +44,13 @@ export default function Subnavbar(props: ComponentProps) {
             </Text>
           </button>
 
-          <ButtonCTA>
-            <Button color="secondary" onClick={() => router.push('/scan')}>
-              <QrCodeIcon />
-            </Button>
-          </ButtonCTA>
+          {!EMERGENCY_LOCK_TRANSFER && Number(balance.amount) > 0 && (
+            <ButtonCTA>
+              <Button color="secondary" onClick={() => router.push('/scan')}>
+                <QrCodeIcon />
+              </Button>
+            </ButtonCTA>
+          )}
 
           <button onClick={() => router.push('/extensions')} className={`${path === 'plugins' && 'active'}`}>
             <Icon color={appTheme.colors.text}>

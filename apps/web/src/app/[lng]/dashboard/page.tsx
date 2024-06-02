@@ -5,8 +5,7 @@ import Navbar from '@/components/Layout/Navbar';
 import { TokenList } from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
 // Libraries
-import { useEffect, useMemo, useState } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
+import { GearIcon, HiddenIcon, SatoshiV2Icon, SendIcon, VisibleIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import {
   Avatar,
   BannerAlert,
@@ -21,29 +20,22 @@ import {
   ReceiveIcon,
   Text,
 } from '@lawallet/ui';
-import {
-  GearIcon,
-  HiddenIcon,
-  QrCodeIcon,
-  SatoshiV2Icon,
-  SendIcon,
-  VisibleIcon,
-} from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useLocale, useTranslations } from 'next-intl';
+import { useEffect, useMemo, useState } from 'react';
 
 // Theme
 import { appTheme } from '@/config/exports';
 
 // Hooks and utils
+import { Link, useRouter } from '@/navigation';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
-import { Link, useRouter } from '@/navigation';
 
 // Components
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import Subnavbar from '@/components/Layout/Subnavbar';
 import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
-import ButtonCTA from '@/components/ButtonCTA';
 
 // Constans
 import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
@@ -210,13 +202,6 @@ export default function Page() {
       </Container>
 
       <Subnavbar path="home" />
-      {!EMERGENCY_LOCK_TRANSFER && Number(balance.amount) > 0 && (
-        <ButtonCTA>
-          <Button color="secondary" onClick={() => router.push('/scan')}>
-            <QrCodeIcon />
-          </Button>
-        </ButtonCTA>
-      )}
     </>
   );
 }
