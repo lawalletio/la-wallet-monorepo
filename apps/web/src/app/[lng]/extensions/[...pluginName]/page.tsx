@@ -1,5 +1,6 @@
 'use client';
 import BackButton from '@/components/BackButton';
+import Subnavbar from '@/components/Layout/Subnavbar';
 import SpinnerView from '@/components/Spinner/SpinnerView';
 import { Navbar } from '@lawallet/ui';
 import { useRouter } from 'next/navigation';
@@ -85,6 +86,7 @@ export default function Page({ params }) {
     <>
       <Navbar title={ComponentInfo.title} leftButton={<BackButton />} />
       <ComponentInfo.component props={ComponentInfo.params} type="" key="" />
+      <Subnavbar path="plugins" />
     </>
   ) : (
     <SpinnerView />
