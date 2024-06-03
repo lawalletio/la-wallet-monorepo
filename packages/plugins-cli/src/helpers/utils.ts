@@ -13,17 +13,17 @@ export function execCommand(command: string) {
   try {
     execSync(command, { stdio: 'inherit' });
   } catch (error) {
-    console.error('Error al ejecutar el comando:', error);
+    console.error('Error executing command:', error);
     process.exit(1);
   }
 }
 
 export function buildPlugins() {
   execCommand('pnpm build:plugins');
-  console.log('Configuración de plugins generada correctamente');
+  console.log('Plugin configuration generated successfully');
 }
 
 export function installDependencies() {
-  execCommand('pnpm install');
-  console.log('Dependencias instaladas correctamente');
+  execCommand('pnpm install --ignore-scripts');
+  console.log('Correctly installed dependencies');
 }
