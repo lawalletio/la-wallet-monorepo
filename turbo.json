@@ -4,6 +4,11 @@
     "**/.env.*local"
   ],
   "pipeline": {
+    "clean": {
+      "dependsOn": [
+        "^clean"
+      ]
+    },
     "build": {
       "dependsOn": [
         "^build"
