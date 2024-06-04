@@ -9,13 +9,16 @@ import React, { useCallback, useEffect, useState } from 'react';
 type RouteWithParams = {
   component: React.ComponentType<React.JSX.Element>;
   params: Record<string, string>;
-  title: string;
+  metadata: PluginMetadata;
 };
 
-const getDynamicView = async (pluginName: string, pathStr: string): Promise<RouteWithParams | null> => {
+const getPluginView = async (pluginName: string, pathStr: string): Promise<RouteWithParams | null> => {
   const metadata = await import(`@/config/exports/extensions/${pluginName}/metadata.ts`).then((res) => res.default);
   const routes = await import(`@/config/exports/extensions/${pluginName}/routes.tsx`).then((res) => res.default);
   let routeWithParams: RouteWithParams | undefined;
+
+  const existExactMatch = routes.find((route) => route.path === pathStr);
+  if (existExactMatch) return { component: existExactMatch.getComponent(), params: {}, metadata };
 
   for (const route of routes) {
     const { path, getComponent } = route;
@@ -38,11 +41,11 @@ const getDynamicView = async (pluginName: string, pathStr: string): Promise<Rout
           }
         });
 
-        routeWithParams = { component: getComponent(), params, title: metadata.title };
+        routeWithParams = { component: getComponent(), params, metadata };
         break;
       }
     } else if (path === pathStr) {
-      routeWithParams = { component: getComponent(), params: {}, title: metadata.title };
+      routeWithParams = { component: getComponent(), params: {}, metadata };
       break;
     }
   }
@@ -63,7 +66,7 @@ export default function Page({ params }) {
   const pluginName = params.pluginName[0];
 
   const loadComponent = useCallback(async () => {
-    const comp = await getDynamicView(pluginName, pluginRoute);
+    const comp = await getPluginView(pluginName, pluginRoute);
     comp ? setComponentInfo(comp) : router.push('/extensions');
   }, [pluginName, pluginRoute]);
 
@@ -84,7 +87,7 @@ export default function Page({ params }) {
 
   return ComponentInfo ? (
     <>
-      <Navbar title={ComponentInfo.title} leftButton={<BackButton />} />
+      <Navbar title={ComponentInfo.metadata.title} leftButton={<BackButton />} />
       <ComponentInfo.component props={ComponentInfo.params} type="" key="" />
       <Subnavbar path="plugins" />
     </>

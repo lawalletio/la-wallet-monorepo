@@ -6,7 +6,6 @@ import { ArrowRightIcon, Button, Card, Container, Divider, Flex, Icon, Navbar, T
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { PluginMetadata } from '../page';
 
 export function PluginsList({ plugins }: { plugins: PluginMetadata[] }) {
   const t = useTranslations();
