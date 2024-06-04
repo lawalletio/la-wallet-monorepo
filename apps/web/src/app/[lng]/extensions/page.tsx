@@ -1,14 +1,6 @@
 import pluginsConfig from '@/config/pluginsConfig.json';
 import { PluginsList } from './components/PluginsList';
 
-export interface PluginMetadata {
-  author: string;
-  title: string;
-  description: string;
-  image: string;
-  route: string;
-}
-
 const getPluginsInfo = async (): Promise<PluginMetadata[]> => {
   const plugins: PluginMetadata[] = [];
 
