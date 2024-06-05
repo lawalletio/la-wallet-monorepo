@@ -12,7 +12,7 @@ export async function generateMetadata({ params: { lng } }) {
   };
 }
 
-export const pluginsEnabled: boolean = Boolean(pluginsConfig.enabled);
+const pluginsEnabled: boolean = Boolean(pluginsConfig.enabled);
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   if (!pluginsEnabled) return <PluginsEmptyView />;
