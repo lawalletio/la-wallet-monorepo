@@ -4,6 +4,7 @@ import { ConfigProps } from '@lawallet/react/types';
 import { createTheme } from '@lawallet/ui';
 import federationConfig from '../federationConfig.json';
 import themeConfig from '../themeConfig.json';
+import pluginsConfig from '@/config/pluginsConfig.json';
 
 const storage = createStorage({
   storage: {
@@ -23,4 +24,7 @@ export const config: ConfigProps = createConfig({
   ...federationConfig,
   storage,
 });
+
 export const appTheme = createTheme(themeConfig);
+
+export const pluginsEnabled: boolean = Boolean(pluginsConfig.enabled);
