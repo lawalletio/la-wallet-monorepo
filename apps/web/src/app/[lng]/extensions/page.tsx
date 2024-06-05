@@ -19,6 +19,5 @@ const getPluginsInfo = async (): Promise<PluginMetadata[]> => {
 
 export default async function Page() {
   const plugins = await getPluginsInfo();
-
   return <PluginsList plugins={plugins} />;
 }

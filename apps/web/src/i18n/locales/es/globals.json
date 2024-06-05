@@ -194,7 +194,8 @@
     "BUY_ADDRESS_TITLE": "Comprar LN Address",
     "SIGNUP_TITLE": "Crear cuenta",
     "TRANSACTIONS_TITLE": "Mi actividad",
-    "TRANSFER_TITLE": "Transferir"
+    "TRANSFER_TITLE": "Transferir",
+    "PLUGINS_TITLE": "Extensiones"
   },
   "BANNER_DESC": "¡Acumulá Satoshis, sobreviví a los bloques y asegurá tu premio en el halving de Bitcoin!",
   "BANNER_DESC2": "¿Serás el último en pie?",
@@ -204,5 +205,6 @@
   "PAUSED": "Pausado",
   "DEPOSITS": "Depósitos",
   "TRANSFERS": "Transferencias",
-  "DISABLED": "deshabilitado"
+  "DISABLED": "deshabilitado",
+  "PLUGINS_NOT_ENABLED": "Plugins deshabilitados"
 }
