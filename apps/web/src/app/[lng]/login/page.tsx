@@ -6,7 +6,7 @@ import Navbar from '@/components/Layout/Navbar';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { saveIdentityToStorage } from '@/utils';
-import { useConfig, useNostrContext, useLaWallet } from '@lawallet/react';
+import { useConfig, useNostr, useLaWallet } from '@lawallet/react';
 import { getUsername } from '@lawallet/react/actions';
 import { Button, Container, Divider, Feedback, Flex, Heading, Textarea } from '@lawallet/ui';
 import { useTranslations } from 'next-intl';
@@ -18,7 +18,7 @@ export default function Page() {
     account: { identity },
   } = useLaWallet();
 
-  const { initializeSigner } = useNostrContext();
+  const { initializeSigner } = useNostr();
 
   const [keyInput, setKeyInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);

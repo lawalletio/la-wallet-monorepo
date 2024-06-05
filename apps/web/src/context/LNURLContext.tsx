@@ -5,7 +5,7 @@ import {
   normalizeLNDomain,
   useConfig,
   useLNURL,
-  useNostrContext,
+  useNostr,
   useTransfer,
   useLaWallet,
 } from '@lawallet/react';
@@ -48,7 +48,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
   const [LNURLTransferInfo, setLNURLTransferInfo] = useState<LNURLTransferType>(defaultLNURLTransfer);
 
   const { LNURLInfo, decodeLNURL } = useLNURL({ lnurlOrAddress: LNURLTransferInfo.data, config });
-  const { signerInfo, signer, encrypt } = useNostrContext();
+  const { signerInfo, signer, encrypt } = useNostr();
 
   const {
     isLoading,

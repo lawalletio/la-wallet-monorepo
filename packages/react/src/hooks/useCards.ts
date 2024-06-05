@@ -19,7 +19,7 @@ import {
 
 import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage, type NostrEvent } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
-import { useNostrContext } from '../context/NostrContext.js';
+import { useNostr } from '../context/NostrContext.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
@@ -54,7 +54,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     account: { identity },
   } = useLaWallet();
 
-  const { encrypt, decrypt, signer, signEvent } = useNostrContext();
+  const { encrypt, decrypt, signer, signEvent } = useNostr();
   const pubkey = React.useMemo(() => identity.hexpub ?? '', [identity.hexpub]);
 
   const { subscription } = useSubscription({

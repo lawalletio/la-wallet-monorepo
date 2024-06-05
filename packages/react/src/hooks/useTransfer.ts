@@ -1,12 +1,5 @@
 import type { NDKEvent, NDKKind, NDKTag, NostrEvent } from '@nostr-dev-kit/ndk';
-import {
-  LaWalletKinds,
-  LaWalletTags,
-  buildTxStartEvent,
-  getTagValue,
-  useConfig,
-  useNostrContext,
-} from '../exports/index.js';
+import { LaWalletKinds, LaWalletTags, buildTxStartEvent, getTagValue, useConfig, useNostr } from '../exports/index.js';
 import { useSubscription } from './useSubscription.js';
 import * as React from 'react';
 import { useStatusVars, type UseStatusVarsReturns } from './useStatusVars.js';
@@ -39,7 +32,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
   const statusVars = useStatusVars(params);
 
   const [startEvent, setStartEvent] = React.useState<NostrEvent | null>(null);
-  const { ndk, signer, signerInfo, signEvent } = useNostrContext({ config });
+  const { ndk, signer, signerInfo, signEvent } = useNostr({ config });
 
   const { events } = useSubscription({
     filters: [

@@ -13,13 +13,14 @@ export function NostrProvider(props: React.PropsWithChildren<ConfigParameter>) {
   return React.createElement(NostrContext.Provider, { value }, children);
 }
 
-export const useNostrContext = (props?: ConfigParameter): UseNostrReturns => {
+export const useNostr = (props?: ConfigParameter): UseNostrReturns => {
   const context = React.useContext(NostrContext);
+  const notFoundContext: boolean = Boolean(!context || Object.keys(context).length === 0);
 
-  if (!context || Object.keys(context).length === 0) {
+  if (notFoundContext) {
     if (!props || !props.config) {
       throw new Error(
-        'useNostrContext should be used in conjunction with a configuration or within the LaWalletConfig provider',
+        'useNostr should be used in conjunction with a configuration or within the LaWalletConfig provider or with config props',
       );
     }
 

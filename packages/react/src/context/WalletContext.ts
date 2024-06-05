@@ -3,7 +3,7 @@ import { useCurrencyConverter, type UseConverterReturns } from '../hooks/useCurr
 import { useSettings, type UseSettingsReturns } from '../hooks/useSettings.js';
 import { useAccount, type UseAccountReturns } from '../hooks/useAccount.js';
 import { type ConfigParameter } from '@lawallet/utils/types';
-import { useNostrContext } from './NostrContext.js';
+import { useNostr } from './NostrContext.js';
 import { useConfig } from '../hooks/useConfig.js';
 
 interface WalletContextType {
@@ -16,7 +16,7 @@ export const WalletContext = React.createContext({} as WalletContextType);
 
 export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const config = useConfig(props);
-  const { signerInfo } = useNostrContext({ config });
+  const { signerInfo } = useNostr({ config });
 
   const account: UseAccountReturns = useAccount({ pubkey: signerInfo?.pubkey ?? '', config });
   const settings: UseSettingsReturns = useSettings();

@@ -6,7 +6,7 @@ import * as React from 'react';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { nip26, type Event } from 'nostr-tools';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
-import { useNostrContext } from '../context/NostrContext.js';
+import { useNostr } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
 
@@ -72,7 +72,7 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
 
-  const { decrypt } = useNostrContext();
+  const { decrypt } = useNostr();
 
   const { events: walletEvents } = useSubscription({
     filters: [

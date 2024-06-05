@@ -4,7 +4,7 @@ import { Loader } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
 import useErrors from '@/hooks/useErrors';
-import { buildCardActivationEvent, useConfig, useNostrContext, useLaWallet } from '@lawallet/react';
+import { buildCardActivationEvent, useConfig, useNostr, useLaWallet } from '@lawallet/react';
 import { cardResetCaim } from '@lawallet/react/actions';
 import { Container, Feedback, Flex, Heading, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
@@ -26,7 +26,7 @@ export default function Page() {
   const errors = useErrors();
   const params = useSearchParams();
 
-  const { initializeSigner } = useNostrContext();
+  const { initializeSigner } = useNostr();
 
   useEffect(() => {
     if (identity.hexpub.length) return;

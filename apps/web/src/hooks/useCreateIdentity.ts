@@ -1,5 +1,5 @@
 import { regexUserName } from '@/constants/constants';
-import { buildCardActivationEvent, buildIdentityEvent, useConfig, useNostrContext, useLaWallet } from '@lawallet/react';
+import { buildCardActivationEvent, buildIdentityEvent, useConfig, useNostr, useLaWallet } from '@lawallet/react';
 import { IdentityResponse, claimIdentity, existIdentity, requestCardActivation } from '@lawallet/react/actions';
 
 import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
@@ -59,7 +59,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
   const config = useConfig();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { initializeSigner } = useNostrContext();
+  const { initializeSigner } = useNostr();
   const [accountInfo, setAccountInfo] = useState<CreateIdentityParams>(defaultAccount);
 
   const errors = useErrors();
