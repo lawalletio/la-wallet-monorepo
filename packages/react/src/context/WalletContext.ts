@@ -31,10 +31,10 @@ export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) 
   return React.createElement(WalletContext.Provider, { value }, props.children);
 }
 
-export const useWalletContext = () => {
+export const useLaWallet = () => {
   const context = React.useContext(WalletContext);
   if (!context) {
-    throw new Error('useWalletContext must be used within WalletProvider');
+    throw new Error('useLaWallet must be used within WalletProvider');
   }
 
   return context;

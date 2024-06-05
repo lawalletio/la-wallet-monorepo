@@ -35,7 +35,7 @@ import { copy } from '@/utils/share';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
+import { formatToPreference, useConfig, useLaWallet } from '@lawallet/react';
 
 // Constans
 import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
@@ -55,7 +55,7 @@ export default function Page() {
       props: { hideBalance, currency },
     },
     converter: { pricesData, convertCurrency },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const convertedBalance: string = useMemo(() => {
     const amount: number = convertCurrency(balance.amount, 'SAT', currency);

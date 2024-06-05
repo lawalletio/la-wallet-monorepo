@@ -4,7 +4,7 @@ import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import { useNotifications } from '@/context/NotificationsContext';
 import { useTranslations } from 'next-intl';
-import { buildCardTransferAcceptEvent, nowInSeconds, useConfig, useWalletContext } from '@lawallet/react';
+import { buildCardTransferAcceptEvent, nowInSeconds, useConfig, useLaWallet } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
 import { Button, Flex, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
@@ -32,7 +32,7 @@ const page = () => {
   const params = useSearchParams();
   const {
     account: { identity },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const handleAcceptCardTransfer = async () => {
     try {

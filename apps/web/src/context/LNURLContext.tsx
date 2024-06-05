@@ -7,7 +7,7 @@ import {
   useLNURL,
   useNostrContext,
   useTransfer,
-  useWalletContext,
+  useLaWallet,
 } from '@lawallet/react';
 import { requestInvoice } from '@lawallet/react/actions';
 import { LNURLTransferType, TransferTypes } from '@lawallet/react/types';
@@ -35,7 +35,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const {
     account: { identity, balance },
-  } = useWalletContext();
+  } = useLaWallet();
 
   if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
     router.push('/dashboard');

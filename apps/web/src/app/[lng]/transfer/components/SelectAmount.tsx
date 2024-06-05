@@ -8,7 +8,7 @@ import { TokenList } from '@/components/TokenList';
 import { appTheme } from '@/config/exports';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { decimalsToUse, useFormatter, useNumpad, useWalletContext } from '@lawallet/react';
+import { decimalsToUse, useFormatter, useNumpad, useLaWallet } from '@lawallet/react';
 import { AvailableLanguages, LNURLTransferType, TransferTypes } from '@lawallet/react/types';
 import {
   Button,
@@ -44,7 +44,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
       props: { currency: userCurrency, hideBalance },
     },
     converter: { pricesData, convertCurrency },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const maxAvailableAmount: number = useMemo(() => {
     const convertedAmount: number = convertCurrency(balance.amount, 'SAT', userCurrency);

@@ -6,7 +6,7 @@ import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useRouter } from '@/navigation';
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useFormatter, useNumpad, useWalletContext, useZap } from '@lawallet/react';
+import { useFormatter, useNumpad, useLaWallet, useZap } from '@lawallet/react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import {
   BtnLoader,
@@ -45,7 +45,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
       props: { currency },
     },
     converter: { convertCurrency },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.hexpub });
 

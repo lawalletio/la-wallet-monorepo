@@ -6,7 +6,7 @@ import { Button, Container, Divider, Feedback, Flex, Heading, Icon, LinkButton, 
 
 import { TokenList } from '@/components/TokenList';
 import { useRouter } from '@/navigation';
-import { useFormatter, useWalletContext } from '@lawallet/react';
+import { useFormatter, useLaWallet } from '@lawallet/react';
 import { AvailableLanguages, TransferTypes } from '@lawallet/react/types';
 import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -45,7 +45,7 @@ export const Summary = ({
       props: { currency },
     },
     converter: { pricesData, convertCurrency },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const { formatAmount } = useFormatter({ currency, locale: lng as AvailableLanguages });
 

@@ -6,7 +6,7 @@ import Navbar from '@/components/Layout/Navbar';
 import { Confetti } from '@/components/UI';
 import { useRouter } from '@/navigation';
 import { extractFirstTwoChars } from '@/utils';
-import { formatAddress, splitHandle, useFormatter, useWalletContext } from '@lawallet/react';
+import { formatAddress, splitHandle, useFormatter, useLaWallet } from '@lawallet/react';
 import { AvailableLanguages, TransferInformation, TransferTypes } from '@lawallet/react/types';
 import { Avatar, Container, Divider, Flex, Heading, Icon, LinkButton, Text } from '@lawallet/ui';
 import { useLocale, useTranslations } from 'next-intl';
@@ -21,7 +21,7 @@ export const FinishTransfer = ({ transferInfo }: { transferInfo: TransferInforma
       props: { currency },
     },
     converter: { pricesData, convertCurrency },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const { formatAmount } = useFormatter({ currency, locale: lng as AvailableLanguages });
 

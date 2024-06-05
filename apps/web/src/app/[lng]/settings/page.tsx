@@ -20,7 +20,7 @@ import {
 
 import { appTheme } from '@/config/exports';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useConfig, useWalletContext } from '@lawallet/react';
+import { useConfig, useLaWallet } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from '@/navigation';
 import { startTransition, useState } from 'react';
@@ -33,7 +33,7 @@ export default function Page() {
 
   const {
     account: { identity },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const [sheetLanguage, setSheetLanguage] = useState<boolean>(false);
   const router: AppRouterInstance = useRouter();

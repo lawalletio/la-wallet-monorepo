@@ -10,7 +10,7 @@ import {
   normalizeLNDomain,
   removeDuplicateArray,
   useConfig,
-  useWalletContext,
+  useLaWallet,
 } from '@lawallet/react';
 import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
 import {
@@ -47,7 +47,7 @@ export default function Page() {
   const router = useRouter();
   const {
     account: { transactions, balance },
-  } = useWalletContext();
+  } = useLaWallet();
 
   if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
     router.push('/dashboard');

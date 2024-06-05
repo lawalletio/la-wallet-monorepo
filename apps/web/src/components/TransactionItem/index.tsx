@@ -5,7 +5,7 @@ import { CreditCardIcon, LightningIcon, TransferIcon } from '@bitcoin-design/bit
 import { Accordion, AccordionBody, Flex, Text } from '@lawallet/ui';
 
 import { appTheme } from '@/config/exports';
-import { dateFormatter, defaultCurrency, unescapingText, useFormatter, useWalletContext } from '@lawallet/react';
+import { dateFormatter, defaultCurrency, unescapingText, useFormatter, useLaWallet } from '@lawallet/react';
 import { AvailableLanguages, Transaction, TransactionDirection, TransactionStatus } from '@lawallet/react/types';
 import { BtnLoader } from '@lawallet/ui';
 import { useLocale, useTranslations } from 'next-intl';
@@ -33,7 +33,7 @@ export default function Component({ transaction }: ComponentProps) {
       props: { hideBalance, currency },
     },
     converter: { pricesData, convertCurrency },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const isFromMe = transaction?.direction === 'OUTGOING';
   const satsAmount = transaction.tokens?.BTC / 1000 || 0;

@@ -11,7 +11,7 @@ import { useTranslations } from 'next-intl';
 import { ReactNode } from 'react';
 import { SubnavbarPrimitive } from './style';
 import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
-import { useWalletContext } from '@lawallet/react';
+import { useLaWallet } from '@lawallet/react';
 
 interface ComponentProps {
   children?: ReactNode;
@@ -26,7 +26,7 @@ export default function Subnavbar(props: ComponentProps) {
 
   const {
     account: { balance },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const router = useRouter();
   const t = useTranslations();
