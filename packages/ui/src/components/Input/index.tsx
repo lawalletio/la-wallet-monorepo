@@ -32,6 +32,7 @@ export function Input(props: InputProps) {
   return (
     <InputBox $withIcon={isLoading}>
       <InputPrimitive
+        $background={theme.colors.gray20}
         $isSuccess={status && status === 'success'}
         $showValidate={!status}
         autoFocus={autoFocus}

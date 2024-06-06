@@ -13,7 +13,7 @@ export const InputPrimitive = styled.input<InputPrimitiveProps>`
   padding: 8px;
   padding-left: 12px;
 
-  background-color: ${(props) => props.theme.colors.gray15};
+  background-color: ${(props) => props.$background};
   border-radius: 8px;
   border: 1px solid
     ${(props) =>
@@ -25,13 +25,15 @@ export const InputPrimitive = styled.input<InputPrimitiveProps>`
 
   color: ${(props) => props.theme.colors.text};
   font-size: 0.8em;
+  font-family: ${(props) => props.theme.font.secondary};
 
   outline: none;
 
   transition-duration: 0.3s;
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.gray30};
+    color: ${(props) => props.theme.colors.gray50};
+    font-family: ${(props) => props.theme.font.secondary};
   }
 
   &:not(:disabled) {
@@ -137,11 +139,12 @@ export const InputIcon = styled.div`
 
 export const TextareaPrimitive = styled.textarea<InputPrimitiveProps>`
   width: 100%;
+  min-height: 80px;
 
   padding: 8px;
   padding-left: 12px;
 
-  background-color: ${(props) => props.theme.colors.gray15};
+  background-color: ${(props) => props.$background};
   border-radius: 8px;
   border: 1px solid
     ${(props) =>
@@ -153,6 +156,7 @@ export const TextareaPrimitive = styled.textarea<InputPrimitiveProps>`
 
   color: ${(props) => props.theme.colors.text};
   font-size: 0.8em;
+  font-family: ${(props) => props.theme.font.secondary};
 
   outline: none;
   resize: none;
@@ -160,7 +164,8 @@ export const TextareaPrimitive = styled.textarea<InputPrimitiveProps>`
   transition-duration: 0.3s;
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.gray30};
+    color: ${(props) => props.theme.colors.gray50};
+    font-family: ${(props) => props.theme.font.secondary};
   }
 
   &:hover {
