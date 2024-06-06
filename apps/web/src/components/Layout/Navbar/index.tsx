@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
-import { Flex, Container, Icon, Heading, Text } from '@lawallet/ui';
+import { Flex, Container, Icon, Heading, Text, Button } from '@lawallet/ui';
 import { CaretLeftIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import { useRouter } from '@/navigation';
@@ -49,7 +49,9 @@ export default function Component(props: ComponentProps) {
             {onlyChildren && (
               <Left>
                 {showBackPage && (
-                  <BackButton
+                  <Button
+                    size="small"
+                    variant="bezeledGray"
                     onClick={() => {
                       overrideBack ? router.push(overrideBack) : router.back();
                     }}
@@ -57,14 +59,14 @@ export default function Component(props: ComponentProps) {
                     <Icon size="small">
                       <CaretLeftIcon />
                     </Icon>
-                    {t('BACK')}
-                  </BackButton>
+                    {/* {t('BACK')} */}
+                  </Button>
                 )}
               </Left>
             )}
             {title ? (
               <Flex justify="center">
-                <Heading as="h5">{title}</Heading>
+                <Text isBold>{title}</Text>
               </Flex>
             ) : (
               children
