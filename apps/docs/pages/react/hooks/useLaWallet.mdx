@@ -1,0 +1,66 @@
+# useLaWallet
+
+Hook to get all the information from LaWallet (account info, settings info, currency converter)
+
+## Import
+
+```ts
+import { useLaWallet } from '@lawallet/react';
+```
+
+## Usage
+
+```tsx filename="index.tsx"
+import { useLaWallet } from '@lawallet/react';
+
+function App() {
+  const {
+    account: { identity, transactions, balance },
+  } = useLaWallet();
+}
+```
+
+## Parameters
+
+```ts
+import { type WalletContextParams } from '@lawallet/react';
+```
+
+### config
+
+`Config | undefined`
+
+[`Config`](/react/createConfig#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/LaWalletConfig).
+
+```tsx
+import { useLaWallet } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const {
+    account: { identity, transactions, balance },
+  } = useLaWallet({
+    config,
+  });
+}
+```
+
+## Return Type
+
+```ts
+import { type WalletContextReturns } from '@lawallet/react';
+```
+
+### account
+
+[`UseAccountReturns`](/react/hooks/useAccount#return-type)
+
+Returns an instance of the useAccount()
+
+### settings
+
+Returns an instance of the useSettings()
+
+### converter
+
+Returns an instance of the useCurrencyConverter()

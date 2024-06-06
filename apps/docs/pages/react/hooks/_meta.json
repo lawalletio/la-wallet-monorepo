@@ -11,6 +11,9 @@
     "useInvoice": {
         "display": "hidden"
     },
+    "useLaWallet": {
+        "display": "hidden"
+    },
     "useLNURL": {
         "display": "hidden"
     },

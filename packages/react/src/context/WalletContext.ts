@@ -6,15 +6,16 @@ import { type ConfigParameter } from '@lawallet/utils/types';
 import { useNostr } from './NostrContext.js';
 import { useConfig } from '../hooks/useConfig.js';
 
-interface WalletContextType {
+interface WalletContextReturns {
   account: UseAccountReturns;
   settings: UseSettingsReturns;
   converter: UseConverterReturns;
 }
 
-export const WalletContext = React.createContext({} as WalletContextType);
+type WalletContextParams = React.PropsWithChildren<ConfigParameter>;
+export const WalletContext = React.createContext({} as WalletContextReturns);
 
-export function WalletProvider(props: React.PropsWithChildren<ConfigParameter>) {
+export function WalletProvider(props: WalletContextParams) {
   const config = useConfig(props);
   const { signerInfo } = useNostr({ config });
 

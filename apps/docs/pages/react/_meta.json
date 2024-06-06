@@ -41,6 +41,10 @@
         "title": "useInvoice",
         "href": "/react/hooks/useInvoice"
     },
+    "useLaWallet": {
+        "title": "useLaWallet",
+        "href": "/react/hooks/useLaWallet"
+    },
     "useLNURL": {
         "title": "useLNURL",
         "href": "/react/hooks/useLNURL"
