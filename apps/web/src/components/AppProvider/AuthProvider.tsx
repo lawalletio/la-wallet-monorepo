@@ -6,7 +6,7 @@ import React, { useEffect, useMemo } from 'react';
 import SpinnerView from '../Spinner/SpinnerView';
 
 // const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
-const protectedRoutes: string[] = ['/dashboard', '/transfer', '/deposit', '/scan', '/settings', '/transactions'];
+const protectedRoutes: string[] = ['/dashboard', '/transfer', '/deposit', '/scan', '/settings', '/transactions', '/p'];
 
 export type StoragedIdentityInfo = {
   username: string;

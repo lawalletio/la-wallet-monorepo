@@ -1,19 +1,14 @@
 import { styled } from 'styled-components';
 
 export const Default = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  margin-top: -40px;
 
   button {
-    width: 65px !important;
-    height: 65px !important;
+    position: relative;
+    top: 16px;
+
+    width: 64px !important;
+    height: 64px !important;
 
     svg {
       width: 32px !important;

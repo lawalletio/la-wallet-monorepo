@@ -3,7 +3,9 @@
 
 // Libraries
 import { useEffect, useMemo, useState } from 'react';
+import { useTheme } from 'styled-components';
 import { useLocale, useTranslations } from 'next-intl';
+import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
 import {
   Avatar,
   BannerAlert,
@@ -31,15 +33,12 @@ import {
 import { appTheme } from '@/config/exports';
 
 // Hooks and utils
-import { extractFirstTwoChars } from '@/utils';
-import { copy } from '@/utils/share';
 import { Link, useRouter } from '@/navigation';
 
 // Components
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
-import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
-import ButtonCTA from '@/components/ButtonCTA';
+import Subnavbar from '@/components/Layout/Subnavbar';
 import Navbar from '@/components/Layout/Navbar';
 import { TokenList } from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
@@ -51,6 +50,8 @@ export default function Page() {
   const config = useConfig();
   const t = useTranslations();
   const lng = useLocale();
+  const theme = useTheme();
+
   const [showBanner, setShowBanner] = useState<'backup' | 'none'>('none');
 
   const router = useRouter();
@@ -86,21 +87,21 @@ export default function Page() {
       <HeroCard>
         <Navbar>
           <Flex align="center" gap={8}>
-            <Avatar>
-              <Text size="small">{identity.username ? extractFirstTwoChars(identity.username) : 'AN'}</Text>
-            </Avatar>
-            <Flex direction="column">
-              <Text size="small" color={appTheme.colors.gray50}>
-                {t('HELLO')},
-              </Text>
-              <Flex
-                onClick={() => {
-                  if (identity.lud16) copy(identity.lud16);
-                }}
-              >
-                <Text>{loading ? '--' : identity.lud16 ? identity.lud16 : t('ANONYMOUS')}</Text>
-              </Flex>
-            </Flex>
+            <div>
+              <Button variant="bezeled" size="small" onClick={() => router.push('/p')}>
+                <Avatar
+                  size={8}
+                  src="https://cdn.discordapp.com/avatars/485320853786198020/51e5cf8708a462e03c18e68b19239c4d.webp?size=240"
+                  alt={identity.lud16}
+                />
+                <Flex direction="column">
+                  <Text size="small">Jona</Text>
+                  <Text size="small" color={theme.colors.text}>
+                    dios@lawallet.ar
+                  </Text>
+                </Flex>
+              </Button>
+            </div>
           </Flex>
           <Flex gap={4} justify="end">
             {Number(balance.amount) > 0 && (
@@ -208,13 +209,7 @@ export default function Page() {
         <Divider y={64} />
       </Container>
 
-      {!EMERGENCY_LOCK_TRANSFER && Number(balance.amount) > 0 && (
-        <ButtonCTA>
-          <Button color="secondary" onClick={() => router.push('/scan')}>
-            <QrCodeIcon />
-          </Button>
-        </ButtonCTA>
-      )}
+      <Subnavbar path="home" />
     </>
   );
 }

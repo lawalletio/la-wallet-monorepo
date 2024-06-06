@@ -20,9 +20,7 @@ const CardWithData = ({ type, data }: { type: TransferTypes; data: string }) => 
         {type === TransferTypes.LNURLW ? (
           <Text size="small">{t('CLAIM_THIS_INVOICE')}</Text>
         ) : (
-          <Avatar size="large">
-            <Text size="small">{extractFirstTwoChars(transferUsername)}</Text>
-          </Avatar>
+          <Avatar size={8} alt={transferUsername} />
         )}
         {type === TransferTypes.INVOICE || type === TransferTypes.LNURLW ? (
           <Text>{formatAddress(data, 15)}</Text>
