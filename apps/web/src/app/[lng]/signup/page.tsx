@@ -155,7 +155,7 @@ const SignUp = () => {
   };
 
   const validateEvents = useCallback(() => {
-    if (events.length) {
+    if (events.length && !nonce) {
       events.map((event) => {
         const boltTag = event.getMatchingTags('bolt11')[0]?.[1];
 
