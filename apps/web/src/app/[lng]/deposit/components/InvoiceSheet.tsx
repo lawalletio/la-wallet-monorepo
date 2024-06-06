@@ -1,7 +1,7 @@
 import { TokenList } from '@/components/TokenList';
 import { Confetti, QRCode } from '@/components/UI';
 import { appTheme } from '@/config/exports';
-import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
+import { MAX_INVOICE_AMOUNT } from '@/utils/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useRouter } from '@/navigation';

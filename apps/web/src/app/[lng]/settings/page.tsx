@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
-import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
+import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/utils/constants';
 import { useLocale, useTranslations } from 'next-intl';
 import useErrors from '@/hooks/useErrors';
 import {

@@ -10,7 +10,7 @@ import Navbar from '@/components/Layout/Navbar';
 import { InfoCopy } from '@/components/UI';
 import { Button, Container, Divider, Flex, Label, Text, ToggleSwitch } from '@lawallet/ui';
 
-import { CACHE_BACKUP_KEY } from '@/constants/constants';
+import { CACHE_BACKUP_KEY } from '@/utils/constants';
 import { appTheme } from '@/config/exports';
 import { useConfig, useLaWallet } from '@lawallet/react';
 import { getUserStoragedKey } from '@/utils';

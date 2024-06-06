@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from '@/navigation';
-import { useConfig, useSubscription } from '@lawallet/react';
+import { getTagValue, parseContent, useConfig, useSubscription } from '@lawallet/react';
 import { Button, CheckIcon, Container, Divider, Feedback, Flex, Heading, Icon, SatoshiIcon, Text } from '@lawallet/ui';
 import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useCallback, useEffect, useState } from 'react';
@@ -17,13 +17,13 @@ import useErrors from '@/hooks/useErrors';
 
 import { QRCode } from '@/components/UI';
 import { appTheme } from '@/config/exports';
-import { signupPubkey } from '@/constants/buyAddress';
 import { useTranslations } from 'next-intl';
 
-const SIGN_UP_CACHE_KEY: string = 'signup-cache';
+const SIGN_UP_CACHE_KEY: string = 'signup-cache-key';
 
 type ZapRequestInfo = {
   zapRequest: NostrEvent | null;
+  receiverPubkey: string;
   invoice: string | null;
   payed: boolean;
   expiry?: number;
@@ -36,6 +36,7 @@ const SignUp = () => {
 
   const [zapRequestInfo, setZapRequestInfo] = useState<ZapRequestInfo>({
     zapRequest: null,
+    receiverPubkey: '',
     invoice: null,
     payed: false,
     expiry: 0,
@@ -53,7 +54,7 @@ const SignUp = () => {
         authors: [config.modulePubkeys.ledger, config.modulePubkeys.urlx],
         kinds: [9735],
         since: zapRequestInfo.zapRequest?.created_at ?? 0,
-        '#p': [signupPubkey],
+        '#p': [zapRequestInfo.receiverPubkey],
       },
     ],
     options: {},
@@ -64,42 +65,59 @@ const SignUp = () => {
   const saveZapRequestInfo = useCallback(
     async (new_info: ZapRequestInfo, tmpNonce?: string) => {
       const zrExpiration: number = Date.now() + 2 * 60 * 1000;
-      const ZR: ZapRequestInfo = { ...new_info, expiry: zrExpiration };
+      const ZR: ZapRequestInfo = {
+        ...new_info,
+        expiry: zrExpiration,
+      };
 
-      await config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify({ ...ZR, nonce: tmpNonce }));
+      await config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify({ ...ZR, nonce: tmpNonce ?? '' }));
       setZapRequestInfo(ZR);
     },
     [zapRequestInfo],
   );
 
-  const requestPayment = async () => {
+  const requestPayment = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/signup/request`);
-      const { zapRequest, invoice }: ZapRequestInfo = await response.json();
+      const response = await fetch(`${config.endpoints.lightningDomain}/api/nonce/request`);
+      const { zapRequest, invoice } = await response.json();
       if (!zapRequest || !invoice) return;
 
+      const parsedZapRequest = parseContent(zapRequest);
+
       setLoading(false);
-      saveZapRequestInfo({ zapRequest, invoice, payed: false });
-    } catch {
+      saveZapRequestInfo(
+        {
+          zapRequest: parsedZapRequest,
+          receiverPubkey: getTagValue(parsedZapRequest.tags, 'p'),
+          invoice,
+          payed: false,
+        },
+        nonce,
+      );
+    } catch (err) {
+      console.log(err);
       setLoading(false);
       errors.modifyError('UNEXPECTED_ERROR');
     }
-  };
+  }, [nonce]);
 
   const claimNonce = useCallback(
     async (zapReceipt: NDKEvent) => {
       try {
         const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
 
-        const response = await fetch('/api/signup/claim', {
+        const response = await fetch(`${config.endpoints.lightningDomain}/api/nonce/claim`, {
           method: 'POST',
           body: JSON.stringify(nostrEvent),
         });
-        const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
-        if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
+        const responseJSON: { data?: { nonce: string } } = await response.json();
+        if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce) return;
 
-        setNonce(responseJSON.data?.nonce.nonce ?? '');
+        const claimedNonce: string = responseJSON.data?.nonce ?? '';
+
+        setNonce(claimedNonce);
+        saveZapRequestInfo(zapRequestInfo, claimedNonce);
       } catch {
         errors.modifyError('UNEXPECTED_ERROR');
       }
@@ -142,13 +160,13 @@ const SignUp = () => {
         const boltTag = event.getMatchingTags('bolt11')[0]?.[1];
 
         if (boltTag === zapRequestInfo.invoice) {
-          saveZapRequestInfo({ ...zapRequestInfo, payed: true });
+          saveZapRequestInfo({ ...zapRequestInfo, payed: true }, nonce);
           claimNonce(event);
           return;
         }
       });
     }
-  }, [events, zapRequestInfo]);
+  }, [events, nonce, zapRequestInfo]);
 
   useEffect(() => {
     validateEvents();

@@ -34,14 +34,14 @@ import { appTheme } from '@/config/exports';
 // Hooks and utils
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { lightningAddresses } from '@/constants/constants';
+import { lightningAddresses } from '@/utils/constants';
 
 // Components
 import Navbar from '@/components/Layout/Navbar';
 import RecipientElement from './components/RecipientElement';
 
 // Constans
-import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
   const router = useRouter();

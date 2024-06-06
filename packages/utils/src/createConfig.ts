@@ -42,8 +42,8 @@ export function createConfig(parameters: CreateConfigParameters = {}): ConfigPro
       ...baseConfig.modulePubkeys,
       ...modulePubkeys,
     },
+    relaysList: relaysList ? relaysList : baseConfig.relaysList,
     storage,
     signer,
-    relaysList,
   } as ConfigProps;
 }

@@ -1,4 +1,4 @@
-import { STORAGE_IDENTITY_KEY } from '@/constants/constants';
+import { STORAGE_IDENTITY_KEY } from '@/utils/constants';
 import { usePathname, useRouter } from '@/navigation';
 import { parseContent, useConfig, useNostr, useLaWallet } from '@lawallet/react';
 import { useSearchParams } from 'next/navigation';

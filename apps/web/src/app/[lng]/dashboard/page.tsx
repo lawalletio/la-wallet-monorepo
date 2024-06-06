@@ -38,7 +38,7 @@ import Subnavbar from '@/components/Layout/Subnavbar';
 import { formatToPreference, useConfig, useLaWallet } from '@lawallet/react';
 
 // Constans
-import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
   const config = useConfig();
