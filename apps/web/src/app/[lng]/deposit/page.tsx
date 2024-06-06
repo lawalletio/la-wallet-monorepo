@@ -20,7 +20,7 @@ import Navbar from '@/components/Layout/Navbar';
 import InvoiceSheet from './components/InvoiceSheet';
 
 // Constans
-import { EMERGENCY_LOCK_DEPOSIT } from '@/constants/constants';
+import { EMERGENCY_LOCK_DEPOSIT } from '@/utils/constants';
 
 export default function Page() {
   const router = useRouter();

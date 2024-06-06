@@ -1,5 +1,5 @@
 import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
-import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
+import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/utils/constants';
 import { BaseStorage } from '@lawallet/react';
 
 export function checkIOS(navigator: Navigator) {

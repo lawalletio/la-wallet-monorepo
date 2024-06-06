@@ -1,5 +1,5 @@
 import PluginsEmptyView from '@/components/Layout/EmptyView/PluginsEmptyView';
-import { APP_NAME } from '@/constants/constants';
+import { APP_NAME } from '@/utils/constants';
 import { getTranslations } from 'next-intl/server';
 import React from 'react';
 import pluginsConfig from '@/config/pluginsConfig.json';

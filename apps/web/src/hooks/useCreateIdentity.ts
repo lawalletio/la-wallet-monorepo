@@ -1,4 +1,4 @@
-import { regexUserName } from '@/constants/constants';
+import { regexUserName } from '@/utils/constants';
 import { buildCardActivationEvent, buildIdentityEvent, useConfig, useNostr, useLaWallet } from '@lawallet/react';
 import { IdentityResponse, claimIdentity, existIdentity, requestCardActivation } from '@lawallet/react/actions';
 

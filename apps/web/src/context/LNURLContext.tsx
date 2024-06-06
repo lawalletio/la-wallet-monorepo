@@ -16,7 +16,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 // Constans
-import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 interface ILNURLContext {
   LNURLTransferInfo: LNURLTransferType;
