@@ -14,7 +14,6 @@ export * from './Input/InputGroupRight';
 export * from './Input/InputWithLabel';
 export * from './Input/Textarea';
 export * from './Avatar';
-export * from './Avatar/AvatarImage';
 export * from './Alert';
 export * from './Accordion';
 export * from './Accordion/AccordionBody';
@@ -30,6 +29,7 @@ export * from './BannerAlert';
 export * from './CardAlert';
 export * from './Loader/Loader';
 export * from './Autocomplete';
+export * from './Tabs';
 
 // Layout
 export * from './Layout/Container';
