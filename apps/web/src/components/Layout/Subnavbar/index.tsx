@@ -1,0 +1,69 @@
+'use client';
+
+// Libraries
+import { ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useWalletContext } from '@lawallet/react';
+import { Button, Container, Icon, QrCodeIcon, Text, Flex } from '@lawallet/ui';
+import { HomeIcon, RocketIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+
+// Components
+import ButtonCTA from '@/components/ButtonCTA';
+
+// Constants
+import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+
+// Styles
+import { SubnavbarPrimitive } from './style';
+
+interface ComponentProps {
+  children?: ReactNode;
+  title?: string;
+  showBackPage?: boolean;
+  overrideBack?: string;
+  path: string;
+}
+
+export default function Subnavbar(props: ComponentProps) {
+  const { path = 'home' } = props;
+
+  const {
+    account: { balance },
+  } = useWalletContext();
+
+  const router = useRouter();
+  const t = useTranslations();
+
+  return (
+    <SubnavbarPrimitive>
+      <Container size="small">
+        <Flex align="center" justify="center" gap={16}>
+          <Button variant={path === 'home' ? 'bezeled' : 'bezeledGray'} onClick={() => router.push('/dashboard')}>
+            <Icon>
+              <HomeIcon />
+            </Icon>
+          </Button>
+
+          {!EMERGENCY_LOCK_TRANSFER && Number(balance.amount) > 0 && (
+            <ButtonCTA>
+              <Button color="secondary" onClick={() => router.push('/scan')}>
+                <QrCodeIcon />
+              </Button>
+            </ButtonCTA>
+          )}
+
+          <Button
+            variant={path === 'plugins' ? 'bezeled' : 'bezeledGray'}
+            disabled={true}
+            // onClick={() => router.push('/dashboard')}
+          >
+            <Icon>
+              <RocketIcon />
+            </Icon>
+          </Button>
+        </Flex>
+      </Container>
+    </SubnavbarPrimitive>
+  );
+}
