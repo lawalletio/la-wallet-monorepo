@@ -147,8 +147,6 @@ const SignUp = () => {
       const cachedZapRequest = JSON.parse(cachedStorage);
       if (!cachedZapRequest || (cachedZapRequest.expiry ?? 0) < Date.now()) return;
 
-      console.log(cachedZapRequest);
-
       setZapRequestInfo(cachedZapRequest);
       setNonce(cachedZapRequest.nonce);
     } catch {
