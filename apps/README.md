@@ -15,7 +15,7 @@ In this directory are the applications related to the front end of the LaWallet 
 
 ## 🗂 Directory Structure
 
-| Folder      | Contents                                                                      |
-| ----------- | ----------------------------------------------------------------------------- |
-| `docs/`     | Front-end documentation                                                       |
-| `web/`      | Webapp interface - Progressive Web Application (PWA)                          |
+| Folder  | Contents                                             |
+| ------- | ---------------------------------------------------- |
+| `docs/` | Front-end documentation                              |
+| `web/`  | Webapp interface - Progressive Web Application (PWA) |

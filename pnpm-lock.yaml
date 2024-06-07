@@ -16,8 +16,8 @@ importers:
         version: link:packages/plugins-cli
     devDependencies:
       '@lacrypta/eslint-config':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.0.1
+        version: 1.0.1
       '@lacrypta/prettier-config':
         specifier: ^1.0.0
         version: 1.0.0
@@ -976,8 +976,8 @@ packages:
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
     dev: false
 
-  /@lacrypta/eslint-config@1.0.0:
-    resolution: {integrity: sha512-zk0+j8Ieg6xG+SwJ60M5k9a5i0p4qNmkP2Z8ynksGJ9g7R8Be+IxcURgilxkPmQHXHq+Oj1OBUdLSWSvQR6veg==}
+  /@lacrypta/eslint-config@1.0.1:
+    resolution: {integrity: sha512-IaIinfRG7iuVF6PhZdj7Jqk1qrig/65mlf8aZBVrxaF8zL3X7IrJCM3cN2eIYE75uAPCfUXKbUuywmJNXrkuxw==}
     dev: true
 
   /@lacrypta/prettier-config@1.0.0:

@@ -31,7 +31,7 @@
     "@lawallet/plugins-cli": "workspace:*"
   },
   "devDependencies": {
-    "@lacrypta/eslint-config": "^1.0.0",
+    "@lacrypta/eslint-config": "^1.0.1",
     "@lacrypta/prettier-config": "^1.0.0",
     "@lacrypta/typescript-config": "^1.0.0",
     "eslint-config-turbo": "^1.13.3",

@@ -2,8 +2,12 @@ import { type NostrEvent } from '@nostr-dev-kit/ndk';
 import { type CardConfigPayload, type CardDataPayload } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
 import { baseConfig } from '../constants/constants.js';
+// import ApiGateway from './api.js';
 
 export const requestCardActivation = async (event: NostrEvent, config: ConfigProps = baseConfig): Promise<boolean> => {
+  // const LaWalletApi = new ApiGateway(config.endpoints.gateway);
+  // return LaWalletApi.post('/card', JSON.stringify(event));
+
   return fetch(`${config.endpoints.gateway}/card`, {
     method: 'POST',
     headers: {
