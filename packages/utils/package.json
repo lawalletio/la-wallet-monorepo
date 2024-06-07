@@ -27,8 +27,8 @@
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "dependencies": {
-    "@nostr-dev-kit/ndk": "^2.4.0",
-    "date-fns": "^3.3.1"
+    "@nostr-dev-kit/ndk": "^2.8.2",
+    "date-fns": "^3.6.0"
   },
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
