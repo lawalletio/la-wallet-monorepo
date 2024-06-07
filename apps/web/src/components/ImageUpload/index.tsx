@@ -26,6 +26,7 @@ export const ImageUpload = (props) => {
 
   const handleButtonClick = () => {
     if (fileInputRef.current) {
+      // @ts-ignore: Unreachable code error
       fileInputRef.current.click();
     }
   };
