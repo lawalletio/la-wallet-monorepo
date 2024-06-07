@@ -2,33 +2,32 @@ import React, { useState, useRef } from 'react';
 import { useTheme } from 'styled-components';
 import { Avatar, Flex, Button, Text } from '@lawallet/ui';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const ImageUpload = (props) => {
-  const {} = props;
-
   const theme = useTheme();
 
   const fileInputRef = useRef(null);
 
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState<string | any>('');
+  const [, setImage] = useState(null);
+  const [preview, setPreview] = useState<string | undefined>('');
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
       const reader = new FileReader();
+
       reader.onloadend = () => {
-        setPreview(reader.result);
+        setPreview(reader.result?.toString());
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      // @ts-ignore: Unreachable code error
-      fileInputRef.current.click();
-    }
+    // if (fileInputRef.current) {
+    //   fileInputRef.current.click();
+    // }
   };
 
   return (
