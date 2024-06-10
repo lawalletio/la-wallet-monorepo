@@ -10,6 +10,7 @@ import NDK, {
   type NostrEvent,
   NDKEvent,
 } from '@nostr-dev-kit/ndk';
+import { nowInSeconds } from '../exports/index.js';
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;
@@ -29,6 +30,7 @@ export interface UseNostrReturns {
   providers: LightningProvidersType;
   connectRelays: () => Promise<boolean>;
   initializeSigner: (signer: SignerTypes) => void;
+  publishEvent: (event: NostrEvent) => Promise<{ success: boolean; error?: string }>;
   signEvent: (event: NostrEvent, signer?: SignerTypes) => Promise<NostrEvent>;
   authWithPrivateKey: (hexKey: string) => Promise<SignerTypes>;
   authWithExtension: () => Promise<SignerTypes>;
@@ -149,6 +151,31 @@ export const useNostrHook = ({
     [ndk.signer],
   );
 
+  const publishEvent = React.useCallback(
+    async (event: Partial<NostrEvent>) => {
+      try {
+        if (!ndk.signer || !signerInfo) throw new Error('You need to initialize a signer to publish an event');
+
+        const eventTemplate: NostrEvent = {
+          content: '',
+          created_at: nowInSeconds(),
+          tags: [],
+          pubkey: signerInfo.pubkey,
+          ...event,
+        };
+
+        const ndkEvent: NDKEvent = new NDKEvent(ndk, eventTemplate);
+        await ndkEvent.sign();
+        await ndkEvent.publish();
+
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: (error as Error).message };
+      }
+    },
+    [ndk.signer],
+  );
+
   React.useEffect(() => {
     loadProviders();
 
@@ -166,6 +193,7 @@ export const useNostrHook = ({
     providers,
     connectRelays,
     initializeSigner,
+    publishEvent,
     signEvent,
     authWithExtension,
     authWithPrivateKey,
