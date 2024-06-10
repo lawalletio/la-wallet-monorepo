@@ -1,5 +1,5 @@
 import useAlert, { UseAlertReturns } from '@/hooks/useAlerts';
-import { useLaWallet } from '@lawallet/react';
+import { useTransactions } from '@lawallet/react';
 import { TransactionDirection } from '@lawallet/react/types';
 import { Alert } from '@lawallet/ui';
 import { differenceInSeconds } from 'date-fns';
@@ -9,13 +9,9 @@ import React, { createContext, useContext, useEffect } from 'react';
 const NotificationsContext = createContext({} as UseAlertReturns);
 
 export function NotificationsProvider({ children }: { children: React.ReactNode }) {
-  const {
-    account: { transactions },
-  } = useLaWallet();
-
   const t = useTranslations();
-
   const notifications = useAlert();
+  const transactions = useTransactions();
 
   useEffect(() => {
     if (transactions.length) {

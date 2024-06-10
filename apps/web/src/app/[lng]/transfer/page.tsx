@@ -1,16 +1,14 @@
 'use client';
 
 // Libraries
-import { useMemo, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import {
   detectTransferType,
   formatLNURLData,
   normalizeLNDomain,
   removeDuplicateArray,
+  useAccount,
   useConfig,
-  useLaWallet,
 } from '@lawallet/react';
 import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
 import {
@@ -26,7 +24,9 @@ import {
   LinkButton,
   Text,
 } from '@lawallet/ui';
-import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useTranslations } from 'next-intl';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
 // Theme
 import { appTheme } from '@/config/exports';
@@ -44,10 +44,8 @@ import RecipientElement from './components/RecipientElement';
 import { EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
+  const { transactions, balance } = useAccount();
   const router = useRouter();
-  const {
-    account: { transactions, balance },
-  } = useLaWallet();
 
   if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
     router.push('/dashboard');

@@ -35,7 +35,7 @@ import { copy } from '@/utils/share';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import { formatToPreference, useConfig, useLaWallet } from '@lawallet/react';
+import { formatToPreference, useAccount, useConfig, useLaWallet } from '@lawallet/react';
 
 // Constans
 import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
@@ -47,8 +47,9 @@ export default function Page() {
   const [showBanner, setShowBanner] = useState<'backup' | 'none'>('none');
 
   const router = useRouter();
+  const { identity, balance, transactions } = useAccount();
+
   const {
-    account: { identity, balance, transactions },
     settings: {
       loading,
       toggleHideBalance,

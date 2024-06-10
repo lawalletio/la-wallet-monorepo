@@ -1,12 +1,12 @@
 export * from '@lawallet/utils';
 
-export { type UseTransactionsReturns, useTransactions } from '../hooks/useTransactions.js';
+export { useTransactions } from '../hooks/useTransactions.js';
 export { type CardConfigReturns, useCards } from '../hooks/useCards.js';
 export { type UseConverterReturns, useCurrencyConverter } from '../hooks/useCurrencyConverter.js';
 
 export { type UseSettingsReturns, useSettings } from '../hooks/useSettings.js';
 export { type UseSubscriptionReturns, useSubscription } from '../hooks/useSubscription.js';
-export { type UseBalanceReturns, useBalance } from '../hooks/useBalance.js';
+export { useBalance } from '../hooks/useBalance.js';
 export { type UseAccountReturns, useAccount } from '../hooks/useAccount.js';
 
 export { type IUseNumpad, useNumpad } from '../hooks/useNumpad.js';
