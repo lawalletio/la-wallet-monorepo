@@ -9,6 +9,8 @@ export { type UseSubscriptionReturns, useSubscription } from '../hooks/useSubscr
 export { type UseBalanceReturns, useBalance } from '../hooks/useBalance.js';
 export { type UseAccountReturns, useAccount } from '../hooks/useAccount.js';
 
+export { type IUseNumpad, useNumpad } from '../hooks/useNumpad.js';
+
 export { useTransfer } from '../hooks/useTransfer.js';
 export { useProfile } from '../hooks/useProfile.js';
 
@@ -21,7 +23,7 @@ export { useConfig } from '../hooks/useConfig.js';
 export { type UseInvoiceReturns, useInvoice } from '../hooks/useInvoice.js';
 export { type UseLNURLReturns, useLNURL } from '../hooks/useLNURL.js';
 
-export { type NostrContext, NostrProvider, useNostrContext } from '../context/NostrContext.js';
-export { type WalletContext, WalletProvider, useWalletContext } from '../context/WalletContext.js';
+export { type NostrContext, NostrProvider, useNostr } from '../context/NostrContext.js';
+export { type WalletContext, WalletProvider, useLaWallet } from '../context/WalletContext.js';
 export { type ProfileCacheContext, ProfileCacheProvider, useProfileCache } from '../context/ProfileCacheContext.js';
 export { LaWalletConfig, LaWalletProvider } from '../context/providers.js';

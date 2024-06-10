@@ -3,10 +3,10 @@
 import { Button, Container, Flex } from '@lawallet/ui';
 
 import { TokenListStyle } from './style';
-import { useWalletContext, CurrenciesList } from '@lawallet/react';
+import { useLaWallet, CurrenciesList } from '@lawallet/react';
 
 export function TokenList() {
-  const { settings } = useWalletContext();
+  const { settings } = useLaWallet();
 
   return (
     <TokenListStyle>

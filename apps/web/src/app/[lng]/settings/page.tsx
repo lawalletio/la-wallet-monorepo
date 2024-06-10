@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
-import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
+import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/utils/constants';
 import { useLocale, useTranslations } from 'next-intl';
 import useErrors from '@/hooks/useErrors';
 import {
@@ -20,7 +20,7 @@ import {
 
 import { appTheme } from '@/config/exports';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useConfig, useWalletContext } from '@lawallet/react';
+import { useConfig, useLaWallet } from '@lawallet/react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from '@/navigation';
 import { startTransition, useState } from 'react';
@@ -33,7 +33,7 @@ export default function Page() {
 
   const {
     account: { identity },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const [sheetLanguage, setSheetLanguage] = useState<boolean>(false);
   const router: AppRouterInstance = useRouter();

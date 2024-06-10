@@ -1,0 +1,8 @@
+{
+  "extends": "@lacrypta/typescript-config/base.json",
+  "compilerOptions": {
+    "sourceMap": true,
+    "verbatimModuleSyntax": true,
+    "outDir": "dist"
+  }
+}

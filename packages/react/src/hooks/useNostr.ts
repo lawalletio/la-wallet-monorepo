@@ -38,7 +38,7 @@ export interface UseNostrReturns {
 
 export type SignerTypes = NDKSigner | undefined;
 
-export const useNostr = ({
+export const useNostrHook = ({
   explicitRelayUrls,
   autoConnect = true,
   explicitSigner = undefined,

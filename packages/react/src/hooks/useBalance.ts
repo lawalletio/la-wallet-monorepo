@@ -3,7 +3,7 @@ import * as React from 'react';
 import { LaWalletKinds } from '@lawallet/utils';
 import { type TokenBalance } from '@lawallet/utils/types';
 import { type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { useNostrContext } from '../context/NostrContext.js';
+import { useNostr } from '../context/NostrContext.js';
 import { useSubscription } from './useSubscription.js';
 import { useConfig } from './useConfig.js';
 import type { ConfigParameter } from '@lawallet/utils/types';
@@ -23,7 +23,7 @@ export const useBalance = (parameters: UseBalanceProps): UseBalanceReturns => {
   const { pubkey, tokenId, enabled = true, closeOnEose = false } = parameters;
 
   const config = useConfig(parameters);
-  const { ndk } = useNostrContext({ config });
+  const { ndk } = useNostr({ config });
 
   const [balance, setBalance] = React.useState<TokenBalance>({
     tokenId: tokenId,

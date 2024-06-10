@@ -5,7 +5,7 @@ import type { LNRequestResponse } from '../exports/types.js';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
 import type NDK from '@nostr-dev-kit/ndk';
-import { useNostrContext } from './NostrContext.js';
+import { useNostr } from './NostrContext.js';
 
 interface ProfileCacheParameter {}
 interface ProfileCacheReturns {
@@ -24,7 +24,7 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
   const [isLoading, setIsLoading] = React.useState(true);
   const [domainAvatars, setDomainAvatars] = React.useState<{ [domain: string]: string }>({});
 
-  const { ndk } = useNostrContext({});
+  const { ndk } = useNostr({});
 
   React.useEffect(() => {
     fetch(`${STATIC_LAWALLET_ENDPOINT}/domains.json`)

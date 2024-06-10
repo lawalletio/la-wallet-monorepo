@@ -11,7 +11,7 @@ import { appTheme } from '@/config/exports';
 import { useNotifications } from '@/context/NotificationsContext';
 import { useRouter } from '@/navigation';
 import { useTranslations } from 'next-intl';
-import { formatAddress, lnurl_encode, useConfig, useWalletContext } from '@lawallet/react';
+import { formatAddress, lnurl_encode, useConfig, useLaWallet } from '@lawallet/react';
 import { copy } from '@/utils/share';
 
 // Components
@@ -20,7 +20,7 @@ import Navbar from '@/components/Layout/Navbar';
 import InvoiceSheet from './components/InvoiceSheet';
 
 // Constans
-import { EMERGENCY_LOCK_DEPOSIT } from '@/constants/constants';
+import { EMERGENCY_LOCK_DEPOSIT } from '@/utils/constants';
 
 export default function Page() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function Page() {
   const notifications = useNotifications();
   const {
     account: { identity },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const [isOpenSheet, setIsOpenSheet] = useState<boolean>(false);
 

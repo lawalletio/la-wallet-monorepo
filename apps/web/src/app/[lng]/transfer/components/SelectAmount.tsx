@@ -5,14 +5,23 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import { TokenList } from '@/components/TokenList';
-import { Keyboard } from '@/components/UI';
 import { appTheme } from '@/config/exports';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useNumpad } from '@/hooks/useNumpad';
-import { decimalsToUse, useFormatter, useWalletContext } from '@lawallet/react';
+import { decimalsToUse, useFormatter, useNumpad, useLaWallet } from '@lawallet/react';
 import { AvailableLanguages, LNURLTransferType, TransferTypes } from '@lawallet/react/types';
-import { Button, Container, Divider, Feedback, Flex, Heading, Icon, InputWithLabel, Text } from '@lawallet/ui';
+import {
+  Button,
+  Container,
+  Divider,
+  Feedback,
+  Flex,
+  Heading,
+  Icon,
+  InputWithLabel,
+  Keyboard,
+  Text,
+} from '@lawallet/ui';
 import { useLocale, useTranslations } from 'next-intl';
 import CardWithData from './CardWithData';
 
@@ -35,7 +44,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
       props: { currency: userCurrency, hideBalance },
     },
     converter: { pricesData, convertCurrency },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const maxAvailableAmount: number = useMemo(() => {
     const convertedAmount: number = convertCurrency(balance.amount, 'SAT', userCurrency);

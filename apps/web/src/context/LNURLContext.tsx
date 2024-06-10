@@ -5,9 +5,9 @@ import {
   normalizeLNDomain,
   useConfig,
   useLNURL,
-  useNostrContext,
+  useNostr,
   useTransfer,
-  useWalletContext,
+  useLaWallet,
 } from '@lawallet/react';
 import { requestInvoice } from '@lawallet/react/actions';
 import { LNURLTransferType, TransferTypes } from '@lawallet/react/types';
@@ -16,7 +16,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 // Constans
-import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 interface ILNURLContext {
   LNURLTransferInfo: LNURLTransferType;
@@ -35,7 +35,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const {
     account: { identity, balance },
-  } = useWalletContext();
+  } = useLaWallet();
 
   if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
     router.push('/dashboard');
@@ -48,7 +48,7 @@ export function LNURLProvider({ children }: { children: React.ReactNode }) {
   const [LNURLTransferInfo, setLNURLTransferInfo] = useState<LNURLTransferType>(defaultLNURLTransfer);
 
   const { LNURLInfo, decodeLNURL } = useLNURL({ lnurlOrAddress: LNURLTransferInfo.data, config });
-  const { signerInfo, signer, encrypt } = useNostrContext();
+  const { signerInfo, signer, encrypt } = useNostr();
 
   const {
     isLoading,

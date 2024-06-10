@@ -10,7 +10,7 @@ import {
   normalizeLNDomain,
   removeDuplicateArray,
   useConfig,
-  useWalletContext,
+  useLaWallet,
 } from '@lawallet/react';
 import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
 import {
@@ -34,20 +34,20 @@ import { appTheme } from '@/config/exports';
 // Hooks and utils
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { lightningAddresses } from '@/constants/constants';
+import { lightningAddresses } from '@/utils/constants';
 
 // Components
 import Navbar from '@/components/Layout/Navbar';
 import RecipientElement from './components/RecipientElement';
 
 // Constans
-import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
   const router = useRouter();
   const {
     account: { transactions, balance },
-  } = useWalletContext();
+  } = useLaWallet();
 
   if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
     router.push('/dashboard');

@@ -1,11 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
+import Navbar from '@/components/Layout/Navbar';
+import { TokenList } from '@/components/TokenList';
+import TransactionItem from '@/components/TransactionItem';
 // Libraries
-import { useEffect, useMemo, useState } from 'react';
-import { useTheme } from 'styled-components';
-import { useLocale, useTranslations } from 'next-intl';
-import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
+import { GearIcon, HiddenIcon, SatoshiV2Icon, SendIcon, VisibleIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { formatToPreference, useConfig } from '@lawallet/react';
 import {
   Avatar,
   BannerAlert,
@@ -20,14 +21,9 @@ import {
   ReceiveIcon,
   Text,
 } from '@lawallet/ui';
-import {
-  GearIcon,
-  HiddenIcon,
-  QrCodeIcon,
-  SatoshiV2Icon,
-  SendIcon,
-  VisibleIcon,
-} from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useLocale, useTranslations } from 'next-intl';
+import { useEffect, useMemo, useState } from 'react';
+import { useTheme } from 'styled-components';
 
 // Theme
 import { appTheme } from '@/config/exports';
@@ -39,12 +35,10 @@ import { Link, useRouter } from '@/navigation';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import Navbar from '@/components/Layout/Navbar';
-import { TokenList } from '@/components/TokenList';
-import TransactionItem from '@/components/TransactionItem';
+import { useLaWallet } from '@lawallet/react';
 
 // Constans
-import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
   const config = useConfig();
@@ -63,7 +57,7 @@ export default function Page() {
       props: { hideBalance, currency },
     },
     converter: { pricesData, convertCurrency },
-  } = useWalletContext();
+  } = useLaWallet();
 
   const convertedBalance: string = useMemo(() => {
     const amount: number = convertCurrency(balance.amount, 'SAT', currency);
