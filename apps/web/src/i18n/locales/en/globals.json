@@ -206,5 +206,6 @@
   "DEPOSITS": "Deposits",
   "TRANSFERS": "Transfers",
   "DISABLED": "disabled",
-  "PLUGINS_NOT_ENABLED": "Plugins not enabled"
+  "PLUGINS_NOT_ENABLED": "Plugins not enabled",
+  "SIGN_UP_NOT_ENABLED": "Sign up not enabled"
 }

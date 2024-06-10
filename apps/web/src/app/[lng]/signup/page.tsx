@@ -18,6 +18,8 @@ import useErrors from '@/hooks/useErrors';
 import { QRCode } from '@/components/UI';
 import { appTheme } from '@/config/exports';
 import { useTranslations } from 'next-intl';
+import SpinnerView from '@/components/Spinner/SpinnerView';
+import SignUpEmptyView from '@/components/Layout/EmptyView/SignUpEmptyView';
 
 const SIGN_UP_CACHE_KEY: string = 'signup-cache-key';
 
@@ -29,10 +31,22 @@ type ZapRequestInfo = {
   expiry?: number;
 };
 
+type SignUpProps = {
+  loading: boolean;
+  enabled: boolean;
+  price: number;
+};
+
 const SignUp = () => {
   const config = useConfig();
   const router = useRouter();
   const errors = useErrors();
+
+  const [signUpData, setSignUpData] = useState<SignUpProps>({
+    loading: true,
+    enabled: false,
+    price: 0,
+  });
 
   const [zapRequestInfo, setZapRequestInfo] = useState<ZapRequestInfo>({
     zapRequest: null,
@@ -62,6 +76,19 @@ const SignUp = () => {
     config,
   });
 
+  const loadSignUpInfo = async () => {
+    const signUpResponse = await fetch(`${config.endpoints.lightningDomain}/api/signup`);
+    const { enabled, milisatoshis } = await signUpResponse.json();
+
+    setSignUpData({
+      loading: false,
+      enabled: Boolean(enabled),
+      price: milisatoshis / 1000 ?? 0,
+    });
+
+    if (!enabled) router.push('/');
+  };
+
   const saveZapRequestInfo = useCallback(
     async (new_info: ZapRequestInfo, tmpNonce?: string) => {
       const zrExpiration: number = Date.now() + 2 * 60 * 1000;
@@ -78,14 +105,13 @@ const SignUp = () => {
 
   const requestPayment = useCallback(async () => {
     setLoading(true);
+
     try {
-      const response = await fetch(`${config.endpoints.lightningDomain}/api/nonce/request`);
-      const { zapRequest, invoice } = await response.json();
-      if (!zapRequest || !invoice) return;
+      const response = await fetch(`${config.endpoints.lightningDomain}/api/signup/request`);
+      const { zapRequest, invoice, error } = await response.json();
+      if (!zapRequest || !invoice) throw new Error(error);
 
       const parsedZapRequest = parseContent(zapRequest);
-
-      setLoading(false);
       saveZapRequestInfo(
         {
           zapRequest: parsedZapRequest,
@@ -96,10 +122,11 @@ const SignUp = () => {
         nonce,
       );
     } catch (err) {
-      console.log(err);
-      setLoading(false);
-      errors.modifyError('UNEXPECTED_ERROR');
+      const errorMessage = (err as Error).message;
+      errors.modifyError(!errorMessage ? 'UNEXPECTED_ERROR' : errorMessage);
     }
+
+    setLoading(false);
   }, [nonce]);
 
   const claimNonce = useCallback(
@@ -107,19 +134,18 @@ const SignUp = () => {
       try {
         const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
 
-        const response = await fetch(`${config.endpoints.lightningDomain}/api/nonce/claim`, {
+        const response = await fetch(`${config.endpoints.lightningDomain}/api/nonce`, {
           method: 'POST',
           body: JSON.stringify(nostrEvent),
         });
-        const responseJSON: { data?: { nonce: string } } = await response.json();
-        if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce) return;
-
-        const claimedNonce: string = responseJSON.data?.nonce ?? '';
+        const { nonce: claimedNonce, error } = await response.json();
+        if (!claimedNonce) throw new Error(error);
 
         setNonce(claimedNonce);
         saveZapRequestInfo(zapRequestInfo, claimedNonce);
-      } catch {
-        errors.modifyError('UNEXPECTED_ERROR');
+      } catch (err) {
+        const errorMessage = (err as Error).message;
+        errors.modifyError(!errorMessage ? 'UNEXPECTED_ERROR' : errorMessage);
       }
     },
     [zapRequestInfo],
@@ -169,6 +195,10 @@ const SignUp = () => {
   }, [events, nonce, zapRequestInfo]);
 
   useEffect(() => {
+    loadSignUpInfo();
+  }, []);
+
+  useEffect(() => {
     validateEvents();
   }, [events.length]);
 
@@ -177,10 +207,13 @@ const SignUp = () => {
   }, [zapRequestInfo, nonce]);
 
   useEffect(() => {
-    loadCachedSignUpRequest();
-  }, []);
+    if (signUpData.enabled) loadCachedSignUpRequest();
+  }, [signUpData]);
 
   const t = useTranslations();
+
+  if (signUpData.loading) return <SpinnerView />;
+  if (!signUpData.enabled) return <SignUpEmptyView />;
 
   return (
     <>
@@ -200,7 +233,7 @@ const SignUp = () => {
                   <Icon>
                     <SatoshiIcon />
                   </Icon>
-                  <Heading>21</Heading>
+                  <Heading>{signUpData.price}</Heading>
                   <Text size="small">SAT</Text>
                 </Flex>
               </Flex>
@@ -271,9 +304,11 @@ const SignUp = () => {
           )
         )}
 
-        <Feedback show={errors.errorInfo.visible} status={'error'}>
-          {errors.errorInfo.text}
-        </Feedback>
+        <Flex justify="center">
+          <Feedback show={errors.errorInfo.visible} status={'error'}>
+            {errors.errorInfo.text}
+          </Feedback>
+        </Flex>
 
         <Divider y={32} />
       </Container>
