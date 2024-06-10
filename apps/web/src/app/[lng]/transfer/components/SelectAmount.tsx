@@ -8,7 +8,7 @@ import { TokenList } from '@/components/TokenList';
 import { appTheme } from '@/config/exports';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { decimalsToUse, useFormatter, useNumpad, useLaWallet } from '@lawallet/react';
+import { decimalsToUse, useFormatter, useLaWallet, useNumpad } from '@lawallet/react';
 import { AvailableLanguages, LNURLTransferType, TransferTypes } from '@lawallet/react/types';
 import {
   Button,
@@ -122,7 +122,7 @@ export const SelectTransferAmount = ({ transferInfo, setAmountToPay, setComment 
 
   useActionOnKeypress('Enter', handleClick, [numpadData, transferInfo]);
 
-  const { formatAmount, customFormat } = useFormatter({ currency: userCurrency, locale: lng as AvailableLanguages });
+  const { formatAmount } = useFormatter({ currency: userCurrency, locale: lng as AvailableLanguages });
 
   return (
     <>
