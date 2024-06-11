@@ -1,17 +1,14 @@
 {
-    "useAccount": {
-        "display": "hidden"
-    },
     "useBalance": {
         "display": "hidden"
     },
     "useCards": {
         "display": "hidden"
     },
-    "useInvoice": {
+    "useIdentity": {
         "display": "hidden"
     },
-    "useLaWallet": {
+    "useInvoice": {
         "display": "hidden"
     },
     "useLNURL": {

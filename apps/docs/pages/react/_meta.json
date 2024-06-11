@@ -25,10 +25,6 @@
         "display": "hidden",
         "type": "page"
     },
-    "useAccount": {
-        "title": "useAccount",
-        "href": "/react/hooks/useAccount"
-    },
     "useBalance": {
         "title": "useBalance",
         "href": "/react/hooks/useBalance"
@@ -37,13 +33,13 @@
         "title": "useCards",
         "href": "/react/hooks/useCards"
     },
+    "useIdentity": {
+        "title": "useIdentity",
+        "href": "/react/hooks/useIdentity"
+    },
     "useInvoice": {
         "title": "useInvoice",
         "href": "/react/hooks/useInvoice"
-    },
-    "useLaWallet": {
-        "title": "useLaWallet",
-        "href": "/react/hooks/useLaWallet"
     },
     "useLNURL": {
         "title": "useLNURL",
