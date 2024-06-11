@@ -5,22 +5,30 @@ import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import SpinnerView from '../Spinner/SpinnerView';
 
-// const unloggedRoutes: string[] = ['/', '/start', '/login', '/reset']
+interface RouterInfo {
+  disconnectedPaths: string[]; // Routes that require you to NOT have a connected account
+  connectedPaths: string[]; // Routes that require you to HAVE a connected account
+}
 
-const protectedRoutes: string[] = [
-  '/dashboard',
-  '/transfer',
-  '/extensions',
-  '/deposit',
-  '/scan',
-  '/settings',
-  '/transactions',
-];
+const AppRouter: RouterInfo = {
+  disconnectedPaths: ['/', '/start', '/signup', '/login', '/reset'],
+  connectedPaths: ['/dashboard', '/deposit', '/extensions', '/scan', '/settings', '/transactions', '/transfer'],
+};
 
 export type StoragedIdentityInfo = {
   username: string;
   hexpub: string;
   privateKey: string;
+};
+
+const isProtectedRoute = (path: string, paths: string[]): boolean => {
+  let isProtected: boolean = false;
+
+  paths.forEach((route) => {
+    if (route === path.toLowerCase()) isProtected = true;
+  });
+
+  return isProtected;
 };
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -33,16 +41,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const config = useConfig();
   const pathname = usePathname();
   const params = useSearchParams();
-
-  const isProtectedRoute = (path: string): boolean => {
-    let isProtected: boolean = false;
-
-    protectedRoutes.forEach((route) => {
-      if (path.startsWith(route)) isProtected = true;
-    });
-
-    return isProtected;
-  };
 
   const authenticate = async (privateKey: string) => {
     const initialized: boolean = await identity.initializeFromPrivateKey(privateKey);
@@ -108,23 +106,30 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!isLoading) {
-      const protectedFlag = isProtectedRoute(pathname);
-      const userLogged: boolean = Boolean(identity.hexpub.length);
-      const nonce: string = params.get('i') || '';
-      const card: string = params.get('c') || '';
+      const pathSegment = `/${String(pathname.split('/')[1] ?? '')}`;
+      const requireAuth = isProtectedRoute(pathSegment, AppRouter.connectedPaths);
+      const requireDisconnectedUser = isProtectedRoute(pathSegment, AppRouter.disconnectedPaths);
+
+      console.log(pathSegment);
+
+      const userConnected: boolean = Boolean(identity.hexpub.length);
+
+      console.log(userConnected, requireAuth, requireDisconnectedUser);
 
       switch (true) {
-        case !userLogged && pathname == '/' && !nonce:
+        case !userConnected && requireAuth:
           router.push('/');
           break;
 
-        case !userLogged && protectedFlag:
-          router.push('/');
+        case userConnected && requireDisconnectedUser:
+          router.push('/dashboard');
           break;
 
-        case userLogged && !protectedFlag:
-          card ? router.push(`/settings/cards?c=${card}`) : router.push('/dashboard');
+        default: {
+          const card: string = params.get('c') || '';
+          if (card) router.push(`/settings/cards?c=${card}`);
           break;
+        }
       }
     }
   }, [pathname, isLoading]);
@@ -132,12 +137,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const hydrateApp = useMemo((): boolean => {
     if (isLoading) return false;
 
-    const protectedFlag: boolean = isProtectedRoute(pathname);
-    if (identity.hexpub.length && protectedFlag) return true;
-    if (!identity.hexpub && !protectedFlag) return true;
+    const pathSegment = `/${String(pathname.split('/')[1] ?? '')}`;
+    const requireAuth: boolean = isProtectedRoute(pathSegment, AppRouter.connectedPaths);
+    const requireDisconnectedUser: boolean = isProtectedRoute(pathSegment, AppRouter.disconnectedPaths);
 
-    return false;
-  }, [isLoading, pathname]);
+    const userConnected: boolean = Boolean(identity.hexpub.length);
+
+    if (userConnected && requireAuth) return true;
+    if (!userConnected && requireDisconnectedUser) return true;
+
+    return Boolean(!requireAuth && !requireDisconnectedUser);
+  }, [isLoading, pathname, identity]);
 
   return !hydrateApp ? <SpinnerView /> : children;
 };
