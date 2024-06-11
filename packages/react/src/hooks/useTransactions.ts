@@ -292,7 +292,6 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
       return {
         ...prev,
         idsLoaded: transactions.map((tx) => tx.id.toString()),
-        loading: true,
       };
     });
 

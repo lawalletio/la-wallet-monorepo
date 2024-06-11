@@ -6,7 +6,7 @@ import useErrors from '@/hooks/useErrors';
 import { useRouter } from '@/navigation';
 import { MAX_INVOICE_AMOUNT } from '@/utils/constants';
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useFormatter, useIdentity, useLaWallet, useNumpad, useZap } from '@lawallet/react';
+import { useCurrencyConverter, useFormatter, useIdentity, useNumpad, useSettings, useZap } from '@lawallet/react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import {
   BtnLoader,
@@ -41,11 +41,9 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
   const identity = useIdentity();
 
   const {
-    settings: {
-      props: { currency },
-    },
-    converter: { convertCurrency },
-  } = useLaWallet();
+    props: { currency },
+  } = useSettings();
+  const { convertCurrency } = useCurrencyConverter();
 
   const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.hexpub });
 

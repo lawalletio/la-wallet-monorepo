@@ -61,9 +61,6 @@ export function WalletProvider(props: WalletContextParams) {
 
 export const useLaWallet = () => {
   const context = React.useContext(WalletContext);
-  // if (!context) {
-  //   throw new Error('useLaWallet must be used within WalletProvider');
-  // }
 
   return context;
 };
