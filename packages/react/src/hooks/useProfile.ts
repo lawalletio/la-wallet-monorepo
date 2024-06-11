@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
-import type { LNRequestResponse } from '../exports/types.js';
+import type { LNRequestResponse } from '@lawallet/utils/types';
 import { resolveDomainAvatar, useProfileCache } from '../context/ProfileCacheContext.js';
 
 const FALLBACK_AVATAR_URL = 'https://static.lawallet.io/img/domains/default.png'; // TODO: Add it to .env

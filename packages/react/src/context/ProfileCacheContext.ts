@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import type { LNRequestResponse } from '../exports/types.js';
+import type { LNRequestResponse } from '@lawallet/utils/types';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
 import type NDK from '@nostr-dev-kit/ndk';

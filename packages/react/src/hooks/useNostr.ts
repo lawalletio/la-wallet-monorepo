@@ -10,7 +10,7 @@ import NDK, {
   type NostrEvent,
   NDKEvent,
 } from '@nostr-dev-kit/ndk';
-import { nowInSeconds } from '../exports/index.js';
+import { nowInSeconds } from '@lawallet/utils';
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;

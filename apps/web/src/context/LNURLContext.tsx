@@ -3,8 +3,8 @@ import {
   defaultLNURLTransfer,
   escapingBrackets,
   normalizeLNDomain,
-  useAccount,
   useConfig,
+  useIdentity,
   useLNURL,
   useNostr,
   useTransfer,
@@ -33,15 +33,15 @@ const LNURLContext = createContext({} as ILNURLContext);
 
 export function LNURLProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { identity, balance } = useAccount();
 
-  if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
+  if (EMERGENCY_LOCK_TRANSFER) {
     router.push('/dashboard');
     return null;
   }
 
   const params = useSearchParams();
   const config = useConfig();
+  const identity = useIdentity();
 
   const [LNURLTransferInfo, setLNURLTransferInfo] = useState<LNURLTransferType>(defaultLNURLTransfer);
 

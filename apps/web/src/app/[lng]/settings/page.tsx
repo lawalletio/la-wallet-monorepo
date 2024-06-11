@@ -21,7 +21,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { appTheme } from '@/config/exports';
 import { useRouter } from '@/navigation';
 import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useAccount, useConfig } from '@lawallet/react';
+import { useConfig, useIdentity } from '@lawallet/react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { startTransition, useState } from 'react';
@@ -31,7 +31,7 @@ export default function Page() {
   const t = useTranslations();
   const lng = useLocale();
 
-  const { identity } = useAccount();
+  const identity = useIdentity();
 
   const [sheetLanguage, setSheetLanguage] = useState<boolean>(false);
   const router: AppRouterInstance = useRouter();

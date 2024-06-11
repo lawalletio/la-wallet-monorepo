@@ -6,7 +6,7 @@ import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
 import { appTheme } from '@/config/exports';
 import useErrors from '@/hooks/useErrors';
 import { saveIdentityToStorage } from '@/utils';
-import { buildCardActivationEvent, useAccount, useConfig, useNostr } from '@lawallet/react';
+import { buildCardActivationEvent, useConfig, useIdentity, useNostr } from '@lawallet/react';
 import { cardResetCaim } from '@lawallet/react/actions';
 import { Container, Feedback, Flex, Heading, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
@@ -17,7 +17,7 @@ import { useEffect } from 'react';
 
 export default function Page() {
   const t = useTranslations();
-  const { identity } = useAccount();
+  const identity = useIdentity();
 
   const config = useConfig();
   const router = useRouter();

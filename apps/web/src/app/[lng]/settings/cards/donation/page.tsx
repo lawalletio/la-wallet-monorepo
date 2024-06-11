@@ -4,7 +4,7 @@ import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import { useNotifications } from '@/context/NotificationsContext';
 import { getUserStoragedKey } from '@/utils';
-import { buildCardTransferAcceptEvent, nowInSeconds, useAccount, useConfig } from '@lawallet/react';
+import { buildCardTransferAcceptEvent, nowInSeconds, useConfig, useIdentity } from '@lawallet/react';
 import { requestCardActivation } from '@lawallet/react/actions';
 import { Button, Flex, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
@@ -30,7 +30,7 @@ const page = () => {
   const notifications = useNotifications();
   const router = useRouter();
   const params = useSearchParams();
-  const { identity } = useAccount();
+  const identity = useIdentity();
 
   const handleAcceptCardTransfer = async () => {
     try {

@@ -1,6 +1,6 @@
 import { usePathname, useRouter } from '@/navigation';
 import { STORAGE_IDENTITY_KEY } from '@/utils/constants';
-import { parseContent, useAccount, useConfig, useNostr } from '@lawallet/react';
+import { parseContent, useConfig, useIdentity, useNostr } from '@lawallet/react';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 import SpinnerView from '../Spinner/SpinnerView';
@@ -24,7 +24,7 @@ export type StoragedIdentityInfo = {
 };
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { identity } = useAccount();
+  const identity = useIdentity();
   const { initializeSigner } = useNostr();
 
   const [isLoading, setIsLoading] = React.useState<boolean>(true);

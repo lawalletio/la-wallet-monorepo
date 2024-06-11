@@ -11,7 +11,7 @@ import { appTheme } from '@/config/exports';
 import { useNotifications } from '@/context/NotificationsContext';
 import { useRouter } from '@/navigation';
 import { copy } from '@/utils/share';
-import { formatAddress, lnurl_encode, useAccount, useConfig } from '@lawallet/react';
+import { formatAddress, lnurl_encode, useConfig, useIdentity } from '@lawallet/react';
 import { useTranslations } from 'next-intl';
 
 // Components
@@ -30,9 +30,9 @@ export default function Page() {
     return null;
   }
 
-  const { identity } = useAccount();
   const config = useConfig();
   const t = useTranslations();
+  const identity = useIdentity();
   const notifications = useNotifications();
 
   const [isOpenSheet, setIsOpenSheet] = useState<boolean>(false);

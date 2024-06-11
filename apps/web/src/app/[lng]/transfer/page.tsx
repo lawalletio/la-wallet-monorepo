@@ -7,8 +7,8 @@ import {
   formatLNURLData,
   normalizeLNDomain,
   removeDuplicateArray,
-  useAccount,
   useConfig,
+  useTransactions,
 } from '@lawallet/react';
 import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
 import {
@@ -44,23 +44,22 @@ import RecipientElement from './components/RecipientElement';
 import { EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
-  const { transactions, balance } = useAccount();
   const router = useRouter();
 
-  if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
+  if (EMERGENCY_LOCK_TRANSFER) {
     router.push('/dashboard');
     return null;
   }
 
   const t = useTranslations();
-
   const params = useSearchParams();
+  const errors = useErrors();
+  const config = useConfig();
+
+  const transactions = useTransactions();
 
   const [inputText, setInputText] = useState<string>(params.get('data') ?? '');
   const [loading, setLoading] = useState<boolean>(false);
-
-  const errors = useErrors();
-  const config = useConfig();
 
   const initializeTransfer = async (data: string) => {
     if (loading) return;

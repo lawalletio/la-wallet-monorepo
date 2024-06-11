@@ -25,7 +25,7 @@ export const useBalance = (parameters?: UseBalanceProps): TokenBalance => {
         'If you do not send parameters to the hook, it must have a LaWalletConfig context from which to obtain the information.',
       );
 
-    return context.account.balance;
+    return context.balance;
   }
 
   const { pubkey, tokenId = 'BTC', enabled = true, closeOnEose = false } = parameters;

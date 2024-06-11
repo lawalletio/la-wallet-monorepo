@@ -72,7 +72,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         'If you do not send parameters to the hook, it must have a LaWalletConfig context from which to obtain the information.',
       );
 
-    return context.account.transactions;
+    return context.transactions;
   }
 
   const { pubkey, enabled = true, limit = 1000, since = undefined, until = undefined, storage = false } = parameters;

@@ -13,7 +13,7 @@ import { Button, Container, Divider, Flex, Label, Text, ToggleSwitch } from '@la
 import { appTheme } from '@/config/exports';
 import { getUserStoragedKey } from '@/utils';
 import { CACHE_BACKUP_KEY } from '@/utils/constants';
-import { useAccount, useConfig } from '@lawallet/react';
+import { useConfig, useIdentity } from '@lawallet/react';
 
 export default function Page() {
   const t = useTranslations();
@@ -22,7 +22,7 @@ export default function Page() {
 
   const [userStoragedKey, setUserStoragedKey] = useState<string>('');
 
-  const { identity } = useAccount();
+  const identity = useIdentity();
   const [switchOne, setSwitchOne] = useState<boolean>(false);
   const [switchTwo, setSwitchTwo] = useState<boolean>(false);
 

@@ -35,28 +35,37 @@ import { copy } from '@/utils/share';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import { formatToPreference, useAccount, useConfig, useLaWallet } from '@lawallet/react';
+import {
+  formatToPreference,
+  useBalance,
+  useConfig,
+  useCurrencyConverter,
+  useIdentity,
+  useSettings,
+  useTransactions,
+} from '@lawallet/react';
 
 // Constans
 import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
   const config = useConfig();
+  const router = useRouter();
   const t = useTranslations();
   const lng = useLocale();
   const [showBanner, setShowBanner] = useState<'backup' | 'none'>('none');
 
-  const router = useRouter();
-  const { identity, balance, transactions } = useAccount();
+  const identity = useIdentity();
+  const balance = useBalance();
+  const transactions = useTransactions();
 
   const {
-    settings: {
-      loading,
-      toggleHideBalance,
-      props: { hideBalance, currency },
-    },
-    converter: { pricesData, convertCurrency },
-  } = useLaWallet();
+    loading,
+    toggleHideBalance,
+    props: { hideBalance, currency },
+  } = useSettings();
+
+  const { pricesData, convertCurrency } = useCurrencyConverter();
 
   const convertedBalance: string = useMemo(() => {
     const amount: number = convertCurrency(balance.amount, 'SAT', currency);

@@ -1,12 +1,12 @@
 import { TokenList } from '@/components/TokenList';
 import { Confetti, QRCode } from '@/components/UI';
 import { appTheme } from '@/config/exports';
-import { MAX_INVOICE_AMOUNT } from '@/utils/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
 import { useRouter } from '@/navigation';
+import { MAX_INVOICE_AMOUNT } from '@/utils/constants';
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useFormatter, useNumpad, useLaWallet, useZap, useAccount } from '@lawallet/react';
+import { useFormatter, useIdentity, useLaWallet, useNumpad, useZap } from '@lawallet/react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import {
   BtnLoader,
@@ -38,7 +38,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
 
   const t = useTranslations();
   const lng = useLocale();
-  const { identity } = useAccount();
+  const identity = useIdentity();
 
   const {
     settings: {
