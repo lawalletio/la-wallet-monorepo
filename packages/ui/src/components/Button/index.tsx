@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { ButtonProps } from './types';
+import { ButtonProps } from './types.js';
 
-import { BaseButton } from './style';
-import { BtnLoader } from '../Loader/Loader';
+import { BaseButton } from './style.js';
+import { BtnLoader } from '../Loader/Loader.js';
 import { useTheme } from 'styled-components';
 
 export const Button: FC<ButtonProps> = ({

@@ -1,8 +1,5 @@
 import { styled } from 'styled-components';
-
-import { baseTheme } from '../../theme';
-
-import { AlertPrimitiveProps } from './types';
+import { AlertPrimitiveProps } from './types.js';
 
 export const AlertPrimitive = styled.div<AlertPrimitiveProps>`
   position: absolute;

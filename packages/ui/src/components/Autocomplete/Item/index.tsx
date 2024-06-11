@@ -1,8 +1,8 @@
 import React from 'react';
-
-import { Avatar, Flex, Text } from '../../index';
-
-import { ItemProps } from './types';
+import { ItemProps } from './types.js';
+import { Flex } from '../../Flex/index.js';
+import { Avatar } from '../../Avatar/index.js';
+import { Text } from '../../Text/index.js';
 
 export function Item({ lud16 }: ItemProps) {
   const [username, domain] = lud16.split('@');

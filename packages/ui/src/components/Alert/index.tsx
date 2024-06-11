@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { Icon } from '../Icon';
-import { AlertIcon, CheckIcon } from '../Icons';
-import { Text } from '../Text';
+import { Icon } from '../Icon/index.js';
+import { AlertIcon, CheckIcon } from '../Icons/index.js';
+import { Text } from '../Text/index.js';
 
-import { AlertProps } from './types';
+import { AlertProps } from './types.js';
 
 import { useTheme } from 'styled-components';
-import { AlertPrimitive } from './style';
+import { AlertPrimitive } from './style.js';
 
 export function Alert(props: AlertProps) {
   const { title, description, type = 'success', isOpen } = props;

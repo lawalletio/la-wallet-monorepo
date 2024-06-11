@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
 
-import { baseTheme } from '../theme';
-import { ThemeProps } from '../theme/types';
-import GlobalStyles from '../css';
+import { baseTheme } from '../theme/index.js';
+import { ThemeProps } from '../theme/types.js';
+import GlobalStyles from '../css/index.js';
 
 interface ProviderProps {
   children: ReactNode;
