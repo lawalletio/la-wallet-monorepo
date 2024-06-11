@@ -4,19 +4,6 @@
         "title": "Introduction"
     },
     "index": "Getting started",
-    "-- Configuration": {
-        "type": "separator",
-        "title": "Configuration"
-    },
-    "createConfig": {
-        "title": "createConfig"
-    },
-    "createStorage": {
-        "title": "createStorage"
-    },
-    "LaWalletConfig": {
-        "title": "LaWalletConfig"
-    },
     "-- Hooks": {
         "type": "separator",
         "title": "Hooks"
@@ -64,6 +51,19 @@
     "useZap": {
         "title": "useZap",
         "href": "/react/hooks/useZap"
+    },
+    "-- Configuration": {
+        "type": "separator",
+        "title": "Configuration"
+    },
+    "createConfig": {
+        "title": "createConfig"
+    },
+    "createStorage": {
+        "title": "createStorage"
+    },
+    "LaWalletConfig": {
+        "title": "LaWalletConfig"
     },
     "-- Models": {
         "type": "separator",
