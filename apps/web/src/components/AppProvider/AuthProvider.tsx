@@ -110,11 +110,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const requireAuth = isProtectedRoute(pathSegment, AppRouter.connectedPaths);
       const requireDisconnectedUser = isProtectedRoute(pathSegment, AppRouter.disconnectedPaths);
 
-      console.log(pathSegment);
-
       const userConnected: boolean = Boolean(identity.hexpub.length);
-
-      console.log(userConnected, requireAuth, requireDisconnectedUser);
 
       switch (true) {
         case !userConnected && requireAuth:

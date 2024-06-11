@@ -11,6 +11,7 @@ import NDK, {
   NDKEvent,
 } from '@nostr-dev-kit/ndk';
 import { nowInSeconds } from '@lawallet/utils';
+import type { UnsignedEvent } from 'nostr-tools';
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;
@@ -28,7 +29,7 @@ export interface UseNostrReturns {
   signer: SignerTypes;
   signerInfo: NDKUser | undefined;
   providers: LightningProvidersType;
-  connectRelays: () => Promise<boolean>;
+  connectNDK: () => Promise<boolean>;
   initializeSigner: (signer: SignerTypes) => void;
   publishEvent: (event: NostrEvent) => Promise<{ success: boolean; error?: string }>;
   signEvent: (event: NostrEvent, signer?: SignerTypes) => Promise<NostrEvent>;
@@ -74,7 +75,7 @@ export const useNostrHook = ({
     });
   }, []);
 
-  const connectRelays = async () => {
+  const connectNDK = async () => {
     try {
       await ndk.connect();
       return true;
@@ -156,7 +157,8 @@ export const useNostrHook = ({
       try {
         if (!ndk.signer || !signerInfo) throw new Error('You need to initialize a signer to publish an event');
 
-        const eventTemplate: NostrEvent = {
+        const eventTemplate: UnsignedEvent = {
+          kind: 0,
           content: '',
           created_at: nowInSeconds(),
           tags: [],
@@ -179,7 +181,7 @@ export const useNostrHook = ({
   React.useEffect(() => {
     loadProviders();
 
-    if (autoConnect) connectRelays();
+    if (autoConnect) connectNDK();
   }, [autoConnect]);
 
   React.useEffect(() => {
@@ -191,7 +193,7 @@ export const useNostrHook = ({
     signer,
     signerInfo,
     providers,
-    connectRelays,
+    connectNDK,
     initializeSigner,
     publishEvent,
     signEvent,
