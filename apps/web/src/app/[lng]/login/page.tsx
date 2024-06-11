@@ -56,7 +56,7 @@ export default function Page() {
             privateKey: keyInput,
           };
 
-          saveIdentityToStorage(config.storage, IdentityToSave).then(() => {
+          saveIdentityToStorage(config.storage, IdentityToSave, true).then(() => {
             initializeSigner(identity.signer);
             router.push('/dashboard');
           });

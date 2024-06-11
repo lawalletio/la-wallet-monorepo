@@ -106,11 +106,10 @@ export default function Page() {
             </Flex>
           </Flex>
           <Flex gap={4} justify="end">
-            {Number(balance.amount) > 0 && (
-              <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
-                <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
-              </Button>
-            )}
+            <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
+              <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
+            </Button>
+
             <Button variant="bezeled" size="small" onClick={() => router.push('/settings')}>
               <Icon size="small">
                 <GearIcon />
