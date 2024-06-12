@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoaderContainer, Loader as LoaderStyle, ButtonLoader } from './LoaderStyle.js';
+import { LoaderContainer, Loader as LoaderStyle, ButtonLoader } from './LoaderStyle';
 
 export const Loader = () => {
   return (

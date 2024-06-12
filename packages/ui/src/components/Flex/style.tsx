@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import { FlexPrimitiveProps } from './types.js';
+import { FlexPrimitiveProps } from './types';
 
 export const FlexPrimitive = styled.div<FlexPrimitiveProps>`
   position: relative;

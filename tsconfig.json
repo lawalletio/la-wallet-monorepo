@@ -2,5 +2,6 @@
   "extends": "@lacrypta/typescript-config/base.json",
   "compilerOptions": {
     "baseUrl": "."
-  }
+  },
+  "exclude": ["node_modules"]
 }

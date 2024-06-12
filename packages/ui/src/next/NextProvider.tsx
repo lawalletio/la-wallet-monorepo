@@ -1,8 +1,8 @@
-import { useServerInsertedHTML } from 'next/navigation.js';
+import { useServerInsertedHTML } from 'next/navigation';
 import React, { ReactNode, useState } from 'react';
 import { ServerStyleSheet } from 'styled-components';
-import { ReactProvider } from '../react/ReactProvider.js';
-import { ThemeProps, baseTheme } from '../theme/index.js';
+import { ReactProvider } from '../react/ReactProvider';
+import { ThemeProps, baseTheme } from '../theme';
 
 export function NextProvider({ children, theme = baseTheme }: { children: ReactNode; theme?: ThemeProps }) {
   // Only create stylesheet once with lazy initial state

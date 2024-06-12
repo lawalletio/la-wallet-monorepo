@@ -8,12 +8,6 @@
     "useIdentity": {
         "display": "hidden"
     },
-    "useInvoice": {
-        "display": "hidden"
-    },
-    "useLNURL": {
-        "display": "hidden"
-    },
     "useNostr": {
         "display": "hidden"
     },

@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { SheetPrimitiveProps, SheetContentProps } from './types.js';
+import { SheetPrimitiveProps, SheetContentProps } from './types';
 
 export const SheetPrimitive = styled.div<SheetPrimitiveProps>`
   position: fixed;
