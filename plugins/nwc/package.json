@@ -1,0 +1,70 @@
+{
+  "name": "nwc",
+  "version": "0.0.1",
+  "description": "",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lawalletio/plugin-template.git",
+    "directory": "plugins/plugin-template"
+  },
+  "main": "dist/exports.js",
+  "type": "module",
+  "types": "dist/exports.d.ts",
+  "files": [
+    "dist"
+  ],
+  "prettier": "@lacrypta/prettier-config",
+  "scripts": {
+    "dev": "tsc && node watch.config.js",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write \"**/*.{ts,tsx,md,mdx}\"",
+    "build:routes": "lawallet-plugins build-routes",
+    "build:plugin": "node esbuild.config.js && tsc",
+    "build": "pnpm build:routes && pnpm build:plugin"
+  },
+  "author": "La Crypta Labs",
+  "license": "MIT",
+  "peerDependencies": {
+    "@bitcoin-design/bitcoin-icons-react": "^0.1.10",
+    "@nostr-dev-kit/ndk": "^2.5.1",
+    "confetti-js": "^0.0.18",
+    "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0",
+    "qrcode.react": "^3.1.0",
+    "styled-components": "^6.1.8"
+  },
+  "dependencies": {
+    "@getalby/sdk": "^3.5.1",
+    "@lawallet/react": "latest",
+    "@lawallet/ui": "latest",
+    "@lawallet/plugins-cli": "latest"
+  },
+  "devDependencies": {
+    "@lacrypta/eslint-config": "*",
+    "@lacrypta/prettier-config": "*",
+    "@lacrypta/typescript-config": "*",
+    "@types/node": "^20.11.30",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.19",
+    "next": "^14.2.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "esbuild": "0.20.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3"
+  },
+  "exports": {
+    ".": "./dist/exports.js",
+    "./metadata": "./dist/manifest/metadata.js"
+  },
+  "typesVersions": {
+    "*": {
+      "metadata": [
+        "./dist/manifest/metadata.d.ts"
+      ]
+    }
+  }
+}

@@ -1,0 +1,3 @@
+{
+  "extends": ["@lacrypta/eslint-config/library.js"]
+}

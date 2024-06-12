@@ -1,4 +1,9 @@
 {
   "enabled": true,
-  "pluginsList": []
+  "pluginsList": [
+    {
+      "route": "nwc",
+      "package": "nwc"
+    }
+  ]
 }

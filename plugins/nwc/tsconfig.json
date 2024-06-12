@@ -1,0 +1,21 @@
+{
+  "extends": "@lacrypta/typescript-config/base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "module": "ESNext",
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "emitDeclarationOnly": true,
+    "types": ["@types/react"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.jsx"],
+  "exclude": ["dist", "node_modules"]
+}

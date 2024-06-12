@@ -33,7 +33,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-verification-input": "^4.1.0",
-    "styled-components": "^6.1.8"
+    "styled-components": "^6.1.8",
+    "nwc": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "20.11.17",
