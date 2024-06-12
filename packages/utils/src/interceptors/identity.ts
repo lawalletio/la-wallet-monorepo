@@ -38,7 +38,7 @@ export const claimIdentity = async (event: NostrEvent, config: ConfigProps = bas
 
       return {
         success: false,
-        reason: response.error ? response.error : 'ERROR_ON_CREATE_ACCOUNT',
+        reason: response.reason ? response.reason : 'ERROR_ON_CREATE_ACCOUNT',
       };
     })
     .catch((err) => {
