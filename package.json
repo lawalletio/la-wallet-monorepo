@@ -7,7 +7,7 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "clean": "turbo clean",
+    "clean": "turbo clean && rm -rf node_modules",
     "postinstall": "pnpm build:libs && pnpm link-plugins-cli",
     "format": "prettier --write \"**/*.{ts,tsx,md,mdx}\"",
     "build:react": "pnpm --filter @lawallet/react build",

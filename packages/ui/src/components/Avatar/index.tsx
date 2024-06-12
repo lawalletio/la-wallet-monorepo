@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { AvatarPrimitive } from './style.js';
+import { AvatarPrimitive } from './style';
 
 interface ComponentProps {
   children: ReactNode;

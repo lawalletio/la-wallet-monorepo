@@ -1,6 +1,6 @@
-export * from './components/index.js';
+export * from './components';
 
 // Provider
-export * from './react/ReactProvider.js';
-export * from './theme/index.js';
-export * from './theme/createTheme.js';
+export * from './react/ReactProvider';
+export * from './theme';
+export * from './theme/createTheme';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AvatarImagePrimitive } from './style.js';
+import { AvatarImagePrimitive } from './style';
 
 interface ComponentProps {
   src: string;

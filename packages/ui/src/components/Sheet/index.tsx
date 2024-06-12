@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-import { Container } from '../Layout/Container/index.js';
-import { Flex } from '../Flex/index.js';
-import { Button } from '../Button/index.js';
-import { Heading } from '../Heading/index.js';
+import { Container } from '../Layout/Container';
+import { Flex } from '../Flex';
+import { Button } from '../Button';
+import { Heading } from '../Heading';
 
-import { SheetProps } from './types.js';
+import { SheetProps } from './types';
 
-import { SheetPrimitive, SheetContent, SheetBody } from './style.js';
+import { SheetPrimitive, SheetContent, SheetBody } from './style';
 
 export function Sheet(props: SheetProps) {
   const { children, isOpen, closeText = 'Close', onClose, title } = props;

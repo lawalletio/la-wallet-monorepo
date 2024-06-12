@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { InputGroupPrimitive } from './style.js';
+import { InputGroupPrimitive } from './style';
 
 interface InputGroupProps {
   children: ReactNode;

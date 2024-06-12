@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { Button } from '../Button/index.js';
-import { Flex } from '../Flex/index.js';
-import { Container } from '../Layout/Container/index.js';
-import { TokenListStyle } from './style.js';
+import { Button } from '../Button';
+import { Flex } from '../Flex';
+import { Container } from '../Layout/Container';
+import { TokenListStyle } from './style';
 
 export function TokensList({
   currenciesList,

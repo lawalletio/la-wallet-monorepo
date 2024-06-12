@@ -1,5 +1,5 @@
-import { baseTheme } from './theme.js';
-import { ThemeProps, CreateThemeParameters } from './types.js';
+import { baseTheme } from './theme';
+import { ThemeProps, CreateThemeParameters } from './types';
 
 export function createTheme(parameters: CreateThemeParameters = {}): ThemeProps {
   const { colors = {}, borders = {}, font = {} } = parameters;

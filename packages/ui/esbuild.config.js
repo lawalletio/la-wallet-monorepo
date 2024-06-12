@@ -11,6 +11,7 @@ export const esbuildConfig = {
   format: 'esm',
   packages: 'external',
   outdir: 'dist',
+  jsx: 'automatic',
   plugins: [
     styledComponentsPlugin({
       minify: true,
