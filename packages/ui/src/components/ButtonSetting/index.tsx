@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { ButtonSettingProps } from './types.js';
+import { ButtonSettingProps } from './types';
 
-import { ButtonSettingPrimitive } from './style.js';
+import { ButtonSettingPrimitive } from './style';
 
 export function ButtonSetting(props: ButtonSettingProps) {
   const { children, onClick } = props;

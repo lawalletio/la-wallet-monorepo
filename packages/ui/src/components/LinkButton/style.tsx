@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { LinkButtonPrimitiveProps } from './types.js';
+import { LinkButtonPrimitiveProps } from './types';
 
 export const LinkButtonPrimitive = styled.div<LinkButtonPrimitiveProps>`
   display: flex;

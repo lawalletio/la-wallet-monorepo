@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { HeadingPrimitiveProps } from './types.js';
+import { HeadingPrimitiveProps } from './types';
 
 export const HeadingBox = styled.div`
   h1 {

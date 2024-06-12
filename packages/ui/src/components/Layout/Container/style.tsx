@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { ContainerPrimitiveProps } from './types.js';
+import { ContainerPrimitiveProps } from './types';
 
 export const ContainerPrimitive = styled.div<ContainerPrimitiveProps>`
   display: flex;

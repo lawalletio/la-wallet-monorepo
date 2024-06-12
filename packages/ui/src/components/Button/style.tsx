@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { BaseButtonProps, ButtonCustomProps } from './types.js';
+import { BaseButtonProps, ButtonCustomProps } from './types';
 
 export const BaseButton = styled.button<BaseButtonProps>`
   display: flex;
