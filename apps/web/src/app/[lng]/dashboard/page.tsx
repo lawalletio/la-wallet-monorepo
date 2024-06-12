@@ -35,29 +35,31 @@ import { Link, useRouter } from '@/navigation';
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
 import Subnavbar from '@/components/Layout/Subnavbar';
-import { useLaWallet } from '@lawallet/react';
+import { useBalance, useCurrencyConverter, useIdentity, useSettings, useTransactions } from '@lawallet/react';
 
 // Constans
 import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
   const config = useConfig();
+  const router = useRouter();
   const t = useTranslations();
   const lng = useLocale();
   const theme = useTheme();
 
   const [showBanner, setShowBanner] = useState<'backup' | 'none'>('none');
 
-  const router = useRouter();
+  const identity = useIdentity();
+  const balance = useBalance();
+  const transactions = useTransactions();
+
   const {
-    account: { identity, balance, transactions },
-    settings: {
-      loading,
-      toggleHideBalance,
-      props: { hideBalance, currency },
-    },
-    converter: { pricesData, convertCurrency },
-  } = useLaWallet();
+    loading,
+    toggleHideBalance,
+    props: { hideBalance, currency },
+  } = useSettings();
+
+  const { pricesData, convertCurrency } = useCurrencyConverter();
 
   const convertedBalance: string = useMemo(() => {
     const amount: number = convertCurrency(balance.amount, 'SAT', currency);
@@ -98,11 +100,10 @@ export default function Page() {
             </div>
           </Flex>
           <Flex gap={4} justify="end">
-            {Number(balance.amount) > 0 && (
-              <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
-                <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
-              </Button>
-            )}
+            <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
+              <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
+            </Button>
+
             <Button variant="bezeled" size="small" onClick={() => router.push('/settings')}>
               <Icon size="small">
                 <GearIcon />

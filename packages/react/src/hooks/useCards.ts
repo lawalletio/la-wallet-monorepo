@@ -20,8 +20,8 @@ import {
 import { NDKEvent, NDKKind, NDKSubscriptionCacheUsage, type NostrEvent } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 import { useNostr } from '../context/NostrContext.js';
-import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
+import { useIdentity } from './useIdentity.js';
 import { useSubscription } from './useSubscription.js';
 
 export interface CardConfigReturns {
@@ -50,9 +50,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     loading: true,
   });
 
-  const {
-    account: { identity },
-  } = useLaWallet();
+  const identity = useIdentity();
 
   const { encrypt, decrypt, signer, signEvent } = useNostr();
   const pubkey = React.useMemo(() => identity.hexpub ?? '', [identity.hexpub]);

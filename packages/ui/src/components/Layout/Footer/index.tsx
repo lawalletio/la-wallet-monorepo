@@ -1,8 +1,8 @@
 'use client';
 
-import { Divider } from '../../Divider';
-import { Container } from '../Container';
-import { StyledFooter } from './style';
+import { Divider } from '../../Divider/index.js';
+import { Container } from '../Container/index.js';
+import { StyledFooter } from './style.js';
 import React, { ReactNode } from 'react';
 
 interface ComponentProps {

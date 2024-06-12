@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
 
-import { Text } from '../Text';
-import { Icon } from '../Icon';
-import { CheckIcon } from '../Icons/Check';
+import { Icon } from '../Icon/index.js';
+import { CheckIcon } from '../Icons/Check.js';
+import { Text } from '../Text/index.js';
 
-import { AvatarPrimitive, AvatarBadgeStyle } from './style';
+import { AvatarBadgeStyle, AvatarPrimitive } from './style.js';
 
 interface AvatarProps {
   src?: string;

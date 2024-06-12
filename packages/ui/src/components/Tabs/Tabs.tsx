@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 
-import { TabsStyle } from './style';
+import { TabsStyle } from './style.js';
 
 interface TabsProps {
   children: ReactNode;

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Text } from '../Text';
+import { Text } from '../Text/index.js';
 
-import { FeedbackProps } from './types';
+import { FeedbackProps } from './types.js';
 
-import { FeedbackPrimitive } from './style';
+import { FeedbackPrimitive } from './style.js';
 
 export function Feedback(props: FeedbackProps) {
   const { children, status, show = false } = props;

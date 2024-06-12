@@ -39,7 +39,11 @@ export const getUserStoragedKey = async (storage: BaseStorage, index: number = 0
   return Identity[index]?.privateKey ?? '';
 };
 
-export const saveIdentityToStorage = async (storage: BaseStorage, identity: StoragedIdentityInfo) => {
+export const saveIdentityToStorage = async (
+  storage: BaseStorage,
+  identity: StoragedIdentityInfo,
+  makeBackup: boolean = false,
+) => {
   const storagedIdentity = await storage.getItem(STORAGE_IDENTITY_KEY);
 
   if (storagedIdentity) {
@@ -47,10 +51,10 @@ export const saveIdentityToStorage = async (storage: BaseStorage, identity: Stor
     identityList.push(identity);
 
     await storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identityList));
-    await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+    if (makeBackup) await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
   } else {
     const identityToSave: StoragedIdentityInfo[] = [identity];
     await storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identityToSave));
-    await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+    if (makeBackup) await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
   }
 };

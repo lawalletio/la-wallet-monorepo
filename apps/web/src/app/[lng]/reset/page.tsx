@@ -2,9 +2,11 @@
 import Logo from '@/components/Logo';
 import { Loader } from '@lawallet/ui';
 
+import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
 import { appTheme } from '@/config/exports';
 import useErrors from '@/hooks/useErrors';
-import { buildCardActivationEvent, useConfig, useNostr, useLaWallet } from '@lawallet/react';
+import { saveIdentityToStorage } from '@/utils';
+import { buildCardActivationEvent, useConfig, useIdentity, useNostr } from '@lawallet/react';
 import { cardResetCaim } from '@lawallet/react/actions';
 import { Container, Feedback, Flex, Heading, Text } from '@lawallet/ui';
 import { NostrEvent } from '@nostr-dev-kit/ndk';
@@ -12,14 +14,10 @@ import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { generatePrivateKey, getPublicKey } from 'nostr-tools';
 import { useEffect } from 'react';
-import { saveIdentityToStorage } from '@/utils';
-import { StoragedIdentityInfo } from '@/components/AppProvider/AuthProvider';
 
 export default function Page() {
   const t = useTranslations();
-  const {
-    account: { identity },
-  } = useLaWallet();
+  const identity = useIdentity();
 
   const config = useConfig();
   const router = useRouter();

@@ -1,9 +1,9 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 
-import { Button } from '../Button';
+import { Button } from '../Button/index.js';
 
-import { TabStyle } from './style';
+import { TabStyle } from './style.js';
 
 interface TabProps {
   children: ReactNode;

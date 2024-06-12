@@ -59,7 +59,7 @@ import { config } from './config';
 function UserBalance() {
   const userPubkey: string = '9a9787e3e31cfdc95f35d5...9789c20f63546b191e28d59';
 
-  const { balance } = useBalance({
+  const balance = useBalance({
     pubkey: userPubkey,
     tokenId: 'BTC',
     enabled: Boolean(userPubkey.length),

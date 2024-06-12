@@ -1,42 +1,36 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useTheme } from 'styled-components';
-import { useTranslations } from 'next-intl';
 import {
-  Button,
-  Divider,
-  Container,
-  Flex,
-  Text,
   Avatar,
-  Sheet,
-  Input,
-  Textarea,
+  Button,
+  Card,
+  Container,
+  Divider,
+  Flex,
   Icon,
+  Input,
   LinkIcon,
   MinerIcon,
-  Card,
-  Tabs,
+  Sheet,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
+  Tabs,
+  Text,
+  Textarea,
 } from '@lawallet/ui';
-
-import { useRouter } from '@/navigation';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useTheme } from 'styled-components';
 
 import { useNotifications } from '@/context/NotificationsContext';
 
-import Logo from '@/components/Logo';
-import Navbar from '@/components/Layout/Navbar';
 import { ImageUpload } from '@/components/ImageUpload';
+import Navbar from '@/components/Layout/Navbar';
 import Subnavbar from '@/components/Layout/Subnavbar';
 
 export default function Page() {
-  const t = useTranslations();
-  const router = useRouter();
   const theme = useTheme();
   const notifications = useNotifications();
 

@@ -1,7 +1,7 @@
 import type { ConfigParameter } from '@lawallet/utils/types';
 import * as React from 'react';
 import { ConfigContext } from '../context/providers.js';
-import type { ConfigProps } from '../exports/types.js';
+import type { ConfigProps } from '@lawallet/utils/types';
 
 export type UseConfigParameters<config extends ConfigProps = ConfigProps> = ConfigParameter<config>;
 

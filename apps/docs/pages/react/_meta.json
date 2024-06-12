@@ -4,19 +4,6 @@
         "title": "Introduction"
     },
     "index": "Getting started",
-    "-- Configuration": {
-        "type": "separator",
-        "title": "Configuration"
-    },
-    "createConfig": {
-        "title": "createConfig"
-    },
-    "createStorage": {
-        "title": "createStorage"
-    },
-    "LaWalletConfig": {
-        "title": "LaWalletConfig"
-    },
     "-- Hooks": {
         "type": "separator",
         "title": "Hooks"
@@ -24,10 +11,6 @@
     "hooks": {
         "display": "hidden",
         "type": "page"
-    },
-    "useAccount": {
-        "title": "useAccount",
-        "href": "/react/hooks/useAccount"
     },
     "useBalance": {
         "title": "useBalance",
@@ -37,13 +20,13 @@
         "title": "useCards",
         "href": "/react/hooks/useCards"
     },
+    "useIdentity": {
+        "title": "useIdentity",
+        "href": "/react/hooks/useIdentity"
+    },
     "useInvoice": {
         "title": "useInvoice",
         "href": "/react/hooks/useInvoice"
-    },
-    "useLaWallet": {
-        "title": "useLaWallet",
-        "href": "/react/hooks/useLaWallet"
     },
     "useLNURL": {
         "title": "useLNURL",
@@ -68,6 +51,19 @@
     "useZap": {
         "title": "useZap",
         "href": "/react/hooks/useZap"
+    },
+    "-- Configuration": {
+        "type": "separator",
+        "title": "Configuration"
+    },
+    "createConfig": {
+        "title": "createConfig"
+    },
+    "createStorage": {
+        "title": "createStorage"
+    },
+    "LaWalletConfig": {
+        "title": "LaWalletConfig"
     },
     "-- Models": {
         "type": "separator",

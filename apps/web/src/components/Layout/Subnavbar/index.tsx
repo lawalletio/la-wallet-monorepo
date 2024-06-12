@@ -2,8 +2,7 @@
 
 // Libraries
 import { HomeIcon, RocketIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useLaWallet } from '@lawallet/react';
-import { Button, Container, Flex, Icon, QrCodeIcon } from '@lawallet/ui';
+import { Button, Container, Divider, Flex, Icon, QrCodeIcon } from '@lawallet/ui';
 // import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
@@ -15,6 +14,7 @@ import ButtonCTA from '@/components/ButtonCTA';
 import { EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 // Styles
+import { pluginsEnabled } from '@/config/exports';
 import { SubnavbarPrimitive } from './style';
 
 interface ComponentProps {
@@ -28,12 +28,17 @@ interface ComponentProps {
 export default function Subnavbar(props: ComponentProps) {
   const { path = 'home' } = props;
 
-  const {
-    account: { balance },
-  } = useLaWallet();
-
   const router = useRouter();
-  // const t = useTranslations();
+
+  if (!pluginsEnabled)
+    return (
+      <ButtonCTA>
+        <Button color="secondary" onClick={() => router.push('/scan')}>
+          <QrCodeIcon />
+        </Button>
+        <Divider y={16} />
+      </ButtonCTA>
+    );
 
   return (
     <SubnavbarPrimitive>
@@ -45,7 +50,7 @@ export default function Subnavbar(props: ComponentProps) {
             </Icon>
           </Button>
 
-          {!EMERGENCY_LOCK_TRANSFER && Number(balance.amount) > 0 && (
+          {!EMERGENCY_LOCK_TRANSFER && (
             <ButtonCTA>
               <Button color="secondary" onClick={() => router.push('/scan')}>
                 <QrCodeIcon />

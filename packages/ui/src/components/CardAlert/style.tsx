@@ -1,7 +1,5 @@
 import { styled } from 'styled-components';
 
-import { baseTheme } from '../../theme';
-
 export const CardAlertPrimitive = styled.div`
   position: relative;
   overflow: hidden;

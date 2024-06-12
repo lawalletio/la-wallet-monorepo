@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { IconsProps } from './types';
+import { IconsProps } from './types.js';
 
 export function LinkIcon({ color = 'currentColor' }: IconsProps) {
   return (

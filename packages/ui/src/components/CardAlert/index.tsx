@@ -1,10 +1,12 @@
 import React from 'react';
 
-import { Heading, Text, Flex } from '../';
-import { CaretRightIcon, SafariLogo } from '../Icons';
+import { CaretRightIcon, SafariLogo } from '../Icons/index.js';
 
-import { CardAlertProps } from './types';
-import { CardAlertPrimitive } from './style';
+import { Flex } from '../Flex/index.js';
+import { Heading } from '../Heading/index.js';
+import { Text } from '../Text/index.js';
+import { CardAlertPrimitive } from './style.js';
+import { CardAlertProps } from './types.js';
 
 export function CardAlert(props: CardAlertProps) {
   const { title, description, isHome = true } = props;

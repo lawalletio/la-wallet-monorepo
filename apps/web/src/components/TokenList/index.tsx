@@ -2,11 +2,11 @@
 
 import { Button, Container, Flex } from '@lawallet/ui';
 
+import { CurrenciesList, useSettings } from '@lawallet/react';
 import { TokenListStyle } from './style';
-import { useLaWallet, CurrenciesList } from '@lawallet/react';
 
 export function TokenList() {
-  const { settings } = useLaWallet();
+  const settings = useSettings();
 
   return (
     <TokenListStyle>

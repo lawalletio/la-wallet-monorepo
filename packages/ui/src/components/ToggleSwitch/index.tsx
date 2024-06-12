@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { ToggleSwitchProps } from './types';
-import { ToggleSwitchPrimitive } from './style';
-import { Text } from '../Text';
+import { ToggleSwitchProps } from './types.js';
+import { ToggleSwitchPrimitive } from './style.js';
+import { Text } from '../Text/index.js';
 
 export function ToggleSwitch(props: ToggleSwitchProps) {
   const { label, onChange, id, switchEnabled = false } = props;

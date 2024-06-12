@@ -1,10 +1,10 @@
 'use client';
 import React from 'react';
 import { ReactNode } from 'react';
-import { Flex } from '../../Flex';
-import { Heading } from '../../Heading';
-import { Container } from '../Container';
-import { Left, NavbarStyled, Right } from './style';
+import { Flex } from '../../Flex/index.js';
+import { Heading } from '../../Heading/index.js';
+import { Container } from '../Container/index.js';
+import { Left, NavbarStyled, Right } from './style.js';
 
 interface ComponentProps {
   children?: ReactNode;

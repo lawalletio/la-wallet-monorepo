@@ -1,8 +1,8 @@
 'use client';
 
 // Libraries
-import { useMemo, useState } from 'react';
 import { Button, Container, Divider, Flex, Text } from '@lawallet/ui';
+import { useMemo, useState } from 'react';
 
 // Theme
 import { appTheme } from '@/config/exports';
@@ -10,13 +10,13 @@ import { appTheme } from '@/config/exports';
 // Hooks and utils
 import { useNotifications } from '@/context/NotificationsContext';
 import { useRouter } from '@/navigation';
-import { useTranslations } from 'next-intl';
-import { formatAddress, lnurl_encode, useConfig, useLaWallet } from '@lawallet/react';
 import { copy } from '@/utils/share';
+import { formatAddress, lnurl_encode, useConfig, useIdentity } from '@lawallet/react';
+import { useTranslations } from 'next-intl';
 
 // Components
-import { QRCode } from '@/components/UI';
 import Navbar from '@/components/Layout/Navbar';
+import { QRCode } from '@/components/UI';
 import InvoiceSheet from './components/InvoiceSheet';
 
 // Constans
@@ -32,10 +32,8 @@ export default function Page() {
 
   const config = useConfig();
   const t = useTranslations();
+  const identity = useIdentity();
   const notifications = useNotifications();
-  const {
-    account: { identity },
-  } = useLaWallet();
 
   const [isOpenSheet, setIsOpenSheet] = useState<boolean>(false);
 

@@ -1,7 +1,5 @@
 import { styled } from 'styled-components';
 
-import { baseTheme } from '../../theme';
-
 const slot = 4;
 
 interface AvatarPrimitiveProps {
@@ -44,7 +42,7 @@ export const AvatarBadgeStyle = styled.div<AvatarBadgeStyleProps>`
   width: ${(props) => (props.$isSmall ? '16px' : '24px')};
   height: ${(props) => (props.$isSmall ? '16px' : '24px')};
 
-  background-color: ${baseTheme.colors.background};
-  border: ${(props) => (props.$isSmall ? '2px' : '4px')} solid ${baseTheme.colors.background};
+  background-color: ${(props) => props.theme.colors.background};
+  border: ${(props) => (props.$isSmall ? '2px' : '4px')} solid ${(props) => props.theme.colors.background};
   border-radius: 50px;
 `;

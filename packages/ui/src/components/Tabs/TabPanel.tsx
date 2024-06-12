@@ -1,8 +1,8 @@
 import React from 'react';
 import type { ReactNode } from 'react';
-import { Flex } from '../Flex';
+import { Flex } from '../Flex/index.js';
 
-import { TabPanelStyle } from './style';
+import { TabPanelStyle } from './style.js';
 
 interface TabPanelProps {
   children: ReactNode;

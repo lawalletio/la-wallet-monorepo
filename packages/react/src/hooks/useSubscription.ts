@@ -1,7 +1,7 @@
 import { type NDKEvent, type NDKFilter, type NDKSubscription, type NDKSubscriptionOptions } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 import { useNostr } from '../context/NostrContext.js';
-import type { ConfigParameter } from '../exports/types.js';
+import type { ConfigParameter } from '@lawallet/utils/types';
 
 export interface UseSubscriptionReturns {
   loading: boolean;

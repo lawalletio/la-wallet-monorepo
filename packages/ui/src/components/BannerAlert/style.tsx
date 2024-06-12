@@ -1,8 +1,6 @@
 import { styled } from 'styled-components';
 
-import { baseTheme } from '../../theme';
-
-import { BannerAlertPrimitiveProps } from './types';
+import { BannerAlertPrimitiveProps } from './types.js';
 
 export const BannerAlertPrimitive = styled.div<BannerAlertPrimitiveProps>`
   position: relative;

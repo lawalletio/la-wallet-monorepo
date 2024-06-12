@@ -6,8 +6,6 @@ import { Avatar, Card, Flex, Text, Button } from '@lawallet/ui';
 
 import { useTranslations } from 'next-intl';
 
-import { extractFirstTwoChars } from '@/utils';
-
 const CardWithData = ({ type, data }: { type: TransferTypes; data: string }) => {
   const router = useRouter();
   const t = useTranslations();
