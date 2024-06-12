@@ -1,7 +1,7 @@
 import { type NDKEvent, type NDKFilter, type NDKSubscription, type NDKSubscriptionOptions } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
-import { useNostrContext } from '../context/NostrContext.js';
-import type { ConfigParameter } from '../exports/types.js';
+import { useNostr } from '../context/NostrContext.js';
+import type { ConfigParameter } from '@lawallet/utils/types';
 
 export interface UseSubscriptionReturns {
   loading: boolean;
@@ -17,7 +17,7 @@ export interface SubscriptionProps extends ConfigParameter {
 }
 
 export const useSubscription = ({ filters, options, enabled, config }: SubscriptionProps) => {
-  const { ndk } = useNostrContext({ config });
+  const { ndk } = useNostr({ config });
 
   const [subscription, setSubscription] = React.useState<NDKSubscription>();
   const [events, setEvents] = React.useState<NDKEvent[]>([]);

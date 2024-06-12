@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Icon } from '../Icon';
-import { CaretRightIcon } from '../Icons';
+import { Icon } from '../Icon/index.js';
+import { CaretRightIcon } from '../Icons/index.js';
 
-import { LinkSettingProps } from './types';
+import { LinkSettingProps } from './types.js';
 
 import { useTheme } from 'styled-components';
-import { LinkSettingPrimitive } from './style';
+import { LinkSettingPrimitive } from './style.js';
 
 export function LinkSetting(props: LinkSettingProps) {
   const { children, onClick } = props;

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { IconProps } from './types';
+import { IconProps } from './types.js';
 
-import { IconPrimitive } from './style';
+import { IconPrimitive } from './style.js';
 
 export function Icon(props: IconProps) {
   const { children, size = 'normal', color = 'currentColor' } = props;

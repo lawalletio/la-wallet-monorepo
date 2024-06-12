@@ -1,0 +1,89 @@
+# useIdentity
+
+Hook to get all the information of an identity
+
+## Import
+
+```ts
+import { useIdentity } from '@lawallet/react';
+```
+
+## Usage
+
+```tsx filename="index.tsx"
+import { useIdentity } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const identity = useIdentity();
+}
+```
+
+## Parameters
+
+```ts
+import { type UseIdentityParameters } from '@lawallet/react';
+```
+
+### pubkey
+
+`String | undefined`
+
+- Public key of the user you want to initialize
+- If it is not sent, an attempt will be made to load from storage
+
+```tsx [index.tsx]
+import { useIdentity } from '@lawallet/react';
+
+function App() {
+  const identity = useIdentity({
+    pubkey: '17efe7a5f1...53936f68b',
+  });
+}
+```
+
+### privateKey
+
+`String | undefined`
+
+- Private key of the account you want to initialize
+- If it is not sent, an attempt will be made to load from storage
+
+```tsx [index.tsx]
+import { useIdentity } from '@lawallet/react';
+
+function App() {
+  const identity = useIdentity({
+    privateKey: '17efe7a5f1...53936f68b',
+  });
+}
+```
+
+### config
+
+`Config | undefined`
+
+[`Config`](/react/createConfig#config) to use instead of retrieving from the from nearest [`LaWalletConfig`](/react/LaWalletConfig).
+
+```tsx
+import { useIdentity } from '@lawallet/react';
+import { config } from './config';
+
+function App() {
+  const identity = useIdentity({
+    config,
+  });
+}
+```
+
+## Return Type
+
+```ts
+import { type UserIdentity } from '@lawallet/react';
+```
+
+### identity
+
+[`UserIdentity`](/react/glossary/types#useridentity)
+
+Returns an instance of the UserIdentity

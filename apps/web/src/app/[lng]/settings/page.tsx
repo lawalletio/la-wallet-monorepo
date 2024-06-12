@@ -2,9 +2,8 @@
 
 import Navbar from '@/components/Layout/Navbar';
 import Radio from '@/components/Radio/Radio';
-import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/constants/constants';
-import { useLocale, useTranslations } from 'next-intl';
 import useErrors from '@/hooks/useErrors';
+import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/utils/constants';
 import {
   Button,
   ButtonSetting,
@@ -17,23 +16,22 @@ import {
   Sheet,
   Text,
 } from '@lawallet/ui';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { appTheme } from '@/config/exports';
-import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useConfig, useWalletContext } from '@lawallet/react';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from '@/navigation';
-import { startTransition, useState } from 'react';
+import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useConfig, useIdentity } from '@lawallet/react';
 import { AvailableLanguages } from '@lawallet/react/types';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { startTransition, useState } from 'react';
 
 export default function Page() {
   const config = useConfig();
   const t = useTranslations();
   const lng = useLocale();
 
-  const {
-    account: { identity },
-  } = useWalletContext();
+  const identity = useIdentity();
 
   const [sheetLanguage, setSheetLanguage] = useState<boolean>(false);
   const router: AppRouterInstance = useRouter();

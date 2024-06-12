@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 
-import { TabListStyle } from './style';
+import { TabListStyle } from './style.js';
 
 interface TabListProps {
   children: ReactNode;

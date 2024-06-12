@@ -6,7 +6,7 @@ import type { ConfigParameter } from '@lawallet/utils/types';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
 import { nip19 } from 'nostr-tools';
-import { useNostrContext } from '../context/NostrContext.js';
+import { useNostr } from '../context/NostrContext.js';
 
 type InvoiceProps = {
   bolt11: string;
@@ -34,7 +34,7 @@ interface UseZapParameters extends ConfigParameter {
 
 export const useZap = (parameters: UseZapParameters): useZapReturns => {
   const config = useConfig(parameters);
-  const { signEvent, signerInfo } = useNostrContext({ config });
+  const { signEvent, signerInfo } = useNostr({ config });
 
   const [invoice, setInvoice] = React.useState<InvoiceProps>(defaultDeposit);
 

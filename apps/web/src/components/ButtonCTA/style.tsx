@@ -2,6 +2,11 @@ import { styled } from 'styled-components';
 
 export const Default = styled.div`
   margin-top: -40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: -12px;
 
   button {
     position: relative;

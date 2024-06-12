@@ -1,4 +1,4 @@
-import { ThemeProps } from './types';
+import { ThemeProps } from './types.js';
 
 export const baseTheme: ThemeProps = {
   colors: {

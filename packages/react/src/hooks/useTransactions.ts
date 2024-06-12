@@ -6,9 +6,10 @@ import * as React from 'react';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { nip26, type Event } from 'nostr-tools';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
-import { useNostrContext } from '../context/NostrContext.js';
+import { useNostr } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
+import { useLaWallet } from '../context/WalletContext.js';
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
@@ -21,10 +22,6 @@ export type ActivityType = {
   subscription: Transaction[];
   idsLoaded: string[];
 };
-
-export interface UseTransactionsReturns {
-  transactions: Transaction[];
-}
 
 export interface UseTransactionsProps extends ConfigParameter {
   pubkey: string;
@@ -66,13 +63,24 @@ type EventWithStatus = {
   statusEvent: NDKEvent | undefined;
 };
 
-export const useTransactions = (parameters: UseTransactionsProps): UseTransactionsReturns => {
+export const useTransactions = (parameters?: UseTransactionsProps): Transaction[] => {
+  if (!parameters) {
+    const context = useLaWallet();
+
+    if (!context)
+      throw new Error(
+        'If you do not send parameters to the hook, it must have a LaWalletConfig context from which to obtain the information.',
+      );
+
+    return context.transactions;
+  }
+
   const { pubkey, enabled = true, limit = 1000, since = undefined, until = undefined, storage = false } = parameters;
   const config = useConfig(parameters);
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
 
-  const { decrypt } = useNostrContext();
+  const { decrypt } = useNostr();
 
   const { events: walletEvents } = useSubscription({
     filters: [
@@ -284,7 +292,6 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
       return {
         ...prev,
         idsLoaded: transactions.map((tx) => tx.id.toString()),
-        loading: true,
       };
     });
 
@@ -378,7 +385,5 @@ export const useTransactions = (parameters: UseTransactionsProps): UseTransactio
     if (storage && transactions.length) saveTransactions(transactions);
   }, [transactions]);
 
-  return {
-    transactions,
-  };
+  return transactions;
 };

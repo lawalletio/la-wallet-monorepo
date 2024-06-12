@@ -1,7 +1,5 @@
 import { styled } from 'styled-components';
 
-import { baseTheme } from '../../../theme';
-
 export const HeroCardPrimitive = styled.div`
   display: flex;
   flex-direction: column;

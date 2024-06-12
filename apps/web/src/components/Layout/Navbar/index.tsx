@@ -1,17 +1,17 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { useTranslations } from 'next-intl';
-import { Flex, Container, Icon, Heading, Text, Button } from '@lawallet/ui';
 import { CaretLeftIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { Button, Container, Flex, Icon, Text } from '@lawallet/ui';
+import { useTranslations } from 'next-intl';
+import { ReactNode } from 'react';
 
-import { useRouter } from '@/navigation';
 import { appTheme } from '@/config/exports';
+import { useRouter } from '@/navigation';
 
 // Constans
-import { EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
-import { Navbar, BackButton, Left, Right, AlertSystemStyle } from './style';
+import { AlertSystemStyle, Left, Navbar, Right } from './style';
 
 interface ComponentProps {
   children?: ReactNode;

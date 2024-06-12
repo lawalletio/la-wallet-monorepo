@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/react",
-  "version": "0.1.60",
+  "version": "0.2.0",
   "prettier": "@lacrypta/prettier-config",
   "private": false,
   "repository": {
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@lawallet/utils": "*",
-    "@nostr-dev-kit/ndk": "^2.4.0",
+    "@nostr-dev-kit/ndk": "^2.8.2",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "overrides": {
@@ -41,11 +41,7 @@
   "typings": "./dist/types/exports/index.d.ts",
   "files": [
     "dist/**",
-    "!dist/**/*.tsbuildinfo",
-    "src/**/*.ts",
-    "!src/**/*.test.ts",
-    "!src/**/*.test-d.ts",
-    "/utils"
+    "src/**/*.ts"
   ],
   "exports": {
     ".": {

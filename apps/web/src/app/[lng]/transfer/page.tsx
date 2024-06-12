@@ -1,16 +1,14 @@
 'use client';
 
 // Libraries
-import { useMemo, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import {
   detectTransferType,
   formatLNURLData,
   normalizeLNDomain,
   removeDuplicateArray,
   useConfig,
-  useWalletContext,
+  useTransactions,
 } from '@lawallet/react';
 import { Transaction, TransactionDirection, TransferTypes } from '@lawallet/react/types';
 import {
@@ -26,7 +24,9 @@ import {
   LinkButton,
   Text,
 } from '@lawallet/ui';
-import { CaretRightIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useTranslations } from 'next-intl';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
 // Theme
 import { appTheme } from '@/config/exports';
@@ -34,35 +34,32 @@ import { appTheme } from '@/config/exports';
 // Hooks and utils
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { lightningAddresses } from '@/constants/constants';
+import { lightningAddresses } from '@/utils/constants';
 
 // Components
 import Navbar from '@/components/Layout/Navbar';
 import RecipientElement from './components/RecipientElement';
 
 // Constans
-import { EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
   const router = useRouter();
-  const {
-    account: { transactions, balance },
-  } = useWalletContext();
 
-  if (EMERGENCY_LOCK_TRANSFER || balance.amount === 0) {
+  if (EMERGENCY_LOCK_TRANSFER) {
     router.push('/dashboard');
     return null;
   }
 
   const t = useTranslations();
-
   const params = useSearchParams();
+  const errors = useErrors();
+  const config = useConfig();
+
+  const transactions = useTransactions();
 
   const [inputText, setInputText] = useState<string>(params.get('data') ?? '');
   const [loading, setLoading] = useState<boolean>(false);
-
-  const errors = useErrors();
-  const config = useConfig();
 
   const initializeTransfer = async (data: string) => {
     if (loading) return;

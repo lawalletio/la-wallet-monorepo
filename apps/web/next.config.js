@@ -16,6 +16,7 @@ const withSerwist = require('@serwist/next').default({
   // use something else that works, such as "service-worker/index.ts".
   swSrc: 'src/utils/sw.ts',
   swDest: 'public/sw.js',
+  disable: process.env.NODE_ENV === 'development',
 });
 
 const nextConfig = {

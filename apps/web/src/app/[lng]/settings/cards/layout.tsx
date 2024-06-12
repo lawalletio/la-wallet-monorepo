@@ -1,5 +1,5 @@
 import { CardsProvider } from '@/context/CardsContext';
-import { APP_NAME } from '@/constants/constants';
+import { APP_NAME } from '@/utils/constants';
 import { getTranslations } from 'next-intl/server';
 
 export async function generateMetadata({ params: { lng } }) {

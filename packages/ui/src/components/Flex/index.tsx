@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { FlexProps } from './types';
-import { FlexPrimitive } from './style';
+import { FlexProps } from './types.js';
+import { FlexPrimitive } from './style.js';
 
 export function Flex(props: FlexProps): JSX.Element {
   const { children, gap = 0, onClick, direction = 'row', flex = 'initial', justify = 'start', align = 'start' } = props;

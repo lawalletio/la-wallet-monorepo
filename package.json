@@ -7,27 +7,38 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
+    "clean": "turbo clean",
+    "postinstall": "pnpm build:libs && pnpm link-plugins-cli",
     "format": "prettier --write \"**/*.{ts,tsx,md,mdx}\"",
     "build:react": "pnpm --filter @lawallet/react build",
-    "build:utils": "pnpm --filter @lawallet/utils build",
+    "build:utils": "pnpm --filter @lawallet/utils build && pnpm --filter @lawallet/plugins-cli build",
     "build:ui": "pnpm --filter @lawallet/ui build",
-    "build:libs": "pnpm build:utils && pnpm build:react && pnpm build:ui",
-    "web:build": "pnpm --filter lawallet-front build",
+    "build:libs": "pnpm build --filter=./packages/*",
+    "build:plugins": "pnpm build --filter=./plugins/* && pnpm webapp-plugins-config",
+    "build:web": "pnpm webapp-plugins-config && pnpm --filter lawallet-front build",
+    "build:docs": "pnpm --filter @lawallet/docs build",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
     "docs:dev": "pnpm --filter @lawallet/docs dev:docs",
-    "docs:build": "pnpm --filter @lawallet/docs build",
     "docs:start": "pnpm --filter @lawallet/docs start:docs",
-    "ui:dev": "pnpm --filter @lawallet/ui dev"
+    "ui:dev": "pnpm --filter @lawallet/ui dev",
+    "link-plugins-cli": "pnpm --filter @lawallet/plugins-cli install --ignore-scripts",
+    "add-plugin": "lawallet-plugins add",
+    "create-plugin": "lawallet-plugins create",
+    "webapp-plugins-config": "lawallet-plugins webapp-config"
+  },
+  "dependencies": {
+    "@lawallet/plugins-cli": "workspace:*"
   },
   "devDependencies": {
-    "@lacrypta/eslint-config": "^1.0.0",
+    "@lacrypta/eslint-config": "^1.0.1",
     "@lacrypta/prettier-config": "^1.0.0",
     "@lacrypta/typescript-config": "^1.0.0",
+    "eslint-config-turbo": "^1.13.3",
     "prettier": "^3.2.5",
-    "turbo": "^1.12.5"
+    "turbo": "^2.0.3"
   },
-  "packageManager": "pnpm@8.9.0",
+  "packageManager": "pnpm@8.14.1",
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
   },
@@ -42,9 +53,7 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "config/*"
-  ],
-  "dependencies": {
-    "eslint-config-turbo": "^1.13.3"
-  }
+    "config/*",
+    "plugins/*"
+  ]
 }

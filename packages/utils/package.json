@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/utils",
-  "version": "0.1.31",
+  "version": "0.2.0",
   "description": "LaWallet utilities and types",
   "prettier": "@lacrypta/prettier-config",
   "private": false,
@@ -27,8 +27,8 @@
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "dependencies": {
-    "@nostr-dev-kit/ndk": "^2.4.0",
-    "date-fns": "^3.3.1"
+    "@nostr-dev-kit/ndk": "^2.8.2",
+    "date-fns": "^3.6.0"
   },
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
