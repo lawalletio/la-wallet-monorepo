@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Text } from '../Text/index.js';
+import { Text } from '../Text';
 
-import { LabelProps } from './types.js';
-import { LabelPrimitive } from './style.js';
+import { LabelProps } from './types';
+import { LabelPrimitive } from './style';
 
 export function Label(props: LabelProps) {
   const { children, htmlFor } = props;

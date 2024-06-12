@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { TextareaProps } from './types.js';
+import { TextareaProps } from './types';
 
-import { TextareaPrimitive } from './style.js';
+import { TextareaPrimitive } from './style';
 
 export function Textarea(props: TextareaProps) {
   const { placeholder, status, onChange, id = '', name = '', value, disabled = false } = props;

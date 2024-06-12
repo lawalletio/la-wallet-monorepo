@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IconsProps } from './types.js';
+import { IconsProps } from './types';
 
 export function PlayIcon({ color = 'currentColor' }: IconsProps) {
   return (

@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { TextPrimitiveProps } from './types.js';
+import { TextPrimitiveProps } from './types';
 
 export const TextPrimitive = styled.p<TextPrimitiveProps>`
   color: ${(props) => props.$color};

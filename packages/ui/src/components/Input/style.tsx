@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { InputPrimitiveProps, FeedbackPrimitiveProps } from './types.js';
+import { InputPrimitiveProps, FeedbackPrimitiveProps } from './types';
 
 export const InputPrimitive = styled.input<InputPrimitiveProps>`
   flex: 1;

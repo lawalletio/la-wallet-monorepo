@@ -1,11 +1,11 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { ActionSheetProps } from './types.js';
+import { ActionSheetProps } from './types';
 
-import { ActionSheetPrimitive, ActionSheetContent, ActionSheetWrapper, ActionSheetHeader } from './style.js';
-import { Text } from '../Text/index.js';
-import { Flex } from '../Flex/index.js';
-import { Button } from '../Button/index.js';
+import { ActionSheetPrimitive, ActionSheetContent, ActionSheetWrapper, ActionSheetHeader } from './style';
+import { Text } from '../Text';
+import { Flex } from '../Flex';
+import { Button } from '../Button';
 
 export function ActionSheet(props: ActionSheetProps) {
   const { children, isOpen, onClose, title, description, cancelText } = props;

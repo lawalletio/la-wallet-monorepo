@@ -1,1 +1,1 @@
-export * from './NextProvider.js';
+export * from './NextProvider';

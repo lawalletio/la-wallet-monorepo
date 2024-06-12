@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { DividerPrimitiveProps } from './types.js';
+import { DividerPrimitiveProps } from './types';
 
 export const DividerPrimitive = styled.div<DividerPrimitiveProps>`
   width: 100%;

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import { Input } from '../Input/index.js';
-import { Item } from './Item/index.js';
+import { Input } from '../Input';
+import { Item } from './Item';
 
-import { AutocompleteProps } from './types.js';
+import { AutocompleteProps } from './types';
 
-import { AutocompletePrimitive, AutocompleteContent } from './style.js';
-import { BtnLoader } from '../Loader/Loader.js';
+import { AutocompletePrimitive, AutocompleteContent } from './style';
+import { BtnLoader } from '../Loader/Loader';
 
 export function Autocomplete(props: AutocompleteProps) {
   const { visible, data, value, onSelect } = props;

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Label } from '../Label/index.js';
-import { Flex } from '../Flex/index.js';
+import { Label } from '../Label';
+import { Flex } from '../Flex';
 
-import { InputProps } from './types.js';
-import { Input } from './index.js';
+import { InputProps } from './types';
+import { Input } from '.';
 
 interface InputWithLabelProps extends InputProps {
   label: string;

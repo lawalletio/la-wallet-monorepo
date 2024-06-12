@@ -1,18 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "ES2020",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "jsx": "react",
-    "module": "NodeNext",
+    "jsx": "preserve",
+    "module": "ESNext",
     "declaration": true,
     "sourceMap": true,
     "outDir": "dist",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "types": ["@types/react", "@types/styled-components"]
   },
-  "exclude": ["dist", "node_modules", "src/stories/*", "src/**/*.test.tsx", "src/**/*.stories.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["dist", "node_modules", "src/**/*.test.tsx"]
 }

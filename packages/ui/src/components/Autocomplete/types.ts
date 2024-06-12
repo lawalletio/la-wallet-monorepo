@@ -1,4 +1,4 @@
-import { InputProps } from '../Input/types.js';
+import { InputProps } from '../Input/types';
 
 export interface AutocompleteProps extends InputProps {
   data: any;

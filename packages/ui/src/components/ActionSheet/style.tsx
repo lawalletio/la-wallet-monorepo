@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { ActionSheetPrimitiveProps } from './types.js';
+import { ActionSheetPrimitiveProps } from './types';
 
 export const ActionSheetPrimitive = styled.div<ActionSheetPrimitiveProps>`
   position: fixed;
