@@ -21,7 +21,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
     "build": "node esbuild.config.js && tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist && rm -rf node_modules"
   },
   "author": "La Crypta Labs",
   "license": "MIT",
