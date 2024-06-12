@@ -1,4 +1,3 @@
-import { baseTheme } from '../../theme';
 import { styled } from 'styled-components';
 
 export const ToggleSwitchPrimitive = styled.div`

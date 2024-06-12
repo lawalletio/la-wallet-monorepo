@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-import { IconPrimitiveProps } from './types';
+import { IconPrimitiveProps } from './types.js';
 
 export const IconPrimitive = styled.div<IconPrimitiveProps>`
   display: flex;
