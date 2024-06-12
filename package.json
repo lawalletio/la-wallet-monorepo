@@ -36,9 +36,9 @@
     "@lacrypta/typescript-config": "^1.0.0",
     "eslint-config-turbo": "^1.13.3",
     "prettier": "^3.2.5",
-    "turbo": "^1.12.5"
+    "turbo": "^2.0.3"
   },
-  "packageManager": "pnpm@8.9.0",
+  "packageManager": "pnpm@8.14.1",
   "overrides": {
     "nostr-tools": "npm:@lawallet/nostr-tools"
   },
