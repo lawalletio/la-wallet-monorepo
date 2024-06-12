@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from '@/navigation';
-import { useConfig, useSubscription } from '@lawallet/react';
+import { getTagValue, parseContent, useConfig, useSubscription } from '@lawallet/react';
 import { Button, CheckIcon, Container, Divider, Feedback, Flex, Heading, Icon, SatoshiIcon, Text } from '@lawallet/ui';
 import { NDKEvent, NostrEvent } from '@nostr-dev-kit/ndk';
 import { useCallback, useEffect, useState } from 'react';
@@ -17,16 +17,24 @@ import useErrors from '@/hooks/useErrors';
 
 import { QRCode } from '@/components/UI';
 import { appTheme } from '@/config/exports';
-import { signupPubkey } from '@/constants/buyAddress';
 import { useTranslations } from 'next-intl';
+import SpinnerView from '@/components/Spinner/SpinnerView';
+import SignUpEmptyView from '@/components/Layout/EmptyView/SignUpEmptyView';
 
-const SIGN_UP_CACHE_KEY: string = 'signup-cache';
+const SIGN_UP_CACHE_KEY: string = 'signup-cache-key';
 
 type ZapRequestInfo = {
   zapRequest: NostrEvent | null;
+  receiverPubkey: string;
   invoice: string | null;
   payed: boolean;
   expiry?: number;
+};
+
+type SignUpProps = {
+  loading: boolean;
+  enabled: boolean;
+  price: number;
 };
 
 const SignUp = () => {
@@ -34,8 +42,15 @@ const SignUp = () => {
   const router = useRouter();
   const errors = useErrors();
 
+  const [signUpData, setSignUpData] = useState<SignUpProps>({
+    loading: true,
+    enabled: false,
+    price: 0,
+  });
+
   const [zapRequestInfo, setZapRequestInfo] = useState<ZapRequestInfo>({
     zapRequest: null,
+    receiverPubkey: '',
     invoice: null,
     payed: false,
     expiry: 0,
@@ -53,7 +68,7 @@ const SignUp = () => {
         authors: [config.modulePubkeys.ledger, config.modulePubkeys.urlx],
         kinds: [9735],
         since: zapRequestInfo.zapRequest?.created_at ?? 0,
-        '#p': [signupPubkey],
+        '#p': [zapRequestInfo.receiverPubkey],
       },
     ],
     options: {},
@@ -61,47 +76,76 @@ const SignUp = () => {
     config,
   });
 
+  const loadSignUpInfo = async () => {
+    const signUpResponse = await fetch(`${config.endpoints.lightningDomain}/api/signup`);
+    const { enabled, milisatoshis } = await signUpResponse.json();
+
+    setSignUpData({
+      loading: false,
+      enabled: Boolean(enabled),
+      price: milisatoshis / 1000 ?? 0,
+    });
+
+    if (!enabled) router.push('/');
+  };
+
   const saveZapRequestInfo = useCallback(
     async (new_info: ZapRequestInfo, tmpNonce?: string) => {
       const zrExpiration: number = Date.now() + 2 * 60 * 1000;
-      const ZR: ZapRequestInfo = { ...new_info, expiry: zrExpiration };
+      const ZR: ZapRequestInfo = {
+        ...new_info,
+        expiry: zrExpiration,
+      };
 
-      await config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify({ ...ZR, nonce: tmpNonce }));
+      await config.storage.setItem(SIGN_UP_CACHE_KEY, JSON.stringify({ ...ZR, nonce: tmpNonce ?? '' }));
       setZapRequestInfo(ZR);
     },
     [zapRequestInfo],
   );
 
-  const requestPayment = async () => {
+  const requestPayment = useCallback(async () => {
     setLoading(true);
-    try {
-      const response = await fetch(`/api/signup/request`);
-      const { zapRequest, invoice }: ZapRequestInfo = await response.json();
-      if (!zapRequest || !invoice) return;
 
-      setLoading(false);
-      saveZapRequestInfo({ zapRequest, invoice, payed: false });
-    } catch {
-      setLoading(false);
-      errors.modifyError('UNEXPECTED_ERROR');
+    try {
+      const response = await fetch(`${config.endpoints.lightningDomain}/api/signup/request`);
+      const { zapRequest, invoice, error } = await response.json();
+      if (!zapRequest || !invoice) throw new Error(error);
+
+      const parsedZapRequest = parseContent(zapRequest);
+      saveZapRequestInfo(
+        {
+          zapRequest: parsedZapRequest,
+          receiverPubkey: getTagValue(parsedZapRequest.tags, 'p'),
+          invoice,
+          payed: false,
+        },
+        nonce,
+      );
+    } catch (err) {
+      const errorMessage = (err as Error).message;
+      errors.modifyError(!errorMessage ? 'UNEXPECTED_ERROR' : errorMessage);
     }
-  };
+
+    setLoading(false);
+  }, [nonce]);
 
   const claimNonce = useCallback(
     async (zapReceipt: NDKEvent) => {
       try {
         const nostrEvent: NostrEvent = await zapReceipt.toNostrEvent();
 
-        const response = await fetch('/api/signup/claim', {
+        const response = await fetch(`${config.endpoints.lightningDomain}/api/nonce`, {
           method: 'POST',
           body: JSON.stringify(nostrEvent),
         });
-        const responseJSON: { data?: { nonce: { nonce: string } } } = await response.json();
-        if (!responseJSON || !responseJSON.data || !responseJSON.data.nonce || !responseJSON.data.nonce.nonce) return;
+        const { nonce: claimedNonce, error } = await response.json();
+        if (!claimedNonce) throw new Error(error);
 
-        setNonce(responseJSON.data?.nonce.nonce ?? '');
-      } catch {
-        errors.modifyError('UNEXPECTED_ERROR');
+        setNonce(claimedNonce);
+        saveZapRequestInfo(zapRequestInfo, claimedNonce);
+      } catch (err) {
+        const errorMessage = (err as Error).message;
+        errors.modifyError(!errorMessage ? 'UNEXPECTED_ERROR' : errorMessage);
       }
     },
     [zapRequestInfo],
@@ -137,18 +181,22 @@ const SignUp = () => {
   };
 
   const validateEvents = useCallback(() => {
-    if (events.length) {
+    if (events.length && !nonce) {
       events.map((event) => {
         const boltTag = event.getMatchingTags('bolt11')[0]?.[1];
 
         if (boltTag === zapRequestInfo.invoice) {
-          saveZapRequestInfo({ ...zapRequestInfo, payed: true });
+          saveZapRequestInfo({ ...zapRequestInfo, payed: true }, nonce);
           claimNonce(event);
           return;
         }
       });
     }
-  }, [events, zapRequestInfo]);
+  }, [events, nonce, zapRequestInfo]);
+
+  useEffect(() => {
+    loadSignUpInfo();
+  }, []);
 
   useEffect(() => {
     validateEvents();
@@ -159,10 +207,13 @@ const SignUp = () => {
   }, [zapRequestInfo, nonce]);
 
   useEffect(() => {
-    loadCachedSignUpRequest();
-  }, []);
+    if (signUpData.enabled) loadCachedSignUpRequest();
+  }, [signUpData]);
 
   const t = useTranslations();
+
+  if (signUpData.loading) return <SpinnerView />;
+  if (!signUpData.enabled) return <SignUpEmptyView />;
 
   return (
     <>
@@ -182,7 +233,7 @@ const SignUp = () => {
                   <Icon>
                     <SatoshiIcon />
                   </Icon>
-                  <Heading>21</Heading>
+                  <Heading>{signUpData.price}</Heading>
                   <Text size="small">SAT</Text>
                 </Flex>
               </Flex>
@@ -253,9 +304,11 @@ const SignUp = () => {
           )
         )}
 
-        <Feedback show={errors.errorInfo.visible} status={'error'}>
-          {errors.errorInfo.text}
-        </Feedback>
+        <Flex justify="center">
+          <Feedback show={errors.errorInfo.visible} status={'error'}>
+            {errors.errorInfo.text}
+          </Feedback>
+        </Flex>
 
         <Divider y={32} />
       </Container>

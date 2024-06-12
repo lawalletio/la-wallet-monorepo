@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { ContainerProps } from './types';
+import { ContainerProps } from './types.js';
 
-import { ContainerPrimitive } from './style';
+import { ContainerPrimitive } from './style.js';
 
 export function Container(props: ContainerProps): JSX.Element {
   const { children, size = 'medium' } = props;

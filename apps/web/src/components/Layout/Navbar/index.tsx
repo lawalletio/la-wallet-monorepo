@@ -9,7 +9,7 @@ import { useRouter } from '@/navigation';
 import { appTheme } from '@/config/exports';
 
 // Constans
-import { EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 import { Navbar, BackButton, Left, Right, AlertSystemStyle } from './style';
 

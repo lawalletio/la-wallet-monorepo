@@ -3,7 +3,7 @@
 import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import QrScanner from '@/components/UI/Scanner/Scanner';
-import { regexURL } from '@/constants/constants';
+import { regexURL } from '@/utils/constants';
 import { useRouter } from '@/navigation';
 import {
   LaWalletTags,

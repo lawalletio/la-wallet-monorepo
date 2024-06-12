@@ -41,7 +41,9 @@ export class UserIdentity {
       this.username = username ?? (await getUsername(pubkey, this.#config));
       this.npub = nip19.npubEncode(pubkey);
 
-      this.lud16 = `${this.username}@${normalizeLNDomain(this.#config.endpoints.lightningDomain)}`;
+      this.lud16 = this.username.length
+        ? `${this.username}@${normalizeLNDomain(this.#config.endpoints.lightningDomain)}`
+        : '';
 
       this.signer = new NDKPrivateKeySigner(NsecOrPrivateKey);
       this.loading = false;

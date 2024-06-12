@@ -1,4 +1,5 @@
 {
+  "HOME": "Home",
   "HELLO": "Hello",
   "BALANCE": "BALANCE",
   "DEPOSIT": "Deposit",
@@ -193,14 +194,18 @@
     "BUY_ADDRESS_TITLE": "Buy LN Address",
     "SIGNUP_TITLE": "Sign Up",
     "TRANSACTIONS_TITLE": "My Transactions",
-    "TRANSFER_TITLE": "Transfer"
+    "TRANSFER_TITLE": "Transfer",
+    "PLUGINS_TITLE": "Plugins"
   },
   "BANNER_DESC": "Accumulate Satoshis, survive the blocks, and secure your prize in the Bitcoin halving!",
   "BANNER_DESC2": "Will you be the last one standing?",
   "PLAY_NOW": "Play now",
+  "PLUGINS_EMPTY": "No plugins available",
   "AND": "and",
   "PAUSED": "Paused",
   "DEPOSITS": "Deposits",
   "TRANSFERS": "Transfers",
-  "DISABLED": "disabled"
+  "DISABLED": "disabled",
+  "PLUGINS_NOT_ENABLED": "Plugins not enabled",
+  "SIGN_UP_NOT_ENABLED": "Sign up not enabled"
 }

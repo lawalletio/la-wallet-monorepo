@@ -21,7 +21,8 @@ class ApiGateway {
       .then((response) => response.json())
       .then((data) => {
         return data;
-      });
+      })
+      .catch(() => false);
   }
 
   post(endpoint: string, body: string) {
@@ -29,7 +30,8 @@ class ApiGateway {
       .then((response) => response.json())
       .then((data) => {
         return data;
-      });
+      })
+      .catch(() => false);
   }
 }
 

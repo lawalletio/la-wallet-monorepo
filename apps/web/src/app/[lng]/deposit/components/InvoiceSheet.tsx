@@ -1,13 +1,12 @@
 import { TokenList } from '@/components/TokenList';
-import { Confetti, Keyboard, QRCode } from '@/components/UI';
+import { Confetti, QRCode } from '@/components/UI';
 import { appTheme } from '@/config/exports';
-import { MAX_INVOICE_AMOUNT } from '@/constants/constants';
 import { useActionOnKeypress } from '@/hooks/useActionOnKeypress';
 import useErrors from '@/hooks/useErrors';
-import { useNumpad } from '@/hooks/useNumpad';
 import { useRouter } from '@/navigation';
+import { MAX_INVOICE_AMOUNT } from '@/utils/constants';
 import { SatoshiV2Icon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { useFormatter, useWalletContext, useZap } from '@lawallet/react';
+import { useCurrencyConverter, useFormatter, useIdentity, useNumpad, useSettings, useZap } from '@lawallet/react';
 import { AvailableLanguages } from '@lawallet/react/types';
 import {
   BtnLoader,
@@ -19,6 +18,7 @@ import {
   Flex,
   Heading,
   Icon,
+  Keyboard,
   Sheet,
   Text,
 } from '@lawallet/ui';
@@ -38,14 +38,12 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
 
   const t = useTranslations();
   const lng = useLocale();
+  const identity = useIdentity();
 
   const {
-    account: { identity },
-    settings: {
-      props: { currency },
-    },
-    converter: { convertCurrency },
-  } = useWalletContext();
+    props: { currency },
+  } = useSettings();
+  const { convertCurrency } = useCurrencyConverter();
 
   const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.hexpub });
 

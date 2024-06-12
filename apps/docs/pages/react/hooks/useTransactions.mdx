@@ -12,17 +12,9 @@ import { useTransactions } from '@lawallet/react';
 
 ```tsx filename="index.tsx"
 import { useTransactions } from '@lawallet/react';
-import { config } from './config';
 
 function App() {
-  const userPubkey: string = '9a9787e3e31cfdc95f35d5cfc1eeaead33e693ec59789c20f63546b191e28d59';
-
-  const { transactions } = useTransactions({
-    pubkey: userPubkey,
-    enabled: Boolean(userPubkey.length),
-    limit: 100,
-    config,
-  });
+  const transactions = useTransactions();
 }
 ```
 
@@ -42,7 +34,7 @@ import { type UseTransactionsParameters } from '@lawallet/react';
 import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useTransactions({
+  const transactions = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
   });
 }
@@ -58,7 +50,7 @@ function App() {
 import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useTransactions({
+  const transactions = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     since: Math.floor(Date.now() / 1000),
   });
@@ -75,7 +67,7 @@ function App() {
 import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useTransactions({
+  const transactions = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     until: Math.floor(Date.now() / 1000),
   });
@@ -93,7 +85,7 @@ function App() {
 import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useTransactions({
+  const transactions = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     limit: 250,
   });
@@ -111,7 +103,7 @@ function App() {
 import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useTransactions({
+  const transactions = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     storage: true,
   });
@@ -129,7 +121,7 @@ function App() {
 import { useTransactions } from '@lawallet/react';
 
 function App() {
-  const { transactions } = useTransactions({
+  const transactions = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     enabled: false,
   });
@@ -147,7 +139,7 @@ import { useTransactions } from '@lawallet/react';
 import { config } from './config';
 
 function App() {
-  const { transactions } = useTransactions({
+  const transactions = useTransactions({
     pubkey: '17efe7a5f1...53936f68b',
     config,
   });

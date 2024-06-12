@@ -1,0 +1,47 @@
+{
+    "name": "@lawallet/plugins-cli",
+    "version": "0.0.15",
+    "description": "Create LaWallet plugins with one command",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lawalletio/la-wallet-monorepo",
+        "directory": "packages/plugins-cli"
+    },
+    "author": "La Crypta Labs",
+    "license": "MIT",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "dev": "pnpm run build:esm+types --watch",
+        "test": "echo \"Error: no test specified\" && exit 0",
+        "build": "pnpm run build:esm+types",
+        "build:esm+types": "tsc --project ./tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
+        "clean": "rm -rf dist",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "uglify-js": "^3.17.4",
+        "commander": "2.20.0",
+        "simple-git": "^3.24.0",
+        "prompts": "2.4.2",
+        "validate-npm-package-name": "3.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.12.12",
+        "@types/prompts": "2.4.2",
+        "@types/uglify-js": "^3.17.5",
+        "@types/validate-npm-package-name": "3.0.0",
+        "typescript": "5.3.3"
+    },
+    "engines": {
+        "node": ">=18.17.0"
+    },
+    "main": "./dist/esm/index.js",
+    "types": "./dist/types/index.d.ts",
+    "typings": "./dist/types/index.d.ts",
+    "bin": {
+        "lawallet-plugins": "./dist/esm/bin/plugins.js"
+    }
+}

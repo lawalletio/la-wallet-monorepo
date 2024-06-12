@@ -1,7 +1,7 @@
 'use client';
 
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from '@/navigation';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useEffect, useState } from 'react';
 
 import { useTranslations } from 'next-intl';
@@ -10,10 +10,10 @@ import Navbar from '@/components/Layout/Navbar';
 import { InfoCopy } from '@/components/UI';
 import { Button, Container, Divider, Flex, Label, Text, ToggleSwitch } from '@lawallet/ui';
 
-import { CACHE_BACKUP_KEY } from '@/constants/constants';
 import { appTheme } from '@/config/exports';
-import { useConfig, useWalletContext } from '@lawallet/react';
 import { getUserStoragedKey } from '@/utils';
+import { CACHE_BACKUP_KEY } from '@/utils/constants';
+import { useConfig, useIdentity } from '@lawallet/react';
 
 export default function Page() {
   const t = useTranslations();
@@ -22,9 +22,7 @@ export default function Page() {
 
   const [userStoragedKey, setUserStoragedKey] = useState<string>('');
 
-  const {
-    account: { identity },
-  } = useWalletContext();
+  const identity = useIdentity();
   const [switchOne, setSwitchOne] = useState<boolean>(false);
   const [switchTwo, setSwitchTwo] = useState<boolean>(false);
 

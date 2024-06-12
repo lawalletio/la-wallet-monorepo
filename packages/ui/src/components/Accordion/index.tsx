@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-import { AccordionTrigger } from './AccordionTrigger';
+import { AccordionTrigger } from './AccordionTrigger.js';
 
-import { AccordionProps } from './types';
+import { AccordionProps } from './types.js';
 
 import { useTheme } from 'styled-components';
-import { AccordionContent, AccordionPrimitive } from './style';
+import { AccordionContent, AccordionPrimitive } from './style.js';
 
 export function Accordion(props: AccordionProps) {
   const { children, trigger, onOpen, variant = 'filled' } = props;

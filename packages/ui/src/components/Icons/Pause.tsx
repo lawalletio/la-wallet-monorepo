@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IconsProps } from './types';
+import { IconsProps } from './types.js';
 
 export function PauseIcon({ color = 'currentColor' }: IconsProps) {
   return (

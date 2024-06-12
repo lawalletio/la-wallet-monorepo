@@ -1,11 +1,11 @@
 {
-    "useAccount": {
-        "display": "hidden"
-    },
     "useBalance": {
         "display": "hidden"
     },
     "useCards": {
+        "display": "hidden"
+    },
+    "useIdentity": {
         "display": "hidden"
     },
     "useInvoice": {

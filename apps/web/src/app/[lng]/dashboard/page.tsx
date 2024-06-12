@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
+import Navbar from '@/components/Layout/Navbar';
+import { TokenList } from '@/components/TokenList';
+import TransactionItem from '@/components/TransactionItem';
 // Libraries
-import { useEffect, useMemo, useState } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
+import { GearIcon, HiddenIcon, SatoshiV2Icon, SendIcon, VisibleIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import {
   Avatar,
   BannerAlert,
@@ -18,51 +20,52 @@ import {
   ReceiveIcon,
   Text,
 } from '@lawallet/ui';
-import {
-  GearIcon,
-  HiddenIcon,
-  QrCodeIcon,
-  SatoshiV2Icon,
-  SendIcon,
-  VisibleIcon,
-} from '@bitcoin-design/bitcoin-icons-react/filled';
+import { useLocale, useTranslations } from 'next-intl';
+import { useEffect, useMemo, useState } from 'react';
 
 // Theme
 import { appTheme } from '@/config/exports';
 
 // Hooks and utils
+import { Link, useRouter } from '@/navigation';
 import { extractFirstTwoChars } from '@/utils';
 import { copy } from '@/utils/share';
-import { Link, useRouter } from '@/navigation';
 
 // Components
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
-import { formatToPreference, useConfig, useWalletContext } from '@lawallet/react';
-import ButtonCTA from '@/components/ButtonCTA';
-import Navbar from '@/components/Layout/Navbar';
-import { TokenList } from '@/components/TokenList';
-import TransactionItem from '@/components/TransactionItem';
+import Subnavbar from '@/components/Layout/Subnavbar';
+import {
+  formatToPreference,
+  useBalance,
+  useConfig,
+  useCurrencyConverter,
+  useIdentity,
+  useSettings,
+  useTransactions,
+} from '@lawallet/react';
 
 // Constans
-import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/constants/constants';
+import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
 
 export default function Page() {
   const config = useConfig();
+  const router = useRouter();
   const t = useTranslations();
   const lng = useLocale();
   const [showBanner, setShowBanner] = useState<'backup' | 'none'>('none');
 
-  const router = useRouter();
+  const identity = useIdentity();
+  const balance = useBalance();
+  const transactions = useTransactions();
+
   const {
-    account: { identity, balance, transactions },
-    settings: {
-      loading,
-      toggleHideBalance,
-      props: { hideBalance, currency },
-    },
-    converter: { pricesData, convertCurrency },
-  } = useWalletContext();
+    loading,
+    toggleHideBalance,
+    props: { hideBalance, currency },
+  } = useSettings();
+
+  const { pricesData, convertCurrency } = useCurrencyConverter();
 
   const convertedBalance: string = useMemo(() => {
     const amount: number = convertCurrency(balance.amount, 'SAT', currency);
@@ -103,11 +106,10 @@ export default function Page() {
             </Flex>
           </Flex>
           <Flex gap={4} justify="end">
-            {Number(balance.amount) > 0 && (
-              <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
-                <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
-              </Button>
-            )}
+            <Button variant="bezeled" size="small" onClick={toggleHideBalance}>
+              <Icon size="small">{hideBalance ? <HiddenIcon /> : <VisibleIcon />}</Icon>
+            </Button>
+
             <Button variant="bezeled" size="small" onClick={() => router.push('/settings')}>
               <Icon size="small">
                 <GearIcon />
@@ -208,13 +210,7 @@ export default function Page() {
         <Divider y={64} />
       </Container>
 
-      {!EMERGENCY_LOCK_TRANSFER && Number(balance.amount) > 0 && (
-        <ButtonCTA>
-          <Button color="secondary" onClick={() => router.push('/scan')}>
-            <QrCodeIcon />
-          </Button>
-        </ButtonCTA>
-      )}
+      <Subnavbar path="home" />
     </>
   );
 }

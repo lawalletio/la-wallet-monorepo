@@ -3,7 +3,7 @@ import { baseConfig } from '@lawallet/utils';
 import { type ConfigParameter } from '@lawallet/utils/types';
 import { NostrProvider } from './NostrContext.js';
 import { WalletProvider } from './WalletContext.js';
-import type { ConfigProps } from '../exports/types.js';
+import type { ConfigProps } from '@lawallet/utils/types';
 
 export const ConfigContext = React.createContext({} as ConfigProps);
 

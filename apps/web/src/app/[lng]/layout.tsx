@@ -1,6 +1,6 @@
 import AppProvider from '@/components/AppProvider/AppProvider';
 import { fontPrimary, fontSecondary } from '@/config/exports/fonts';
-import { APP_NAME } from '@/constants/constants';
+import { APP_NAME } from '@/utils/constants';
 import { AvailableLanguages } from '@lawallet/react/types';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';

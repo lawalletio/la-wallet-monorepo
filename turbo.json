@@ -3,7 +3,12 @@
   "globalDependencies": [
     "**/.env.*local"
   ],
-  "pipeline": {
+  "tasks": {
+    "clean": {
+      "dependsOn": [
+        "^clean"
+      ]
+    },
     "build": {
       "dependsOn": [
         "^build"
@@ -21,6 +26,9 @@
       ]
     },
     "dev": {
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": false
     }

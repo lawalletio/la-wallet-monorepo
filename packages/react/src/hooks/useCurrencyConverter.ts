@@ -2,6 +2,7 @@ import { decimalsToUse, parseContent, roundToDown } from '@lawallet/utils';
 import { type AvailableCurrencies } from '@lawallet/utils/types';
 import * as React from 'react';
 import { useConfig } from './useConfig.js';
+import { useLaWallet } from '../context/WalletContext.js';
 
 const ENDPOINT_PRICE_BTC: string = 'https://api.yadio.io/exrates/btc';
 const UPDATE_PRICES_TIME: number = 60 * 1000;
@@ -17,6 +18,10 @@ export type UseConverterReturns = {
 };
 
 export const useCurrencyConverter = (): UseConverterReturns => {
+  const context = useLaWallet();
+  const foundContext: boolean = Boolean(context && context.converter);
+  if (foundContext) return context.converter;
+
   const config = useConfig();
   const [pricesData, setPricesData] = React.useState<PricesInfo>({
     ARS: 0,
