@@ -3,7 +3,6 @@
 // Libraries
 import { HomeIcon, RocketIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import { Button, Container, Divider, Flex, Icon, QrCodeIcon } from '@lawallet/ui';
-// import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
 

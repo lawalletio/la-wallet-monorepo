@@ -6,7 +6,6 @@ import { TokenList } from '@/components/TokenList';
 import TransactionItem from '@/components/TransactionItem';
 // Libraries
 import { GearIcon, HiddenIcon, SatoshiV2Icon, SendIcon, VisibleIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
-import { formatToPreference, useConfig } from '@lawallet/react';
 import {
   Avatar,
   BannerAlert,
@@ -23,7 +22,6 @@ import {
 } from '@lawallet/ui';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
-import { useTheme } from 'styled-components';
 
 // Theme
 import { appTheme } from '@/config/exports';
@@ -34,11 +32,20 @@ import { Link, useRouter } from '@/navigation';
 // Components
 import Animations from '@/components/Animations';
 import BitcoinTrade from '@/components/Animations/bitcoin-trade.json';
-import Subnavbar from '@/components/Layout/Subnavbar';
-import { useBalance, useCurrencyConverter, useIdentity, useSettings, useTransactions } from '@lawallet/react';
+import {
+  formatToPreference,
+  useBalance,
+  useConfig,
+  useCurrencyConverter,
+  useIdentity,
+  useSettings,
+  useTransactions,
+} from '@lawallet/react';
 
 // Constans
 import { CACHE_BACKUP_KEY, EMERGENCY_LOCK_DEPOSIT, EMERGENCY_LOCK_TRANSFER } from '@/utils/constants';
+import { useTheme } from 'styled-components';
+import Subnavbar from '@/components/Layout/Subnavbar';
 
 export default function Page() {
   const config = useConfig();
