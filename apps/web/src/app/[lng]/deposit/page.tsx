@@ -117,7 +117,9 @@ export default function Page() {
         </>
       ) : null}
 
-      <InvoiceSheet isOpen={isOpenSheet} onClose={() => setIsOpenSheet(false)} handleCopy={handleCopy} />
+      {isOpenSheet && (
+        <InvoiceSheet isOpen={isOpenSheet} onClose={() => setIsOpenSheet(false)} handleCopy={handleCopy} />
+      )}
     </>
   );
 }
