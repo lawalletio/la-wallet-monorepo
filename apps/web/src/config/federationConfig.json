@@ -6,6 +6,7 @@
     },
     "relaysList": [
         "wss://relay.damus.io",
+        "wss://relay.hodl.ar",
         "wss://relay.lawallet.ar"
     ],
     "modulePubkeys": {

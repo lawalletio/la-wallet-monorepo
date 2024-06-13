@@ -25,6 +25,7 @@ const SIGN_UP_CACHE_KEY: string = 'signup-cache-key';
 
 type ZapRequestInfo = {
   zapRequest: NostrEvent | null;
+  buyEventId: string;
   receiverPubkey: string;
   invoice: string | null;
   payed: boolean;
@@ -50,6 +51,7 @@ const SignUp = () => {
 
   const [zapRequestInfo, setZapRequestInfo] = useState<ZapRequestInfo>({
     zapRequest: null,
+    buyEventId: '',
     receiverPubkey: '',
     invoice: null,
     payed: false,
@@ -57,15 +59,12 @@ const SignUp = () => {
   });
 
   const [nonce, setNonce] = useState<string>('');
-
-  // const [nonce, setNonce] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [isPaying, setIsPaying] = useState<boolean>(false);
 
   const { events } = useSubscription({
     filters: [
       {
-        authors: [config.modulePubkeys.ledger, config.modulePubkeys.urlx],
         kinds: [9735],
         since: zapRequestInfo.zapRequest?.created_at ?? 0,
         '#p': [zapRequestInfo.receiverPubkey],
@@ -115,6 +114,7 @@ const SignUp = () => {
       saveZapRequestInfo(
         {
           zapRequest: parsedZapRequest,
+          buyEventId: getTagValue(parsedZapRequest.tags, 'e'),
           receiverPubkey: getTagValue(parsedZapRequest.tags, 'p'),
           invoice,
           payed: false,
