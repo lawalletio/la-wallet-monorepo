@@ -1,7 +1,7 @@
 import Logo from '@/components/Logo';
 import { appTheme } from '@/config/exports';
 import { Container, Divider, Flex, Text } from '@lawallet/ui';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 type EmptyViewProps = {
   children?: ReactNode;
