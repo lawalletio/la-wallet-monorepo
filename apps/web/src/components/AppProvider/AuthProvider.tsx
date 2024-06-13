@@ -17,7 +17,7 @@ const AppRouter: RouterInfo = {
 
 export type StoragedIdentityInfo = {
   username: string;
-  hexpub: string;
+  pubkey: string;
   privateKey: string;
 };
 
@@ -79,7 +79,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const IdentityToSave: StoragedIdentityInfo[] = [
             {
               username: parsedIdentity?.username ?? '',
-              hexpub: parsedIdentity?.hexpub ?? '',
+              pubkey: parsedIdentity?.pubkey ?? '',
               privateKey: parsedIdentity.privateKey,
             },
           ];
@@ -110,7 +110,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const requireAuth = isProtectedRoute(pathSegment, AppRouter.connectedPaths);
       const requireDisconnectedUser = isProtectedRoute(pathSegment, AppRouter.disconnectedPaths);
 
-      const userConnected: boolean = Boolean(identity.hexpub.length);
+      const userConnected: boolean = Boolean(identity.pubkey.length);
 
       switch (true) {
         case !userConnected && requireAuth:
@@ -137,7 +137,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const requireAuth: boolean = isProtectedRoute(pathSegment, AppRouter.connectedPaths);
     const requireDisconnectedUser: boolean = isProtectedRoute(pathSegment, AppRouter.disconnectedPaths);
 
-    const userConnected: boolean = Boolean(identity.hexpub.length);
+    const userConnected: boolean = Boolean(identity.pubkey.length);
 
     if (userConnected && requireAuth) return true;
     if (!userConnected && requireDisconnectedUser) return true;

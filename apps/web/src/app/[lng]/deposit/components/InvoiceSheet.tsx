@@ -45,7 +45,7 @@ const InvoiceSheet = ({ isOpen, handleCopy, onClose }: InvoiceSheetTypes) => {
   } = useSettings();
   const { convertCurrency } = useCurrencyConverter();
 
-  const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.hexpub });
+  const { invoice, createZapInvoice, resetInvoice } = useZap({ receiverPubkey: identity.pubkey });
 
   const { formatAmount } = useFormatter({ currency, locale: lng as AvailableLanguages });
 

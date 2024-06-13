@@ -39,8 +39,8 @@ export default function Page() {
     setLoading(true);
 
     try {
-      const hexpub: string = getPublicKey(keyInput);
-      const username: string = await getUsername(hexpub, config);
+      const pubkey: string = getPublicKey(keyInput);
+      const username: string = await getUsername(pubkey, config);
 
       if (!username.length) {
         errors.modifyError('NOT_FOUND_PUBKEY');
@@ -52,7 +52,7 @@ export default function Page() {
         if (res) {
           const IdentityToSave: StoragedIdentityInfo = {
             username,
-            hexpub,
+            pubkey,
             privateKey: keyInput,
           };
 

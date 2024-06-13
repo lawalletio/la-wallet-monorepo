@@ -15,7 +15,7 @@ interface IdentityConsctuctorParameters extends ConfigParameter {
 
 export class UserIdentity {
   username: string = '';
-  hexpub: string = '';
+  pubkey: string = '';
   npub: string = '';
   lud16: string = '';
   federationId = '';
@@ -37,7 +37,7 @@ export class UserIdentity {
     try {
       const pubkey: string = getPublicKey(NsecOrPrivateKey);
 
-      this.hexpub = pubkey;
+      this.pubkey = pubkey;
       this.username = username ?? (await getUsername(pubkey, this.#config));
       this.npub = nip19.npubEncode(pubkey);
 
@@ -62,7 +62,7 @@ export class UserIdentity {
       const username: string = await getUsername(pubkey, this.#config);
 
       if (username.length) this.username = username;
-      this.hexpub = pubkey;
+      this.pubkey = pubkey;
       this.npub = nip19.npubEncode(pubkey);
       this.lud16 = `${this.username}@${normalizeLNDomain(this.#config.endpoints.lightningDomain)}`;
       this.signer = undefined;
@@ -77,7 +77,7 @@ export class UserIdentity {
 
   reset() {
     this.loading = false;
-    this.hexpub = '';
+    this.pubkey = '';
     this.npub = '';
     this.username = '';
     this.lud16 = '';

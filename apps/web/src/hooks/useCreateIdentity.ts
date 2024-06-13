@@ -132,7 +132,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
           message: 'ERROR_WITH_SIGNER',
         };
 
-      const eventToSign: NostrEvent = buildIdentityEvent(nonce, name, identity.hexpub);
+      const eventToSign: NostrEvent = buildIdentityEvent(nonce, name, identity.pubkey);
       const signedEvent: NostrEvent | undefined = await identity.signEvent(eventToSign);
 
       if (!signedEvent)
@@ -151,7 +151,7 @@ export const useCreateIdentity = (): UseIdentityReturns => {
 
       const identityToSave: StoragedIdentityInfo = {
         username: name,
-        hexpub: getPublicKey(randomHexPKey),
+        pubkey: getPublicKey(randomHexPKey),
         privateKey: randomHexPKey,
       };
 

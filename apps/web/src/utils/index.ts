@@ -51,10 +51,10 @@ export const saveIdentityToStorage = async (
     identityList.push(identity);
 
     await storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identityList));
-    if (makeBackup) await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+    if (makeBackup) await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.pubkey}`, '1');
   } else {
     const identityToSave: StoragedIdentityInfo[] = [identity];
     await storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(identityToSave));
-    if (makeBackup) await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`, '1');
+    if (makeBackup) await storage.setItem(`${CACHE_BACKUP_KEY}_${identity.pubkey}`, '1');
   }
 };

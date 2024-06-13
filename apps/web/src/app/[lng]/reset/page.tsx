@@ -27,7 +27,7 @@ export default function Page() {
   const { initializeSigner } = useNostr();
 
   useEffect(() => {
-    if (identity.hexpub.length) return;
+    if (identity.pubkey.length) return;
 
     const recoveryNonce: string = params.get('n') || '';
     if (!recoveryNonce) {
@@ -45,7 +45,7 @@ export default function Page() {
             identity.initializeFromPrivateKey(randomHexPKey, res.name).then(() => {
               const identityToSave: StoragedIdentityInfo = {
                 username: res.name,
-                hexpub: getPublicKey(randomHexPKey),
+                pubkey: getPublicKey(randomHexPKey),
                 privateKey: randomHexPKey,
               };
 

@@ -28,14 +28,14 @@ export function WalletProvider(props: WalletContextParams) {
   const identity = useIdentity({ pubkey: signerInfo?.pubkey ?? '', config });
 
   const transactions = useTransactions({
-    pubkey: identity.hexpub,
+    pubkey: identity.pubkey,
     enabled: enableSubscriptions,
     storage: true,
     config,
   });
 
   const balance = useBalance({
-    pubkey: identity.hexpub,
+    pubkey: identity.pubkey,
     tokenId: 'BTC',
     enabled: enableSubscriptions,
     config,
@@ -45,8 +45,8 @@ export function WalletProvider(props: WalletContextParams) {
   const converter: UseConverterReturns = useCurrencyConverter();
 
   React.useEffect(() => {
-    setEnableSubscriptions(Boolean(identity.hexpub.length));
-  }, [identity.hexpub]);
+    setEnableSubscriptions(Boolean(identity.pubkey.length));
+  }, [identity.pubkey]);
 
   const value = {
     identity,

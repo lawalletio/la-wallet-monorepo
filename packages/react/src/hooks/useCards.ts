@@ -53,7 +53,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
   const identity = useIdentity();
 
   const { encrypt, decrypt, signer, signEvent } = useNostr();
-  const pubkey = React.useMemo(() => identity.hexpub ?? '', [identity.hexpub]);
+  const pubkey = React.useMemo(() => identity.pubkey ?? '', [identity.pubkey]);
 
   const { subscription } = useSubscription({
     filters: [

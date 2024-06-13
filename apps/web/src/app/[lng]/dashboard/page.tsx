@@ -74,7 +74,7 @@ export default function Page() {
 
   const checkBackup = async () => {
     const userMadeBackup: boolean = Boolean(
-      (await config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`)) || false,
+      (await config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.pubkey}`)) || false,
     );
 
     setShowBanner(!userMadeBackup ? 'backup' : 'none');

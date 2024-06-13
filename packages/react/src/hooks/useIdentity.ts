@@ -25,7 +25,7 @@ export const useIdentity = (params?: UseIdentityParameters): UserIdentity => {
   const [identity] = React.useState<UserIdentity>(new UserIdentity({ config }));
 
   React.useEffect(() => {
-    if (params.pubkey && !identity.hexpub) {
+    if (params.pubkey && !identity.pubkey) {
       identity.initializeIdentityFromPubkey(params.pubkey);
     }
   }, [params.pubkey]);

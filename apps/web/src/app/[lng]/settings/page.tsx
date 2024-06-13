@@ -46,7 +46,7 @@ export default function Page() {
   }
 
   const logoutSession = async () => {
-    const cachedBackup = await config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.hexpub}`);
+    const cachedBackup = await config.storage.getItem(`${CACHE_BACKUP_KEY}_${identity.pubkey}`);
 
     if (!cachedBackup) {
       errors.modifyError('ERROR_MADE_BACKUP');
