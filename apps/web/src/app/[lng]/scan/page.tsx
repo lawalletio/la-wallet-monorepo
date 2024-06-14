@@ -3,8 +3,8 @@
 import Navbar from '@/components/Layout/Navbar';
 import { Modal } from '@/components/UI';
 import QrScanner from '@/components/UI/Scanner/Scanner';
-import { regexURL } from '@/utils/constants';
 import { useRouter } from '@/navigation';
+import { regexURL } from '@/utils/constants';
 import {
   LaWalletTags,
   detectTransferType,
@@ -52,9 +52,13 @@ export default function Page() {
   const handleScanURL = (str: string) => {
     const url = new URL(str);
     const originURL = window.location.origin;
+    const eventParameter = url.searchParams.get('event');
     const cardParameter = url.searchParams.get('c');
 
-    if (cardParameter) {
+    if (eventParameter) {
+      // TODO: check federation
+      router.push(`/settings/cards/donation?event=${eventParameter}`);
+    } else if (cardParameter) {
       router.push(`/settings/cards?c=${cardParameter}`);
       return;
     } else {
