@@ -29,4 +29,4 @@ export const lightningAddresses = [
 // export const EMERGENCY_LOCK_SERVER = false;
 // export const EMERGENCY_LOCK_SERVER_DISCLAIMER = 'Test text';
 export const EMERGENCY_LOCK_DEPOSIT = false;
-export const EMERGENCY_LOCK_TRANSFER = false;
+export const EMERGENCY_LOCK_TRANSFER = true;
