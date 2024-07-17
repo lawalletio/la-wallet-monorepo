@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from '@/navigation';
-import { STORAGE_IDENTITY_KEY } from '@/utils/constants';
+import { CACHE_BACKUP_KEY, STORAGE_IDENTITY_KEY } from '@/utils/constants';
 import { parseContent, useConfig, useIdentity, useNostr } from '@lawallet/react';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
@@ -85,6 +85,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           ];
 
           await config.storage.setItem(STORAGE_IDENTITY_KEY, JSON.stringify(IdentityToSave));
+
+          // set backup = true
+          const backupKey = localStorage.getItem(CACHE_BACKUP_KEY);
+          if (backupKey) await config.storage.setItem(CACHE_BACKUP_KEY, '1');
         }
         return auth;
         // ******************************************
