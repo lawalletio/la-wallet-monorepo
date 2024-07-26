@@ -9,13 +9,25 @@ import pluginsConfig from '../pluginsConfig.json';
 const storage = createStorage({
   storage: {
     async getItem(name) {
-      return get(name);
+      try {
+        return get(name);
+      } catch {
+        return localStorage.getItem(name);
+      }
     },
     async setItem(name, value) {
-      await set(name, value);
+      try {
+        await set(name, value);
+      } catch {
+        localStorage.setItem(name, value);
+      }
     },
     async removeItem(name) {
-      await del(name);
+      try {
+        await del(name);
+      } catch {
+        localStorage.removeItem(name);
+      }
     },
   },
 });
