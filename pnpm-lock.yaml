@@ -78,7 +78,7 @@ importers:
         version: 0.5.4
       '@lawallet/react':
         specifier: '*'
-        version: 0.2.0(react@18.2.0)(typescript@5.3.3)
+        version: link:../../packages/react
       '@lawallet/ui':
         specifier: '*'
         version: link:../../packages/ui
@@ -211,8 +211,8 @@ importers:
   packages/react:
     dependencies:
       '@lawallet/utils':
-        specifier: '*'
-        version: 0.2.1(typescript@5.5.4)
+        specifier: latest
+        version: link:../utils
       '@nostr-dev-kit/ndk':
         specifier: 2.4.0
         version: 2.4.0(typescript@5.5.4)
@@ -953,40 +953,6 @@ packages:
       '@scure/bip39': 1.2.1
       typescript: 5.5.4
 
-  /@lawallet/react@0.2.0(react@18.2.0)(typescript@5.3.3):
-    resolution: {integrity: sha512-+FErirhVh9CalJFCmjazj8Cmsja9KHptsNAyHLo7F0QQPCm8G+prdl51rqV0kjKBCszzN6AnP9WJNacp9dM9Wg==}
-    peerDependencies:
-      react: ^18.2.0
-    dependencies:
-      '@lawallet/utils': 0.2.1(typescript@5.3.3)
-      '@nostr-dev-kit/ndk': 2.8.2(typescript@5.3.3)
-      nostr-tools: /@lawallet/nostr-tools@1.17.0(typescript@5.3.3)
-      react: 18.2.0
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-    dev: false
-
-  /@lawallet/utils@0.2.1(typescript@5.3.3):
-    resolution: {integrity: sha512-UkjRj6NzUXuWtD9qWWxY2R7k+IIyqMDsI5yj06HYcKN/53udy59AryIxEOtQV7BKLt9Ip1U3C42RjCIJto9agw==}
-    dependencies:
-      '@nostr-dev-kit/ndk': 2.4.0(typescript@5.3.3)
-      date-fns: 3.6.0
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-    dev: false
-
-  /@lawallet/utils@0.2.1(typescript@5.5.4):
-    resolution: {integrity: sha512-UkjRj6NzUXuWtD9qWWxY2R7k+IIyqMDsI5yj06HYcKN/53udy59AryIxEOtQV7BKLt9Ip1U3C42RjCIJto9agw==}
-    dependencies:
-      '@nostr-dev-kit/ndk': 2.4.0(typescript@5.5.4)
-      date-fns: 3.6.0
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-    dev: false
-
   /@mdx-js/mdx@2.3.0:
     resolution: {integrity: sha512-jLuwRlz8DQfQNiUCJR50Y09CGPq3fLtmtUQfVrj79E0JWu3dvsVcxVIcfhR5h0iXu+/z++zDrYeiJqifRynJkA==}
     dependencies:
@@ -1261,12 +1227,6 @@ packages:
     dependencies:
       '@noble/hashes': 1.3.2
 
-  /@noble/curves@1.4.2:
-    resolution: {integrity: sha512-TavHr8qycMChk8UwMld0ZDRvatedkzWfH8IiaeGCfymOP5i0hSCozz9vHOL0nkwk7HRMlFnAiKpS2jrUmSybcw==}
-    dependencies:
-      '@noble/hashes': 1.4.0
-    dev: false
-
   /@noble/hashes@1.3.1:
     resolution: {integrity: sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==}
     engines: {node: '>= 16'}
@@ -1330,26 +1290,6 @@ packages:
       light-bolt11-decoder: 3.1.1
       node-fetch: 3.3.2
       nostr-tools: /@lawallet/nostr-tools@1.17.0(typescript@5.5.4)
-      tseep: 1.2.2
-      typescript-lru-cache: 2.0.0
-      utf8-buffer: 1.0.0
-      websocket-polyfill: 0.0.3
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-    dev: false
-
-  /@nostr-dev-kit/ndk@2.8.2(typescript@5.3.3):
-    resolution: {integrity: sha512-+dOEyuYvO5/MoI5iTi8C5HifmvfeEvpybNesluVYyu+o+koFdfc+WSYH050V8+9KlOgx8nOZAaqXnHz0KY1gBA==}
-    dependencies:
-      '@noble/curves': 1.4.2
-      '@noble/hashes': 1.4.0
-      '@noble/secp256k1': 2.1.0
-      '@scure/base': 1.1.5
-      debug: 4.3.5
-      light-bolt11-decoder: 3.1.1
-      node-fetch: 3.3.2
-      nostr-tools: /@lawallet/nostr-tools@1.17.0(typescript@5.3.3)
       tseep: 1.2.2
       typescript-lru-cache: 2.0.0
       utf8-buffer: 1.0.0
