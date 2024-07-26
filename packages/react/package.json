@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/react",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "prettier": "@lacrypta/prettier-config",
   "private": false,
   "repository": {
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@lawallet/utils": "*",
-    "@nostr-dev-kit/ndk": "^2.8.2",
+    "@nostr-dev-kit/ndk": "2.4.0",
     "nostr-tools": "npm:@lawallet/nostr-tools@^1.17.0"
   },
   "overrides": {
