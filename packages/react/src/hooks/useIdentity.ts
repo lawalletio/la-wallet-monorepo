@@ -22,16 +22,22 @@ export const useIdentity = (params?: UseIdentityParameters): UserIdentity => {
   }
 
   const config = useConfig(params);
-  const [identity] = React.useState<UserIdentity>(new UserIdentity({ config }));
+  const [identity, setIdentity] = React.useState<UserIdentity>(new UserIdentity({ config }));
 
   React.useEffect(() => {
+    const _identity: UserIdentity = new UserIdentity({ ...params, config });
+
     if (params.pubkey) {
-      identity.initializeIdentityFromPubkey(params.pubkey);
+      _identity.initializeIdentityFromPubkey(params.pubkey).then(() => setIdentity(_identity));
     }
   }, [params.pubkey]);
 
   React.useEffect(() => {
-    if (params.privateKey) identity.initializeFromPrivateKey(params.privateKey);
+    const _identity: UserIdentity = new UserIdentity({ ...params, config });
+
+    if (params.privateKey) {
+      _identity.initializeFromPrivateKey(params.privateKey).then(() => setIdentity(_identity));
+    }
   }, [params.privateKey]);
 
   return identity;
