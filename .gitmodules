@@ -1,0 +1,3 @@
+[submodule "apps/lawallet-web"]
+	path = apps/lawallet-web
+	url = https://github.com/lawalletio/lawallet-web

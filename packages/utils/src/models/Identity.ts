@@ -33,6 +33,7 @@ export class UserIdentity {
 
   async initializeFromPrivateKey(NsecOrPrivateKey: string, username?: string) {
     if (!NsecOrPrivateKey || !NsecOrPrivateKey.length) return false;
+    this.loading = true;
 
     try {
       const pubkey: string = getPublicKey(NsecOrPrivateKey);
@@ -57,6 +58,7 @@ export class UserIdentity {
 
   async initializeIdentityFromPubkey(pubkey: string) {
     if (!pubkey.length) return false;
+    this.loading = true;
 
     try {
       const username: string = await getUsername(pubkey, this.#config);
