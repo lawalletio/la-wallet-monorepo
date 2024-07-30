@@ -77,7 +77,7 @@ importers:
         specifier: ^0.5.4
         version: 0.5.4
       '@lawallet/react':
-        specifier: 0.2.11
+        specifier: 0.2.12
         version: link:../../packages/react
       '@lawallet/ui':
         specifier: latest
