@@ -24,7 +24,7 @@ const defaultDeposit: InvoiceProps = {
 
 export interface useZapReturns {
   invoice: InvoiceProps;
-  createZapInvoice: (sats: number, comment?: string) => Promise<string | undefined>;
+  createZapInvoice: (sats: number, comment?: string, extraTags?: NDKTag[]) => Promise<string | undefined>;
   resetInvoice: () => void;
 }
 
