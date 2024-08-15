@@ -8,7 +8,11 @@ export const NostrContext = React.createContext({} as UseNostrReturns);
 
 export function NostrProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const { children, config = baseConfig } = props;
-  const value = useNostrHook({ explicitRelayUrls: config.relaysList, autoConnect: true });
+  const value = useNostrHook({
+    explicitRelayUrls: config.relaysList,
+    autoConnect: true,
+    explicitSigner: config.signer,
+  });
 
   return React.createElement(NostrContext.Provider, { value }, children);
 }
