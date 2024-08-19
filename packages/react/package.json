@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/react",
-  "version": "0.2.16",
+  "version": "0.2.2",
   "prettier": "@lacrypta/prettier-config",
   "private": false,
   "repository": {
@@ -67,5 +67,10 @@
         "./dist/types/exports/actions.d.ts"
       ]
     }
+  },
+  "react-native": {
+    "./": "./dist/esm/exports/index.js",
+    "./types": "./dist/esm/exports/types.js",
+    "./actions": "./dist/esm/exports/actions.js"
   }
 }

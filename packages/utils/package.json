@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/utils",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "LaWallet utilities and types",
   "prettier": "@lacrypta/prettier-config",
   "private": false,
@@ -71,5 +71,9 @@
         "./dist/types/exports/types.d.ts"
       ]
     }
+  },
+  "react-native": {
+    "./types": "./dist/esm/exports/types.js",
+    "./actions": "./dist/esm/exports/actions.js"
   }
 }
