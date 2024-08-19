@@ -73,6 +73,7 @@
     }
   },
   "react-native": {
+    "./": "./dist/esm/exports/index.js",
     "./types": "./dist/esm/exports/types.js",
     "./actions": "./dist/esm/exports/actions.js"
   }
