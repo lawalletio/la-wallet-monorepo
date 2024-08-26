@@ -15,7 +15,7 @@
     "build:ui": "pnpm --filter @lawallet/ui build",
     "build:libs": "pnpm build --filter=./packages/*",
     "build:plugins": "pnpm build --filter=./plugins/* && pnpm webapp-plugins-config",
-    "build:web": "pnpm webapp-plugins-config && pnpm --filter lawallet-front build",
+    "build:web": "pnpm --filter lawallet-front build",
     "build:docs": "pnpm --filter @lawallet/docs build",
     "web:dev": "pnpm --filter lawallet-front dev",
     "web:start": "pnpm --filter lawallet-front start",
