@@ -46,7 +46,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
         since: invoice.created_at,
       },
     ],
-    options: {},
+    options: { groupable: false },
     enabled: Boolean(invoice.bolt11.length && !invoice.payed),
     config,
   });
