@@ -2,11 +2,11 @@ import { baseConfig, defaultInvoiceTransfer, defaultLNURLTransfer } from '../con
 import { getPayRequest, requestInvoice } from '../interceptors/transaction.js';
 import bolt11 from '../libs/light-bolt11.js';
 import { lnurl_decode } from '../libs/lnurl.js';
-import type { DecodedInvoiceReturns } from '../types/bolt11.js';
+import type { PaymentRequestObject } from '../types/bolt11.js';
 import { type ConfigProps } from '../types/config.js';
 import { TransferTypes, type InvoiceTransferType, type LNURLTransferType } from '../types/transaction.js';
 
-export const decodeInvoice = (invoice: string): DecodedInvoiceReturns | undefined => {
+export const decodeInvoice = (invoice: string): PaymentRequestObject | undefined => {
   try {
     const decodedInvoice = bolt11.decode(invoice);
     return decodedInvoice;
@@ -85,24 +85,31 @@ export const detectTransferType = (data: string): TransferTypes => {
   return TransferTypes.INTERNAL;
 };
 
-export const parseInvoiceInfo = (decodedInvoice: DecodedInvoiceReturns) => {
+export const parseInvoiceInfo = (decodedInvoice: PaymentRequestObject) => {
   if (!decodedInvoice || !decodedInvoice.paymentRequest) return defaultInvoiceTransfer;
 
-  const invoiceAmount: number = Number(decodedInvoice.millisatoshis);
-  if (!invoiceAmount) return defaultInvoiceTransfer;
+  try {
+    const amountSection = decodedInvoice.sections.find((section) => section.name === 'amount');
+    const invoiceAmount: number = Number(amountSection?.value);
+    if (!invoiceAmount) return defaultInvoiceTransfer;
 
-  let transfer: InvoiceTransferType = {
-    ...defaultInvoiceTransfer,
-    data: decodedInvoice.paymentRequest.toLowerCase(),
-    type: TransferTypes.INVOICE,
-    amount: invoiceAmount / 1000,
-    expired: false,
-  };
+    let transfer: InvoiceTransferType = {
+      ...defaultInvoiceTransfer,
+      data: decodedInvoice.paymentRequest.toLowerCase(),
+      type: TransferTypes.INVOICE,
+      amount: invoiceAmount / 1000,
+      expired: false,
+    };
 
-  if (decodedInvoice.timeExpireDate && Number(decodedInvoice.timeExpireDate) * 1000 < Date.now())
-    transfer.expired = true;
+    const timeStampSection = decodedInvoice.sections.find((section) => section.name === 'timestamp');
+    const expiryValue = Number(timeStampSection?.value) + decodedInvoice.expiry;
 
-  return transfer;
+    if (expiryValue && Number(expiryValue * 1000) < Date.now()) transfer.expired = true;
+
+    return transfer;
+  } catch {
+    return defaultInvoiceTransfer;
+  }
 };
 
 const removeHttpOrHttps = (str: string) => {

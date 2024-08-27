@@ -30,9 +30,10 @@ export const useSubscription = ({ filters, options, enabled, config, onEvent }: 
   const [events, setEvents] = React.useState<NDKEvent[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
 
-  const startSubscription = React.useCallback(() => {
+  const startSubscription = React.useCallback(async () => {
     if (ndk && enabled && !subscription) {
       setLoading(true);
+
       const newSubscription = ndk.subscribe(filters, options);
       newSubscription.on('event', async (event: NDKEvent) => {
         setEvents((prev) => {

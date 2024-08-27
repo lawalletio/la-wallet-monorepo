@@ -71,22 +71,74 @@ export type TagsType = Array<{
   data: TagData;
 }>;
 
-export declare type PaymentRequestObject = {
-  paymentRequest?: string;
-  complete?: boolean;
-  prefix?: string;
-  wordsTemp?: string;
-  network?: Network;
-  satoshis?: number | null;
-  millisatoshis?: string | null;
-  timestamp?: number;
-  timestampString?: string;
-  timeExpireDate?: number;
-  timeExpireDateString?: string;
-  payeeNodeKey?: string;
-  signature?: string;
-  recoveryFlag?: number;
-  tags: TagsType;
+type RouteHint = {
+  pubkey: string;
+  short_channel_id: string;
+  fee_base_msat: number;
+  fee_proportional_millionths: number;
+  cltv_expiry_delta: number;
 };
 
-export type DecodedInvoiceReturns = PaymentRequestObject & { tagsObject: TagsObject };
+type Section =
+  | {
+      name: 'lightning_network';
+      letters: string;
+    }
+  | {
+      name: 'coin_network';
+      letters: string;
+      value: {
+        bech32: string;
+        pubKeyHash: number;
+        scriptHash: number;
+        validWitnessVersions: number[];
+      };
+    }
+  | {
+      name: 'amount';
+      letters: string;
+      value: string;
+    }
+  | {
+      name: 'separator';
+      letters: string;
+    }
+  | {
+      name: 'timestamp';
+      letters: string;
+      value: number;
+    }
+  | {
+      name: 'payment_hash' | 'description' | 'payment_secret' | 'expiry' | 'min_final_cltv_expiry';
+      tag: string;
+      letters: string;
+      value: string | number;
+    }
+  | {
+      name: 'feature_bits';
+      tag: string;
+      letters: string;
+      value: FeatureBits;
+    }
+  | {
+      name: 'route_hint';
+      tag: string;
+      letters: string;
+      value: RouteHint[];
+    }
+  | {
+      name: 'signature';
+      letters: string;
+      value: string;
+    }
+  | {
+      name: 'checksum';
+      letters: string;
+    };
+
+export type PaymentRequestObject = {
+  paymentRequest: string;
+  sections: Section[];
+  expiry: number;
+  route_hints: RouteHint[][];
+};

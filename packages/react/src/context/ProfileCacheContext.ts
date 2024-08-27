@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import type { LNRequestResponse } from '@lawallet/utils/types';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
-import { NIP05_REGEX, queryProfile } from 'nostr-tools/nip05';
+import { nip05 } from 'nostr-tools';
 import type NDK from '@nostr-dev-kit/ndk';
 import { useNostr } from './NostrContext.js';
 
@@ -99,7 +99,7 @@ export const useProfileCache = (): ProfileCacheReturns => {
 };
 
 export async function resolveNip05(walias: string, ndk: NDK): Promise<NDKUserProfile | null> {
-  const profile = await queryProfile(walias);
+  const profile = await nip05.queryProfile(walias);
   if (!profile) {
     return null;
   }
@@ -112,7 +112,7 @@ export async function resolveNip05(walias: string, ndk: NDK): Promise<NDKUserPro
 }
 
 export async function resolveLud16(address: string): Promise<LNRequestResponse | null> {
-  const match = address.match(NIP05_REGEX);
+  const match = address.match(nip05.NIP05_REGEX);
   if (!match) return null;
 
   const [_, name = '_', domain] = match;
