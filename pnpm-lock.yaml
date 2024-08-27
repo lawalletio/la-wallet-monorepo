@@ -214,7 +214,7 @@ importers:
   packages/react:
     dependencies:
       '@lawallet/utils':
-        specifier: workspace:*
+        specifier: 0.2.35
         version: link:../utils
       '@nostr-dev-kit/ndk':
         specifier: 2.10.0
