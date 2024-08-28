@@ -1,5 +1,6 @@
+import { hexToBytes } from '@noble/hashes/utils';
 import { NDKEvent, NDKKind, NDKPrivateKeySigner, type NDKTag, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { getEventHash, getPublicKey, getSignature, nip26, type UnsignedEvent } from 'nostr-tools';
+import { finalizeEvent, getPublicKey, nip26, type EventTemplate } from 'nostr-tools';
 import { baseConfig } from '../constants/constants.js';
 import { ConfigTypes } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
@@ -70,7 +71,7 @@ export const buildCardActivationEvent = async (
   config: ConfigProps = baseConfig,
 ): Promise<NostrEvent> => {
   const signer = new NDKPrivateKeySigner(privateKey);
-  const userPubkey: string = getPublicKey(privateKey);
+  const userPubkey: string = getPublicKey(hexToBytes(privateKey));
 
   const delegation = nip26.createDelegation(privateKey, {
     pubkey: config.modulePubkeys.card,
@@ -203,7 +204,7 @@ export const buildCardTransferAcceptEvent = async (
   privateKey: string,
   config: ConfigProps = baseConfig,
 ) => {
-  const userPubkey: string = getPublicKey(privateKey);
+  let sk = hexToBytes(privateKey);
 
   const delegation = nip26.createDelegation(privateKey, {
     pubkey: config.modulePubkeys.card,
@@ -212,9 +213,8 @@ export const buildCardTransferAcceptEvent = async (
     until: Math.floor(Date.now() / 1000) + 3600 * 24 * 30 * 12,
   });
 
-  const event: NostrEvent = {
+  const event: EventTemplate = {
     kind: LaWalletKinds.EPHEMERAL,
-    pubkey: userPubkey,
     content: JSON.stringify({
       delegation: {
         conditions: delegation.cond,
@@ -230,8 +230,5 @@ export const buildCardTransferAcceptEvent = async (
     ],
   };
 
-  event.id = getEventHash(event as UnsignedEvent);
-  event.sig = getSignature(event as UnsignedEvent, privateKey);
-
-  return event;
+  return finalizeEvent(event, sk);
 };

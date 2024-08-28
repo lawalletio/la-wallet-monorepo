@@ -1,7 +1,6 @@
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
-import { generatePrivateKey, getPublicKey, nip19 } from 'nostr-tools';
-import { type ConfigProps } from '../types/config.js';
 import { baseConfig } from '../constants/constants.js';
+import { type ConfigProps } from '../types/config.js';
 
 export type IdentityResponse = {
   success: boolean;

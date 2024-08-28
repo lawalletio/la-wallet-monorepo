@@ -29,4 +29,4 @@ export {
   type ReplacementParams,
 } from '../types/translations.js';
 
-export { type DecodedInvoiceReturns } from '../types/bolt11.js';
+export { type PaymentRequestObject } from '../types/bolt11.js';

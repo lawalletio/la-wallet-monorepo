@@ -66,6 +66,7 @@ export const useCards = (parameters: UseCardsParameters): CardConfigReturns => {
     ],
     options: {
       closeOnEose: false,
+      groupable: false,
       cacheUsage: NDKSubscriptionCacheUsage.PARALLEL,
     },
     enabled: Boolean(pubkey.length),

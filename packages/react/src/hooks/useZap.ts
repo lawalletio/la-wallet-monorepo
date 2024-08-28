@@ -1,6 +1,6 @@
 import { buildZapRequestEvent, escapingBrackets } from '@lawallet/utils';
 import { requestInvoice } from '@lawallet/utils/actions';
-import { type NostrEvent } from '@nostr-dev-kit/ndk';
+import { type NDKTag, type NostrEvent } from '@nostr-dev-kit/ndk';
 import React from 'react';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { useConfig } from './useConfig.js';
@@ -24,7 +24,7 @@ const defaultDeposit: InvoiceProps = {
 
 export interface useZapReturns {
   invoice: InvoiceProps;
-  createZapInvoice: (sats: number, comment?: string) => Promise<string | undefined>;
+  createZapInvoice: (sats: number, comment?: string, extraTags?: NDKTag[]) => Promise<string | undefined>;
   resetInvoice: () => void;
 }
 
@@ -46,19 +46,23 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
         since: invoice.created_at,
       },
     ],
-    options: {},
+    options: { groupable: false },
     enabled: Boolean(invoice.bolt11.length && !invoice.payed),
     config,
   });
 
-  const createZapInvoice = async (sats: number, comment?: string): Promise<string | undefined> => {
+  const createZapInvoice = async (
+    sats: number,
+    comment?: string,
+    extraTags: NDKTag[] = [],
+  ): Promise<string | undefined> => {
     if (!signerInfo) return;
     setInvoice({ ...invoice, loading: true });
 
     try {
       const invoice_mSats: number = sats * 1000;
       const zapRequestEvent: NostrEvent | undefined = await signEvent(
-        buildZapRequestEvent(signerInfo.pubkey, parameters.receiverPubkey, invoice_mSats, config),
+        buildZapRequestEvent(signerInfo.pubkey, parameters.receiverPubkey, invoice_mSats, config, extraTags),
       );
 
       const zapRequestURI: string = encodeURI(JSON.stringify(zapRequestEvent));

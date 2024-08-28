@@ -47,7 +47,6 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
     ],
     options: {
       groupable: false,
-      groupableDelay: 0,
     },
     enabled: Boolean(startEvent?.id),
     config,

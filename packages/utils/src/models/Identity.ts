@@ -1,9 +1,9 @@
+import { hexToBytes } from '@noble/hashes/utils';
+import NDK, { NDKEvent, NDKPrivateKeySigner, type NDKSigner, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { getPublicKey, nip19 } from 'nostr-tools';
 import { baseConfig } from '../constants/constants.js';
 import { getUsername } from '../interceptors/identity.js';
 import type { ConfigParameter, ConfigProps } from '../types/config.js';
-import { NDKEvent, NDKPrivateKeySigner, type NDKSigner, type NostrEvent } from '@nostr-dev-kit/ndk';
-import NDK from '@nostr-dev-kit/ndk';
 import { normalizeLNDomain } from '../utils/utilities.js';
 
 export type SignerTypes = NDKSigner | undefined;
@@ -36,7 +36,7 @@ export class UserIdentity {
     this.loading = true;
 
     try {
-      const pubkey: string = getPublicKey(NsecOrPrivateKey);
+      const pubkey: string = getPublicKey(hexToBytes(NsecOrPrivateKey));
 
       this.pubkey = pubkey;
       this.username = username ?? (await getUsername(pubkey, this.#config));

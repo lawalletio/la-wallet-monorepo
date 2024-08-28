@@ -1,5 +1,5 @@
 import type { UserIdentity } from '@lawallet/utils';
-import { type ConfigParameter, type TokenBalance, type Transaction } from '@lawallet/utils/types';
+import { type ConfigParameter, type ConfigProps, type TokenBalance, type Transaction } from '@lawallet/utils/types';
 import * as React from 'react';
 import { useBalance } from '../hooks/useBalance.js';
 import { useConfig } from '../hooks/useConfig.js';
@@ -8,6 +8,7 @@ import { useIdentity } from '../hooks/useIdentity.js';
 import { useSettings, type UseSettingsReturns } from '../hooks/useSettings.js';
 import { useTransactions } from '../hooks/useTransactions.js';
 import { useNostr } from './NostrContext.js';
+import type { NDKFilter } from '@nostr-dev-kit/ndk';
 
 interface WalletContextReturns {
   identity: UserIdentity;
@@ -17,7 +18,13 @@ interface WalletContextReturns {
   converter: UseConverterReturns;
 }
 
-type WalletContextParams = React.PropsWithChildren<ConfigParameter>;
+export type WalletContextParams = {
+  children: React.ReactNode;
+  config: ConfigProps;
+  limits?: {
+    transactionLimits?: number;
+  };
+};
 export const WalletContext = React.createContext({} as WalletContextReturns);
 
 export function WalletProvider(props: WalletContextParams) {
@@ -30,6 +37,7 @@ export function WalletProvider(props: WalletContextParams) {
   const transactions = useTransactions({
     pubkey: identity.pubkey,
     enabled: enableSubscriptions,
+    limit: props.limits?.transactionLimits || 2500,
     storage: true,
     config,
   });
