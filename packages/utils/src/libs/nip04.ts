@@ -1,5 +1,5 @@
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
-import crypto from 'crypto';
+import CryptoJS from 'crypto-js';
 import { nip04 } from 'nostr-tools';
 import { nowInSeconds, parseContent } from '../utils/utilities.js';
 
@@ -36,12 +36,12 @@ export interface MultiNip04Content {
  * @returns  A "NIP-04 like" string as described above
  */
 function doEncryptNip04Like(keyHex: string, message: string): string {
-  const iv: Uint8Array = Uint8Array.from(crypto.randomBytes(16));
-  const cipher: crypto.Cipher = crypto.createCipheriv('aes128', Buffer.from(keyHex, 'hex'), iv);
-  return (
-    Buffer.from([...cipher.update(Buffer.from(message, 'utf8')), ...cipher.final()]).toString('base64') +
-    `?iv=${Buffer.from(iv).toString('base64')}`
-  );
+  const key = CryptoJS.enc.Hex.parse(keyHex);
+  const iv = CryptoJS.lib.WordArray.random(16);
+
+  const encrypted = CryptoJS.AES.encrypt(message, key, { iv: iv, mode: CryptoJS.mode.CBC });
+
+  return `${encrypted.ciphertext.toString(CryptoJS.enc.Base64)}?iv=${iv.toString(CryptoJS.enc.Base64)}`;
 }
 
 /**
@@ -63,19 +63,23 @@ function doEncryptNip04Like(keyHex: string, message: string): string {
  * @returns  The UTF-8 string corresponding to the deciphered plaintext
  */
 function doDecryptNip04Like(keyHex: string, message: string): string {
-  const re: RegExpExecArray | null = /^(?<ciphertext>[^?]*)\?iv=(?<iv>.*)$/.exec(message);
+  const re = /^(?<ciphertext>[^?]*)\?iv=(?<iv>.*)$/.exec(message);
   if (null === re) {
     throw new Error('Malformed message');
   }
-  const decipher: crypto.Decipher = crypto.createDecipheriv(
-    'aes128',
-    Buffer.from(keyHex, 'hex'),
-    Buffer.from(re.groups?.iv ?? '', 'base64'),
-  );
-  return Buffer.from([
-    ...decipher.update(Buffer.from(re.groups?.ciphertext ?? '', 'base64')),
-    ...decipher.final(),
-  ]).toString('utf8');
+
+  const key = CryptoJS.enc.Hex.parse(keyHex);
+  const iv = CryptoJS.enc.Base64.parse(re.groups?.iv ?? '');
+  const ciphertext = CryptoJS.enc.Base64.parse(re.groups?.ciphertext ?? '');
+
+  const cipherParams = CryptoJS.lib.CipherParams.create({
+    ciphertext: ciphertext,
+    iv: iv,
+  });
+
+  const decrypted = CryptoJS.AES.decrypt(cipherParams, key, { iv: iv, mode: CryptoJS.mode.CBC });
+
+  return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
 /**
@@ -180,9 +184,9 @@ export async function buildMultiNip04Event(
   senderPubKeyHex: string, // HEX sender public key
   receiverPubKeysHex: string[], // HEX receivers public keys
 ): Promise<NostrEvent> {
-  const macBase64: string = crypto.createHash('sha256').update(message).digest().toString('base64');
+  const macBase64: string = CryptoJS.SHA256(message).toString(CryptoJS.enc.Base64);
 
-  const randomMessageKeyHex: string = Buffer.from(crypto.randomBytes(16)).toString('hex');
+  const randomMessageKeyHex: string = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
 
   const encryptedContentNip04Like: string = doEncryptNip04Like(randomMessageKeyHex, message);
 
@@ -327,7 +331,7 @@ export async function parseMultiNip04Event(
 
   const decryptedMessage: string = doDecryptNip04Like(messageKeyHex, content.enc);
 
-  const macBase64: string = crypto.createHash('sha256').update(decryptedMessage).digest().toString('base64');
+  const macBase64: string = CryptoJS.SHA256(decryptedMessage).toString(CryptoJS.enc.Base64);
 
   if (content.mac !== macBase64) {
     throw new Error('MAC mismatch');
@@ -382,8 +386,8 @@ export async function extendedMultiNip04Encrypt(
   receiverPubKeysHex: string[], // HEX receivers public keys
   encrypt: (pk: string, msg: string) => Promise<string>,
 ): Promise<NostrEvent> {
-  const macBase64: string = crypto.createHash('sha256').update(message).digest().toString('base64');
-  const randomMessageKeyHex: string = Buffer.from(crypto.randomBytes(16)).toString('hex');
+  const macBase64: string = CryptoJS.SHA256(message).toString(CryptoJS.enc.Base64);
+  const randomMessageKeyHex: string = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
 
   const encryptedContentNip04Like: string = doEncryptNip04Like(randomMessageKeyHex, message);
 
@@ -426,7 +430,7 @@ export async function extendedMultiNip04Decrypt(
 
   const decryptedMessage: string = doDecryptNip04Like(messageKeyHex, content.enc);
 
-  const macBase64: string = crypto.createHash('sha256').update(decryptedMessage).digest().toString('base64');
+  const macBase64: string = CryptoJS.SHA256(decryptedMessage).toString(CryptoJS.enc.Base64);
 
   if (content.mac !== macBase64) {
     throw new Error('MAC mismatch');
