@@ -214,7 +214,7 @@ importers:
   packages/react:
     dependencies:
       '@lawallet/utils':
-        specifier: 0.2.37
+        specifier: workspace:*
         version: link:../utils
       '@nostr-dev-kit/ndk':
         specifier: 2.10.0
@@ -275,6 +275,9 @@ importers:
       '@nostr-dev-kit/ndk':
         specifier: 2.10.0
         version: 2.10.0(typescript@5.5.4)
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
@@ -288,6 +291,9 @@ importers:
       '@scure/base':
         specifier: 1.1.5
         version: 1.1.5
+      '@types/crypto-js':
+        specifier: ^4.2.2
+        version: 4.2.2
       '@types/node':
         specifier: ^20.11.17
         version: 20.16.1
@@ -1707,6 +1713,10 @@ packages:
       '@types/estree': 1.0.5
     dev: false
 
+  /@types/crypto-js@4.2.2:
+    resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
+    dev: true
+
   /@types/d3-scale-chromatic@3.0.3:
     resolution: {integrity: sha512-laXM4+1o5ImZv3RpFAsTRn3TEkzqkytiOY0Dz0sq5cnd1dtNlk6sHLon4OvqaiJb28T0S/TdsBI3Sjsy+keJrw==}
     dev: false
@@ -2561,6 +2571,10 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  /crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    dev: false
 
   /css-color-keywords@1.0.0:
     resolution: {integrity: sha512-FyyrDHZKEjXDpNJYvVsV960FiqQyXc/LlYmsxl2BcdMb2WPx0OGRVgTg55rPSyLSNMqP52R9r8geSp7apN3Ofg==}
