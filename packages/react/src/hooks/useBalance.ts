@@ -2,12 +2,13 @@ import * as React from 'react';
 
 import { LaWalletKinds } from '@lawallet/utils';
 import { type TokenBalance } from '@lawallet/utils/types';
-import { type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
+import { NDKRelay, type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { useNostr } from '../context/NostrContext.js';
 import { useSubscription } from './useSubscription.js';
 import { useConfig } from './useConfig.js';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { useLaWallet } from '../context/WalletContext.js';
+import { LAWALLET_DEFAULT_RELAY } from '../constants/constants.js';
 
 export interface UseBalanceProps extends ConfigParameter {
   pubkey: string;
@@ -61,11 +62,15 @@ export const useBalance = (parameters?: UseBalanceProps): TokenBalance => {
       loading: true,
     });
 
-    const event: NDKEvent | null = await ndk.fetchEvent({
-      authors: [config.modulePubkeys.ledger],
-      kinds: [LaWalletKinds.PARAMETRIZED_REPLACEABLE as unknown as NDKKind],
-      '#d': [`balance:${tokenId}:${pubkey}`],
-    });
+    const event: NDKEvent | null = await ndk.fetchEvent(
+      {
+        authors: [config.modulePubkeys.ledger],
+        kinds: [LaWalletKinds.PARAMETRIZED_REPLACEABLE as unknown as NDKKind],
+        '#d': [`balance:${tokenId}:${pubkey}`],
+      },
+      { closeOnEose: true },
+      new NDKRelay(LAWALLET_DEFAULT_RELAY, undefined, ndk),
+    );
 
     if (event)
       setBalance({

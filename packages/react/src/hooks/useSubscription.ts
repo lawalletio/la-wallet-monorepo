@@ -34,6 +34,9 @@ export const useSubscription = ({ filters, options, enabled, config, onEvent }: 
     if (ndk && enabled && !subscription) {
       setLoading(true);
 
+      const connectedRelays = ndk.pool.permanentAndConnectedRelays();
+      if (!connectedRelays.length) await ndk.connect();
+
       const newSubscription = ndk.subscribe(filters, options);
       newSubscription.on('event', async (event: NDKEvent) => {
         setEvents((prev) => {
