@@ -1,24 +1,24 @@
-# LaWalletConfig
+# LaWalletProvider
 
 React Context Provider for LaWallet.
 
 ## Import
 
 ```ts
-import { LaWalletConfig } from '@lawallet/react';
+import { LaWalletProvider } from '@lawallet/react';
 ```
 
 ## Usage
 
 ```ts filename="App.tsx"
-import { LaWalletConfig } from '@lawallet/react';
+import { LaWalletProvider } from '@lawallet/react';
 import { config } from './config';
 
 function App() {
   return (
-    <LaWalletConfig config={config}>
+    <LaWalletProvider config={config}>
       {/** your app */}
-    </LaWalletConfig>
+    </LaWalletProvider>
   );
 }
 ```

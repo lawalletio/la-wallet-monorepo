@@ -48,8 +48,8 @@
         "type": "separator",
         "title": "Context Provider"
     },
-    "LaWalletConfig": {
-        "title": "LaWalletConfig"
+    "LaWalletProvider": {
+        "title": "LaWalletProvider"
     },
     "createConfig": {
         "title": "createConfig"
