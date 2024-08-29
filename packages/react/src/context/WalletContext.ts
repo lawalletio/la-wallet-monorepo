@@ -29,10 +29,9 @@ export const WalletContext = React.createContext({} as WalletContextReturns);
 
 export function WalletProvider(props: WalletContextParams) {
   const config = useConfig(props);
-  const { signerInfo } = useNostr({ config });
   const [enableSubscriptions, setEnableSubscriptions] = React.useState<boolean>(false);
 
-  const identity = useIdentity({ pubkey: signerInfo?.pubkey ?? '', config });
+  const identity = useIdentity({ config });
 
   const transactions = useTransactions({
     pubkey: identity.pubkey,
