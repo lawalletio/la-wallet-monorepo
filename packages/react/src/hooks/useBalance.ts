@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { LaWalletKinds } from '@lawallet/utils';
 import { type TokenBalance } from '@lawallet/utils/types';
-import { NDKRelay, type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
+import { NDKRelaySet, type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { useNostr } from '../context/NostrContext.js';
 import { useSubscription } from './useSubscription.js';
 import { useConfig } from './useConfig.js';
@@ -32,7 +32,7 @@ export const useBalance = (parameters?: UseBalanceProps): TokenBalance => {
   const { pubkey, tokenId = 'BTC', enabled = true, closeOnEose = false } = parameters;
 
   const config = useConfig(parameters);
-  const { ndk } = useNostr({ config });
+  const { ndk, knownRelays } = useNostr({ config });
 
   const [balance, setBalance] = React.useState<TokenBalance>({
     tokenId: tokenId,
@@ -62,6 +62,12 @@ export const useBalance = (parameters?: UseBalanceProps): TokenBalance => {
       loading: true,
     });
 
+    let connectedRelays = ndk.pool.connectedRelays();
+    let relaySet =
+      connectedRelays.length === 0 || connectedRelays.length < knownRelays.length
+        ? NDKRelaySet.fromRelayUrls(config.relaysList, ndk, true)
+        : undefined;
+
     const event: NDKEvent | null = await ndk.fetchEvent(
       {
         authors: [config.modulePubkeys.ledger],
@@ -69,7 +75,7 @@ export const useBalance = (parameters?: UseBalanceProps): TokenBalance => {
         '#d': [`balance:${tokenId}:${pubkey}`],
       },
       { closeOnEose: true },
-      new NDKRelay(LAWALLET_DEFAULT_RELAY, undefined, ndk),
+      relaySet,
     );
 
     if (event)

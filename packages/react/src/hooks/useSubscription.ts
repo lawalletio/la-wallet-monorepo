@@ -38,8 +38,9 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
     if (ndk && enabled && !subscription) {
       setLoading(true);
 
+      let connectedRelays = ndk.pool.connectedRelays();
       const relaySet =
-        config.relaysList.length && config.relaysList.length > 0
+        connectedRelays.length === 0 || connectedRelays.length < knownRelays.length
           ? NDKRelaySet.fromRelayUrls(config.relaysList, ndk, true)
           : undefined;
 
@@ -53,7 +54,8 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
             uniqueEvents.set(e.id, e);
           });
 
-          return [...uniqueEvents.values()].sort((a, b) => b.created_at! - a.created_at!);
+          const uniqueEventArray = Array.from(uniqueEvents.values());
+          return uniqueEventArray.sort((a, b) => b.created_at! - a.created_at!);
         });
 
         if (onEvent) onEvent(await event.toNostrEvent());
@@ -66,7 +68,7 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
       setSubscription(newSubscription);
       return;
     }
-  }, [ndk, enabled, subscription]);
+  }, [ndk, knownRelays, enabled, subscription]);
 
   const stopSubscription = React.useCallback(() => {
     if (subscription) {
@@ -85,9 +87,11 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
   const handleResubscription = React.useCallback(
     (ev: Event) => {
       const relay = (ev as CustomEvent).detail as NDKRelay;
-      if (subscription && enabled) relay.subscribe(subscription, filters);
+      if (subscription && enabled) {
+        relay.subscribe(subscription, filters);
+      }
     },
-    [subscription, filters],
+    [subscription, enabled, filters],
   );
 
   React.useEffect(() => {

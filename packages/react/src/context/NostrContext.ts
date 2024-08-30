@@ -10,8 +10,8 @@ export function NostrProvider(props: React.PropsWithChildren<ConfigParameter>) {
   const { children, config = baseConfig } = props;
   const value = useNostrHook({
     explicitRelayUrls: config.relaysList,
-    autoConnect: true,
     explicitSigner: config.signer,
+    autoConnect: true,
   });
 
   return React.createElement(NostrContext.Provider, { value }, children);
@@ -29,7 +29,11 @@ export const useNostr = (props?: ConfigParameter): UseNostrReturns => {
     }
 
     const config = useConfig(props);
-    const tmpNostrProvider = useNostrHook({ explicitRelayUrls: config.relaysList, explicitSigner: config.signer });
+    const tmpNostrProvider = useNostrHook({
+      explicitRelayUrls: config.relaysList,
+      explicitSigner: config.signer,
+      autoConnect: true,
+    });
 
     return tmpNostrProvider;
   }
