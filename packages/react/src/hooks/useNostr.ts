@@ -25,6 +25,8 @@ type UseNostrParameters = {
   autoConnect?: boolean;
 };
 
+type UseNostrEventTypes = 'relay:firstconnect' | 'relay:reconnect';
+
 export interface UseNostrReturns {
   ndk: NDK;
   signer: SignerTypes;
@@ -39,8 +41,8 @@ export interface UseNostrReturns {
   encrypt: (receiverPubkey: string, message: string) => Promise<string>;
   decrypt: (senderPubkey: string, encryptedMessage: string) => Promise<string>;
   knownRelays: string[];
-  addEventListener: (eventName: string, callback: (event: Event) => void) => void;
-  removeEventListener: (eventName: string, callback: (event: Event) => void) => void;
+  addEventListener: (eventName: UseNostrEventTypes, callback: (event: Event) => void) => void;
+  removeEventListener: (eventName: UseNostrEventTypes, callback: (event: Event) => void) => void;
 }
 
 export type SignerTypes = NDKSigner | undefined;
@@ -198,16 +200,16 @@ export const useNostrHook = ({
     if (explicitSigner) initializeSigner(explicitSigner);
   }, [explicitSigner]);
 
-  const emitEvent = (eventName: string, detail: any) => {
+  const emitEvent = (eventName: UseNostrEventTypes, detail: any) => {
     const event = new CustomEvent(eventName, { detail });
     eventTargetRef.current.dispatchEvent(event);
   };
 
-  const addEventListener = (eventName: string, callback: (event: Event) => void) => {
+  const addEventListener = (eventName: UseNostrEventTypes, callback: (event: Event) => void) => {
     eventTargetRef.current.addEventListener(eventName, callback);
   };
 
-  const removeEventListener = (eventName: string, callback: (event: Event) => void) => {
+  const removeEventListener = (eventName: UseNostrEventTypes, callback: (event: Event) => void) => {
     eventTargetRef.current.removeEventListener(eventName, callback);
   };
 
@@ -239,6 +241,7 @@ export const useNostrHook = ({
         });
 
         setKnownRelays((prev) => [...prev, relay.url]);
+        emitEvent('relay:firstconnect', relay);
       }
     },
     [knownRelays],
