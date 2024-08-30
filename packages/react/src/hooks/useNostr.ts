@@ -213,20 +213,32 @@ export const useNostrHook = ({
 
   const validateRelaysStatus = React.useCallback(() => {
     let connectedRelays = ndk.pool.connectedRelays();
-    if (connectedRelays.length < knownRelays.length) ndk.connect();
+
+    knownRelays.map((relayUrl) => {
+      let isRelayConnected = connectedRelays.find((relay) => relay.url === relayUrl);
+
+      if (!isRelayConnected) {
+        let disconnectedRelay = ndk.pool.relays.get(relayUrl);
+        if (disconnectedRelay) {
+          disconnectedRelay.connect();
+        }
+      }
+    });
   }, [ndk, knownRelays]);
 
   React.useEffect(() => {
     if (connectionsInterval) clearInterval(connectionsInterval);
-    connectionsInterval = setInterval(validateRelaysStatus, 15000);
+    connectionsInterval = setInterval(validateRelaysStatus, 30000);
   }, [validateRelaysStatus]);
 
   const handleRelayConnection = React.useCallback(
     (relay: NDKRelay) => {
       if (!knownRelays.includes(relay.url)) {
+        relay.addListener('connect', () => {
+          emitEvent('relay:reconnect', relay);
+        });
+
         setKnownRelays((prev) => [...prev, relay.url]);
-      } else {
-        emitEvent('relay:reconnect', relay);
       }
     },
     [knownRelays],
