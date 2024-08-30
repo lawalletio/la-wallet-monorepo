@@ -48,8 +48,6 @@ const statusTags: string[] = [
   LaWalletTags.INBOUND_TRANSACTION_ERROR,
 ];
 
-let intervalGenerateTransactions: NodeJS.Timeout;
-
 const defaultActivity = {
   loading: true,
   lastCached: 0,
@@ -62,6 +60,8 @@ type EventWithStatus = {
   startEvent: NDKEvent | undefined;
   statusEvent: NDKEvent | undefined;
 };
+
+let debounceTimeout: NodeJS.Timeout;
 
 export const useTransactions = (parameters?: UseTransactionsProps): Transaction[] => {
   if (!parameters) {
@@ -351,14 +351,22 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     return [...TXsWithoutCached, ...activityInfo.cached].sort((a, b) => b.createdAt - a.createdAt);
   }, [activityInfo]);
 
+  const debouncedGenerateTransactions = React.useCallback(
+    (events: NDKEvent[]) => {
+      if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
+      }
+
+      debounceTimeout = setTimeout(() => {
+        generateTransactions(events);
+      }, 300);
+    },
+    [debounceTimeout],
+  );
+
   React.useEffect(() => {
-    if (walletEvents.length) {
-      if (intervalGenerateTransactions) clearTimeout(intervalGenerateTransactions);
-
-      intervalGenerateTransactions = setTimeout(() => generateTransactions(walletEvents), 350);
-    }
-
-    return () => clearTimeout(intervalGenerateTransactions);
+    if (walletEvents.length) debouncedGenerateTransactions(walletEvents);
+    return () => clearTimeout(debounceTimeout);
   }, [walletEvents]);
 
   React.useEffect(() => {

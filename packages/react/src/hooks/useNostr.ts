@@ -9,6 +9,7 @@ import NDK, {
   type NDKSigner,
   type NostrEvent,
   NDKEvent,
+  NDKRelay,
 } from '@nostr-dev-kit/ndk';
 import { nowInSeconds } from '@lawallet/utils';
 import type { UnsignedEvent } from 'nostr-tools';
@@ -37,9 +38,13 @@ export interface UseNostrReturns {
   authWithExtension: () => Promise<SignerTypes>;
   encrypt: (receiverPubkey: string, message: string) => Promise<string>;
   decrypt: (senderPubkey: string, encryptedMessage: string) => Promise<string>;
+  knownRelays: string[];
+  addEventListener: (eventName: string, callback: (event: Event) => void) => void;
+  removeEventListener: (eventName: string, callback: (event: Event) => void) => void;
 }
 
 export type SignerTypes = NDKSigner | undefined;
+let connectionsInterval: NodeJS.Timeout;
 
 export const useNostrHook = ({
   explicitRelayUrls,
@@ -49,8 +54,13 @@ export const useNostrHook = ({
   const [ndk] = React.useState<NDK>(
     new NDK({
       explicitRelayUrls,
+      autoConnectUserRelays: false,
+      signer: explicitSigner,
     }),
   );
+
+  const [knownRelays, setKnownRelays] = React.useState<string[]>([]);
+  const eventTargetRef = React.useRef(new EventTarget());
 
   const signer: SignerTypes = React.useMemo(() => ndk.signer, [ndk.signer]);
   const [signerInfo, setSignerInfo] = React.useState<NDKUser | undefined>(undefined);
@@ -188,6 +198,48 @@ export const useNostrHook = ({
     if (explicitSigner) initializeSigner(explicitSigner);
   }, [explicitSigner]);
 
+  const emitEvent = (eventName: string, detail: any) => {
+    const event = new CustomEvent(eventName, { detail });
+    eventTargetRef.current.dispatchEvent(event);
+  };
+
+  const addEventListener = (eventName: string, callback: (event: Event) => void) => {
+    eventTargetRef.current.addEventListener(eventName, callback);
+  };
+
+  const removeEventListener = (eventName: string, callback: (event: Event) => void) => {
+    eventTargetRef.current.removeEventListener(eventName, callback);
+  };
+
+  const validateRelaysStatus = React.useCallback(() => {
+    let connectedRelays = ndk.pool.connectedRelays();
+    if (connectedRelays.length < knownRelays.length) ndk.connect();
+  }, [ndk, knownRelays]);
+
+  React.useEffect(() => {
+    if (connectionsInterval) clearInterval(connectionsInterval);
+    connectionsInterval = setInterval(validateRelaysStatus, 15000);
+  }, [validateRelaysStatus]);
+
+  const handleRelayConnection = React.useCallback(
+    (relay: NDKRelay) => {
+      if (!knownRelays.includes(relay.url)) {
+        setKnownRelays((prev) => [...prev, relay.url]);
+      } else {
+        emitEvent('relay:reconnect', relay);
+      }
+    },
+    [knownRelays],
+  );
+
+  React.useEffect(() => {
+    ndk.pool.on('relay:connect', handleRelayConnection);
+
+    return () => {
+      ndk.pool.off('relay:connect', handleRelayConnection);
+    };
+  }, [ndk.pool, handleRelayConnection]);
+
   return {
     ndk,
     signer,
@@ -201,5 +253,8 @@ export const useNostrHook = ({
     authWithPrivateKey,
     encrypt,
     decrypt,
+    knownRelays,
+    addEventListener,
+    removeEventListener,
   };
 };
