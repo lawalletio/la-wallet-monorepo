@@ -59,6 +59,7 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
       });
 
       connectedRelays.forEach((relay) => {
+        console.log('subscribe to already connected relay ', relay.url);
         relay.subscribe(newSub, filters);
       });
 
@@ -76,9 +77,9 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
   }, [subscription]);
 
   const handleResubscription = React.useCallback(
-    (ev: Event) => {
-      const relay = (ev as CustomEvent).detail as NDKRelay;
-      if (subscription && enabled) {
+    (relay: NDKRelay) => {
+      if (relay && subscription && enabled) {
+        console.log('relay re-subscription ', relay.url);
         relay.subscribe(subscription, filters);
       }
     },

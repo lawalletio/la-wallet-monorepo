@@ -116,6 +116,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.3.1
+      tseep:
+        specifier: ^1.1.1
+        version: 1.2.2
     devDependencies:
       '@types/node':
         specifier: ^20.11.17

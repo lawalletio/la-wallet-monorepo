@@ -13,6 +13,7 @@ import NDK, {
 } from '@nostr-dev-kit/ndk';
 import { nowInSeconds } from '@lawallet/utils';
 import type { UnsignedEvent } from 'nostr-tools';
+import { EventEmitter } from 'tseep';
 
 type LightningProvidersType = {
   webln: WebLNExtensionProvider | undefined;
@@ -41,8 +42,8 @@ export interface UseNostrReturns {
   encrypt: (receiverPubkey: string, message: string) => Promise<string>;
   decrypt: (senderPubkey: string, encryptedMessage: string) => Promise<string>;
   knownRelays: string[];
-  addEventListener: (eventName: UseNostrEventTypes, callback: (event: Event) => void) => void;
-  removeEventListener: (eventName: UseNostrEventTypes, callback: (event: Event) => void) => void;
+  addEventListener: (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => void;
+  removeEventListener: (eventName: UseNostrEventTypes, callback: (event: NDKRelay) => void) => void;
 }
 
 export type SignerTypes = NDKSigner | undefined;
@@ -62,7 +63,7 @@ export const useNostrHook = ({
   );
 
   const [knownRelays, setKnownRelays] = React.useState<string[]>([]);
-  const eventTargetRef = React.useRef(new EventTarget());
+  const eventEmitterRef = React.useRef(new EventEmitter());
 
   const signer: SignerTypes = React.useMemo(() => ndk.signer, [ndk.signer]);
   const [signerInfo, setSignerInfo] = React.useState<NDKUser | undefined>(undefined);
@@ -200,17 +201,16 @@ export const useNostrHook = ({
     if (explicitSigner) initializeSigner(explicitSigner);
   }, [explicitSigner]);
 
-  const emitEvent = (eventName: UseNostrEventTypes, detail: any) => {
-    const event = new CustomEvent(eventName, { detail });
-    eventTargetRef.current.dispatchEvent(event);
+  const emitEvent = (eventName: UseNostrEventTypes, relay: NDKRelay) => {
+    eventEmitterRef.current.emit(eventName, relay);
   };
 
-  const addEventListener = (eventName: UseNostrEventTypes, callback: (event: Event) => void) => {
-    eventTargetRef.current.addEventListener(eventName, callback);
+  const addEventListener = (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => {
+    eventEmitterRef.current.on(eventName, callback);
   };
 
-  const removeEventListener = (eventName: UseNostrEventTypes, callback: (event: Event) => void) => {
-    eventTargetRef.current.removeEventListener(eventName, callback);
+  const removeEventListener = (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => {
+    eventEmitterRef.current.off(eventName, callback);
   };
 
   const validateRelaysStatus = React.useCallback(() => {
@@ -241,6 +241,7 @@ export const useNostrHook = ({
         });
 
         setKnownRelays((prev) => [...prev, relay.url]);
+        console.log('emit first seen ', relay.url);
         emitEvent('relay:firstconnect', relay);
       }
     },
