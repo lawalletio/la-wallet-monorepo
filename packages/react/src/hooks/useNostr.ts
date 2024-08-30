@@ -241,7 +241,6 @@ export const useNostrHook = ({
         });
 
         setKnownRelays((prev) => [...prev, relay.url]);
-        console.log('emit first seen ', relay.url);
         emitEvent('relay:firstconnect', relay);
       }
     },
