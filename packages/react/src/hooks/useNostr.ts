@@ -2,16 +2,16 @@ import * as React from 'react';
 import type NostrExtensionProvider from '../types/nostr.js';
 import { type WebLNProvider as WebLNExtensionProvider } from '../types/webln.js';
 
+import { nowInSeconds } from '@lawallet/utils';
 import NDK, {
+  NDKEvent,
   NDKNip07Signer,
   NDKPrivateKeySigner,
+  NDKRelay,
   NDKUser,
   type NDKSigner,
   type NostrEvent,
-  NDKEvent,
-  NDKRelay,
 } from '@nostr-dev-kit/ndk';
-import { nowInSeconds } from '@lawallet/utils';
 import type { UnsignedEvent } from 'nostr-tools';
 import { EventEmitter } from 'tseep';
 
@@ -41,9 +41,9 @@ export interface UseNostrReturns {
   authWithExtension: () => Promise<SignerTypes>;
   encrypt: (receiverPubkey: string, message: string) => Promise<string>;
   decrypt: (senderPubkey: string, encryptedMessage: string) => Promise<string>;
-  knownRelays: string[];
-  addEventListener: (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => void;
-  removeEventListener: (eventName: UseNostrEventTypes, callback: (event: NDKRelay) => void) => void;
+  validateRelaysStatus: () => void;
+  addRelayListener: (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => void;
+  removeRelayListener: (eventName: UseNostrEventTypes, callback: (event: NDKRelay) => void) => void;
 }
 
 export type SignerTypes = NDKSigner | undefined;
@@ -205,11 +205,11 @@ export const useNostrHook = ({
     eventEmitterRef.current.emit(eventName, relay);
   };
 
-  const addEventListener = (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => {
+  const addRelayListener = (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => {
     eventEmitterRef.current.on(eventName, callback);
   };
 
-  const removeEventListener = (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => {
+  const removeRelayListener = (eventName: UseNostrEventTypes, callback: (relay: NDKRelay) => void) => {
     eventEmitterRef.current.off(eventName, callback);
   };
 
@@ -268,8 +268,8 @@ export const useNostrHook = ({
     authWithPrivateKey,
     encrypt,
     decrypt,
-    knownRelays,
-    addEventListener,
-    removeEventListener,
+    validateRelaysStatus,
+    addRelayListener,
+    removeRelayListener,
   };
 };

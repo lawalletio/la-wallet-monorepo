@@ -26,7 +26,7 @@ export interface SubscriptionProps extends ConfigParameter {
 
 export const useSubscription = ({ filters, options, enabled, config: configParam, onEvent }: SubscriptionProps) => {
   const config = useConfig(configParam);
-  const { ndk, addEventListener, removeEventListener, knownRelays } = useNostr({ config });
+  const { ndk, validateRelaysStatus, addRelayListener, removeRelayListener } = useNostr({ config });
 
   const [subscription, setSubscription] = React.useState<NDKSubscription>();
   const [events, setEvents] = React.useState<NDKEvent[]>([]);
@@ -65,7 +65,7 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
       setSubscription(newSub);
       return;
     }
-  }, [ndk, filters, knownRelays, enabled, subscription]);
+  }, [ndk, filters, enabled, subscription]);
 
   const stopSubscription = React.useCallback(() => {
     if (subscription) {
@@ -85,22 +85,30 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
   );
 
   React.useEffect(() => {
-    if (enabled && !subscription && knownRelays.length) {
-      if (events.length) setEvents([]);
-      startSubscription();
+    if (subscription) {
+      !enabled ? stopSubscription() : validateRelaysStatus();
+      return;
     }
 
-    if (!enabled) stopSubscription();
-  }, [enabled, subscription, knownRelays]);
+    if (enabled) {
+      if (events.length) setEvents([]);
+      startSubscription();
+      return;
+    }
+
+    return () => {
+      stopSubscription();
+    };
+  }, [enabled, subscription]);
 
   React.useEffect(() => {
     if (subscription && enabled) {
-      addEventListener('relay:firstconnect', handleResubscription);
-      addEventListener('relay:reconnect', handleResubscription);
+      addRelayListener('relay:firstconnect', handleResubscription);
+      addRelayListener('relay:reconnect', handleResubscription);
 
       return () => {
-        removeEventListener('relay:firstconnect', handleResubscription);
-        removeEventListener('relay:reconnect', handleResubscription);
+        removeRelayListener('relay:firstconnect', handleResubscription);
+        removeRelayListener('relay:reconnect', handleResubscription);
       };
     }
   }, [handleResubscription]);
