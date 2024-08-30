@@ -1,4 +1,12 @@
-import { LaWalletKinds, LaWalletTags, getMultipleTagsValues, getTag, getTagValue, parseContent } from '@lawallet/utils';
+import {
+  LaWalletKinds,
+  LaWalletTags,
+  getMultipleTagsValues,
+  getTag,
+  getTagValue,
+  nowInSeconds,
+  parseContent,
+} from '@lawallet/utils';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
 import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
@@ -7,9 +15,9 @@ import type { ConfigParameter } from '@lawallet/utils/types';
 import { nip26, type Event } from 'nostr-tools';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
 import { useNostr } from '../context/NostrContext.js';
+import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
-import { useLaWallet } from '../context/WalletContext.js';
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
@@ -48,9 +56,11 @@ const statusTags: string[] = [
   LaWalletTags.INBOUND_TRANSACTION_ERROR,
 ];
 
+const MAX_TRANSACTIONS_TIME: number = 30 * (24 * 60 * 60); // 30 days
+
 const defaultActivity = {
   loading: true,
-  lastCached: 0,
+  lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
   cached: [],
   subscription: [],
   idsLoaded: [],
@@ -75,20 +85,34 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     return context.transactions;
   }
 
-  const { pubkey, enabled = true, limit = 1000, since = undefined, until = undefined, storage = false } = parameters;
+  const {
+    pubkey,
+    enabled = true,
+    limit = 1000,
+    since: sinceParam = undefined,
+    until = undefined,
+    storage = false,
+  } = parameters;
   const config = useConfig(parameters);
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
 
+  const since = React.useMemo(() => {
+    if (sinceParam) return sinceParam;
+
+    if (!sinceParam && !activityInfo.lastCached) return nowInSeconds() - MAX_TRANSACTIONS_TIME;
+    return activityInfo.lastCached;
+  }, [sinceParam, activityInfo]);
+
   const { decrypt } = useNostr();
 
-  const { events: walletEvents } = useSubscription({
-    filters: [
+  const filters = React.useMemo(
+    () => [
       {
         authors: [pubkey],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
-        since: storage ? activityInfo.lastCached : since,
+        since,
         until: until,
         limit: limit * 2,
       },
@@ -96,7 +120,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         '#p': [pubkey],
         '#t': startTags,
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since: storage ? activityInfo.lastCached : since,
+        since,
         until: until,
         limit: limit * 2,
       },
@@ -105,11 +129,16 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         '#p': [pubkey],
         '#t': statusTags,
-        since: storage ? activityInfo.lastCached : since,
+        since,
         until: until,
         limit: limit * 2,
       },
     ],
+    [pubkey, since, activityInfo, storage, until, limit, config],
+  );
+
+  const { events: walletEvents } = useSubscription({
+    filters,
     options,
     enabled: enabled && !activityInfo.loading,
     config,
@@ -312,6 +341,20 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     });
   }
 
+  const saveCacheActivity = (txs: Transaction[]) => {
+    let lastTx = txs[0];
+    let sinceDefault = nowInSeconds() - MAX_TRANSACTIONS_TIME;
+    let sinceLastCached = lastTx?.events[lastTx.events.length - 1]?.created_at ?? sinceDefault;
+
+    setActivityInfo({
+      subscription: [],
+      idsLoaded: txs.map((tx) => tx.id.toString()),
+      cached: txs,
+      lastCached: sinceLastCached,
+      loading: false,
+    });
+  };
+
   const loadCachedTransactions = async () => {
     if (pubkey.length) {
       const storagedData: string = ((await config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`)) as string) || '';
@@ -322,20 +365,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
       }
 
       const cachedTxs: Transaction[] = parseContent(storagedData);
-
-      if (cachedTxs.length) {
-        const lastCached: number = cachedTxs.length
-          ? cachedTxs[0]!.events[cachedTxs[0]!.events.length - 1]!.created_at
-          : 0;
-
-        setActivityInfo({
-          subscription: [],
-          idsLoaded: cachedTxs.map((tx) => tx.id.toString()),
-          cached: cachedTxs,
-          lastCached,
-          loading: false,
-        });
-      }
+      saveCacheActivity(cachedTxs);
     }
   };
 
@@ -349,7 +379,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     });
 
     return [...TXsWithoutCached, ...activityInfo.cached].sort((a, b) => b.createdAt - a.createdAt);
-  }, [activityInfo]);
+  }, [activityInfo.cached.length, activityInfo.subscription.length]);
 
   const debouncedGenerateTransactions = React.useCallback(
     (events: NDKEvent[]) => {
@@ -367,7 +397,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
   React.useEffect(() => {
     if (walletEvents.length) debouncedGenerateTransactions(walletEvents);
     return () => clearTimeout(debounceTimeout);
-  }, [walletEvents]);
+  }, [walletEvents.length]);
 
   React.useEffect(() => {
     if (!pubkey) {
@@ -387,11 +417,12 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
 
   const saveTransactions = async (txs: Transaction[]) => {
     await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(txs));
+    saveCacheActivity(txs);
   };
 
   React.useEffect(() => {
     if (storage && transactions.length) saveTransactions(transactions);
-  }, [transactions]);
+  }, [transactions.length]);
 
   return transactions;
 };

@@ -1,10 +1,9 @@
 import type { ConfigParameter } from '@lawallet/utils/types';
 import {
   NDKRelay,
-  NDKRelaySet,
+  NDKSubscription,
   type NDKEvent,
   type NDKFilter,
-  type NDKSubscription,
   type NDKSubscriptionOptions,
   type NostrEvent,
 } from '@nostr-dev-kit/ndk';
@@ -16,7 +15,6 @@ export interface UseSubscriptionReturns {
   loading: boolean;
   subscription: NDKSubscription | undefined;
   events: NDKEvent[];
-  restartSubscription: () => void;
 }
 
 export interface SubscriptionProps extends ConfigParameter {
@@ -39,14 +37,9 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
       setLoading(true);
 
       let connectedRelays = ndk.pool.connectedRelays();
-      const relaySet =
-        connectedRelays.length === 0 || connectedRelays.length < knownRelays.length
-          ? NDKRelaySet.fromRelayUrls(config.relaysList, ndk, true)
-          : undefined;
+      const newSub = new NDKSubscription(ndk, filters, options);
 
-      const newSubscription = ndk.subscribe(filters, options, relaySet);
-
-      newSubscription.on('event', async (event: NDKEvent) => {
+      newSub.on('event', async (event: NDKEvent) => {
         setEvents((prev) => {
           const uniqueEvents = new Map<string, typeof event>();
 
@@ -61,14 +54,18 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
         if (onEvent) onEvent(await event.toNostrEvent());
       });
 
-      newSubscription.on('eose', () => {
+      newSub.on('eose', () => {
         setLoading(false);
       });
 
-      setSubscription(newSubscription);
+      connectedRelays.forEach((relay) => {
+        relay.subscribe(newSub, filters);
+      });
+
+      setSubscription(newSub);
       return;
     }
-  }, [ndk, knownRelays, enabled, subscription]);
+  }, [ndk, filters, knownRelays, enabled, subscription]);
 
   const stopSubscription = React.useCallback(() => {
     if (subscription) {
@@ -77,12 +74,6 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
       setSubscription(undefined);
     }
   }, [subscription]);
-
-  const restartSubscription = React.useCallback(() => {
-    stopSubscription();
-    if (events.length) setEvents([]);
-    startSubscription();
-  }, [events]);
 
   const handleResubscription = React.useCallback(
     (ev: Event) => {
@@ -95,19 +86,21 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
   );
 
   React.useEffect(() => {
-    if (enabled && !subscription) {
+    if (enabled && !subscription && knownRelays.length) {
       if (events.length) setEvents([]);
       startSubscription();
     }
 
     if (!enabled) stopSubscription();
-  }, [enabled, subscription]);
+  }, [enabled, subscription, knownRelays]);
 
   React.useEffect(() => {
     if (subscription && enabled) {
+      addEventListener('relay:firstconnect', handleResubscription);
       addEventListener('relay:reconnect', handleResubscription);
 
       return () => {
+        removeEventListener('relay:firstconnect', handleResubscription);
         removeEventListener('relay:reconnect', handleResubscription);
       };
     }
@@ -117,6 +110,5 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
     loading,
     subscription,
     events,
-    restartSubscription,
   };
 };
