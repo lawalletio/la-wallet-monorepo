@@ -1,4 +1,7 @@
+import type { ConfigParameter } from '@lawallet/utils/types';
 import {
+  NDKRelay,
+  NDKRelaySet,
   type NDKEvent,
   type NDKFilter,
   type NDKSubscription,
@@ -7,7 +10,7 @@ import {
 } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 import { useNostr } from '../context/NostrContext.js';
-import type { ConfigParameter } from '@lawallet/utils/types';
+import { useConfig } from './useConfig.js';
 
 export interface UseSubscriptionReturns {
   loading: boolean;
@@ -20,11 +23,20 @@ export interface SubscriptionProps extends ConfigParameter {
   filters: NDKFilter[];
   options: NDKSubscriptionOptions;
   enabled: boolean;
+  globalSubscription?: boolean;
   onEvent?: (event: NostrEvent) => void;
 }
 
-export const useSubscription = ({ filters, options, enabled, config, onEvent }: SubscriptionProps) => {
-  const { ndk } = useNostr({ config });
+export const useSubscription = ({
+  filters,
+  options,
+  enabled,
+  globalSubscription = true,
+  config: configParam,
+  onEvent,
+}: SubscriptionProps) => {
+  const config = useConfig(configParam);
+  const { ndk, addEventListener, removeEventListener, knownRelays } = useNostr({ config });
 
   const [subscription, setSubscription] = React.useState<NDKSubscription>();
   const [events, setEvents] = React.useState<NDKEvent[]>([]);
@@ -34,10 +46,13 @@ export const useSubscription = ({ filters, options, enabled, config, onEvent }: 
     if (ndk && enabled && !subscription) {
       setLoading(true);
 
-      const connectedRelays = ndk.pool.permanentAndConnectedRelays();
-      if (!connectedRelays.length) await ndk.connect();
+      const relaySet =
+        config.relaysList.length && config.relaysList.length > 0
+          ? NDKRelaySet.fromRelayUrls(config.relaysList, ndk, true)
+          : undefined;
 
-      const newSubscription = ndk.subscribe(filters, options);
+      const newSubscription = ndk.subscribe(filters, options, relaySet);
+
       newSubscription.on('event', async (event: NDKEvent) => {
         setEvents((prev) => {
           const uniqueEvents = new Map<string, typeof event>();
@@ -59,7 +74,7 @@ export const useSubscription = ({ filters, options, enabled, config, onEvent }: 
       setSubscription(newSubscription);
       return;
     }
-  }, [ndk, enabled, subscription]);
+  }, [ndk, enabled, globalSubscription, subscription]);
 
   const stopSubscription = React.useCallback(() => {
     if (subscription) {
@@ -71,11 +86,17 @@ export const useSubscription = ({ filters, options, enabled, config, onEvent }: 
 
   const restartSubscription = React.useCallback(() => {
     stopSubscription();
-
     if (events.length) setEvents([]);
-
     startSubscription();
   }, [events]);
+
+  const handleResubscription = React.useCallback(
+    (ev: Event) => {
+      const relay = (ev as CustomEvent).detail as NDKRelay;
+      if (subscription && enabled) relay.subscribe(subscription, filters);
+    },
+    [subscription, filters],
+  );
 
   React.useEffect(() => {
     if (enabled && !subscription) {
@@ -85,6 +106,16 @@ export const useSubscription = ({ filters, options, enabled, config, onEvent }: 
 
     if (!enabled) stopSubscription();
   }, [enabled, subscription]);
+
+  React.useEffect(() => {
+    if (subscription && enabled) {
+      addEventListener('relay:reconnect', handleResubscription);
+
+      return () => {
+        removeEventListener('relay:reconnect', handleResubscription);
+      };
+    }
+  }, [handleResubscription]);
 
   return {
     loading,
