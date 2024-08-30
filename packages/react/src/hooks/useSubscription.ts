@@ -23,18 +23,10 @@ export interface SubscriptionProps extends ConfigParameter {
   filters: NDKFilter[];
   options: NDKSubscriptionOptions;
   enabled: boolean;
-  globalSubscription?: boolean;
   onEvent?: (event: NostrEvent) => void;
 }
 
-export const useSubscription = ({
-  filters,
-  options,
-  enabled,
-  globalSubscription = true,
-  config: configParam,
-  onEvent,
-}: SubscriptionProps) => {
+export const useSubscription = ({ filters, options, enabled, config: configParam, onEvent }: SubscriptionProps) => {
   const config = useConfig(configParam);
   const { ndk, addEventListener, removeEventListener, knownRelays } = useNostr({ config });
 
@@ -74,7 +66,7 @@ export const useSubscription = ({
       setSubscription(newSubscription);
       return;
     }
-  }, [ndk, enabled, globalSubscription, subscription]);
+  }, [ndk, enabled, subscription]);
 
   const stopSubscription = React.useCallback(() => {
     if (subscription) {
