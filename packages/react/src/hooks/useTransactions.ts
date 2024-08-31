@@ -1,4 +1,5 @@
 import {
+  nip26,
   LaWalletKinds,
   LaWalletTags,
   getMultipleTagsValues,
@@ -10,9 +11,8 @@ import {
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
 import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
-
 import type { ConfigParameter } from '@lawallet/utils/types';
-import { nip26, type Event } from 'nostr-tools';
+import { type Event } from 'nostr-tools';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
 import { useNostr } from '../context/NostrContext.js';
 import { useLaWallet } from '../context/WalletContext.js';
