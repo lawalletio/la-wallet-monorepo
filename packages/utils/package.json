@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/utils",
-  "version": "0.2.38",
+  "version": "0.2.45",
   "description": "LaWallet utilities and types",
   "prettier": "@lacrypta/prettier-config",
   "private": false,
@@ -21,7 +21,7 @@
   "license": "MIT",
   "devDependencies": {
     "@noble/hashes": "1.3.1",
-    "@noble/secp256k1": "^2.0.0",
+    "@noble/curves": "1.2.0",
     "@scure/base": "1.1.5",
     "@types/crypto-js": "^4.2.2",
     "@types/node": "^20.11.17",

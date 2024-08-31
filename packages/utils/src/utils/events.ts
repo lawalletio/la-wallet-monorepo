@@ -1,10 +1,11 @@
 import { hexToBytes } from '@noble/hashes/utils';
 import { NDKEvent, NDKKind, NDKPrivateKeySigner, type NDKTag, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { finalizeEvent, getPublicKey, nip26, type EventTemplate } from 'nostr-tools';
+import { finalizeEvent, getPublicKey, type EventTemplate } from 'nostr-tools';
 import { baseConfig } from '../constants/constants.js';
 import { ConfigTypes } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
 import { nowInSeconds } from './utilities.js';
+import { createDelegation } from '../libs/nip26.js';
 
 export enum LaWalletKinds {
   REGULAR = 1112,
@@ -73,7 +74,7 @@ export const buildCardActivationEvent = async (
   const signer = new NDKPrivateKeySigner(privateKey);
   const userPubkey: string = getPublicKey(hexToBytes(privateKey));
 
-  const delegation = nip26.createDelegation(privateKey, {
+  const delegation = createDelegation(privateKey, {
     pubkey: config.modulePubkeys.card,
     kind: LaWalletKinds.REGULAR,
     since: Math.floor(Date.now() / 1000) - 36000,
@@ -206,7 +207,7 @@ export const buildCardTransferAcceptEvent = async (
 ) => {
   let sk = hexToBytes(privateKey);
 
-  const delegation = nip26.createDelegation(privateKey, {
+  const delegation = createDelegation(privateKey, {
     pubkey: config.modulePubkeys.card,
     kind: LaWalletKinds.REGULAR,
     since: Math.floor(Date.now() / 1000) - 36000,
