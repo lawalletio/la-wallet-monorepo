@@ -256,7 +256,9 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
           const eTags: string[] = getMultipleTagsValues(e.tags, 'e');
 
           if (eTags.length) {
-            const isRefundEvent = events.find((event) => eTags.includes(event.id));
+            const isRefundEvent =
+              e.author.pubkey === config.modulePubkeys.urlx &&
+              Boolean(events.find((event) => eTags.includes(event.id)));
             isRefundEvent ? refundEvents.push(e) : startedEvents.push(e);
             return;
           } else {
