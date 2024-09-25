@@ -1,17 +1,19 @@
 import type { UserIdentity } from '@lawallet/utils';
-import { type ConfigParameter, type ConfigProps, type TokenBalance, type Transaction } from '@lawallet/utils/types';
+import { type ConfigProps, type TokenBalance, type Transaction } from '@lawallet/utils/types';
 import * as React from 'react';
 import { useBalance } from '../hooks/useBalance.js';
 import { useConfig } from '../hooks/useConfig.js';
 import { useCurrencyConverter, type UseConverterReturns } from '../hooks/useCurrencyConverter.js';
 import { useIdentity } from '../hooks/useIdentity.js';
+import { useProfile, type UseProfileReturns } from '../hooks/useProfile.js';
 import { useSettings, type UseSettingsReturns } from '../hooks/useSettings.js';
 import { useTransactions } from '../hooks/useTransactions.js';
-import { useNostr } from './NostrContext.js';
-import type { NDKFilter } from '@nostr-dev-kit/ndk';
+import { useBadges, type UseBadgesReturns } from '../hooks/useBadges.js';
 
 interface WalletContextReturns {
   identity: UserIdentity;
+  profile: UseProfileReturns;
+  badges: UseBadgesReturns;
   transactions: Transaction[];
   balance: TokenBalance;
   settings: UseSettingsReturns;
@@ -48,6 +50,9 @@ export function WalletProvider(props: WalletContextParams) {
     config,
   });
 
+  const profile = useProfile({ pubkey: identity.pubkey });
+  const badges = useBadges({ pubkey: identity.pubkey });
+
   const settings: UseSettingsReturns = useSettings();
   const converter: UseConverterReturns = useCurrencyConverter();
 
@@ -57,6 +62,8 @@ export function WalletProvider(props: WalletContextParams) {
 
   const value = {
     identity,
+    profile,
+    badges,
     transactions,
     balance,
     settings,

@@ -13,6 +13,7 @@ interface ProfileCacheReturns {
   domainAvatars: { [domain: string]: string };
   getNip05: (walias: string) => Promise<NDKUserProfile | null>;
   getLud16: (walias: string) => Promise<LNRequestResponse | null>;
+  getProfile: (pubkey: string) => Promise<NDKUserProfile | null>;
 }
 
 const STATIC_LAWALLET_ENDPOINT = 'https://static.lawallet.io'; // TODO: Add it to .env
@@ -24,7 +25,7 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
   const [isLoading, setIsLoading] = React.useState(true);
   const [domainAvatars, setDomainAvatars] = React.useState<{ [domain: string]: string }>({});
 
-  const { ndk } = useNostr({});
+  const { ndk } = useNostr();
 
   React.useEffect(() => {
     fetch(`${STATIC_LAWALLET_ENDPOINT}/domains.json`)
@@ -72,6 +73,11 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
     [lud16Cache],
   );
 
+  const getProfile = React.useCallback(async (pubkey: string): Promise<NDKUserProfile | null> => {
+    let user = ndk.getUser({ pubkey });
+    return user.fetchProfile();
+  }, []);
+
   return React.createElement(
     ProfileCacheContext.Provider,
     {
@@ -80,6 +86,7 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
         domainAvatars,
         getNip05,
         getLud16,
+        getProfile,
       },
     },
     props.children,
@@ -88,13 +95,14 @@ export function ProfileCacheProvider(props: React.PropsWithChildren<ProfileCache
 
 export const useProfileCache = (): ProfileCacheReturns => {
   const profile = React.useContext(ProfileCacheContext);
-  const { domainAvatars, isLoading, getNip05, getLud16 } = profile;
+  const { domainAvatars, isLoading, getNip05, getLud16, getProfile } = profile;
 
   return {
     domainAvatars,
     isLoading,
     getNip05,
     getLud16,
+    getProfile,
   };
 };
 

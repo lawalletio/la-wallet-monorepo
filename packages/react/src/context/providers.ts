@@ -4,6 +4,7 @@ import { type ConfigParameter } from '@lawallet/utils/types';
 import { NostrProvider } from './NostrContext.js';
 import { WalletProvider, type WalletContextParams } from './WalletContext.js';
 import type { ConfigProps } from '@lawallet/utils/types';
+import { ProfileCacheProvider } from './ProfileCacheContext.js';
 
 export const ConfigContext = React.createContext({} as ConfigProps);
 
@@ -21,6 +22,10 @@ export const LaWalletProvider = (props: WalletContextParams) => {
   return React.createElement(
     NostrProvider,
     props,
-    React.createElement(ConfigContext.Provider, configProps, React.createElement(WalletProvider, props, children)),
+    React.createElement(
+      ConfigContext.Provider,
+      configProps,
+      React.createElement(ProfileCacheProvider, props, React.createElement(WalletProvider, props, children)),
+    ),
   );
 };
