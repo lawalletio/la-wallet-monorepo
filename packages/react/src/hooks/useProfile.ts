@@ -4,6 +4,7 @@ import * as React from 'react';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import type { LNRequestResponse } from '@lawallet/utils/types';
 import { resolveDomainAvatar, useProfileCache } from '../context/ProfileCacheContext.js';
+import { useLaWallet } from '../context/WalletContext.js';
 
 const FALLBACK_AVATAR_URL = 'https://static.lawallet.io/img/domains/default.png'; // TODO: Add it to .env
 
@@ -11,6 +12,7 @@ export interface UseProfileConfig {}
 
 export interface UseProfileParams {
   walias?: string;
+  pubkey?: string;
 }
 
 export interface UseProfileReturns {
@@ -23,11 +25,25 @@ export interface UseProfileReturns {
   isNip05Loading: boolean;
   isLud16Loading: boolean;
   isDomainAvatarLoading: boolean;
+  loadProfileFromPubkey: (pubkey: string) => void;
 }
 
-export const useProfile = ({ walias }: UseProfileParams, _options?: UseProfileConfig): UseProfileReturns => {
+export const useProfile = (params?: UseProfileParams, _options?: UseProfileConfig): UseProfileReturns => {
+  if (!params) {
+    const context = useLaWallet();
+
+    if (!context)
+      throw new Error(
+        'If you do not send parameters to the hook, it must have a LaWalletConfig context from which to obtain the information.',
+      );
+
+    return context.profile;
+  }
+
+  const { walias, pubkey } = params;
+
   // Hooks
-  const { domainAvatars, isLoading: isDomainAvatarLoading, getNip05, getLud16 } = useProfileCache();
+  const { domainAvatars, isLoading: isDomainAvatarLoading, getNip05, getLud16, getProfile } = useProfileCache();
 
   // Global loading
   const [isLoading, setIsLoading] = React.useState(true);
@@ -87,6 +103,29 @@ export const useProfile = ({ walias }: UseProfileParams, _options?: UseProfileCo
       .finally(() => setIsLud16Loading(false));
   }, [walias]);
 
+  const loadProfileFromPubkey = (pubkey: string) => {
+    setIsNip05Loading(true);
+
+    getProfile(pubkey)
+      .then((profile) => {
+        if (!profile) {
+          return;
+        }
+
+        setNip05Avatar(profile.image);
+        setNip05(profile);
+      })
+      .finally(() => setIsNip05Loading(false));
+  };
+
+  React.useEffect(() => {
+    if (!pubkey) {
+      return;
+    }
+
+    loadProfileFromPubkey(pubkey);
+  }, [pubkey]);
+
   // Fetch domain avatar
   React.useEffect(() => {
     if (!walias) {
@@ -106,5 +145,6 @@ export const useProfile = ({ walias }: UseProfileParams, _options?: UseProfileCo
     isNip05Loading,
     isLud16Loading,
     isDomainAvatarLoading,
+    loadProfileFromPubkey,
   };
 };

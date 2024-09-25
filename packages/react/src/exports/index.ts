@@ -20,8 +20,10 @@ export { type useZapReturns, useZap } from '../hooks/useZap.js';
 export { type UseInvoiceReturns, useInvoice } from '../hooks/useInvoice.js';
 export { type UseLNURLReturns, useLNURL } from '../hooks/useLNURL.js';
 
+export { useBadges } from '../hooks/useBadges.js';
+
 export { type NostrContext, NostrProvider, useNostr } from '../context/NostrContext.js';
-export { type ProfileCacheContext, ProfileCacheProvider, useProfileCache } from '../context/ProfileCacheContext.js';
+export { type ProfileCacheContext, ProfileCacheProvider } from '../context/ProfileCacheContext.js';
 export { LaWalletConfig, LaWalletProvider } from '../context/providers.js';
 
 export * from '@lawallet/utils';

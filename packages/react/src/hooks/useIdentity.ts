@@ -1,5 +1,5 @@
 import { UserIdentity } from '@lawallet/utils';
-import { type ConfigParameter, type TokenBalance, type Transaction } from '@lawallet/utils/types';
+import { type ConfigParameter } from '@lawallet/utils/types';
 import React from 'react';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
