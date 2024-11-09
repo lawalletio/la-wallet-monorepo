@@ -5,6 +5,7 @@ import { lnurl_decode } from '../libs/lnurl.js';
 import type { PaymentRequestObject } from '../types/bolt11.js';
 import { type ConfigProps } from '../types/config.js';
 import { TransferTypes, type InvoiceTransferType, type LNURLTransferType } from '../types/transaction.js';
+import { LightningAddress } from '@getalby/lightning-tools';
 
 export const decodeInvoice = (invoice: string): PaymentRequestObject | undefined => {
   try {
@@ -196,8 +197,16 @@ export const splitHandle = (handle: string, config: ConfigProps = baseConfig): s
 
 const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): Promise<LNURLTransferType> => {
   const [username, domain] = splitHandle(data, config);
-  const payRequest = await getPayRequest(`https://${domain}/.well-known/lnurlp/${username}`);
-  if (!payRequest) return defaultLNURLTransfer;
+
+  const ln = new LightningAddress(`${username}@${domain}`);
+  let payRequest = await getPayRequest(`https://${domain}/.well-known/lnurlp/${username}`);
+
+  if (!payRequest) {
+    await ln.fetch();
+    if (!ln || !ln.lnurlpData || !ln.lnurlpData.rawData) return defaultLNURLTransfer;
+
+    payRequest = ln.lnurlpData.rawData;
+  }
 
   const amount: number = payRequest.minSendable === payRequest.maxSendable ? payRequest.maxSendable! / 1000 : 0;
 
@@ -207,6 +216,7 @@ const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): P
     amount,
     type: TransferTypes.LUD16,
     request: payRequest,
+    lnService: ln,
   };
 
   if (payRequest.federationId && payRequest.federationId === config.federationId) {

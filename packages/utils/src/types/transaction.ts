@@ -1,4 +1,5 @@
 import { type NostrEvent } from '@nostr-dev-kit/ndk';
+import { LightningAddress } from '@getalby/lightning-tools';
 
 // type StrObjectType = Record<string, string>
 
@@ -70,6 +71,7 @@ export interface LNURLTransferType extends TransferInformation {
   comment: string;
   receiverPubkey: string;
   request: LNRequestResponse | null;
+  lnService: LightningAddress | null;
 }
 
 export interface InvoiceTransferType extends TransferInformation {

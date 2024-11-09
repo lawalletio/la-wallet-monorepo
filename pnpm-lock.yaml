@@ -166,6 +166,9 @@ importers:
 
   packages/utils:
     dependencies:
+      '@getalby/lightning-tools':
+        specifier: ^5.1.0
+        version: 5.1.0
       '@nostr-dev-kit/ndk':
         specifier: 2.10.0
         version: 2.10.0(typescript@5.6.2)
@@ -648,6 +651,11 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@getalby/lightning-tools@5.1.0:
+    resolution: {integrity: sha512-KhLnKu6hboNYxVmmegRi06ufW3J0o/5gZ5vMe4e94tKC1o8glN/fDn1fTL4hRIqgZjfzvDPPmV1A3YUkNtQttA==}
+    engines: {node: '>=14'}
+    dev: false
 
   /@headlessui/react@1.7.19(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Ll+8q3OlMJfJbAKM/+/Y2q6PPYbryqNTXDbryx7SXLIDamkF6iQFbriYHga0dY44PvDhvvBWCx1Xj4U5+G4hOw==}
