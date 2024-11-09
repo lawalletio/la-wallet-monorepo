@@ -198,11 +198,11 @@ export const splitHandle = (handle: string, config: ConfigProps = baseConfig): s
 const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): Promise<LNURLTransferType> => {
   const [username, domain] = splitHandle(data, config);
 
+  const ln = new LightningAddress(`${username}@${domain}`);
   let payRequest = await getPayRequest(`https://${domain}/.well-known/lnurlp/${username}`);
-  if (!payRequest) {
-    const ln = new LightningAddress(`${username}@${domain}`);
-    await ln.fetch();
 
+  if (!payRequest) {
+    await ln.fetch();
     if (!ln || !ln.lnurlpData || !ln.lnurlpData.rawData) return defaultLNURLTransfer;
 
     payRequest = ln.lnurlpData.rawData;
@@ -216,6 +216,7 @@ const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): P
     amount,
     type: TransferTypes.LUD16,
     request: payRequest,
+    lnService: ln,
   };
 
   if (payRequest.federationId && payRequest.federationId === config.federationId) {
