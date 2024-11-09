@@ -1,8 +1,9 @@
 import { schnorr } from '@noble/curves/secp256k1';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils';
 import { sha256 } from '@noble/hashes/sha256';
-import { utf8Encoder } from 'nostr-tools/utils';
 import { getPublicKey, type Event } from 'nostr-tools';
+
+const utf8Encoder = new TextEncoder();
 
 export type Parameters = {
   pubkey: string; // the key to whom the delegation will be given
