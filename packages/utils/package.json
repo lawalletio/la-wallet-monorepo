@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/utils",
-  "version": "0.2.48",
+  "version": "0.2.49",
   "description": "LaWallet utilities and types",
   "prettier": "@lacrypta/prettier-config",
   "private": false,
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@getalby/lightning-tools": "^5.1.0",
-    "@nostr-dev-kit/ndk": "2.10.0",
+    "@nostr-dev-kit/ndk": "2.10.6",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0"
   },
