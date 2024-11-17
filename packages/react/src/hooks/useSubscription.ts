@@ -10,6 +10,7 @@ import {
 import * as React from 'react';
 import { useNostr } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
+import { nowInSeconds } from '../exports/index.js';
 
 export interface UseSubscriptionReturns {
   loading: boolean;
@@ -26,7 +27,7 @@ export interface SubscriptionProps extends ConfigParameter {
 
 export const useSubscription = ({ filters, options, enabled, config: configParam, onEvent }: SubscriptionProps) => {
   const config = useConfig(configParam);
-  const { ndk, validateRelaysStatus, addRelayListener, removeRelayListener } = useNostr({ config });
+  const { ndk, validateRelaysStatus } = useNostr({ config });
 
   const [subscription, setSubscription] = React.useState<NDKSubscription>();
   const [events, setEvents] = React.useState<NDKEvent[]>([]);
@@ -36,7 +37,6 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
     if (ndk && enabled && !subscription) {
       setLoading(true);
 
-      let connectedRelays = ndk.pool.connectedRelays();
       const newSub = new NDKSubscription(ndk, filters, options);
 
       newSub.on('event', async (event: NDKEvent) => {
@@ -58,9 +58,7 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
         setLoading(false);
       });
 
-      connectedRelays.forEach((relay) => {
-        relay.subscribe(newSub, filters);
-      });
+      newSub.start();
 
       setSubscription(newSub);
       return;
@@ -87,31 +85,19 @@ export const useSubscription = ({ filters, options, enabled, config: configParam
   React.useEffect(() => {
     if (subscription) {
       !enabled ? stopSubscription() : validateRelaysStatus();
-      return;
+    } else {
+      if (enabled) {
+        if (events.length) setEvents([]);
+        startSubscription();
+      }
     }
 
-    if (enabled) {
-      if (events.length) setEvents([]);
-      startSubscription();
-      return;
-    }
+    ndk.pool.on('relay:connect', handleResubscription);
 
     return () => {
-      stopSubscription();
+      ndk.pool.off('relay:connect', handleResubscription);
     };
   }, [enabled, subscription]);
-
-  React.useEffect(() => {
-    if (subscription && enabled) {
-      addRelayListener('relay:firstconnect', handleResubscription);
-      addRelayListener('relay:reconnect', handleResubscription);
-
-      return () => {
-        removeRelayListener('relay:firstconnect', handleResubscription);
-        removeRelayListener('relay:reconnect', handleResubscription);
-      };
-    }
-  }, [handleResubscription]);
 
   return {
     loading,
