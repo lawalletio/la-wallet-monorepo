@@ -165,43 +165,46 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     }
   };
 
-  const formatStartTransaction = async (event: NDKEvent) => {
-    const nostrEvent: NostrEvent = await event.toNostrEvent();
-    const AuthorIsCard: boolean = event.pubkey === config.modulePubkeys.card;
+  const formatStartTransaction = React.useCallback(
+    async (event: NDKEvent) => {
+      const nostrEvent: NostrEvent = await event.toNostrEvent();
+      const AuthorIsCard: boolean = event.pubkey === config.modulePubkeys.card;
 
-    const DelegatorIsUser: boolean = AuthorIsCard && nip26.getDelegator(nostrEvent as Event) === pubkey;
-    const AuthorIsUser: boolean = DelegatorIsUser || event.pubkey === pubkey;
+      const DelegatorIsUser: boolean = AuthorIsCard && nip26.getDelegator(nostrEvent as Event) === pubkey;
+      const AuthorIsUser: boolean = DelegatorIsUser || event.pubkey === pubkey;
 
-    if (AuthorIsCard && !DelegatorIsUser) {
-      const delegation_pTags: string[] = getMultipleTagsValues(event.tags, 'p');
-      if (!delegation_pTags.includes(pubkey)) return;
-    }
+      if (AuthorIsCard && !DelegatorIsUser) {
+        const delegation_pTags: string[] = getMultipleTagsValues(event.tags, 'p');
+        if (!delegation_pTags.includes(pubkey)) return;
+      }
 
-    const direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
+      const direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
 
-    const eventContent = parseContent(event.content);
-    const metadata = await extractMetadata(nostrEvent, direction);
+      const eventContent = parseContent(event.content);
+      const metadata = await extractMetadata(nostrEvent, direction);
 
-    let newTransaction: Transaction = {
-      id: event.id!,
-      status: TransactionStatus.PENDING,
-      memo: eventContent.memo ?? '',
-      direction,
-      type: AuthorIsCard ? TransactionType.CARD : TransactionType.INTERNAL,
-      tokens: eventContent.tokens,
-      events: [nostrEvent],
-      errors: [],
-      createdAt: event.created_at! * 1000,
-      metadata,
-    };
+      let newTransaction: Transaction = {
+        id: event.id!,
+        status: TransactionStatus.PENDING,
+        memo: eventContent.memo ?? '',
+        direction,
+        type: AuthorIsCard ? TransactionType.CARD : TransactionType.INTERNAL,
+        tokens: eventContent.tokens,
+        events: [nostrEvent],
+        errors: [],
+        createdAt: event.created_at! * 1000,
+        metadata,
+      };
 
-    if (!AuthorIsCard) {
-      const boltTag: string | undefined = getTagValue(event.tags, 'bolt11');
-      if (boltTag && boltTag.length) newTransaction.type = TransactionType.LN;
-    }
+      if (!AuthorIsCard) {
+        const boltTag: string | undefined = getTagValue(event.tags, 'bolt11');
+        if (boltTag && boltTag.length) newTransaction.type = TransactionType.LN;
+      }
 
-    return newTransaction;
-  };
+      return newTransaction;
+    },
+    [pubkey],
+  );
 
   const markTxRefund = async (transaction: Transaction, statusEvent: NDKEvent) => {
     const parsedContent = parseContent(statusEvent.content);
@@ -259,6 +262,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
             const isRefundEvent =
               e.author.pubkey === config.modulePubkeys.urlx &&
               Boolean(events.find((event) => eTags.includes(event.id)));
+
             isRefundEvent ? refundEvents.push(e) : startedEvents.push(e);
             return;
           } else {
@@ -270,6 +274,10 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         }
       }
     });
+
+    // console.log(startedEvents.map((event) => event.toNostrEvent()));
+    // console.log(statusEvents.map((event) => event.toNostrEvent()));
+    // console.log(refundEvents);
 
     return [startedEvents, statusEvents, refundEvents];
   };
@@ -352,7 +360,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
       subscription: [],
       idsLoaded: txs.map((tx) => tx.id.toString()),
       cached: txs,
-      lastCached: sinceLastCached,
+      lastCached: sinceLastCached - 120,
       loading: false,
     });
   };
