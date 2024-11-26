@@ -1,5 +1,5 @@
-import { NDKEvent, NDKRelaySet, type NDKFilter, type NDKKind } from '@nostr-dev-kit/ndk';
-import React, { useEffect, useMemo, useState } from 'react';
+import { NDKEvent, type NDKFilter, type NDKKind } from '@nostr-dev-kit/ndk';
+import React, { useEffect, useState } from 'react';
 import { useNostr } from '../context/NostrContext.js';
 import { useSubscription } from './useSubscription.js';
 import { useLaWallet } from '../context/WalletContext.js';
