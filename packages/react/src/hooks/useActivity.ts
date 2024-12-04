@@ -150,40 +150,6 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
     config,
   });
 
-  const extractMetadata = async (event: NostrEvent, direction: TransactionDirection) => {
-    try {
-      const metadataTag = getTag(event.tags, 'metadata');
-      if (metadataTag && metadataTag.length === 4) {
-        const [, encrypted, encrpytType, message] = metadataTag;
-
-        if (!encrypted) return parseContent(message!);
-
-        if (encrpytType === 'nip04') {
-          const decryptPubkey: string =
-            direction === TransactionDirection.INCOMING ? event.pubkey : getMultipleTagsValues(event.tags, 'p')[1]!;
-
-          const decryptedMessage = await decrypt(decryptPubkey, message!);
-
-          return parseContent(decryptedMessage);
-        }
-      } else {
-        if (
-          direction === TransactionDirection.INCOMING &&
-          event.pubkey !== config.modulePubkeys.urlx &&
-          event.pubkey !== config.modulePubkeys.card
-        ) {
-          let senderUsername = await getUsername(pubkey, config);
-
-          return senderUsername.length
-            ? { sender: `${senderUsername}@${normalizeLNDomain(config.endpoints.lightningDomain)}` }
-            : {};
-        }
-      }
-    } catch {
-      return {};
-    }
-  };
-
   const formatStartTransaction = React.useCallback(
     async (event: NostrEvent) => {
       const AuthorIsCard: boolean = event.pubkey === config.modulePubkeys.card;
@@ -199,7 +165,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
       const direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
 
       const eventContent = parseContent(event.content);
-      const metadata = await extractMetadata(event, direction);
+      const metadata = getTag(event.tags, 'metadata');
 
       let newTransaction: Transaction = {
         id: event.id!,

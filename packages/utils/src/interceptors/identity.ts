@@ -45,7 +45,10 @@ export const claimIdentity = async (event: NostrEvent, config: ConfigProps = bas
     });
 };
 
-export const getUsername = (pubkey: string, config: ConfigProps = baseConfig) => {
+export const getUsername = async (pubkey: string, config: ConfigProps = baseConfig) => {
+  let storagedUsername = await config.storage.getItem(`${config.federationId}_${pubkey}`);
+  if (storagedUsername) return storagedUsername;
+
   return fetch(`${config.endpoints.lightningDomain}/api/pubkey/${pubkey}`)
     .then((res) => res.json())
     .then((info) => {
