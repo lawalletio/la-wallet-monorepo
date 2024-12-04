@@ -7,9 +7,11 @@ import {
   getTagValue,
   nowInSeconds,
   parseContent,
+  splitHandle,
+  normalizeLNDomain,
 } from '@lawallet/utils';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
-import { type NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
+import { NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
 import * as React from 'react';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { type Event } from 'nostr-tools';
@@ -18,6 +20,7 @@ import { useNostr } from '../context/NostrContext.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
+import { getUsername } from '../exports/actions.js';
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
@@ -26,9 +29,7 @@ export interface ActivitySubscriptionProps {
 export type ActivityType = {
   loading: boolean;
   lastCached: number;
-  cached: Transaction[];
-  subscription: Transaction[];
-  idsLoaded: string[];
+  transactions: Transaction[];
 };
 
 export interface UseTransactionsProps extends ConfigParameter {
@@ -56,19 +57,18 @@ const statusTags: string[] = [
   LaWalletTags.INBOUND_TRANSACTION_ERROR,
 ];
 
-const MAX_TRANSACTIONS_TIME: number = 30 * (24 * 60 * 60); // 30 days
+const MAX_TRANSACTIONS_TIME: number = 90 * (24 * 60 * 60); // 90 days
+const CACHE_TIME: number = 24 * 60 * 60;
 
 const defaultActivity = {
   loading: true,
   lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
-  cached: [],
-  subscription: [],
-  idsLoaded: [],
+  transactions: [],
 };
 
 type EventWithStatus = {
-  startEvent: NDKEvent | undefined;
-  statusEvent: NDKEvent | undefined;
+  startEvent: NostrEvent | undefined;
+  statusEvent: NostrEvent | undefined;
 };
 
 let debounceTimeout: NodeJS.Timeout;
@@ -93,9 +93,11 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     until = undefined,
     storage = false,
   } = parameters;
+
   const config = useConfig(parameters);
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
+  const [cacheEvents, setCacheEvents] = React.useState<NostrEvent[]>([]);
 
   const since = React.useMemo(() => {
     if (sinceParam) return sinceParam;
@@ -157,7 +159,18 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
             direction === TransactionDirection.INCOMING ? event.pubkey : getMultipleTagsValues(event.tags, 'p')[1]!;
 
           const decryptedMessage = await decrypt(decryptPubkey, message!);
+
           return parseContent(decryptedMessage);
+        }
+      } else {
+        if (direction === TransactionDirection.INCOMING && event.pubkey !== config.modulePubkeys.urlx) {
+          let senderUsername = await getUsername(pubkey, config);
+
+          console.log(`${pubkey} username: `, senderUsername);
+
+          return senderUsername.length
+            ? { sender: `${senderUsername}@${normalizeLNDomain(config.endpoints.lightningDomain)}` }
+            : {};
         }
       }
     } catch {
@@ -166,11 +179,10 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
   };
 
   const formatStartTransaction = React.useCallback(
-    async (event: NDKEvent) => {
-      const nostrEvent: NostrEvent = await event.toNostrEvent();
+    async (event: NostrEvent) => {
       const AuthorIsCard: boolean = event.pubkey === config.modulePubkeys.card;
 
-      const DelegatorIsUser: boolean = AuthorIsCard && nip26.getDelegator(nostrEvent as Event) === pubkey;
+      const DelegatorIsUser: boolean = AuthorIsCard && nip26.getDelegator(event as Event) === pubkey;
       const AuthorIsUser: boolean = DelegatorIsUser || event.pubkey === pubkey;
 
       if (AuthorIsCard && !DelegatorIsUser) {
@@ -181,7 +193,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
       const direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
 
       const eventContent = parseContent(event.content);
-      const metadata = await extractMetadata(nostrEvent, direction);
+      const metadata = await extractMetadata(event, direction);
 
       let newTransaction: Transaction = {
         id: event.id!,
@@ -190,7 +202,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         direction,
         type: AuthorIsCard ? TransactionType.CARD : TransactionType.INTERNAL,
         tokens: eventContent.tokens,
-        events: [nostrEvent],
+        events: [event],
         errors: [],
         createdAt: event.created_at! * 1000,
         metadata,
@@ -206,16 +218,16 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     [pubkey],
   );
 
-  const markTxRefund = async (transaction: Transaction, statusEvent: NDKEvent) => {
+  const markTxRefund = async (transaction: Transaction, statusEvent: NostrEvent) => {
     const parsedContent = parseContent(statusEvent.content);
     transaction.status = TransactionStatus.REVERTED;
     transaction.errors = [parsedContent?.memo];
-    transaction.events.push(await statusEvent.toNostrEvent());
+    transaction.events.push(statusEvent);
 
     return transaction;
   };
 
-  const updateTxStatus = async (transaction: Transaction, statusEvent: NDKEvent) => {
+  const updateTxStatus = async (transaction: Transaction, statusEvent: NostrEvent) => {
     const parsedContent = parseContent(statusEvent.content);
 
     const statusTag: string | undefined = getTagValue(statusEvent.tags, 't');
@@ -229,23 +241,23 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
       transaction.status = isError ? TransactionStatus.ERROR : TransactionStatus.CONFIRMED;
 
       if (isError) transaction.errors = [parsedContent];
-      transaction.events.push(await statusEvent.toNostrEvent());
+      transaction.events.push(statusEvent);
     }
 
     return transaction;
   };
 
-  const findAsocciatedEvent = React.useCallback((events: NDKEvent[], eventId: string) => {
+  const findAsocciatedEvent = React.useCallback((events: NostrEvent[], eventId: string) => {
     return events.find((event) => {
       const associatedEvents: string[] = getMultipleTagsValues(event.tags, 'e');
       return associatedEvents.includes(eventId) ? event : undefined;
     });
   }, []);
 
-  const filterEventsByTxType = (events: NDKEvent[]) => {
-    const startedEvents: NDKEvent[] = [],
-      statusEvents: NDKEvent[] = [],
-      refundEvents: NDKEvent[] = [];
+  const filterEventsByTxType = (events: NostrEvent[]) => {
+    const startedEvents: NostrEvent[] = [],
+      statusEvents: NostrEvent[] = [],
+      refundEvents: NostrEvent[] = [];
 
     events.forEach((e) => {
       const subkind: string | undefined = getTagValue(e.tags, 't');
@@ -260,8 +272,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
 
           if (eTags.length) {
             const isRefundEvent =
-              e.author.pubkey === config.modulePubkeys.urlx &&
-              Boolean(events.find((event) => eTags.includes(event.id)));
+              e.pubkey === config.modulePubkeys.urlx && Boolean(events.find((event) => eTags.includes(event.id!)));
 
             isRefundEvent ? refundEvents.push(e) : startedEvents.push(e);
             return;
@@ -275,27 +286,23 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
       }
     });
 
-    // console.log(startedEvents.map((event) => event.toNostrEvent()));
-    // console.log(statusEvents.map((event) => event.toNostrEvent()));
-    // console.log(refundEvents);
-
     return [startedEvents, statusEvents, refundEvents];
   };
 
   function parseStatusEvents(
-    startEvent: NDKEvent,
-    statusEvents?: NDKEvent[],
-    refundEvents?: NDKEvent[],
+    startEvent: NostrEvent,
+    statusEvents?: NostrEvent[],
+    refundEvents?: NostrEvent[],
   ): EventWithStatus[] {
-    const statusEvent: NDKEvent | undefined = statusEvents
+    const statusEvent: NostrEvent | undefined = statusEvents
       ? findAsocciatedEvent(statusEvents, startEvent.id!)
       : undefined;
 
-    const startRefundEvent: NDKEvent | undefined = refundEvents
+    const startRefundEvent: NostrEvent | undefined = refundEvents
       ? findAsocciatedEvent(refundEvents, startEvent.id!)
       : undefined;
 
-    const statusRefundEvent: NDKEvent | undefined =
+    const statusRefundEvent: NostrEvent | undefined =
       startRefundEvent && refundEvents ? findAsocciatedEvent(refundEvents, startRefundEvent.id!) : undefined;
 
     const startWithStatus: EventWithStatus = {
@@ -323,49 +330,56 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     return tmpTransaction;
   }
 
-  async function generateTransactions(events: NDKEvent[]) {
-    const transactions: Transaction[] = [];
-    const [startedEvents, statusEvents, refundEvents] = filterEventsByTxType(events);
+  const generateTransactions = React.useCallback(
+    async (events: NostrEvent[]) => {
+      const transactions: Transaction[] = [];
+      const [startedEvents, statusEvents, refundEvents] = filterEventsByTxType(events);
 
-    setActivityInfo((prev) => {
-      return {
+      await Promise.all(
+        startedEvents!.map(async (startEvent) => {
+          const [startWithStatus, refundWithStatus] = parseStatusEvents(startEvent, statusEvents, refundEvents);
+          const transaction = await fillTransaction(startWithStatus!, refundWithStatus!);
+          if (transaction) transactions.push(transaction);
+        }),
+      );
+
+      setActivityInfo((prev) => {
+        return {
+          ...prev,
+          transactions,
+          loading: false,
+        };
+      });
+
+      if (storage) saveTransactionsOnCache(events);
+    },
+    [storage, pubkey],
+  );
+
+  const saveCacheActivity = (events: NostrEvent[]) => {
+    if (!events.length) {
+      setActivityInfo((prev) => ({
         ...prev,
-        idsLoaded: transactions.map((tx) => tx.id.toString()),
-      };
-    });
-
-    await Promise.all(
-      startedEvents!.map(async (startEvent) => {
-        const [startWithStatus, refundWithStatus] = parseStatusEvents(startEvent, statusEvents, refundEvents);
-        const transaction = await fillTransaction(startWithStatus!, refundWithStatus!);
-        if (transaction) transactions.push(transaction);
-      }),
-    );
-
-    setActivityInfo((prev) => {
-      return {
-        ...prev,
-        subscription: transactions,
+        lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
         loading: false,
-      };
-    });
-  }
+      }));
+      return;
+    }
 
-  const saveCacheActivity = (txs: Transaction[]) => {
-    let lastTx = txs[0];
-    let sinceDefault = nowInSeconds() - MAX_TRANSACTIONS_TIME;
-    let sinceLastCached = lastTx?.events[lastTx.events.length - 1]?.created_at ?? sinceDefault;
+    const lastEvent = events[0]!;
+    const sinceDefault = nowInSeconds() - MAX_TRANSACTIONS_TIME;
+    const sinceLastCached = lastEvent.created_at ?? sinceDefault;
 
-    setActivityInfo({
-      subscription: [],
-      idsLoaded: txs.map((tx) => tx.id.toString()),
-      cached: txs,
-      lastCached: sinceLastCached - 120,
+    setCacheEvents(events);
+
+    setActivityInfo((prev) => ({
+      ...prev,
+      lastCached: sinceLastCached - CACHE_TIME,
       loading: false,
-    });
+    }));
   };
 
-  const loadCachedTransactions = async () => {
+  const loadCachedEvents = React.useCallback(async () => {
     if (pubkey.length) {
       const storagedData: string = ((await config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`)) as string) || '';
 
@@ -374,40 +388,59 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         return;
       }
 
-      const cachedTxs: Transaction[] = parseContent(storagedData);
+      const cachedTxs: NostrEvent[] = parseContent(storagedData);
       saveCacheActivity(cachedTxs);
+      generateTransactions(cacheEvents);
     }
-  };
+  }, [pubkey]);
+
+  const saveTransactionsOnCache = React.useCallback(
+    async (events: NostrEvent[]) => {
+      await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(events));
+    },
+    [pubkey],
+  );
 
   const transactions: Transaction[] = React.useMemo(() => {
-    if (!storage) return activityInfo.subscription.sort((a, b) => b.createdAt - a.createdAt);
-
-    const TXsWithoutCached: Transaction[] = activityInfo.subscription.filter((tx) => {
-      const cached = activityInfo.cached.find((cachedTX) => cachedTX.id === tx.id);
-
-      return Boolean(!cached);
-    });
-
-    return [...TXsWithoutCached, ...activityInfo.cached].sort((a, b) => b.createdAt - a.createdAt);
-  }, [activityInfo.cached.length, activityInfo.subscription.length]);
+    return activityInfo.transactions.sort((a, b) => b.createdAt - a.createdAt);
+  }, [activityInfo.transactions.length]);
 
   const debouncedGenerateTransactions = React.useCallback(
-    (events: NDKEvent[]) => {
+    async (events: NDKEvent[]) => {
       if (debounceTimeout) {
         clearTimeout(debounceTimeout);
       }
 
+      const nostrEvents: NostrEvent[] = await Promise.all(
+        events.map(async (event) => {
+          const nEvent = await event.toNostrEvent();
+          return nEvent;
+        }),
+      );
+
+      const combinedEvents = [...cacheEvents, ...nostrEvents];
+      const uniqueEventsMap = new Map<string, NostrEvent>();
+
+      combinedEvents.forEach((event) => {
+        uniqueEventsMap.set(event.id!, event);
+      });
+
+      const uniqueEvents: NostrEvent[] = Array.from(uniqueEventsMap.values());
+
       debounceTimeout = setTimeout(() => {
-        generateTransactions(events);
+        generateTransactions(uniqueEvents);
       }, 300);
     },
-    [debounceTimeout],
+    [debounceTimeout, cacheEvents],
   );
 
   React.useEffect(() => {
+    if (!pubkey) return;
+
     if (walletEvents.length) debouncedGenerateTransactions(walletEvents);
+
     return () => clearTimeout(debounceTimeout);
-  }, [walletEvents.length]);
+  }, [pubkey, walletEvents.length]);
 
   React.useEffect(() => {
     if (!pubkey) {
@@ -416,7 +449,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
     }
 
     storage
-      ? loadCachedTransactions()
+      ? loadCachedEvents()
       : setActivityInfo((prev) => {
           return {
             ...prev,
@@ -424,15 +457,6 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
           };
         });
   }, [pubkey, storage]);
-
-  const saveTransactions = async (txs: Transaction[]) => {
-    await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(txs));
-    saveCacheActivity(txs);
-  };
-
-  React.useEffect(() => {
-    if (storage && transactions.length) saveTransactions(transactions);
-  }, [transactions.length]);
 
   return transactions;
 };
