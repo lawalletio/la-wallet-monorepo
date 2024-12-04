@@ -1,6 +1,6 @@
 export { useIdentity } from '../hooks/useIdentity.js';
 export { useBalance } from '../hooks/useBalance.js';
-export { useTransactions } from '../hooks/useTransactions.js';
+export { useActivity } from '../hooks/useActivity.js';
 export { useTransfer } from '../hooks/useTransfer.js';
 export { useProfile } from '../hooks/useProfile.js';
 export { useConfig } from '../hooks/useConfig.js';

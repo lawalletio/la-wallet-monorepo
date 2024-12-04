@@ -7,7 +7,6 @@ import {
   getTagValue,
   nowInSeconds,
   parseContent,
-  splitHandle,
   normalizeLNDomain,
 } from '@lawallet/utils';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
@@ -32,7 +31,7 @@ export type ActivityType = {
   transactions: Transaction[];
 };
 
-export interface UseTransactionsProps extends ConfigParameter {
+export interface UseActivityProps extends ConfigParameter {
   pubkey: string;
   since?: number | undefined;
   until?: number | undefined;
@@ -73,7 +72,12 @@ type EventWithStatus = {
 
 let debounceTimeout: NodeJS.Timeout;
 
-export const useTransactions = (parameters?: UseTransactionsProps): Transaction[] => {
+export type UseActivityReturns = {
+  transactions: Transaction[];
+  loading: boolean;
+};
+
+export const useActivity = (parameters?: UseActivityProps): UseActivityReturns => {
   if (!parameters) {
     const context = useLaWallet();
 
@@ -82,7 +86,7 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         'If you do not send parameters to the hook, it must have a LaWalletConfig context from which to obtain the information.',
       );
 
-    return context.transactions;
+    return context.activity;
   }
 
   const {
@@ -163,10 +167,12 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
           return parseContent(decryptedMessage);
         }
       } else {
-        if (direction === TransactionDirection.INCOMING && event.pubkey !== config.modulePubkeys.urlx) {
+        if (
+          direction === TransactionDirection.INCOMING &&
+          event.pubkey !== config.modulePubkeys.urlx &&
+          event.pubkey !== config.modulePubkeys.card
+        ) {
           let senderUsername = await getUsername(pubkey, config);
-
-          console.log(`${pubkey} username: `, senderUsername);
 
           return senderUsername.length
             ? { sender: `${senderUsername}@${normalizeLNDomain(config.endpoints.lightningDomain)}` }
@@ -332,6 +338,12 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
 
   const generateTransactions = React.useCallback(
     async (events: NostrEvent[]) => {
+      if (!pubkey.length) return;
+
+      setActivityInfo((prev) => {
+        return { ...prev, loading: true };
+      });
+
       const transactions: Transaction[] = [];
       const [startedEvents, statusEvents, refundEvents] = filterEventsByTxType(events);
 
@@ -343,41 +355,19 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         }),
       );
 
-      setActivityInfo((prev) => {
-        return {
-          ...prev,
-          transactions,
-          loading: false,
-        };
-      });
+      if (transactions.length)
+        setActivityInfo((prev) => {
+          return {
+            ...prev,
+            transactions,
+            loading: false,
+          };
+        });
 
       if (storage) saveTransactionsOnCache(events);
     },
     [storage, pubkey],
   );
-
-  const saveCacheActivity = (events: NostrEvent[]) => {
-    if (!events.length) {
-      setActivityInfo((prev) => ({
-        ...prev,
-        lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
-        loading: false,
-      }));
-      return;
-    }
-
-    const lastEvent = events[0]!;
-    const sinceDefault = nowInSeconds() - MAX_TRANSACTIONS_TIME;
-    const sinceLastCached = lastEvent.created_at ?? sinceDefault;
-
-    setCacheEvents(events);
-
-    setActivityInfo((prev) => ({
-      ...prev,
-      lastCached: sinceLastCached - CACHE_TIME,
-      loading: false,
-    }));
-  };
 
   const loadCachedEvents = React.useCallback(async () => {
     if (pubkey.length) {
@@ -389,10 +379,23 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
       }
 
       const cachedTxs: NostrEvent[] = parseContent(storagedData);
-      saveCacheActivity(cachedTxs);
-      generateTransactions(cacheEvents);
+      if (cachedTxs.length) {
+        const lastEvent = cachedTxs[0]!;
+        const sinceDefault = nowInSeconds() - MAX_TRANSACTIONS_TIME;
+        const sinceLastCached = lastEvent.created_at ?? sinceDefault;
+
+        setCacheEvents(cachedTxs);
+
+        setActivityInfo((prev) => ({
+          ...prev,
+          lastCached: sinceLastCached - CACHE_TIME,
+          loading: cachedTxs.length ? true : false,
+        }));
+
+        if (cachedTxs.length) generateTransactions(cachedTxs);
+      }
     }
-  }, [pubkey]);
+  }, [storage, pubkey]);
 
   const saveTransactionsOnCache = React.useCallback(
     async (events: NostrEvent[]) => {
@@ -436,7 +439,6 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
 
   React.useEffect(() => {
     if (!pubkey) return;
-
     if (walletEvents.length) debouncedGenerateTransactions(walletEvents);
 
     return () => clearTimeout(debounceTimeout);
@@ -458,5 +460,8 @@ export const useTransactions = (parameters?: UseTransactionsProps): Transaction[
         });
   }, [pubkey, storage]);
 
-  return transactions;
+  return {
+    transactions,
+    loading: activityInfo.loading,
+  };
 };
