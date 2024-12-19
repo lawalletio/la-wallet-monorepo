@@ -69,6 +69,7 @@ export const useZap = (parameters: UseZapParameters): useZapReturns => {
 
       const bolt11 = await requestInvoice(
         `${config.endpoints.gateway}/lnurlp/${nip19.npubEncode(parameters.receiverPubkey)}/callback?amount=${invoice_mSats}&nostr=${zapRequestURI}${comment ? `&comment=${escapingBrackets(comment)}` : ''}`,
+        config,
       );
 
       if (!bolt11) return undefined;

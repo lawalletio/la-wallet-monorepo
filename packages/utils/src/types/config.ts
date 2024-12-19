@@ -4,6 +4,7 @@ import type { BaseStorage } from '../createStorage.js';
 export type EndpointsConfigType = {
   lightningDomain: string;
   gateway: string;
+  proxy?: string;
 };
 
 export type ModulePubkeysConfigType = {
