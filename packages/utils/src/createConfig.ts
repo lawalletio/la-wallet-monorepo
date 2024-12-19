@@ -8,6 +8,7 @@ export interface CreateConfigParameters {
   endpoints?: {
     lightningDomain?: string;
     gateway?: string;
+    proxy?: string;
   };
   modulePubkeys?: {
     card?: string;
@@ -39,9 +40,10 @@ export function createConfig(parameters: CreateConfigParameters = {}): ConfigPro
   let normalizedEndpoints: EndpointsConfigType = {
     gateway: endpoints && endpoints.gateway ? normalizeURL(endpoints.gateway) : baseConfig.endpoints.gateway,
     lightningDomain:
-      endpoints && endpoints?.lightningDomain
+      endpoints && endpoints.lightningDomain
         ? normalizeURL(endpoints.lightningDomain)
         : baseConfig.endpoints.lightningDomain,
+    proxy: endpoints && endpoints.proxy ? normalizeURL(endpoints.proxy) : baseConfig.endpoints.proxy,
   };
 
   return {

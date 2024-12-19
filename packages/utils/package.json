@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/utils",
-  "version": "0.2.50",
+  "version": "0.2.51",
   "description": "LaWallet utilities and types",
   "prettier": "@lacrypta/prettier-config",
   "private": false,

@@ -63,5 +63,4 @@ export const defaultLNURLTransfer: LNURLTransferType = {
   receiverPubkey: baseConfig.modulePubkeys.urlx,
   type: TransferTypes.NONE,
   request: null,
-  lnService: null,
 };
