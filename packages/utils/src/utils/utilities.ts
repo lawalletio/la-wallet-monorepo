@@ -1,3 +1,4 @@
+import { LightningAddress } from '@getalby/lightning-tools';
 import { baseConfig, defaultInvoiceTransfer, defaultLNURLTransfer } from '../constants/constants.js';
 import { getPayRequest, requestInvoice } from '../interceptors/transaction.js';
 import bolt11 from '../libs/light-bolt11.js';
@@ -205,15 +206,15 @@ export const splitHandle = (handle: string, config: ConfigProps = baseConfig): s
 const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): Promise<LNURLTransferType> => {
   const [username, domain] = splitHandle(data, config);
 
-  // const ln = new LightningAddress(`${username}@${domain}`);
+  const ln = new LightningAddress(`${username}@${domain}`);
   let payRequest = await getPayRequest(`https://${domain}/.well-known/lnurlp/${username}`, config);
 
-  // if (!payRequest) {
-  //   await ln.fetch();
-  //   if (!ln || !ln.lnurlpData || !ln.lnurlpData.rawData) return defaultLNURLTransfer;
+  if (!payRequest) {
+    await ln.fetch();
+    if (!ln || !ln.lnurlpData || !ln.lnurlpData.rawData) return defaultLNURLTransfer;
 
-  //   payRequest = ln.lnurlpData.rawData;
-  // }
+    payRequest = ln.lnurlpData.rawData;
+  }
 
   const amount: number = payRequest.minSendable === payRequest.maxSendable ? payRequest.maxSendable! / 1000 : 0;
 
@@ -236,6 +237,7 @@ const parseLUD16Info = async (data: string, config: ConfigProps = baseConfig): P
   return {
     ...transfer,
     receiverPubkey: config.modulePubkeys.urlx,
+    lnService: ln,
   };
 };
 
