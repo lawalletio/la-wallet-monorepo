@@ -1,25 +1,22 @@
 import {
-  nip26,
   LaWalletKinds,
   LaWalletTags,
   getMultipleTagsValues,
   getTag,
   getTagValue,
+  nip26,
   nowInSeconds,
   parseContent,
-  normalizeLNDomain,
 } from '@lawallet/utils';
+import type { ConfigParameter } from '@lawallet/utils/types';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
 import { NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
-import * as React from 'react';
-import type { ConfigParameter } from '@lawallet/utils/types';
 import { type Event } from 'nostr-tools';
+import * as React from 'react';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
-import { useNostr } from '../context/NostrContext.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
-import { getUsername } from '../exports/actions.js';
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
@@ -110,8 +107,6 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
     return activityInfo.lastCached;
   }, [sinceParam, activityInfo]);
 
-  const { decrypt } = useNostr();
-
   const filters = React.useMemo(
     () => [
       {
@@ -124,7 +119,16 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
       },
       {
         '#p': [pubkey],
-        '#t': startTags,
+        '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
+        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+        since,
+        until: until,
+        limit: limit * 2,
+      },
+      {
+        authors: [config.modulePubkeys.urlx],
+        '#p': [pubkey],
+        '#t': [LaWalletTags.INBOUND_TRANSACTION_START],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         since,
         until: until,
@@ -152,15 +156,15 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
 
   const formatStartTransaction = React.useCallback(
     async (event: NostrEvent) => {
+      const pTagValues = getMultipleTagsValues(event.tags, 'p');
+      if (!pTagValues.includes(config.modulePubkeys.ledger)) return;
+
       const AuthorIsCard: boolean = event.pubkey === config.modulePubkeys.card;
 
       const DelegatorIsUser: boolean = AuthorIsCard && nip26.getDelegator(event as Event) === pubkey;
       const AuthorIsUser: boolean = DelegatorIsUser || event.pubkey === pubkey;
 
-      if (AuthorIsCard && !DelegatorIsUser) {
-        const delegation_pTags: string[] = getMultipleTagsValues(event.tags, 'p');
-        if (!delegation_pTags.includes(pubkey)) return;
-      }
+      if (AuthorIsCard && !DelegatorIsUser && !pTagValues.includes(pubkey)) return;
 
       const direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
 
