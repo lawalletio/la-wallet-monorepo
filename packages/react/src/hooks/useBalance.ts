@@ -3,8 +3,7 @@ import * as React from 'react';
 import { LaWalletKinds } from '@lawallet/utils';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { type TokenBalance } from '@lawallet/utils/types';
-import { NDKRelay, type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { LAWALLET_DEFAULT_RELAY } from '../constants/constants.js';
+import { NDKRelay, NDKRelaySet, type NDKEvent, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { useNostr } from '../context/NostrContext.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
@@ -69,7 +68,7 @@ export const useBalance = (parameters?: UseBalanceProps): TokenBalance => {
         '#d': [`balance:${tokenId}:${pubkey}`],
       },
       { closeOnEose: true },
-      new NDKRelay(LAWALLET_DEFAULT_RELAY, undefined, ndk),
+      NDKRelaySet.fromRelayUrls(config.relaysList, ndk, true),
     );
 
     if (event)
