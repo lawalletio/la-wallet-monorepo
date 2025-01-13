@@ -325,14 +325,13 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
         }),
       );
 
-      if (transactions.length)
-        setActivityInfo((prev) => {
-          return {
-            ...prev,
-            transactions,
-            loading: false,
-          };
-        });
+      setActivityInfo((prev) => {
+        return {
+          ...prev,
+          transactions,
+          loading: false,
+        };
+      });
 
       if (storage) saveTransactionsOnCache(events);
     },
