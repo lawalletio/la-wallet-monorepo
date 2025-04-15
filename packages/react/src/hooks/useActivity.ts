@@ -54,6 +54,7 @@ const statusTags: string[] = [
 ];
 
 const MAX_TRANSACTIONS_TIME: number = 90 * (24 * 60 * 60); // 90 days
+const MAX_CACHED_TRANSACTIONS = 50; // MAX 50 TRANSACTIONS
 const CACHE_TIME: number = 24 * 60 * 60;
 
 const defaultActivity = {
@@ -368,7 +369,9 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
 
   const saveTransactionsOnCache = React.useCallback(
     async (events: NostrEvent[]) => {
-      await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(events));
+      const filteredEvents = events.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, MAX_CACHED_TRANSACTIONS)
+      
+      await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(filteredEvents));
     },
     [pubkey],
   );
