@@ -86,9 +86,10 @@ export const detectTransferType = (data: string): TransferTypes => {
   const upperStr: string = data.toUpperCase();
   const isLUD16 = validateEmail(upperStr);
   if (isLUD16) return TransferTypes.LUD16;
-
+  console.log("upperStr: ", upperStr);
   if (upperStr.startsWith('LNURL')) return TransferTypes.LNURL;
   if (upperStr.startsWith('LNBC')) return TransferTypes.INVOICE;
+  if (upperStr.startsWith('BC1')) return TransferTypes.ONCHAIN;
 
   if (data.length > 15) return TransferTypes.NONE;
   return TransferTypes.INTERNAL;

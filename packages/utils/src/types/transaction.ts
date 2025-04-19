@@ -22,6 +22,7 @@ export enum TransferTypes {
   INVOICE = 'INVOICE',
   LNURL = 'LNURL',
   LNURLW = 'LNURLW',
+  ONCHAIN = 'ONCHAIN',
   NONE = 'NONE',
 }
 
