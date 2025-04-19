@@ -44,7 +44,9 @@
   },
   "pnpm": {
     "overrides": {
-      "nostr-tools": "npm:@lawallet/nostr-tools"
+      "nostr-tools": "npm:@lawallet/nostr-tools",
+      "@lawallet/utils": "workspace:*",
+      "@lawallet/react": "workspace:*"
     }
   },
   "engines": {
