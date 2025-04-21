@@ -10,10 +10,10 @@ import {
 } from '@lawallet/utils';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
-import { NDKEvent, NDKRelay, NDKRelaySet, type NDKFilter, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
+import { NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { type Event } from 'nostr-tools';
 import * as React from 'react';
-import { CACHE_TXS_KEY } from '../constants/constants.js';
+import { CACHE_TXS_EVENTS_KEY } from '../constants/constants.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
@@ -469,7 +469,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
 
   const loadCachedTransactions = React.useCallback(async () => {
     if (pubkey.length) {
-      const storagedData: string = ((await config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`)) as string) || '';
+      const storagedData: string = ((await config.storage.getItem(`${CACHE_TXS_EVENTS_KEY}_${pubkey}`)) as string) || '';
 
       if (!storage || !storagedData) {
         setActivityInfo({ ...defaultActivity, cache: { loaded: true, lastCached: 0 }, loading: false });
@@ -503,7 +503,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
       if (!events.length) return;
 
       let filteredTXs = events.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, MAX_CACHED_EVENTS)
-      await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(filteredTXs));
+      await config.storage.setItem(`${CACHE_TXS_EVENTS_KEY}_${pubkey}`, JSON.stringify(filteredTXs));
     },
     [pubkey],
   );
