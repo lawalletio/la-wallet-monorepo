@@ -10,13 +10,14 @@ import {
 } from '@lawallet/utils';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
-import { NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKRelay, NDKRelaySet, type NDKFilter, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { type Event } from 'nostr-tools';
 import * as React from 'react';
 import { CACHE_TXS_KEY } from '../constants/constants.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
+import { useNostr } from '../context/NostrContext.js';
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
@@ -24,7 +25,10 @@ export interface ActivitySubscriptionProps {
 
 export type ActivityType = {
   loading: boolean;
-  lastCached: number;
+  cache: {
+    loaded: boolean;
+    lastCached: number;
+  }
   transactions: Transaction[];
 };
 
@@ -38,11 +42,9 @@ export interface UseActivityProps extends ConfigParameter {
 }
 
 export const options: NDKSubscriptionOptions = {
-  groupable: false,
+  groupable: true,
   closeOnEose: false,
 };
-
-const startTags: string[] = [LaWalletTags.INTERNAL_TRANSACTION_START, LaWalletTags.INBOUND_TRANSACTION_START];
 
 const statusTags: string[] = [
   LaWalletTags.INTERNAL_TRANSACTION_OK,
@@ -53,18 +55,27 @@ const statusTags: string[] = [
   LaWalletTags.INBOUND_TRANSACTION_ERROR,
 ];
 
-const MAX_TRANSACTIONS_TIME: number = 90 * (24 * 60 * 60); // 90 days
-const CACHE_TIME: number = 24 * 60 * 60;
+const MAX_TRANSACTIONS_TIME: number = 180 * (24 * 60 * 60);
+const MAX_CACHED_EVENTS: number = 600;
 
 const defaultActivity = {
   loading: true,
-  lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
+  cache: {
+    loaded: false,
+    lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
+  },
   transactions: [],
 };
 
 type EventWithStatus = {
-  startEvent: NostrEvent | undefined;
-  statusEvent: NostrEvent | undefined;
+  startEvent: NostrEvent,
+  statusEvent: NostrEvent | undefined
+}
+
+type TransactionEvents = {
+  transaction: EventWithStatus;
+  outbound?: EventWithStatus;
+  refund?: EventWithStatus;
 };
 
 let debounceTimeout: NodeJS.Timeout;
@@ -98,13 +109,13 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
   const config = useConfig(parameters);
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
-  const [cacheEvents, setCacheEvents] = React.useState<NostrEvent[]>([]);
+  const [cachedEvents, setCachedEvents] = React.useState<NostrEvent[]>([]);
 
   const since = React.useMemo(() => {
     if (sinceParam) return sinceParam;
+    if (!sinceParam && !activityInfo.cache.lastCached) return nowInSeconds() - MAX_TRANSACTIONS_TIME;
 
-    if (!sinceParam && !activityInfo.lastCached) return nowInSeconds() - MAX_TRANSACTIONS_TIME;
-    return activityInfo.lastCached;
+    return activityInfo.cache.lastCached;
   }, [sinceParam, activityInfo]);
 
   const filters = React.useMemo(
@@ -144,15 +155,21 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
         limit: limit * 2,
       },
     ],
-    [pubkey, since, activityInfo, storage, until, limit, config],
+    [enabled, pubkey, since, activityInfo, storage, until, limit, config],
   );
 
-  const { events: walletEvents } = useSubscription({
+  const { events: txsEvents } = useSubscription({
     filters,
     options,
-    enabled: enabled && !activityInfo.loading,
+    enabled: enabled && activityInfo.cache.loaded,
     config,
   });
+  
+  const { ndk, decrypt } = useNostr();
+
+  const transactions: Transaction[] = React.useMemo(() => {    
+    return activityInfo.transactions.sort((a, b) => b.createdAt - a.createdAt);
+  }, [activityInfo.transactions.length]);
 
   const formatStartTransaction = React.useCallback(
     async (event: NostrEvent) => {
@@ -171,7 +188,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
       const eventContent = parseContent(event.content);
       const metadata = getTag(event.tags, 'metadata');
 
-      let newTransaction: Transaction = {
+      let tmpTransaction: Transaction = {
         id: event.id!,
         status: TransactionStatus.PENDING,
         memo: eventContent.memo ?? '',
@@ -186,196 +203,310 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
 
       if (!AuthorIsCard) {
         const boltTag: string | undefined = getTagValue(event.tags, 'bolt11');
-        if (boltTag && boltTag.length) newTransaction.type = TransactionType.LN;
+        if (boltTag && boltTag.length) tmpTransaction.type = TransactionType.LN;
       }
 
-      return newTransaction;
+      return tmpTransaction;
     },
-    [pubkey],
+    [ndk, pubkey],
   );
 
-  const markTxRefund = async (transaction: Transaction, statusEvent: NostrEvent) => {
-    const parsedContent = parseContent(statusEvent.content);
+  const markTxRefund = async (transaction: Transaction, refundData: EventWithStatus) => {
+    if (!refundData.statusEvent) return transaction;
+
+    const statusEvent = refundData.statusEvent;
     transaction.status = TransactionStatus.REVERTED;
-    transaction.errors = [parsedContent?.memo];
+
+    
+    const parsedContent = parseContent(statusEvent.content);
+    transaction.memo = parsedContent?.memo;
+    transaction.errors.push(parsedContent?.memo)
     transaction.events.push(statusEvent);
 
     return transaction;
   };
 
-  const updateTxStatus = async (transaction: Transaction, statusEvent: NostrEvent) => {
-    const parsedContent = parseContent(statusEvent.content);
+  const updateTxStatus = React.useCallback(async (tx: Transaction, txEvents: TransactionEvents) => {
+    if (!txEvents) return tx;
 
-    const statusTag: string | undefined = getTagValue(statusEvent.tags, 't');
+    const { transaction, outbound, refund } = txEvents;
+    if (!transaction.statusEvent) return tx;
 
-    if (statusTag) {
-      const isError: boolean = statusTag.includes('error');
+    const setTxStatus = (tmpTx: Transaction, statusEvent: NostrEvent) => {
+      const statusTag: string | undefined = getTagValue(statusEvent.tags, 't');
+  
+      if (statusTag) {
+        const isError: boolean = statusTag === LaWalletTags.INTERNAL_TRANSACTION_ERROR || statusTag === LaWalletTags.OUTBOUND_TRANSACTION_ERROR || statusTag === LaWalletTags.INBOUND_TRANSACTION_ERROR;
+  
+        if (isError) {
+          tmpTx.status = TransactionStatus.ERROR;
 
-      if (transaction.direction === TransactionDirection.INCOMING && statusTag.includes('inbound'))
-        transaction.type = TransactionType.LN;
+          const parsedContent = parseContent(statusEvent.content);
+          if (parsedContent && parsedContent.messages && parsedContent.messages.length) {
+            tmpTx.memo = parsedContent.messages[0];
+            tmpTx.errors = parsedContent.messages;
+          }
+        } else {
+          if (statusTag === LaWalletTags.INTERNAL_TRANSACTION_OK || statusTag === LaWalletTags.OUTBOUND_TRANSACTION_OK || statusTag === LaWalletTags.INBOUND_TRANSACTION_OK) {
+            tmpTx.status = TransactionStatus.CONFIRMED;
+          }
+        }
+  
+        tmpTx.events.push(statusEvent);
+      }
 
-      transaction.status = isError ? TransactionStatus.ERROR : TransactionStatus.CONFIRMED;
-
-      if (isError) transaction.errors = [parsedContent];
-      transaction.events.push(statusEvent);
+      return tmpTx;
     }
 
-    return transaction;
-  };
+    tx = setTxStatus(tx, transaction.statusEvent)
+    let isOutbound: boolean = Boolean(tx.direction === TransactionDirection.OUTGOING && tx.type === TransactionType.LN);
 
-  const findAsocciatedEvent = React.useCallback((events: NostrEvent[], eventId: string) => {
+    if (isOutbound) {
+      if (!outbound || !outbound.startEvent || !outbound.statusEvent) {
+        tx.status = TransactionStatus.PENDING;
+      } else {
+        tx = setTxStatus(tx, outbound.statusEvent);
+
+        let encryptedPreimage = getTagValue(outbound.startEvent.tags, 'preimage');
+
+        if (encryptedPreimage) {
+          let decryptedPreimage = await decrypt(config.modulePubkeys.urlx, encryptedPreimage);
+          if (decryptedPreimage) tx.preimage = decryptedPreimage;
+        }
+      }
+    }
+
+    if (refund && refund.startEvent.id) return markTxRefund(tx, refund)
+    return tx;
+  }, [decrypt]);
+
+  const findAsocciatedEvent = React.useCallback((events: NostrEvent[] | undefined, eventId?: string) => {
+    if (!events || !events.length || !eventId) return;
+    
     return events.find((event) => {
       const associatedEvents: string[] = getMultipleTagsValues(event.tags, 'e');
       return associatedEvents.includes(eventId) ? event : undefined;
     });
   }, []);
 
-  const filterEventsByTxType = (events: NostrEvent[]) => {
+  const filterEventsByTxType = React.useCallback(async (events: NostrEvent[]): Promise<NostrEvent[][]> => {
     const startedEvents: NostrEvent[] = [],
+      outboundStartEvents: NostrEvent[] = [],
       statusEvents: NostrEvent[] = [],
       refundEvents: NostrEvent[] = [];
 
-    events.forEach((e) => {
-      const subkind: string | undefined = getTagValue(e.tags, 't');
+    let missingOutboundEventIds = [];
+
+    for (const event of events) {
+      const subkind: string | undefined = getTagValue(event.tags, 't');
+
       if (subkind) {
         const isStatusEvent: boolean = statusTags.includes(subkind);
 
         if (isStatusEvent) {
-          statusEvents.push(e);
-          return;
+          statusEvents.push(event);
         } else {
-          const eTags: string[] = getMultipleTagsValues(e.tags, 'e');
+          const tagEvents: string[] = getMultipleTagsValues(event.tags, 'e');
+          
+          const isRefundEvent =
+              event.pubkey === config.modulePubkeys.urlx && subkind === LaWalletTags.INTERNAL_TRANSACTION_START && Boolean(events.find((e) => tagEvents.includes(e.id!)));
 
-          if (eTags.length) {
-            const isRefundEvent =
-              e.pubkey === config.modulePubkeys.urlx && Boolean(events.find((event) => eTags.includes(event.id!)));
-
-            isRefundEvent ? refundEvents.push(e) : startedEvents.push(e);
-            return;
+          if (isRefundEvent) {
+            refundEvents.push(event);
           } else {
-            const existTransaction: boolean = Boolean(startedEvents.find((startEvent) => startEvent.id === e.id));
+            const existTransaction: boolean = Boolean(startedEvents.find((startEvent) => startEvent.id === event.id));
+  
+              if (!existTransaction) { 
+                startedEvents.push(event);
 
-            if (!existTransaction) startedEvents.push(e);
-            return;
+                let boltTag = getTagValue(event.tags, 'bolt11');
+                if (boltTag && event.pubkey === pubkey) {
+                  const hasOutboundStart = events.find((e) => {
+                    let subkind = getTagValue(e.tags, 't');
+                    let associatedEvents = getMultipleTagsValues(e.tags, 'e');
+
+                    return (subkind === LaWalletTags.OUTBOUND_TRANSACTION_START && associatedEvents.includes(event.id!));
+                  })
+
+                  if (!hasOutboundStart) {
+                    missingOutboundEventIds.push(event.id!);
+                  } else {
+                    const hasOutboundStatus = events.find((e) => {
+                      let subkind = getTagValue(e.tags, 't');
+                      let associatedEvents = getMultipleTagsValues(e.tags, 'e');
+
+                      return ((subkind === LaWalletTags.OUTBOUND_TRANSACTION_ERROR || subkind === LaWalletTags.OUTBOUND_TRANSACTION_OK) && associatedEvents.includes(event.id!) && associatedEvents.includes(hasOutboundStart.id!));
+                    })
+
+                      if (hasOutboundStatus) {
+                        outboundStartEvents.push(hasOutboundStart)
+                        statusEvents.push((hasOutboundStatus))
+                      } else {
+                        missingOutboundEventIds.push(event.id!);
+                      }
+                  }
+                } 
+              }
           }
         }
       }
-    });
+    };
 
-    return [startedEvents, statusEvents, refundEvents];
-  };
+    if (missingOutboundEventIds.length) {
+      const outboundStartEventsRaw = await ndk.fetchEvents({
+        authors: [config.modulePubkeys.urlx],
+        '#t': [LaWalletTags.OUTBOUND_TRANSACTION_START],
+        '#e': missingOutboundEventIds
+      });
+    
+      if (outboundStartEventsRaw.size) {
+        const outboundStatusEventsRaw = await ndk.fetchEvents({
+          authors: [config.modulePubkeys.ledger],
+          '#t': [LaWalletTags.OUTBOUND_TRANSACTION_OK, LaWalletTags.OUTBOUND_TRANSACTION_ERROR],
+          '#e': Array.from(outboundStartEventsRaw).map(event => event.id)
+        });
+    
+        await Promise.all(
+          [Array.from(outboundStartEventsRaw).map(async event => {
+            outboundStartEvents.push(await event.toNostrEvent())
+          }),
+          Array.from(outboundStatusEventsRaw).map(async event => {
+            statusEvents.push(await event.toNostrEvent())
+          })]
+        );
+      }
+    }
+
+    return [startedEvents, outboundStartEvents, statusEvents, refundEvents];
+  }, [ndk, pubkey]);
 
   function parseStatusEvents(
     startEvent: NostrEvent,
+    outboundStartEvents?: NostrEvent[],
     statusEvents?: NostrEvent[],
     refundEvents?: NostrEvent[],
-  ): EventWithStatus[] {
-    const statusEvent: NostrEvent | undefined = statusEvents
-      ? findAsocciatedEvent(statusEvents, startEvent.id!)
-      : undefined;
+  ): TransactionEvents {
+    let txEvents: TransactionEvents = {
+      transaction: {
+        startEvent,
+        statusEvent: findAsocciatedEvent(statusEvents, startEvent.id!),
+      },
+    }
 
-    const startRefundEvent: NostrEvent | undefined = refundEvents
-      ? findAsocciatedEvent(refundEvents, startEvent.id!)
-      : undefined;
+    const startAssociatedOutbound: NostrEvent | undefined = findAsocciatedEvent(outboundStartEvents, startEvent.id)
+    const outboundStatusEvent = findAsocciatedEvent(statusEvents, startAssociatedOutbound?.id)
 
-    const statusRefundEvent: NostrEvent | undefined =
-      startRefundEvent && refundEvents ? findAsocciatedEvent(refundEvents, startRefundEvent.id!) : undefined;
+    if (startAssociatedOutbound && startAssociatedOutbound.id) {
+      txEvents.outbound = {
+        startEvent: startAssociatedOutbound,
+        statusEvent: outboundStatusEvent
+      }
+    }
+    
+    const startAssociatedRefund: NostrEvent | undefined = findAsocciatedEvent(refundEvents, startEvent.id)
+    const refundStatus: NostrEvent | undefined = findAsocciatedEvent(statusEvents, startAssociatedRefund?.id);
 
-    const startWithStatus: EventWithStatus = {
-      startEvent,
-      statusEvent,
-    };
+    if (startAssociatedRefund && startAssociatedRefund.id) {
+      txEvents.refund = {
+        startEvent: startAssociatedRefund,
+        statusEvent: refundStatus,
+      };
+    }
 
-    const refundWithStatus: EventWithStatus = {
-      startEvent: startRefundEvent,
-      statusEvent: statusRefundEvent,
-    };
-
-    return [startWithStatus, refundWithStatus];
+    return txEvents;
   }
 
-  async function fillTransaction(txEvents: EventWithStatus, refundEvents: EventWithStatus) {
-    let tmpTransaction: Transaction | undefined = await formatStartTransaction(txEvents.startEvent!);
+  async function fillTransaction(txEvents: TransactionEvents) {
+    if (!txEvents || !txEvents.transaction) return;
+
+    const { transaction } = txEvents;
+
+    let tmpTransaction: Transaction | undefined = await formatStartTransaction(transaction.startEvent);
     if (!tmpTransaction) return;
 
-    if (txEvents.statusEvent) tmpTransaction = await updateTxStatus(tmpTransaction, txEvents.statusEvent);
-
-    if (refundEvents.startEvent)
-      tmpTransaction = await markTxRefund(tmpTransaction, refundEvents.statusEvent || refundEvents.startEvent);
-
-    return tmpTransaction;
+    return updateTxStatus(tmpTransaction, txEvents);
   }
 
   const generateTransactions = React.useCallback(
     async (events: NostrEvent[]) => {
       if (!pubkey.length) return;
 
+      let txs: Transaction[] = [];
+      const [startedEvents, outboundStartEvents, statusEvents, refundEvents] = await filterEventsByTxType(events);
+      if (!startedEvents?.length) return;
+
       setActivityInfo((prev) => {
         return { ...prev, loading: true };
       });
 
-      const transactions: Transaction[] = [];
-      const [startedEvents, statusEvents, refundEvents] = filterEventsByTxType(events);
-
-      await Promise.all(
-        startedEvents!.map(async (startEvent) => {
-          const [startWithStatus, refundWithStatus] = parseStatusEvents(startEvent, statusEvents, refundEvents);
-          const transaction = await fillTransaction(startWithStatus!, refundWithStatus!);
-          if (transaction) transactions.push(transaction);
-        }),
-      );
-
+      for (const startEvent of startedEvents) {
+        const transactionEvents = parseStatusEvents(startEvent, outboundStartEvents, statusEvents, refundEvents);
+        if (!transactionEvents) return;
+        
+        const transaction = await fillTransaction(transactionEvents);
+        if (transaction) txs.push(transaction);
+      }
+      
       setActivityInfo((prev) => {
         return {
           ...prev,
-          transactions,
+          transactions: txs,
           loading: false,
         };
       });
 
-      if (storage) saveTransactionsOnCache(events);
+      const eventsToCache = [
+        ...(startedEvents || []),
+        ...(outboundStartEvents || []),
+        ...(statusEvents || []),
+        ...(refundEvents || [])
+      ];
+
+      if (storage) saveEventsOnCache(eventsToCache)
     },
-    [storage, pubkey],
+    [storage, activityInfo, pubkey, cachedEvents],
   );
 
-  const loadCachedEvents = React.useCallback(async () => {
+  const loadCachedTransactions = React.useCallback(async () => {
     if (pubkey.length) {
       const storagedData: string = ((await config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`)) as string) || '';
 
       if (!storage || !storagedData) {
-        setActivityInfo({ ...defaultActivity, loading: false });
+        setActivityInfo({ ...defaultActivity, cache: { loaded: true, lastCached: 0 }, loading: false });
         return;
       }
 
-      const cachedTxs: NostrEvent[] = parseContent(storagedData);
-      if (cachedTxs.length) {
-        const lastEvent = cachedTxs[0]!;
+      const cachedEvents: NostrEvent[] = parseContent(storagedData);
+      if (cachedEvents.length) {
+        const lastTX = cachedEvents[0];
         const sinceDefault = nowInSeconds() - MAX_TRANSACTIONS_TIME;
-        const sinceLastCached = lastEvent.created_at ?? sinceDefault;
+        const sinceLastCached = lastTX?.created_at ?? sinceDefault;
 
-        setCacheEvents(cachedTxs);
+        setCachedEvents(cachedEvents);
 
         setActivityInfo((prev) => ({
           ...prev,
-          lastCached: sinceLastCached - CACHE_TIME,
-          loading: cachedTxs.length ? true : false,
+          cache: {
+            loaded: true,
+            lastCached: sinceLastCached - 3600,
+          },
+          loading: false,
         }));
 
-        if (cachedTxs.length) generateTransactions(cachedTxs);
+        generateTransactions(cachedEvents);
       }
     }
   }, [storage, pubkey]);
 
-  const saveTransactionsOnCache = React.useCallback(
+  const saveEventsOnCache = React.useCallback(
     async (events: NostrEvent[]) => {
-      await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(events));
+      if (!events.length) return;
+
+      let filteredTXs = events.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, MAX_CACHED_EVENTS)
+      await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(filteredTXs));
     },
     [pubkey],
   );
-
-  const transactions: Transaction[] = React.useMemo(() => {
-    return activityInfo.transactions.sort((a, b) => b.createdAt - a.createdAt);
-  }, [activityInfo.transactions.length]);
 
   const debouncedGenerateTransactions = React.useCallback(
     async (events: NDKEvent[]) => {
@@ -390,7 +521,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
         }),
       );
 
-      const combinedEvents = [...cacheEvents, ...nostrEvents];
+      const combinedEvents = [...cachedEvents, ...nostrEvents];
       const uniqueEventsMap = new Map<string, NostrEvent>();
 
       combinedEvents.forEach((event) => {
@@ -401,30 +532,34 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
 
       debounceTimeout = setTimeout(() => {
         generateTransactions(uniqueEvents);
-      }, 300);
+      }, 350);
     },
-    [debounceTimeout, cacheEvents],
+    [debounceTimeout, cachedEvents],
   );
 
   React.useEffect(() => {
     if (!pubkey) return;
-    if (walletEvents.length) debouncedGenerateTransactions(walletEvents);
+    if (txsEvents.length) debouncedGenerateTransactions(txsEvents);
 
     return () => clearTimeout(debounceTimeout);
-  }, [pubkey, walletEvents.length]);
+  }, [pubkey, txsEvents.length]);
 
   React.useEffect(() => {
     if (!pubkey) {
       setActivityInfo(defaultActivity);
+      setCachedEvents([])
       return;
     }
 
     storage
-      ? loadCachedEvents()
+      ? loadCachedTransactions()
       : setActivityInfo((prev) => {
           return {
             ...prev,
-            loading: false,
+            cache: {
+              loaded: true,
+              lastCached: 0,
+            },
           };
         });
   }, [pubkey, storage]);

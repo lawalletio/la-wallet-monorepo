@@ -20,6 +20,7 @@ export enum LaWalletTags {
   INBOUND_TRANSACTION_START = 'inbound-transaction-start',
   INBOUND_TRANSACTION_OK = 'inbound-transaction-ok',
   INBOUND_TRANSACTION_ERROR = 'inbound-transaction-error',
+  OUTBOUND_TRANSACTION_START = 'outbound-transaction-start',
   OUTBOUND_TRANSACTION_OK = 'outbound-transaction-ok',
   OUTBOUND_TRANSACTION_ERROR = 'outbound-transaction-error',
   CREATE_IDENTITY = 'create-identity',

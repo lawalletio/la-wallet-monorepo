@@ -14,6 +14,7 @@ export interface Transaction {
   events: NostrEvent[];
   createdAt: number;
   metadata?: string[];
+  preimage?: string;
 }
 
 export enum TransferTypes {
