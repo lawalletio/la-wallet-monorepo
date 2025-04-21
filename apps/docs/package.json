@@ -4,9 +4,9 @@
   "description": "La Crypta Wallet Docs",
   "prettier": "@lacrypta/prettier-config",
   "scripts": {
-    "dev:docs": "next dev -p 4000",
-    "build": "next build",
-    "start:docs": "next start -p 4000"
+    "docs:dev": "next dev -p 4000",
+    "docs:build": "next build",
+    "docs:start": "next start -p 4000"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,8 @@
   "homepage": "https://github.com/shuding/nextra-docs-template#readme",
   "dependencies": {
     "next": "^14.2.3",
-    "nextra": "latest",
-    "nextra-theme-docs": "latest",
+    "nextra": "^2.13.3",
+    "nextra-theme-docs": "^2.13.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
