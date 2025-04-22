@@ -66,7 +66,7 @@ export const useProfile = (params?: UseProfileParams, _options?: UseProfileConfi
     setLud16Avatar(undefined);
     setNip05Avatar(undefined);
     setDomainAvatar(FALLBACK_AVATAR_URL);
-  }
+  };
 
   // Marge all loadings into isLoading
   React.useEffect(() => {

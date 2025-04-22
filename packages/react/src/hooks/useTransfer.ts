@@ -6,7 +6,8 @@ import { broadcastEvent } from '@lawallet/utils/actions';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { useNostr } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
-import { LaWalletKinds, LaWalletTags, buildTxStartEvent, getTagValue } from '@lawallet/utils';
+import { LaWalletKinds, buildTxStartEvent, getTagValue } from '@lawallet/utils';
+import { TransactionTags } from '@lawallet/utils';
 
 type OutboundTransferParameters = { amount: number; tags: NDKTag[] };
 type InternalTransferParameters = {
@@ -30,9 +31,9 @@ interface UseTransferParameters extends ConfigParameter {
 
 type StartEventInfo = {
   published: boolean;
-  event?: NostrEvent,
-  type?: 'internal' | 'external',
-}
+  event?: NostrEvent;
+  type?: 'internal' | 'external';
+};
 
 export const useTransfer = (params: UseTransferParameters): UseTransferReturns => {
   const { tokenName } = params;
@@ -65,8 +66,8 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
       setStartEventInfo({
         event,
         type: txType,
-        published
-      })
+        published,
+      });
       statusVars.handleMarkLoading(false);
 
       return published;
@@ -128,17 +129,17 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
         const refundEvent = await ndk.fetchEvent({
           kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
           authors: [config.modulePubkeys.urlx],
-          '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
+          '#t': [TransactionTags.INTERNAL.start],
           '#e': [event.id],
         });
-  
+
         refundEvent ? statusVars.handleMarkError() : statusVars.handleMarkSuccess();
-        break;  
+        break;
       }
     }
 
     setStartEventInfo({ published: false });
-  }
+  };
 
   const handleExternalStatus = async (events: NDKEvent[]) => {
     for (const event of events) {
@@ -146,17 +147,17 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
       let shouldResetStartEvent = false;
 
       switch (subkind) {
-        case LaWalletTags.INTERNAL_TRANSACTION_ERROR:
+        case TransactionTags.INTERNAL.error:
           statusVars.handleMarkError();
           shouldResetStartEvent = true;
           break;
 
-        case LaWalletTags.OUTBOUND_TRANSACTION_ERROR:
-        case LaWalletTags.INTERNAL_TRANSACTION_ERROR: {
+        case TransactionTags.OUTBOUND.error:
+        case TransactionTags.INTERNAL.error: {
           const refundEvent = await ndk.fetchEvent({
             kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
             authors: [config.modulePubkeys.urlx],
-            '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
+            '#t': [TransactionTags.INTERNAL.start],
             '#e': [event.id],
           });
 
@@ -165,19 +166,18 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
           break;
         }
 
-        case LaWalletTags.OUTBOUND_TRANSACTION_OK:
+        case TransactionTags.OUTBOUND.ok:
           statusVars.handleMarkSuccess();
           shouldResetStartEvent = true;
           break;
       }
 
-      if (shouldResetStartEvent) setStartEventInfo((prev) => ({...prev, published: false }));
+      if (shouldResetStartEvent) setStartEventInfo((prev) => ({ ...prev, published: false }));
     }
-  }
+  };
 
   const processStatusTransfer = async (statusEvents: NDKEvent[]) => {
     if (startEventInfo.published) {
-
       if (startEventInfo.type === 'internal') {
         handleInternalStatus(statusEvents[0]!);
         return;

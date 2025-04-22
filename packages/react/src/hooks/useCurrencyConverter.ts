@@ -65,7 +65,10 @@ export const useCurrencyConverter = (): UseConverterReturns => {
       const updatedPrices: PricesInfo | false = await requestUpdatedPrices();
       if (!updatedPrices) return;
 
-      await config.storage.setItem(MappedStoragedKeys.Prices, JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
+      await config.storage.setItem(
+        MappedStoragedKeys.Prices,
+        JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }),
+      );
 
       setPricesData(updatedPrices);
     } catch (err) {

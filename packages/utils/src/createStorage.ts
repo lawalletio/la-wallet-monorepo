@@ -7,7 +7,7 @@ export enum MappedStoragedKeys {
 }
 
 export const STORAGE_EXPECTED_VERSIONS: Record<string, string> = {
-  [MappedStoragedKeys.TxEvents]: 'v2'
+  [MappedStoragedKeys.TxEvents]: 'v2',
 };
 
 export type Evaluate<type> = { [key in keyof type]: type[key] } & unknown;
@@ -25,23 +25,20 @@ export type CreateStorageParameters = {
 function resolveVersion(key: string, versions: Record<string, string>): string | undefined {
   if (versions[key]) return versions[key];
 
-  const prefix = Object.keys(versions).find(vk => key.startsWith(vk));
+  const prefix = Object.keys(versions).find((vk) => key.startsWith(vk));
   return prefix ? versions[prefix] : undefined;
 }
 
 export function withVersionedStorage(
   base: Evaluate<BaseStorage>,
-  versions: Record<string, string>
+  versions: Record<string, string>,
 ): Evaluate<BaseStorage> {
   return {
     async getItem(key) {
       const versionedKey = `${key}__version`;
       const expectedVersion = resolveVersion(key, versions);
 
-      const [value, storedVersion] = await Promise.all([
-        base.getItem(key),
-        base.getItem(versionedKey),
-      ]);
+      const [value, storedVersion] = await Promise.all([base.getItem(key), base.getItem(versionedKey)]);
 
       if (!value) return null;
 
@@ -58,18 +55,12 @@ export function withVersionedStorage(
       const version = resolveVersion(key, versions);
       const versionedKey = `${key}__version`;
 
-      await Promise.all([
-        base.setItem(key, value),
-        version ? base.setItem(versionedKey, version) : null,
-      ]);
+      await Promise.all([base.setItem(key, value), version ? base.setItem(versionedKey, version) : null]);
     },
 
     async removeItem(key) {
       const versionedKey = `${key}__version`;
-      await Promise.all([
-        base.removeItem(key),
-        base.removeItem(versionedKey),
-      ]);
+      await Promise.all([base.removeItem(key), base.removeItem(versionedKey)]);
     },
   };
 }
@@ -79,7 +70,6 @@ export const noopStorage = {
   setItem: () => {},
   removeItem: () => {},
 } satisfies BaseStorage;
-
 
 export function createStorage(parameters: CreateStorageParameters): Evaluate<BaseStorage> {
   if (!parameters.storage) return noopStorage;

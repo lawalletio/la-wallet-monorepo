@@ -54,9 +54,7 @@ export const useIdentity = (params?: UseIdentityParameters): UserIdentity => {
 
   const config = useConfig(params);
   const forceRender = useForceRender();
-  const [identity] = React.useState<UserIdentity>(
-    () => new ReactiveUserIdentity({ ...params, config }, forceRender)
-  );
+  const [identity] = React.useState<UserIdentity>(() => new ReactiveUserIdentity({ ...params, config }, forceRender));
 
   React.useEffect(() => {
     if (params.pubkey) {

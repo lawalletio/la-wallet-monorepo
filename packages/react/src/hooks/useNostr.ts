@@ -70,7 +70,7 @@ export const useNostrHook = ({
     ndk.signer = signer;
 
     if (!signer) {
-      setSignerInfo(undefined)
+      setSignerInfo(undefined);
       return;
     }
 
