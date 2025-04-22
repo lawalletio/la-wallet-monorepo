@@ -19,6 +19,22 @@ import { useConfig } from './useConfig.js';
 import { useSubscription } from './useSubscription.js';
 import { useNostr } from '../context/NostrContext.js';
 
+type EventWithStatus = {
+  startEvent: NostrEvent,
+  statusEvent: NostrEvent | undefined
+}
+
+type TransactionEvents = {
+  transaction: EventWithStatus;
+  outbound?: EventWithStatus;
+  refund?: EventWithStatus;
+};
+
+export type UseActivityReturns = {
+  transactions: Transaction[];
+  loading: boolean;
+};
+
 export interface ActivitySubscriptionProps {
   pubkey: string;
 }
@@ -67,24 +83,6 @@ const defaultActivity = {
     lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
   },
   transactions: [],
-};
-
-type EventWithStatus = {
-  startEvent: NostrEvent,
-  statusEvent: NostrEvent | undefined
-}
-
-type TransactionEvents = {
-  transaction: EventWithStatus;
-  outbound?: EventWithStatus;
-  refund?: EventWithStatus;
-};
-
-let debounceTimeout: NodeJS.Timeout;
-
-export type UseActivityReturns = {
-  transactions: Transaction[];
-  loading: boolean;
 };
 
 async function resolveMissingOutboundEvents({
@@ -176,6 +174,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
     storage = false,
   } = parameters;
 
+  const debounceRef = React.useRef<NodeJS.Timeout | null>(null);
   const config = useConfig(parameters);
 
   const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
@@ -284,7 +283,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
 
       return tmpTransaction;
     },
-    [ndk, pubkey],
+    [pubkey],
   );
 
   const markTxRefund = async (transaction: Transaction, refundData: EventWithStatus) => {
@@ -604,14 +603,14 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
   
       if (!hasNew) return;
   
-      if (debounceTimeout) clearTimeout(debounceTimeout);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
   
       setActivityInfo(prev => ({
         ...prev,
         loading: true,
       }));
   
-      debounceTimeout = setTimeout(() => {
+      debounceRef.current = setTimeout(() => {
         generateTransactions(events);
       }, 350);
     },
@@ -622,7 +621,9 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
     if (!pubkey) return;
     if (txsEvents.length) debouncedHandleEvents(txsEvents)
 
-    return () => clearTimeout(debounceTimeout);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    }
   }, [pubkey, txsEvents.length]);
 
   React.useEffect(() => {
