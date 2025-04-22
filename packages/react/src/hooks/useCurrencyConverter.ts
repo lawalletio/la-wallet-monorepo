@@ -1,4 +1,4 @@
-import { decimalsToUse, parseContent, roundToDown } from '@lawallet/utils';
+import { decimalsToUse, MappedStoragedKeys, parseContent, roundToDown } from '@lawallet/utils';
 import { type AvailableCurrencies } from '@lawallet/utils/types';
 import * as React from 'react';
 import { useConfig } from './useConfig.js';
@@ -65,7 +65,7 @@ export const useCurrencyConverter = (): UseConverterReturns => {
       const updatedPrices: PricesInfo | false = await requestUpdatedPrices();
       if (!updatedPrices) return;
 
-      await config.storage.setItem('prices', JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
+      await config.storage.setItem(MappedStoragedKeys.Prices, JSON.stringify({ ...updatedPrices, lastUpdated: Date.now() }));
 
       setPricesData(updatedPrices);
     } catch (err) {
@@ -74,7 +74,7 @@ export const useCurrencyConverter = (): UseConverterReturns => {
   };
 
   const loadPrices = async () => {
-    const storagedPrices: string = (await config.storage.getItem('prices')) as string;
+    const storagedPrices: string = (await config.storage.getItem(MappedStoragedKeys.Prices)) as string;
     if (!storagedPrices) {
       updatePrices();
       return;

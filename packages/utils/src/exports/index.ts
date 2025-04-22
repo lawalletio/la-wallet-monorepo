@@ -18,7 +18,7 @@ export {
 } from '../utils/events.js';
 
 export { type CreateConfigParameters, createConfig } from '../createConfig.js';
-export { type BaseStorage, type CreateStorageParameters, createStorage } from '../createStorage.js';
+export { type BaseStorage, type CreateStorageParameters, createStorage, MappedStoragedKeys } from '../createStorage.js';
 
 export { lnurl_decode, lnurl_encode } from '../libs/lnurl.js';
 

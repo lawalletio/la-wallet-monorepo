@@ -1,5 +1,5 @@
 import { type UserConfigProps, type AvailableCurrencies } from '@lawallet/utils/types';
-import { parseContent, defaultUserConfig } from '@lawallet/utils';
+import { parseContent, defaultUserConfig, MappedStoragedKeys } from '@lawallet/utils';
 import * as React from 'react';
 import { useConfig } from './useConfig.js';
 import { useLaWallet } from '../context/WalletContext.js';
@@ -22,7 +22,7 @@ export const useSettings = (): UseSettingsReturns => {
 
   const saveConfiguration = async (newConfig: UserConfigProps) => {
     setProps(newConfig);
-    await config.storage.setItem('config', JSON.stringify(newConfig));
+    await config.storage.setItem(MappedStoragedKeys.Config, JSON.stringify(newConfig));
   };
 
   const toggleHideBalance = () =>
@@ -38,7 +38,7 @@ export const useSettings = (): UseSettingsReturns => {
     });
 
   const preloadConfig = async () => {
-    const storagedConfig: string = (await config.storage.getItem('config')) as string;
+    const storagedConfig: string = (await config.storage.getItem(MappedStoragedKeys.Config)) as string;
     if (!storagedConfig) {
       setLoading(false);
       return;
