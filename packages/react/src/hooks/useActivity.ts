@@ -8,9 +8,9 @@ import {
   nowInSeconds,
   parseContent,
 } from '@lawallet/utils';
-import type { ConfigParameter } from '@lawallet/utils/types';
+import type { ConfigParameter, ConfigProps } from '@lawallet/utils/types';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
-import { NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
+import NDK, { NDKEvent, type NDKFilter, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { type Event } from 'nostr-tools';
 import * as React from 'react';
 import { CACHE_TXS_EVENTS_KEY } from '../constants/constants.js';
@@ -56,7 +56,7 @@ const statusTags: string[] = [
 ];
 
 const MAX_TRANSACTIONS_TIME: number = 180 * (24 * 60 * 60);
-const MAX_CACHED_EVENTS: number = 600;
+const MAX_CACHED_EVENTS: number = 400;
 
 const defaultActivity = {
   loading: true,
@@ -78,12 +78,77 @@ type TransactionEvents = {
   refund?: EventWithStatus;
 };
 
+type ClassifiedEvents = {
+  started: NostrEvent[];
+  outboundStart: NostrEvent[];
+  status: NostrEvent[];
+  refund: NostrEvent[];
+}
+
 let debounceTimeout: NodeJS.Timeout;
 
 export type UseActivityReturns = {
   transactions: Transaction[];
   loading: boolean;
 };
+
+async function resolveMissingOutboundEvents({
+  missingIds,
+  ndk,
+  config,
+}: {
+  missingIds: string[];
+  ndk: NDK;
+  config: ConfigProps;
+}): Promise<{
+  outboundStart: NostrEvent[];
+  outboundStatus: NostrEvent[];
+}> {
+  if (!missingIds.length) return { outboundStart: [], outboundStatus: [] };
+
+  const chunk = <T,>(arr: T[], size: number): T[][] =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, (i + 1) * size));
+
+  const chunked = chunk(missingIds, 20);
+
+  const filters = [
+    ...chunked.map(chunkIds => ({
+      kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+      authors: [config.modulePubkeys.urlx],
+      '#t': [LaWalletTags.OUTBOUND_TRANSACTION_START],
+      '#e': chunkIds,
+    })),
+    ...chunked.map(chunkIds => ({
+      kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+      authors: [config.modulePubkeys.ledger],
+      '#t': [LaWalletTags.OUTBOUND_TRANSACTION_OK, LaWalletTags.OUTBOUND_TRANSACTION_ERROR],
+      '#e': chunkIds,
+    })),
+  ];
+
+  const fetched = await ndk.fetchEvents(filters);
+  const outboundStart: NostrEvent[] = [];
+  const outboundStatus: NostrEvent[] = [];
+
+  await Promise.all(
+    Array.from(fetched).map(async e => {
+      const tag = getTagValue(e.tags, 't');
+      const parsed = await e.toNostrEvent();
+
+      if (tag === LaWalletTags.OUTBOUND_TRANSACTION_START) {
+        outboundStart.push(parsed);
+      } else if (
+        tag === LaWalletTags.OUTBOUND_TRANSACTION_OK ||
+        tag === LaWalletTags.OUTBOUND_TRANSACTION_ERROR
+      ) {
+        outboundStatus.push(parsed);
+      }
+    })
+  );
+
+  return { outboundStart, outboundStatus };
+}
+
 
 export const useActivity = (parameters?: UseActivityProps): UseActivityReturns => {
   if (!parameters) {
@@ -214,58 +279,59 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
   const markTxRefund = async (transaction: Transaction, refundData: EventWithStatus) => {
     if (!refundData.statusEvent) return transaction;
 
-    const statusEvent = refundData.statusEvent;
+    const { startEvent, statusEvent} = refundData;
     transaction.status = TransactionStatus.REVERTED;
 
     
     const parsedContent = parseContent(statusEvent.content);
     transaction.memo = parsedContent?.memo;
     transaction.errors.push(parsedContent?.memo)
-    transaction.events.push(statusEvent);
+    
+    transaction.events.push(...[startEvent, statusEvent])
 
     return transaction;
   };
 
-  const updateTxStatus = React.useCallback(async (tx: Transaction, txEvents: TransactionEvents) => {
+  const updateTxInfo = React.useCallback(async (tx: Transaction, txEvents: TransactionEvents) => {
     if (!txEvents) return tx;
 
     const { transaction, outbound, refund } = txEvents;
     if (!transaction.statusEvent) return tx;
 
-    const setTxStatus = (tmpTx: Transaction, statusEvent: NostrEvent) => {
+    const addTxStatus = (tmpTx: Transaction, statusEvent: NostrEvent) => {
       const statusTag: string | undefined = getTagValue(statusEvent.tags, 't');
-  
-      if (statusTag) {
-        const isError: boolean = statusTag === LaWalletTags.INTERNAL_TRANSACTION_ERROR || statusTag === LaWalletTags.OUTBOUND_TRANSACTION_ERROR || statusTag === LaWalletTags.INBOUND_TRANSACTION_ERROR;
-  
-        if (isError) {
-          tmpTx.status = TransactionStatus.ERROR;
+      if (!statusTag) return tx;
 
-          const parsedContent = parseContent(statusEvent.content);
-          if (parsedContent && parsedContent.messages && parsedContent.messages.length) {
-            tmpTx.memo = parsedContent.messages[0];
-            tmpTx.errors = parsedContent.messages;
-          }
-        } else {
-          if (statusTag === LaWalletTags.INTERNAL_TRANSACTION_OK || statusTag === LaWalletTags.OUTBOUND_TRANSACTION_OK || statusTag === LaWalletTags.INBOUND_TRANSACTION_OK) {
-            tmpTx.status = TransactionStatus.CONFIRMED;
-          }
+      tmpTx.events.push(statusEvent);
+
+      const isConfirmed: boolean = statusTag === LaWalletTags.INTERNAL_TRANSACTION_OK || statusTag === LaWalletTags.OUTBOUND_TRANSACTION_OK || statusTag === LaWalletTags.INBOUND_TRANSACTION_OK;
+      if (isConfirmed) {
+        tmpTx.status = TransactionStatus.CONFIRMED;
+        return tmpTx;
+      } 
+
+      const isError: boolean = statusTag === LaWalletTags.INTERNAL_TRANSACTION_ERROR || statusTag === LaWalletTags.OUTBOUND_TRANSACTION_ERROR || statusTag === LaWalletTags.INBOUND_TRANSACTION_ERROR;
+      if (isError) {
+        tmpTx.status = TransactionStatus.ERROR;
+
+        const parsedContent = parseContent(statusEvent.content);
+        if (parsedContent && parsedContent.messages && parsedContent.messages.length) {
+          tmpTx.memo = parsedContent.messages[0];
+          tmpTx.errors = parsedContent.messages;
         }
-  
-        tmpTx.events.push(statusEvent);
       }
 
       return tmpTx;
     }
 
-    tx = setTxStatus(tx, transaction.statusEvent)
+    tx = addTxStatus(tx, transaction.statusEvent)
     let isOutbound: boolean = Boolean(tx.direction === TransactionDirection.OUTGOING && tx.type === TransactionType.LN);
 
     if (isOutbound) {
       if (!outbound || !outbound.startEvent || !outbound.statusEvent) {
         tx.status = TransactionStatus.PENDING;
       } else {
-        tx = setTxStatus(tx, outbound.statusEvent);
+        tx.events.push(outbound.startEvent);
 
         let encryptedPreimage = getTagValue(outbound.startEvent.tags, 'preimage');
 
@@ -273,6 +339,8 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
           let decryptedPreimage = await decrypt(config.modulePubkeys.urlx, encryptedPreimage);
           if (decryptedPreimage) tx.preimage = decryptedPreimage;
         }
+
+        tx = addTxStatus(tx, outbound.statusEvent);
       }
     }
 
@@ -289,7 +357,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
     });
   }, []);
 
-  const filterEventsByTxType = React.useCallback(async (events: NostrEvent[]): Promise<NostrEvent[][]> => {
+  const classificateTxEvents = React.useCallback(async (events: NostrEvent[]): Promise<ClassifiedEvents> => {
     const startedEvents: NostrEvent[] = [],
       outboundStartEvents: NostrEvent[] = [],
       statusEvents: NostrEvent[] = [],
@@ -299,86 +367,87 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
 
     for (const event of events) {
       const subkind: string | undefined = getTagValue(event.tags, 't');
+      if (!subkind) continue;
+      
+      const isStatusEvent: boolean = statusTags.includes(subkind);
 
-      if (subkind) {
-        const isStatusEvent: boolean = statusTags.includes(subkind);
+      if (isStatusEvent) {
+        statusEvents.push(event);
+        continue;
+      }
+      
+      const tagEvents: string[] = getMultipleTagsValues(event.tags, 'e');
+      
+      const isRefundEvent =
+          event.pubkey === config.modulePubkeys.urlx && subkind === LaWalletTags.INTERNAL_TRANSACTION_START && Boolean(events.find((e) => tagEvents.includes(e.id!)));
 
-        if (isStatusEvent) {
-          statusEvents.push(event);
-        } else {
-          const tagEvents: string[] = getMultipleTagsValues(event.tags, 'e');
-          
-          const isRefundEvent =
-              event.pubkey === config.modulePubkeys.urlx && subkind === LaWalletTags.INTERNAL_TRANSACTION_START && Boolean(events.find((e) => tagEvents.includes(e.id!)));
+      if (isRefundEvent) {
+        refundEvents.push(event);
+        continue;
+      } 
 
-          if (isRefundEvent) {
-            refundEvents.push(event);
-          } else {
-            const existTransaction: boolean = Boolean(startedEvents.find((startEvent) => startEvent.id === event.id));
-  
-              if (!existTransaction) { 
-                startedEvents.push(event);
+      const existTransaction: boolean = Boolean(startedEvents.find((startEvent) => startEvent.id === event.id));
+      if (existTransaction) continue;
 
-                let boltTag = getTagValue(event.tags, 'bolt11');
-                if (boltTag && event.pubkey === pubkey) {
-                  const hasOutboundStart = events.find((e) => {
-                    let subkind = getTagValue(e.tags, 't');
-                    let associatedEvents = getMultipleTagsValues(e.tags, 'e');
+      if (subkind === LaWalletTags.OUTBOUND_TRANSACTION_START) {
+        outboundStartEvents.push(event)
+      } else {
+        startedEvents.push(event);
+      }
 
-                    return (subkind === LaWalletTags.OUTBOUND_TRANSACTION_START && associatedEvents.includes(event.id!));
-                  })
+      let boltTag = getTagValue(event.tags, 'bolt11');
+      if (boltTag && event.pubkey === pubkey) {
+        const hasRefund = events.find((e) => {
+          let subkind = getTagValue(e.tags, 't');
+          let associatedEvents = getMultipleTagsValues(e.tags, 'e');
 
-                  if (!hasOutboundStart) {
-                    missingOutboundEventIds.push(event.id!);
-                  } else {
-                    const hasOutboundStatus = events.find((e) => {
-                      let subkind = getTagValue(e.tags, 't');
-                      let associatedEvents = getMultipleTagsValues(e.tags, 'e');
+          return (e.pubkey === config.modulePubkeys.urlx && subkind === LaWalletTags.INTERNAL_TRANSACTION_START && associatedEvents.includes(event.id!));
+        })
 
-                      return ((subkind === LaWalletTags.OUTBOUND_TRANSACTION_ERROR || subkind === LaWalletTags.OUTBOUND_TRANSACTION_OK) && associatedEvents.includes(event.id!) && associatedEvents.includes(hasOutboundStart.id!));
-                    })
+        if (hasRefund) continue;
 
-                      if (hasOutboundStatus) {
-                        outboundStartEvents.push(hasOutboundStart)
-                        statusEvents.push((hasOutboundStatus))
-                      } else {
-                        missingOutboundEventIds.push(event.id!);
-                      }
-                  }
-                } 
-              }
-          }
+        const hasOutboundStart = events.find((e) => {
+          let subkind = getTagValue(e.tags, 't');
+          let associatedEvents = getMultipleTagsValues(e.tags, 'e');
+
+          return (subkind === LaWalletTags.OUTBOUND_TRANSACTION_START && associatedEvents.includes(event.id!));
+        })
+
+        if (!hasOutboundStart) {
+          missingOutboundEventIds.push(event.id!);
+          continue;
+        } 
+        
+        const hasOutboundStatus = events.find((e) => {
+          let subkind = getTagValue(e.tags, 't');
+          let associatedEvents = getMultipleTagsValues(e.tags, 'e');
+
+          return ((subkind === LaWalletTags.OUTBOUND_TRANSACTION_ERROR || subkind === LaWalletTags.OUTBOUND_TRANSACTION_OK) && associatedEvents.includes(event.id!) && associatedEvents.includes(hasOutboundStart.id!));
+        })
+
+        if (!hasOutboundStatus) {
+          missingOutboundEventIds.push(event.id!);
+          continue;
         }
+
+        outboundStartEvents.push(hasOutboundStart)
+        statusEvents.push((hasOutboundStatus))
       }
     };
 
     if (missingOutboundEventIds.length) {
-      const outboundStartEventsRaw = await ndk.fetchEvents({
-        authors: [config.modulePubkeys.urlx],
-        '#t': [LaWalletTags.OUTBOUND_TRANSACTION_START],
-        '#e': missingOutboundEventIds
+      const { outboundStart, outboundStatus } = await resolveMissingOutboundEvents({
+        missingIds: missingOutboundEventIds,
+        ndk,
+        config,
       });
-    
-      if (outboundStartEventsRaw.size) {
-        const outboundStatusEventsRaw = await ndk.fetchEvents({
-          authors: [config.modulePubkeys.ledger],
-          '#t': [LaWalletTags.OUTBOUND_TRANSACTION_OK, LaWalletTags.OUTBOUND_TRANSACTION_ERROR],
-          '#e': Array.from(outboundStartEventsRaw).map(event => event.id)
-        });
-    
-        await Promise.all(
-          [Array.from(outboundStartEventsRaw).map(async event => {
-            outboundStartEvents.push(await event.toNostrEvent())
-          }),
-          Array.from(outboundStatusEventsRaw).map(async event => {
-            statusEvents.push(await event.toNostrEvent())
-          })]
-        );
-      }
+
+      outboundStartEvents.push(...outboundStart);
+      statusEvents.push(...outboundStatus);
     }
 
-    return [startedEvents, outboundStartEvents, statusEvents, refundEvents];
-  }, [ndk, pubkey]);
+    return {started: startedEvents, outboundStart: outboundStartEvents, status: statusEvents, refund: refundEvents};
+  }, [ndk, config, pubkey]);
 
   function parseStatusEvents(
     startEvent: NostrEvent,
@@ -424,7 +493,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
     let tmpTransaction: Transaction | undefined = await formatStartTransaction(transaction.startEvent);
     if (!tmpTransaction) return;
 
-    return updateTxStatus(tmpTransaction, txEvents);
+    return updateTxInfo(tmpTransaction, txEvents);
   }
 
   const generateTransactions = React.useCallback(
@@ -432,21 +501,17 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
       if (!pubkey.length) return;
 
       let txs: Transaction[] = [];
-      const [startedEvents, outboundStartEvents, statusEvents, refundEvents] = await filterEventsByTxType(events);
-      if (!startedEvents?.length) return;
+      const { started, outboundStart, status, refund } = await classificateTxEvents(events);
+      if (!started?.length) return;
 
-      setActivityInfo((prev) => {
-        return { ...prev, loading: true };
-      });
-
-      for (const startEvent of startedEvents) {
-        const transactionEvents = parseStatusEvents(startEvent, outboundStartEvents, statusEvents, refundEvents);
+      for (const startEvent of started) {
+        const transactionEvents = parseStatusEvents(startEvent, outboundStart, status, refund);
         if (!transactionEvents) return;
         
         const transaction = await fillTransaction(transactionEvents);
         if (transaction) txs.push(transaction);
       }
-      
+
       setActivityInfo((prev) => {
         return {
           ...prev,
@@ -456,10 +521,10 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
       });
 
       const eventsToCache = [
-        ...(startedEvents || []),
-        ...(outboundStartEvents || []),
-        ...(statusEvents || []),
-        ...(refundEvents || [])
+        ...(started || []),
+        ...(outboundStart || []),
+        ...(status || []),
+        ...(refund || [])
       ];
 
       if (storage) saveEventsOnCache(eventsToCache)
@@ -472,7 +537,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
       const storagedData: string = ((await config.storage.getItem(`${CACHE_TXS_EVENTS_KEY}_${pubkey}`)) as string) || '';
 
       if (!storage || !storagedData) {
-        setActivityInfo({ ...defaultActivity, cache: { loaded: true, lastCached: 0 }, loading: false });
+        setActivityInfo({ ...defaultActivity, cache: { loaded: true, lastCached: 0 } });
         return;
       }
 
@@ -482,18 +547,16 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
         const sinceDefault = nowInSeconds() - MAX_TRANSACTIONS_TIME;
         const sinceLastCached = lastTX?.created_at ?? sinceDefault;
 
-        setCachedEvents(cachedEvents);
-
         setActivityInfo((prev) => ({
           ...prev,
           cache: {
             loaded: true,
             lastCached: sinceLastCached - 3600,
           },
-          loading: false,
         }));
 
-        generateTransactions(cachedEvents);
+        setCachedEvents(cachedEvents);
+        debouncedGenerateTransactions(cachedEvents);
       }
     }
   }, [storage, pubkey]);
@@ -509,37 +572,44 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
   );
 
   const debouncedGenerateTransactions = React.useCallback(
-    async (events: NDKEvent[]) => {
+    async (events: NostrEvent[]) => {
       if (debounceTimeout) {
         clearTimeout(debounceTimeout);
       }
 
-      const nostrEvents: NostrEvent[] = await Promise.all(
-        events.map(async (event) => {
-          const nEvent = await event.toNostrEvent();
-          return nEvent;
-        }),
-      );
-
-      const combinedEvents = [...cachedEvents, ...nostrEvents];
-      const uniqueEventsMap = new Map<string, NostrEvent>();
-
-      combinedEvents.forEach((event) => {
-        uniqueEventsMap.set(event.id!, event);
-      });
-
-      const uniqueEvents: NostrEvent[] = Array.from(uniqueEventsMap.values());
-
       debounceTimeout = setTimeout(() => {
-        generateTransactions(uniqueEvents);
+        generateTransactions(events);
       }, 350);
     },
-    [debounceTimeout, cachedEvents],
+    [debounceTimeout],
   );
+
+  const handleReceivedEvent = React.useCallback(async (events: NDKEvent[]) => {
+    setActivityInfo((prev) => {
+      return { ...prev, loading: true };
+    });
+
+    const nostrEvents: NostrEvent[] = await Promise.all(
+      events.map(async (event) => {
+        const nEvent = await event.toNostrEvent();
+        return nEvent;
+      }),
+    );
+
+    const combinedEvents = [...cachedEvents, ...nostrEvents];
+    const uniqueEventsMap = new Map<string, NostrEvent>();
+
+    combinedEvents.forEach((event) => {
+      uniqueEventsMap.set(event.id!, event);
+    });
+
+    const uniqueEvents: NostrEvent[] = Array.from(uniqueEventsMap.values());
+    debouncedGenerateTransactions(uniqueEvents)
+  }, [cachedEvents, activityInfo])
 
   React.useEffect(() => {
     if (!pubkey) return;
-    if (txsEvents.length) debouncedGenerateTransactions(txsEvents);
+    if (txsEvents.length) handleReceivedEvent(txsEvents);
 
     return () => clearTimeout(debounceTimeout);
   }, [pubkey, txsEvents.length]);
