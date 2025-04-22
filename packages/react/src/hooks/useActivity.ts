@@ -358,7 +358,7 @@ export const useActivity = (parameters?: UseActivityProps): UseActivityReturns =
 
     if (refund && refund.startEvent.id) return markTxRefund(tx, refund)
     return tx;
-  }, [decrypt]);
+  }, [decryptPreimage]);
 
   const classificateTxEvents = React.useCallback(async (
     events: NostrEvent[]
