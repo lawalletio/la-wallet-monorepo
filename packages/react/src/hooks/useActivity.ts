@@ -13,7 +13,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
 import { classificateTxEvents, TransactionParser, TransactionTags } from '@lawallet/utils';
 
-const MAX_TRANSACTIONS_TIME = 180 * 24 * 60 * 60;
+const MAX_TRANSACTIONS_TIME = 90 * 24 * 60 * 60;
 const MAX_CACHED_TXS = 150;
 
 export type UseActivityReturns = {
@@ -54,17 +54,13 @@ const defaultActivity: ActivityType = {
   transactions: [],
 };
 
-function splitTransactionsForCache(transactions: Transaction[], max = 200): Transaction[] {
+export function splitTransactionsForCache(transactions: Transaction[], max = 200): Transaction[] {
   const sorted = [...transactions].sort((a, b) => b.createdAt - a.createdAt);
 
-  const reversed = [...sorted].reverse();
-  const firstPendingInReversed = reversed.findIndex(tx => tx.status === TransactionStatus.PENDING);
+  const lastPendingIndex = sorted.findIndex(tx => tx.status === TransactionStatus.PENDING);
+  const sliced = lastPendingIndex !== -1 ? sorted.slice(lastPendingIndex + 1) : sorted;
 
-  const cutoffIndex = firstPendingInReversed === -1
-    ? sorted.length
-    : sorted.length - firstPendingInReversed;
-
-  const filtered = sorted.slice(0, cutoffIndex).filter(tx => tx.status !== TransactionStatus.PENDING);
+  const filtered = sliced.filter(tx => tx.status !== TransactionStatus.PENDING);
   return filtered.slice(0, max);
 }
 
@@ -82,10 +78,11 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const [activityInfo, setActivityInfo] = useState<ActivityType>(defaultActivity);
 
-  const since = useMemo(
-    () => sinceParam ?? activityInfo.cache.lastCached ?? nowInSeconds() - MAX_TRANSACTIONS_TIME,
-    [sinceParam, activityInfo],
-  );
+  const since = useMemo(() =>
+    sinceParam ??
+    (activityInfo.cache.lastCached > 0 ? activityInfo.cache.lastCached : undefined) ??
+    (nowInSeconds() - MAX_TRANSACTIONS_TIME),
+  [sinceParam, activityInfo]);
 
   const filters = useMemo(
     () => [
@@ -123,7 +120,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     [pubkey, since, until, limit, config],
   );
 
-  const { subscription, events: txsEvents } = useSubscription({
+  const { events: txsEvents } = useSubscription({
     filters,
     config,
     options: { groupable: true, closeOnEose: false },
@@ -213,6 +210,109 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, [txsEvents.length, pubkey, activityInfo.cache.loaded]);
+
+  const loadMoreTransactions = useCallback(async (params?: { deepSearch: boolean }) => {
+    let deepSearchActive = params?.deepSearch ?? false;
+    const now = nowInSeconds();
+    const maxLookback = 365 * 24 * 60 * 60;
+    const chunkSize = MAX_TRANSACTIONS_TIME / 2;
+  
+    let currentUntil = activityInfo.cache.transactions.length
+      ? Math.floor(activityInfo.cache.transactions.at(-1)!.createdAt / 1000) - 1
+      : now;
+  
+    let loadedTxs: Transaction[] = [];
+    let emptyAttempts = 0;
+  
+    while (
+      (now - currentUntil) <= maxLookback &&
+      (deepSearchActive && loadedTxs.length + transactions.length < MAX_CACHED_TXS) &&
+      emptyAttempts < 6
+    ) {
+      const currentSince = currentUntil - chunkSize;
+
+      const filters = 
+      [
+        {
+          authors: [pubkey],
+          kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+          '#t': [TransactionTags.INTERNAL.start],
+          since: currentSince,
+          until: currentUntil,
+          limit: 1000,
+        },
+        {
+          '#p': [pubkey],
+          '#t': [TransactionTags.INTERNAL.start],
+          kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+          since: currentSince,
+          until: currentUntil,
+          limit: 1000,
+        },
+        {
+          authors: [config.modulePubkeys.ledger],
+          '#p': [pubkey],
+          '#t': [
+            TransactionTags.INTERNAL.ok,
+            TransactionTags.INTERNAL.error,
+            TransactionTags.OUTBOUND.ok,
+            TransactionTags.OUTBOUND.error,
+          ],
+          kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+          since: currentSince,
+          until: currentUntil,
+          limit: 1000,
+        },
+      ];
+  
+      const events = await ndk.fetchEvents(filters);
+      if (!events.size) {
+        emptyAttempts++;
+        currentUntil = currentSince;
+        continue;
+      }
+
+      const txs = await generateTransactions(Array.from(events));
+      if (!txs.length) {
+        emptyAttempts++;
+        currentUntil = currentSince;
+        continue;
+      }
+  
+      emptyAttempts = 0;
+      loadedTxs.push(...txs);
+      if (!deepSearchActive) break;
+
+      const oldestTx = txs.at(-1);
+      if (oldestTx) {
+        currentUntil = Math.floor(oldestTx.createdAt / 1000) - 1;
+      } else {
+        currentUntil = currentSince;
+      }
+    }
+    
+    if (loadedTxs.length) {
+      setActivityInfo((prev) => ({...prev, cache: { ...prev.cache, transactions: [...prev.cache.transactions, ...loadedTxs] }, loading: false }))
+      if (storage) saveTransactionsOnCache([...transactions, ...loadedTxs]);
+
+      return true;
+    }
+
+    return false;
+  }, [transactions, storage, pubkey, config, ndk, generateTransactions]);
+
+  useEffect(() => {
+    if (!pubkey || sinceParam || transactions.length >= MAX_CACHED_TXS) return;
+  
+    const timeout = setTimeout(() => {
+      const totalTxs = transactions.length;
+      if (totalTxs === 0) setActivityInfo((prev) => ({ ...prev, loading: true }));
+      
+      if (totalTxs <= MAX_CACHED_TXS) loadMoreTransactions({ deepSearch: true });
+    }, 3000);
+  
+    return () => clearTimeout(timeout);
+  }, [pubkey, sinceParam, transactions]);
 
   useEffect(() => {
     if (!pubkey) return setActivityInfo(defaultActivity);
