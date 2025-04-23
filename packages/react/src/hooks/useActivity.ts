@@ -2,7 +2,6 @@ import {
   LaWalletKinds,
   nowInSeconds,
   MappedStoragedKeys,
-  getTagValue,
 } from '@lawallet/utils';
 import { TransactionStatus, type ConfigParameter } from '@lawallet/utils/types';
 import type { Transaction } from '@lawallet/utils/types';
@@ -55,14 +54,17 @@ const defaultActivity: ActivityType = {
   transactions: [],
 };
 
-export function splitTransactionsForCache(transactions: Transaction[], max = 200): Transaction[] {
+function splitTransactionsForCache(transactions: Transaction[], max = 200): Transaction[] {
   const sorted = [...transactions].sort((a, b) => b.createdAt - a.createdAt);
-  const firstPendingIndex = sorted.findIndex((tx) => tx.status === TransactionStatus.PENDING);
 
-  const filtered = firstPendingIndex === -1
-    ? sorted.filter((tx) => tx.status !== TransactionStatus.PENDING)
-    : sorted.slice(firstPendingIndex + 1).filter((tx) => tx.status !== TransactionStatus.PENDING);
+  const reversed = [...sorted].reverse();
+  const firstPendingInReversed = reversed.findIndex(tx => tx.status === TransactionStatus.PENDING);
 
+  const cutoffIndex = firstPendingInReversed === -1
+    ? sorted.length
+    : sorted.length - firstPendingInReversed;
+
+  const filtered = sorted.slice(0, cutoffIndex).filter(tx => tx.status !== TransactionStatus.PENDING);
   return filtered.slice(0, max);
 }
 
@@ -121,7 +123,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     [pubkey, since, until, limit, config],
   );
 
-  const { events: txsEvents } = useSubscription({
+  const { subscription, events: txsEvents } = useSubscription({
     filters,
     config,
     options: { groupable: true, closeOnEose: false },
@@ -180,12 +182,9 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         if (tx) txs.push(tx);
       }
   
-      const sorted = txs.sort((a, b) => b.createdAt - a.createdAt);
-  
-      setActivityInfo((prev) => ({ ...prev, transactions: sorted, loading: false }));
-      if (storage) saveTransactionsOnCache([...activityInfo.cache.transactions, ...sorted]);
+      return txs.sort((a, b) => b.createdAt - a.createdAt);
     },
-    [decrypt, pubkey, ndk, config, storage, activityInfo],
+    [decrypt, pubkey, ndk, config, activityInfo],
   );
 
   const debouncedHandleEvents = useCallback(
@@ -196,9 +195,15 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
       if (debounceRef.current) clearTimeout(debounceRef.current);
       setActivityInfo((prev) => ({ ...prev, loading: true }));
-      debounceRef.current = setTimeout(() => generateTransactions(events), 350);
+
+      debounceRef.current = setTimeout(async () => {
+        const txs = await generateTransactions(events)
+
+        setActivityInfo((prev) => ({ ...prev, transactions: txs, loading: false }));
+        if (storage) saveTransactionsOnCache([...activityInfo.cache.transactions, ...txs]);
+      }, 350);
     },
-    [transactions, generateTransactions],
+    [transactions, storage, generateTransactions],
   );
 
   useEffect(() => {
@@ -207,7 +212,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [txsEvents.length]);
+  }, [txsEvents.length, pubkey, activityInfo.cache.loaded]);
 
   useEffect(() => {
     if (!pubkey) return setActivityInfo(defaultActivity);

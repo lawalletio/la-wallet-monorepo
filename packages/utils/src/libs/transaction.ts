@@ -176,23 +176,7 @@ export async function classificateTxEvents(
       const bolt11 = getTagValue(event.tags, 'bolt11');
       const isExternalOutgoing = bolt11 && event.pubkey === pubkey;
 
-      if (isExternalOutgoing) {
-        const outboundStart = referencedBy
-          .get(event.id!)
-          ?.find((e) => getTagValue(e.tags, 't') === TransactionTags.OUTBOUND.start);
-
-        if (!outboundStart) {
-          missingOutboundEventIds.push(event.id!);
-        } else {
-          const outboundStatus = referencedBy
-            .get(outboundStart.id!)
-            ?.find((e) => [TransactionTags.OUTBOUND.ok, TransactionTags.OUTBOUND.error].includes(getTagValue(e.tags, 't')));
-
-          if (!outboundStatus) {
-            missingOutboundEventIds.push(event.id!);
-          }
-        }
-      }
+      if (isExternalOutgoing) missingOutboundEventIds.push(event.id!);
     }
   }
 
