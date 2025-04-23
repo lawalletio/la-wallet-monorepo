@@ -4,7 +4,7 @@ import {
   MappedStoragedKeys,
   getTagValue,
 } from '@lawallet/utils';
-import { type ConfigParameter } from '@lawallet/utils/types';
+import { TransactionStatus, type ConfigParameter } from '@lawallet/utils/types';
 import type { Transaction } from '@lawallet/utils/types';
 import { useSubscription } from './useSubscription.js';
 import { useNostr } from '../context/NostrContext.js';
@@ -12,10 +12,10 @@ import { useConfig } from './useConfig.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
-import { classificateTxEvents, splitTransactionsForCache, TransactionParser, TransactionTags } from '@lawallet/utils';
+import { classificateTxEvents, TransactionParser, TransactionTags } from '@lawallet/utils';
 
 const MAX_TRANSACTIONS_TIME = 180 * 24 * 60 * 60;
-const MAX_CACHED_TXS = 200;
+const MAX_CACHED_TXS = 150;
 
 export type UseActivityReturns = {
   transactions: Transaction[];
@@ -54,6 +54,17 @@ const defaultActivity: ActivityType = {
   },
   transactions: [],
 };
+
+export function splitTransactionsForCache(transactions: Transaction[], max = 200): Transaction[] {
+  const sorted = [...transactions].sort((a, b) => b.createdAt - a.createdAt);
+  const firstPendingIndex = sorted.findIndex((tx) => tx.status === TransactionStatus.PENDING);
+
+  const filtered = firstPendingIndex === -1
+    ? sorted.filter((tx) => tx.status !== TransactionStatus.PENDING)
+    : sorted.slice(firstPendingIndex + 1).filter((tx) => tx.status !== TransactionStatus.PENDING);
+
+  return filtered.slice(0, max);
+}
 
 export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   if (!parameters) {
@@ -121,12 +132,12 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     const combined = [...activityInfo.transactions, ...activityInfo.cache.transactions];
     const txMap = new Map<string, Transaction>();
     for (const tx of combined) txMap.set(tx.id, tx);
-    return Array.from(txMap.values()).sort((a, b) => b.createdAt - a.createdAt);
-  }, [activityInfo.transactions.length, activityInfo.cache.transactions.length]);
+    return Array.from(txMap.values());
+  }, [activityInfo.transactions, activityInfo.cache.transactions]);
 
   const saveTransactionsOnCache = useCallback(
     async (transactions: Transaction[]) => {
-      const toCache = splitTransactionsForCache(transactions).slice(0, MAX_CACHED_TXS);
+      const toCache = splitTransactionsForCache(transactions, MAX_CACHED_TXS);
       await config.storage.setItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`, JSON.stringify(toCache));
     },
     [pubkey],
@@ -134,19 +145,20 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
   const loadCachedTransactions = useCallback(async () => {
     const raw = await config.storage.getItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`);
-    if (!raw)
+    if (!raw) {
       return setActivityInfo((prev) => ({
         ...prev,
         cache: { loaded: true, transactions: [], lastCached: 0 },
         loading: false,
       }));
-
+    }
+  
     const cachedTxs = JSON.parse(raw);
-    const toCache = splitTransactionsForCache(cachedTxs);
-    const lastCachedTime = Math.floor((toCache[0]?.createdAt ?? nowInSeconds()) / 1000) - 3600;
+    const lastCachedTime = cachedTxs[0]?.events?.[0]?.created_at ?? nowInSeconds();
+  
     setActivityInfo((prev) => ({
       ...prev,
-      cache: { loaded: true, transactions: toCache, lastCached: lastCachedTime },
+      cache: { loaded: true, transactions: cachedTxs, lastCached: lastCachedTime },
       loading: false,
     }));
   }, [pubkey]);
@@ -156,16 +168,22 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       const rawEvents = await Promise.all(events.map((e) => e.toNostrEvent()));
       const { started, referencedBy } = await classificateTxEvents(rawEvents, pubkey, config, ndk);
 
+      const mostRecentStartedEvents = [...started]
+        .sort((a, b) => b.created_at - a.created_at)
+        .slice(0, MAX_CACHED_TXS);
+  
       const txs: Transaction[] = [];
-      for (const startEvent of started) {
+      for (const startEvent of mostRecentStartedEvents) {
         const related = referencedBy.get(startEvent.id!) ?? [];
         const parser = new TransactionParser(startEvent, related, pubkey, config, decrypt);
         const tx = await parser.toTransaction();
         if (tx) txs.push(tx);
       }
-
-      setActivityInfo((prev) => ({ ...prev, transactions: txs, loading: false }));
-      if (storage) saveTransactionsOnCache([...activityInfo.cache.transactions, ...txs]);
+  
+      const sorted = txs.sort((a, b) => b.createdAt - a.createdAt);
+  
+      setActivityInfo((prev) => ({ ...prev, transactions: sorted, loading: false }));
+      if (storage) saveTransactionsOnCache([...activityInfo.cache.transactions, ...sorted]);
     },
     [decrypt, pubkey, ndk, config, storage, activityInfo],
   );

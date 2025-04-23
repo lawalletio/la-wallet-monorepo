@@ -38,7 +38,7 @@ export function WalletProvider(props: WalletContextParams) {
   const activity = useActivity({
     pubkey: identity.pubkey,
     enabled: enableSubscriptions,
-    limit: props.limits?.transactionLimits || 200,
+    limit: props.limits?.transactionLimits || 300,
     storage: true,
     config,
   });

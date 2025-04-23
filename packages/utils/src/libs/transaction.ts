@@ -3,9 +3,11 @@ import type { NDKKind, NostrEvent } from '@nostr-dev-kit/ndk';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '../types/transaction.js';
 import type { ConfigProps } from '../types/config.js';
 import { getMultipleTagsValues, getTag, getTagValue, LaWalletKinds } from '../utils/events.js';
-import { parseContent } from '../utils/utilities.js';
+import { normalizeLNDomain, parseContent } from '../utils/utilities.js';
 import { getDelegator } from './nip26.js';
 import type { Event } from 'nostr-tools';
+import { baseConfig } from '../constants/constants.js';
+import { getUsername } from '../interceptors/identity.js';
 
 
 export type EventWithStatus = {
@@ -13,11 +15,59 @@ export type EventWithStatus = {
   statusEvent?: NostrEvent;
 };
 
-export function splitTransactionsForCache(transactions: Transaction[]): Transaction[] {
-  const firstPendingIndex = transactions.findIndex((tx) => tx.status === TransactionStatus.PENDING);
-  if (firstPendingIndex === -1) return transactions.filter((tx) => tx.status !== TransactionStatus.PENDING);
-  return transactions.slice(0, firstPendingIndex).filter((tx) => tx.status !== TransactionStatus.PENDING);
-}
+export const extractTxMetadata = async (
+  event: NostrEvent,
+  direction: TransactionDirection,
+  decrypt: (senderPubkey: string, encryptedMessage: string) => Promise<string | undefined>,
+  config: ConfigProps = baseConfig,
+): Promise<Record<string, string>> => {
+  try {
+    const receiverPubkey = getMultipleTagsValues(event.tags, 'p')[1]!;
+    const metadataTag = getTag(event.tags, 'metadata');
+
+    let parsedMetadata: Record<string, string> = {};
+
+    if (metadataTag && metadataTag.length === 4) {
+      const [, encrypted, encryptType, message] = metadataTag;
+
+      if (!encrypted) {
+        parsedMetadata = parseContent(message!);
+      } else if (encryptType === 'nip04') {
+        const decryptWithPubkey = direction === TransactionDirection.INCOMING ? event.pubkey : receiverPubkey;
+        const decrypted = await decrypt(decryptWithPubkey, message!);
+        if (decrypted) {
+          parsedMetadata = parseContent(decrypted) ?? {};
+        }
+      }
+    }
+
+    if (direction === TransactionDirection.OUTGOING && receiverPubkey !== config.modulePubkeys.urlx) {
+      if (!parsedMetadata.receiver) {
+        const receiverUsername = await getUsername(receiverPubkey, config);
+        if (receiverUsername.length) {
+          parsedMetadata.receiver = `${receiverUsername}@${normalizeLNDomain(config.endpoints.lightningDomain)}`;
+        }
+      }
+    }
+
+    if (
+      direction === TransactionDirection.INCOMING &&
+      event.pubkey !== config.modulePubkeys.urlx &&
+      event.pubkey !== config.modulePubkeys.card
+    ) {
+      if (!parsedMetadata.sender) {
+        const senderUsername = await getUsername(event.pubkey, config);
+        if (senderUsername.length) {
+          parsedMetadata.sender = `${senderUsername}@${normalizeLNDomain(config.endpoints.lightningDomain)}`;
+        }
+      }
+    }
+
+    return parsedMetadata;
+  } catch {
+    return {};
+  }
+};
 
 async function resolveMissingOutboundEvents({
   missingIds,
