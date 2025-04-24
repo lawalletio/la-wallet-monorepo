@@ -188,7 +188,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       const seen = new Set(transactions.flatMap((tx) => tx.events.map((e) => e.id)));
       const newEvents = events.filter((e) => !seen.has(e.id!));
       if (!newEvents.length) return;
-      
+
       if (debounceRef.current) clearTimeout(debounceRef.current);
       setActivityInfo((prev) => ({ ...prev, loading: true }));
   
@@ -221,9 +221,6 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     let currentUntil = transactions.length
       ? Math.floor(transactions.at(-1)!.createdAt / 1000) - 1
       : now;
-
-    console.log(currentUntil);
-    console.log(now)
   
     let loadedTxs: Transaction[] = [];
     let emptyAttempts = 0;
