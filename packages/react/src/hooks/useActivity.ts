@@ -164,14 +164,15 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       const txs: Transaction[] = [];
       for (const startEvent of mostRecentStartedEvents) {
         const related = referencedBy.get(startEvent.id!) ?? [];
-        const parser = new TransactionParser(startEvent, related, pubkey, config, decrypt);
+        const parser = await TransactionParser.create(startEvent, pubkey, config, ndk, related);
+
         const tx = await parser.toTransaction();
         if (tx) txs.push(tx);
       }
   
       return txs.sort((a, b) => b.createdAt - a.createdAt);
     },
-    [decrypt, pubkey, ndk, config, activityInfo],
+    [pubkey, ndk, config, activityInfo],
   );
 
   const debouncedHandleEvents = useCallback(

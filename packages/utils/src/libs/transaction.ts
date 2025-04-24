@@ -1,5 +1,5 @@
 import type NDK from '@nostr-dev-kit/ndk';
-import type { NDKKind, NostrEvent } from '@nostr-dev-kit/ndk';
+import { NDKUser, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '../types/transaction.js';
 import type { ConfigProps } from '../types/config.js';
 import { getMultipleTagsValues, getTag, getTagValue, LaWalletKinds } from '../utils/events.js';
@@ -106,7 +106,7 @@ async function resolveMissingOutboundEvents({
     ...chunked.map((chunkIds) => ({
       kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
       authors: [config.modulePubkeys.ledger],
-      '#t': [TransactionTags.OUTBOUND.ok, TransactionTags.OUTBOUND.error],
+      '#t': [TransactionTags.OUTBOUND.ok, TransactionTags.OUTBOUND.error, TransactionTags.INTERNAL.start, TransactionTags.INTERNAL.error],
       '#e': chunkIds,
     })),
   ];
@@ -248,12 +248,12 @@ export class TransactionParser {
   public readonly outbound?: EventWithStatus;
   public readonly refund?: EventWithStatus;
 
-  constructor(
+  private constructor(
     public readonly startEvent: NostrEvent,
     private readonly relatedEvents: NostrEvent[],
     private readonly pubkey: string,
     private readonly config: ConfigProps,
-    private readonly decrypt: (author: string, preimage: string) => Promise<string | undefined>,
+    private readonly ndk: NDK,
   ) {
     const internalType = TransactionTags.INTERNAL;
     const outboundType = TransactionTags.OUTBOUND;
@@ -296,6 +296,34 @@ export class TransactionParser {
         statusEvent: refundStatus,
       };
     }
+  }
+  
+  static async create(
+    startEvent: NostrEvent,
+    pubkey: string,
+    config: ConfigProps,
+    ndk: NDK,
+    relatedEvents?: NostrEvent[],
+  ): Promise<TransactionParser> {
+    if (!relatedEvents) {
+      if (!ndk || !ndk.signer) throw new Error('NDK instance with Signer is required to resolve related events');
+
+      relatedEvents = await TransactionParser.resolveRelatedEvents(startEvent, config, ndk);
+    }
+
+    return new TransactionParser(startEvent, relatedEvents, pubkey, config, ndk);
+  }
+
+  private static async resolveRelatedEvents(startEvent: NostrEvent, config: ConfigProps, ndk: NDK): Promise<NostrEvent[]> {
+    if (!startEvent.id) return [];
+
+    const relatedEvents = await ndk.fetchEvents({
+      kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+      authors: [config.modulePubkeys.urlx, config.modulePubkeys.ledger],
+      '#e': [startEvent.id],
+    });
+
+    return Promise.all(Array.from(relatedEvents).map(e => e.toNostrEvent()));
   }
 
   private findStatusEvent(tags: string[]): NostrEvent | undefined {
@@ -363,8 +391,10 @@ export class TransactionParser {
       if (this.outbound) {
         tx.events.push(this.outbound.startEvent);
         const encryptedPreimage = getTagValue(this.outbound.startEvent.tags, 'preimage');
-        if (encryptedPreimage) {
-          tx.preimage = await this.decrypt(this.config.modulePubkeys.urlx, encryptedPreimage);
+        if (encryptedPreimage && this.ndk.signer) {
+          const user = new NDKUser({ pubkey: this.config.modulePubkeys.urlx });
+          const decryptedMessage = await this.ndk.signer.decrypt(user, encryptedPreimage);
+          tx.preimage = decryptedMessage;
         }
         applyStatus(this.outbound.statusEvent);
       } else {
