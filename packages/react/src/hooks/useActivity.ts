@@ -55,16 +55,6 @@ const defaultActivity: ActivityType = {
   transactions: [],
 };
 
-function splitTransactionsForCache(transactions: Transaction[], max = 200): Transaction[] {
-  const sorted = [...transactions].sort((a, b) => b.createdAt - a.createdAt);
-
-  const lastPendingIndex = sorted.findIndex(tx => tx.status === TransactionStatus.PENDING);
-  const sliced = lastPendingIndex !== -1 ? sorted.slice(lastPendingIndex + 1) : sorted;
-
-  const filtered = sliced.filter(tx => tx.status !== TransactionStatus.PENDING);
-  return filtered.slice(0, max);
-}
-
 export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   if (!parameters) {
     const context = useLaWallet();
@@ -135,8 +125,9 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
   const saveTransactionsOnCache = useCallback(
     async (txs: Transaction[]) => {
-      const toCache = splitTransactionsForCache(txs, MAX_CACHED_TXS);
-      await config.storage.setItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`, JSON.stringify(toCache));
+      const sorted = [...txs].sort((a, b) => b.createdAt - a.createdAt);
+      const spliced = sorted.slice(0, MAX_CACHED_TXS);
+      await config.storage.setItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`, JSON.stringify(spliced));
     },
     [pubkey],
   );
@@ -196,7 +187,9 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         const txs = await generateTransactions(newEvents);
   
         setActivityInfo((prev) => ({ ...prev, transactions: txs, loading: false }));
-        if (storage) saveTransactionsOnCache([...transactions, ...txs]);
+
+        const hasPending = txs.find((tx) => tx.status === TransactionStatus.PENDING);
+        if (storage && !hasPending) saveTransactionsOnCache([...transactions, ...txs]);
       }, 350);
     },
     [transactions, storage, generateTransactions],
@@ -302,7 +295,9 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     
     if (loadedTxs.length) {
       setActivityInfo((prev) => ({...prev, cache: { ...prev.cache, transactions: [...prev.cache.transactions, ...loadedTxs] }, loading: false }))
-      if (storage) saveTransactionsOnCache([...transactions, ...loadedTxs]);
+
+      const hasPending = loadedTxs.find((tx) => tx.status === TransactionStatus.PENDING);
+      if (storage && !hasPending) saveTransactionsOnCache([...transactions, ...loadedTxs]);
 
       return true;
     }

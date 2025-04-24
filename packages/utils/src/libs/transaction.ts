@@ -69,14 +69,22 @@ export const extractTxMetadata = async (
   }
 };
 
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function resolveMissingOutboundEvents({
   missingIds,
   ndk,
   config,
+  maxRetries = 3,
+  delayMs = 1000,
 }: {
   missingIds: string[];
   ndk: NDK;
   config: ConfigProps;
+  maxRetries?: number;
+  delayMs?: number;
 }): Promise<{
   outboundStart: NostrEvent[];
   outboundStatus: NostrEvent[];
@@ -88,7 +96,7 @@ async function resolveMissingOutboundEvents({
 
   const chunked = chunk(missingIds, 20);
 
-  const filters = [
+  const createFilters = () => [
     ...chunked.map((chunkIds) => ({
       kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
       authors: [config.modulePubkeys.urlx],
@@ -103,26 +111,34 @@ async function resolveMissingOutboundEvents({
     })),
   ];
 
-  if (!filters.length) return { outboundStart: [], outboundStatus: [] }
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const filters = createFilters();
+    const fetched = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
 
-  const fetched = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
-  const outboundStart: NostrEvent[] = [];
-  const outboundStatus: NostrEvent[] = [];
+    const outboundStart: NostrEvent[] = [];
+    const outboundStatus: NostrEvent[] = [];
 
-  await Promise.all(
-    Array.from(fetched).map(async (e) => {
-      const tag = getTagValue(e.tags, 't');
-      const parsed = await e.toNostrEvent();
+    await Promise.all(
+      Array.from(fetched).map(async (e) => {
+        const tag = getTagValue(e.tags, 't');
+        const parsed = await e.toNostrEvent();
 
-      if (tag === TransactionTags.OUTBOUND.start) {
-        outboundStart.push(parsed);
-      } else if (tag === TransactionTags.OUTBOUND.ok || tag === TransactionTags.OUTBOUND.error) {
-        outboundStatus.push(parsed);
-      }
-    }),
-  );
+        if (tag === TransactionTags.OUTBOUND.start) {
+          outboundStart.push(parsed);
+        } else if (tag === TransactionTags.OUTBOUND.ok || tag === TransactionTags.OUTBOUND.error) {
+          outboundStatus.push(parsed);
+        }
+      })
+    );
 
-  return { outboundStart, outboundStatus };
+    if (outboundStatus.length > 0 || attempt === maxRetries - 1) {
+      return { outboundStart, outboundStatus };
+    }
+
+    await delay(delayMs);
+  }
+
+  return { outboundStart: [], outboundStatus: [] };
 }
 
 export async function classificateTxEvents(
