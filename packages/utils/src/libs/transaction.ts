@@ -1,5 +1,5 @@
 import type NDK from '@nostr-dev-kit/ndk';
-import { NDKUser, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
+import { NDKUser, type NDKFilter, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
 import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '../types/transaction.js';
 import type { ConfigProps } from '../types/config.js';
 import { getMultipleTagsValues, getTag, getTagValue, LaWalletKinds } from '../utils/events.js';
@@ -14,6 +14,37 @@ export type EventWithStatus = {
   startEvent: NostrEvent;
   statusEvent?: NostrEvent;
 };
+
+export const internalTransactionFilters = (pubkey: string, since: number | undefined, until: number | undefined, limit: number | undefined, config: ConfigProps = baseConfig): NDKFilter[] => [
+  {
+    authors: [pubkey],
+    kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+    '#t': [TransactionTags.INTERNAL.start],
+    since,
+    until,
+    limit,
+  },
+  {
+    '#p': [pubkey],
+    '#t': [TransactionTags.INTERNAL.start],
+    kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+    since,
+    until,
+    limit,
+  },
+  {
+    authors: [config.modulePubkeys.ledger],
+    '#p': [pubkey],
+    '#t': [
+      TransactionTags.INTERNAL.ok,
+      TransactionTags.INTERNAL.error,
+    ],
+    kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+    since,
+    until,
+    limit,
+  },
+];
 
 export const extractTxMetadata = async (
   event: NostrEvent,

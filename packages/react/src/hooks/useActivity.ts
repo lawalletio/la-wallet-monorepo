@@ -3,15 +3,17 @@ import {
   nowInSeconds,
   MappedStoragedKeys,
   getTagValue,
+  baseConfig,
+  internalTransactionFilters,
 } from '@lawallet/utils';
 import { TransactionStatus, type ConfigParameter } from '@lawallet/utils/types';
-import type { Transaction } from '@lawallet/utils/types';
+import type { ConfigProps, Transaction } from '@lawallet/utils/types';
 import { useSubscription } from './useSubscription.js';
 import { useNostr } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
+import type { NDKEvent, NDKFilter, NDKKind } from '@nostr-dev-kit/ndk';
 import { classificateTxEvents, TransactionParser, TransactionTags } from '@lawallet/utils';
 
 const MAX_SUBSCRIPTION_TIME = 90 * 24 * 60 * 60;
@@ -76,36 +78,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   [sinceParam, activityInfo]);
 
   const filters = useMemo(
-    () => [
-      {
-        authors: [pubkey],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        '#t': [TransactionTags.INTERNAL.start],
-        since,
-        until,
-        limit: limit * 2,
-      },
-      {
-        '#p': [pubkey],
-        '#t': [TransactionTags.INTERNAL.start],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since,
-        until,
-        limit: limit * 2,
-      },
-      {
-        authors: [config.modulePubkeys.ledger],
-        '#p': [pubkey],
-        '#t': [
-          TransactionTags.INTERNAL.ok,
-          TransactionTags.INTERNAL.error,
-        ],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since,
-        until,
-        limit: limit * 2,
-      },
-    ],
+    () => internalTransactionFilters(pubkey, since, until, limit, config),
     [pubkey, since, until, limit, config],
   );
 
@@ -222,44 +195,11 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     while (
       (now - currentUntil) <= maxLookback &&
       (deepSearchActive && loadedTxs.length + transactions.length < MAX_CACHED_TXS) &&
-      emptyAttempts < 6
+      emptyAttempts < 5
     ) {
       const currentSince = currentUntil - chunkSize;
 
-      const filters = 
-      [
-        {
-          authors: [pubkey],
-          kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-          '#t': [TransactionTags.INTERNAL.start],
-          since: currentSince,
-          until: currentUntil,
-          limit: 1000,
-        },
-        {
-          '#p': [pubkey],
-          '#t': [TransactionTags.INTERNAL.start],
-          kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-          since: currentSince,
-          until: currentUntil,
-          limit: 1000,
-        },
-        {
-          authors: [config.modulePubkeys.ledger],
-          '#p': [pubkey],
-          '#t': [
-            TransactionTags.INTERNAL.ok,
-            TransactionTags.INTERNAL.error,
-            TransactionTags.OUTBOUND.ok,
-            TransactionTags.OUTBOUND.error,
-          ],
-          kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-          since: currentSince,
-          until: currentUntil,
-          limit: 1000,
-        },
-      ];
-  
+      const filters = internalTransactionFilters(pubkey, currentSince, currentUntil, 1000);
       const events = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
       if (!events.size) {
         emptyAttempts++;
