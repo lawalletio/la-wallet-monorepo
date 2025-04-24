@@ -1,6 +1,12 @@
 import type NDK from '@nostr-dev-kit/ndk';
-import { NDKUser, type NDKFilter, type NDKKind, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '../types/transaction.js';
+import { NDKUser, type NDKFilter, type NDKKind, type NDKSigner, type NostrEvent } from '@nostr-dev-kit/ndk';
+import {
+  TransactionDirection,
+  TransactionStatus,
+  TransactionType,
+  type TokensAmount,
+  type Transaction,
+} from '../types/transaction.js';
 import type { ConfigProps } from '../types/config.js';
 import { getMultipleTagsValues, getTag, getTagValue, LaWalletKinds } from '../utils/events.js';
 import { normalizeLNDomain, parseContent } from '../utils/utilities.js';
@@ -9,13 +15,18 @@ import type { Event } from 'nostr-tools';
 import { baseConfig } from '../constants/constants.js';
 import { getUsername } from '../interceptors/identity.js';
 
-
 export type EventWithStatus = {
   startEvent: NostrEvent;
   statusEvent?: NostrEvent;
 };
 
-export const internalTransactionFilters = (pubkey: string, since: number | undefined, until: number | undefined, limit: number | undefined, config: ConfigProps = baseConfig): NDKFilter[] => [
+export const internalTransactionFilters = (
+  pubkey: string,
+  since: number | undefined,
+  until: number | undefined,
+  limit: number | undefined,
+  config: ConfigProps = baseConfig,
+): NDKFilter[] => [
   {
     authors: [pubkey],
     kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
@@ -32,147 +43,63 @@ export const internalTransactionFilters = (pubkey: string, since: number | undef
     until,
     limit,
   },
+];
+
+export const internalStatusTransactionFilters = (
+  pubkey: string,
+  since: number | undefined,
+  until: number | undefined,
+  limit: number | undefined,
+  config: ConfigProps = baseConfig,
+): NDKFilter[] => [
   {
     authors: [config.modulePubkeys.ledger],
-    '#p': [pubkey],
-    '#t': [
-      TransactionTags.INTERNAL.ok,
-      TransactionTags.INTERNAL.error,
-    ],
     kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+    '#p': [pubkey],
+    '#t': [TransactionTags.INTERNAL.error, TransactionTags.INTERNAL.ok],
     since,
     until,
     limit,
   },
 ];
 
-export const extractTxMetadata = async (
-  event: NostrEvent,
-  direction: TransactionDirection,
-  decrypt: (senderPubkey: string, encryptedMessage: string) => Promise<string | undefined>,
-  config: ConfigProps = baseConfig,
-): Promise<Record<string, string>> => {
-  try {
-    const receiverPubkey = getMultipleTagsValues(event.tags, 'p')[1]!;
-    const metadataTag = getTag(event.tags, 'metadata');
-
-    let parsedMetadata: Record<string, string> = {};
-
-    if (metadataTag && metadataTag.length === 4) {
-      const [, encrypted, encryptType, message] = metadataTag;
-
-      if (!encrypted) {
-        parsedMetadata = parseContent(message!);
-      } else if (encryptType === 'nip04') {
-        const decryptWithPubkey = direction === TransactionDirection.INCOMING ? event.pubkey : receiverPubkey;
-        const decrypted = await decrypt(decryptWithPubkey, message!);
-        if (decrypted) {
-          parsedMetadata = parseContent(decrypted) ?? {};
-        }
-      }
-    }
-
-    if (direction === TransactionDirection.OUTGOING && receiverPubkey !== config.modulePubkeys.urlx) {
-      if (!parsedMetadata.receiver) {
-        const receiverUsername = await getUsername(receiverPubkey, config);
-        if (receiverUsername.length) {
-          parsedMetadata.receiver = `${receiverUsername}@${normalizeLNDomain(config.endpoints.lightningDomain)}`;
-        }
-      }
-    }
-
-    if (
-      direction === TransactionDirection.INCOMING &&
-      event.pubkey !== config.modulePubkeys.urlx &&
-      event.pubkey !== config.modulePubkeys.card
-    ) {
-      if (!parsedMetadata.sender) {
-        const senderUsername = await getUsername(event.pubkey, config);
-        if (senderUsername.length) {
-          parsedMetadata.sender = `${senderUsername}@${normalizeLNDomain(config.endpoints.lightningDomain)}`;
-        }
-      }
-    }
-
-    return parsedMetadata;
-  } catch {
-    return {};
-  }
-};
-
-function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function resolveMissingOutboundEvents({
+async function resolveRelatedEvents({
   missingIds,
   ndk,
   config,
-  maxRetries = 3,
-  delayMs = 1000,
 }: {
   missingIds: string[];
   ndk: NDK;
   config: ConfigProps;
-  maxRetries?: number;
-  delayMs?: number;
-}): Promise<{
-  outboundStart: NostrEvent[];
-  outboundStatus: NostrEvent[];
-}> {
-  if (!missingIds.length) return { outboundStart: [], outboundStatus: [] };
+}): Promise<NostrEvent[]> {
+  if (!missingIds.length) return [];
 
   const chunk = <T>(arr: T[], size: number): T[][] =>
     Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, (i + 1) * size));
 
   const chunked = chunk(missingIds, 20);
 
-  const createFilters = () => [
-    ...chunked.map((chunkIds) => ({
-      kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-      authors: [config.modulePubkeys.urlx],
-      '#t': [TransactionTags.OUTBOUND.start],
-      '#e': chunkIds,
-    })),
-    ...chunked.map((chunkIds) => ({
-      kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-      authors: [config.modulePubkeys.ledger],
-      '#t': [TransactionTags.OUTBOUND.ok, TransactionTags.OUTBOUND.error, TransactionTags.INTERNAL.start, TransactionTags.INTERNAL.error],
-      '#e': chunkIds,
-    })),
+  const fixedTags = [
+    TransactionTags.OUTBOUND.ok,
+    TransactionTags.OUTBOUND.error,
+    TransactionTags.INTERNAL.start,
+    TransactionTags.INTERNAL.ok,
+    TransactionTags.INTERNAL.error,
+    TransactionTags.OUTBOUND.start,
   ];
 
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    const filters = createFilters();
-    const fetched = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
+  const filters: NDKFilter[] = chunked.map((chunkIds) => ({
+    kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+    authors: [config.modulePubkeys.urlx, config.modulePubkeys.ledger],
+    '#t': fixedTags,
+    '#e': chunkIds,
+  }));
 
-    const outboundStart: NostrEvent[] = [];
-    const outboundStatus: NostrEvent[] = [];
-
-    await Promise.all(
-      Array.from(fetched).map(async (e) => {
-        const tag = getTagValue(e.tags, 't');
-        const parsed = await e.toNostrEvent();
-
-        if (tag === TransactionTags.OUTBOUND.start) {
-          outboundStart.push(parsed);
-        } else if (tag === TransactionTags.OUTBOUND.ok || tag === TransactionTags.OUTBOUND.error) {
-          outboundStatus.push(parsed);
-        }
-      })
-    );
-
-    if (outboundStatus.length > 0 || attempt === maxRetries - 1) {
-      return { outboundStart, outboundStatus };
-    }
-
-    await delay(delayMs);
-  }
-
-  return { outboundStart: [], outboundStatus: [] };
+  const fetched = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
+  return Promise.all(Array.from(fetched).map((e) => e.toNostrEvent()));
 }
 
-export async function classificateTxEvents(
+export async function linkTxWithRelatedEvents(
   events: NostrEvent[],
   pubkey: string,
   config: ConfigProps,
@@ -181,7 +108,7 @@ export async function classificateTxEvents(
   const started: NostrEvent[] = [];
   const referencedBy = new Map<string, NostrEvent[]>();
   const byId = new Map<string, NostrEvent>();
-  const missingOutboundEventIds: string[] = [];
+  const missingRelatedEventIds: string[] = [];
 
   for (const event of events) {
     if (event.id) byId.set(event.id, event);
@@ -222,21 +149,34 @@ export async function classificateTxEvents(
     if (subkind === TransactionTags.INTERNAL.start && !isRefund) {
       started.push(event);
 
-      const bolt11 = getTagValue(event.tags, 'bolt11');
-      const isExternalOutgoing = bolt11 && event.pubkey === pubkey;
+      const hasStatus = events.some(
+        (e) =>
+          [TransactionTags.INTERNAL.ok, TransactionTags.INTERNAL.error].includes(getTagValue(e.tags, 't')) &&
+          getMultipleTagsValues(e.tags, 'e').includes(event.id!),
+      );
 
-      if (isExternalOutgoing) missingOutboundEventIds.push(event.id!);
+      if (!hasStatus) missingRelatedEventIds.push(event.id!);
+
+      const isExternalOutgoing =
+        event.pubkey === pubkey &&
+        getMultipleTagsValues(event.tags, 'p').every((p) =>
+          [config.modulePubkeys.urlx, config.modulePubkeys.ledger].includes(p),
+        );
+
+      if (isExternalOutgoing) {
+        missingRelatedEventIds.push(event.id!);
+      }
     }
   }
 
-  if (missingOutboundEventIds.length) {
-    const { outboundStart, outboundStatus } = await resolveMissingOutboundEvents({
-      missingIds: missingOutboundEventIds,
+  if (missingRelatedEventIds.length) {
+    const related = await resolveRelatedEvents({
+      missingIds: missingRelatedEventIds,
       ndk,
       config,
     });
 
-    for (const event of [...outboundStart, ...outboundStatus]) {
+    for (const event of related) {
       const refs = getMultipleTagsValues(event.tags, 'e');
       for (const refId of refs) {
         if (!referencedBy.has(refId)) referencedBy.set(refId, []);
@@ -274,78 +214,313 @@ export class TransactionTags {
   }
 }
 
-export class TransactionParser {
-  public readonly transaction: EventWithStatus;
-  public readonly outbound?: EventWithStatus;
-  public readonly refund?: EventWithStatus;
+export class TransactionInstance implements Transaction {
+  id: string;
+  status: TransactionStatus = TransactionStatus.PENDING;
+  memo: string = '';
+  direction: TransactionDirection = TransactionDirection.INCOMING;
+  type: TransactionType = TransactionType.INTERNAL;
+  tokens: TokensAmount = {};
+  events: NostrEvent[];
+  createdAt: number;
+  metadata?: string[];
+  errors: string[] = [];
+  preimage?: string;
+  private _metadata?: Record<string, string>;
 
-  private constructor(
-    public readonly startEvent: NostrEvent,
-    private readonly relatedEvents: NostrEvent[],
-    private readonly pubkey: string,
-    private readonly config: ConfigProps,
-    private readonly ndk: NDK,
+  private pubkey: string;
+  private config: ConfigProps;
+  private ndk: NDK;
+
+  constructor(
+    private startEvent: NostrEvent,
+    private relatedEvents: NostrEvent[],
+    pubkey: string,
+    config: ConfigProps,
+    ndk: NDK,
   ) {
+    this.pubkey = pubkey;
+    this.config = config;
+    this.ndk = ndk;
+
+    this.events = [startEvent];
+    this.id = startEvent.id!;
+    this.createdAt = startEvent.created_at! * 1000;
+
+    this.rebuild();
+  }
+
+  private rebuild() {
     const internalType = TransactionTags.INTERNAL;
     const outboundType = TransactionTags.OUTBOUND;
 
-    this.transaction = {
-      startEvent,
-      statusEvent: this.findStatusEvent([internalType.ok, internalType.error]),
+    const pTagValues = getMultipleTagsValues(this.startEvent.tags, 'p');
+    const AuthorIsCard = this.startEvent.pubkey === this.config.modulePubkeys.card;
+    const DelegatorIsUser = AuthorIsCard && getDelegator(this.startEvent as Event) === this.pubkey;
+    const AuthorIsUser = DelegatorIsUser || this.startEvent.pubkey === this.pubkey;
+
+    if (!pTagValues.includes(this.config.modulePubkeys.ledger)) return;
+    if (AuthorIsCard && !DelegatorIsUser && !pTagValues.includes(this.pubkey)) return;
+
+    this.direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
+
+    const content = parseContent(this.startEvent.content);
+    this.memo = content.memo ?? '';
+    this.tokens = content.tokens ?? 0;
+    this.type = AuthorIsCard ? TransactionType.CARD : TransactionType.INTERNAL;
+    this.metadata = getTag(this.startEvent.tags, 'metadata');
+
+    const boltTag = getTagValue(this.startEvent.tags, 'bolt11');
+    if (!AuthorIsCard && boltTag && boltTag.length) {
+      this.type = TransactionType.LN;
+    }
+
+    this.status = TransactionStatus.PENDING;
+
+    const applyStatus = (statusEvent?: NostrEvent) => {
+      if (!statusEvent) return;
+      const tag = getTagValue(statusEvent.tags, 't');
+      if (!tag) return;
+
+      this.events.push(statusEvent);
+
+      if ([internalType.ok, outboundType.ok, TransactionTags.INBOUND.ok].includes(tag)) {
+        this.status = TransactionStatus.CONFIRMED;
+      } else if ([internalType.error, outboundType.error, TransactionTags.INBOUND.error].includes(tag)) {
+        this.status = TransactionStatus.ERROR;
+        const parsed = parseContent(statusEvent.content);
+        if (parsed?.messages?.length) {
+          this.memo = parsed.messages[0];
+          this.errors = parsed.messages;
+        }
+      }
     };
 
-    const outboundStart = this.relatedEvents.find(
-      (e) => getTagValue(e.tags, 't') === outboundType.start,
-    );
+    const mainStatus = this.findStatusEvent([internalType.ok, internalType.error]);
+    applyStatus(mainStatus);
 
-    if (outboundStart) {
+    const outboundStart = this.relatedEvents.find((e) => getTagValue(e.tags, 't') === outboundType.start);
+
+    if (this.direction === TransactionDirection.OUTGOING && this.type === TransactionType.LN && outboundStart) {
       const outboundStatus = this.relatedEvents.find(
-        (e) => [outboundType.ok, outboundType.error].includes(getTagValue(e.tags, 't')) &&
-               getMultipleTagsValues(e.tags, 'e').includes(outboundStart.id!)
+        (e) =>
+          [outboundType.ok, outboundType.error].includes(getTagValue(e.tags, 't')) &&
+          getMultipleTagsValues(e.tags, 'e').includes(outboundStart.id!),
       );
 
-      this.outbound = {
-        startEvent: outboundStart,
-        statusEvent: outboundStatus,
-      };
+      this.events.push(outboundStart);
+      if (outboundStatus) this.events.push(outboundStatus);
+
+      const encryptedPreimage = getTagValue(outboundStart.tags, 'preimage');
+      if (encryptedPreimage && this.ndk.signer) this.resolvePreimage(encryptedPreimage);
+
+      applyStatus(outboundStatus);
     }
 
     const refundStart = this.relatedEvents.find(
-      (e) => getTagValue(e.tags, 't') === internalType.start &&
-             e.pubkey === this.config.modulePubkeys.urlx &&
-             getMultipleTagsValues(e.tags, 'p').includes(this.pubkey),
+      (e) =>
+        getTagValue(e.tags, 't') === internalType.start &&
+        e.pubkey === this.config.modulePubkeys.urlx &&
+        getMultipleTagsValues(e.tags, 'p').includes(this.pubkey),
     );
 
     if (refundStart) {
       const refundStatus = this.relatedEvents.find(
-        (e) => [internalType.ok, internalType.error].includes(getTagValue(e.tags, 't')) &&
-               getMultipleTagsValues(e.tags, 'e').includes(refundStart.id!)
+        (e) =>
+          [internalType.ok, internalType.error].includes(getTagValue(e.tags, 't')) &&
+          getMultipleTagsValues(e.tags, 'e').includes(refundStart.id!),
       );
 
-      this.refund = {
-        startEvent: refundStart,
-        statusEvent: refundStatus,
-      };
+      this.status = TransactionStatus.REVERTED;
+      this.events.push(refundStart);
+      if (refundStatus) {
+        this.events.push(refundStatus);
+        const parsed = parseContent(refundStatus.content);
+        this.memo = parsed?.memo ?? this.memo;
+        if (parsed?.memo) this.errors.push(parsed.memo);
+      }
     }
   }
-  
+
+  private findStatusEvent(tags: string[]): NostrEvent | undefined {
+    return this.relatedEvents.find((e) => tags.includes(getTagValue(e.tags, 't')));
+  }
+
+  updateWithEvent(event: NostrEvent) {
+    if (!this.events.find((e) => e.id === event.id)) {
+      this.relatedEvents.push(event);
+      this.rebuild();
+      return true;
+    }
+
+    return false;
+  }
+
   static async create(
     startEvent: NostrEvent,
     pubkey: string,
     config: ConfigProps,
     ndk: NDK,
     relatedEvents?: NostrEvent[],
-  ): Promise<TransactionParser> {
-    if (!relatedEvents) {
-      if (!ndk || !ndk.signer) throw new Error('NDK instance with Signer is required to resolve related events');
+  ): Promise<TransactionInstance> {
+    const isValidStartEvent =
+      startEvent.pubkey === pubkey || getMultipleTagsValues(startEvent.tags, 'p').includes(pubkey);
+    if (!isValidStartEvent) throw new Error('Provided startEvent is not a valid transaction for this pubkey.');
 
-      relatedEvents = await TransactionParser.resolveRelatedEvents(startEvent, config, ndk);
-    }
-
-    return new TransactionParser(startEvent, relatedEvents, pubkey, config, ndk);
+    relatedEvents = await this.ensureMinimumRelatedEvents(startEvent, relatedEvents ?? [], pubkey, config, ndk);
+    return new TransactionInstance(startEvent, relatedEvents, pubkey, config, ndk);
   }
 
-  private static async resolveRelatedEvents(startEvent: NostrEvent, config: ConfigProps, ndk: NDK): Promise<NostrEvent[]> {
+  private async resolvePreimage(encryptedPreimage: string): Promise<void> {
+    try {
+      const user = new NDKUser({ pubkey: this.config.modulePubkeys.urlx });
+      const preimage = await this.ndk.signer!.decrypt(user, encryptedPreimage);
+      if (preimage) this.preimage = preimage;
+    } catch (e) {
+      console.warn('Error decrypting preimage:', e);
+    }
+  }
+
+  async extractMetadata(): Promise<Record<string, string>> {
+    if (this._metadata) return this._metadata;
+
+    try {
+      const receiverPubkey = getMultipleTagsValues(this.startEvent.tags, 'p')[1]!;
+      const metadataTag = getTag(this.startEvent.tags, 'metadata');
+
+      let parsedMetadata: Record<string, string> = {};
+
+      if (metadataTag && metadataTag.length === 4) {
+        const [, encrypted, encryptType, message] = metadataTag;
+
+        if (!encrypted) {
+          parsedMetadata = parseContent(message!);
+        } else if (encryptType === 'nip04' && this.ndk.signer) {
+          const decryptWithPubkey =
+            this.direction === TransactionDirection.INCOMING ? this.startEvent.pubkey : receiverPubkey;
+
+          const user = new NDKUser({ pubkey: decryptWithPubkey });
+          const decrypted = await this.ndk.signer.decrypt(user, message!);
+          if (decrypted) {
+            parsedMetadata = parseContent(decrypted) ?? {};
+          }
+        }
+      }
+
+      if (
+        this.direction === TransactionDirection.OUTGOING &&
+        receiverPubkey !== this.config.modulePubkeys.urlx &&
+        !parsedMetadata.receiver
+      ) {
+        const receiverUsername = await getUsername(receiverPubkey, this.config);
+        if (receiverUsername.length) {
+          parsedMetadata.receiver = `${receiverUsername}@${normalizeLNDomain(this.config.endpoints.lightningDomain)}`;
+        }
+      }
+
+      if (
+        this.direction === TransactionDirection.INCOMING &&
+        this.startEvent.pubkey !== this.config.modulePubkeys.urlx &&
+        this.startEvent.pubkey !== this.config.modulePubkeys.card &&
+        !parsedMetadata.sender
+      ) {
+        const senderUsername = await getUsername(this.startEvent.pubkey, this.config);
+        if (senderUsername.length) {
+          parsedMetadata.sender = `${senderUsername}@${normalizeLNDomain(this.config.endpoints.lightningDomain)}`;
+        }
+      }
+
+      this._metadata = parsedMetadata;
+      return parsedMetadata;
+    } catch {
+      this._metadata = {};
+      return {};
+    }
+  }
+
+  private static needsStatusResolution(startEvent: NostrEvent, relatedEvents: NostrEvent[]): boolean {
+    return !relatedEvents.some(
+      (e) =>
+        [TransactionTags.INTERNAL.ok, TransactionTags.INTERNAL.error].includes(getTagValue(e.tags, 't')) &&
+        getMultipleTagsValues(e.tags, 'e').includes(startEvent.id!),
+    );
+  }
+
+  private static needsRefundOrOutboundResolution(
+    startEvent: NostrEvent,
+    relatedEvents: NostrEvent[],
+    pubkey: string,
+    config: ConfigProps,
+  ): boolean {
+    const fromMe = startEvent.pubkey === pubkey;
+    const pTags = getMultipleTagsValues(startEvent.tags, 'p');
+
+    const onlyMentionsUrlxAndLedger =
+      fromMe &&
+      pTags.length &&
+      pTags.every((p) => [config.modulePubkeys.urlx, config.modulePubkeys.ledger].includes(p));
+
+    if (!onlyMentionsUrlxAndLedger) return false;
+
+    const existRefund = relatedEvents.find(
+      (e) =>
+        getTagValue(e.tags, 't') === TransactionTags.INTERNAL.start &&
+        e.pubkey === config.modulePubkeys.urlx &&
+        getMultipleTagsValues(e.tags, 'p').includes(pubkey) &&
+        getMultipleTagsValues(e.tags, 'e').includes(startEvent.id!),
+    );
+
+    const refundStatus =
+      existRefund &&
+      relatedEvents.find(
+        (e) =>
+          [TransactionTags.INTERNAL.ok, TransactionTags.INTERNAL.error].includes(getTagValue(e.tags, 't')) &&
+          getMultipleTagsValues(e.tags, 'e').includes(existRefund.id!),
+      );
+
+    const outboundStart = relatedEvents.find(
+      (e) =>
+        getTagValue(e.tags, 't') === TransactionTags.OUTBOUND.start &&
+        getMultipleTagsValues(e.tags, 'e').includes(startEvent.id!),
+    );
+
+    const outboundStatus =
+      outboundStart &&
+      relatedEvents.find(
+        (e) =>
+          [TransactionTags.OUTBOUND.ok, TransactionTags.OUTBOUND.error].includes(getTagValue(e.tags, 't')) &&
+          getMultipleTagsValues(e.tags, 'e').includes(outboundStart.id!),
+      );
+
+    return (!outboundStart || !outboundStatus) && (!existRefund || !refundStatus);
+  }
+
+  private static async ensureMinimumRelatedEvents(
+    startEvent: NostrEvent,
+    relatedEvents: NostrEvent[],
+    pubkey: string,
+    config: ConfigProps,
+    ndk: NDK,
+  ): Promise<NostrEvent[]> {
+    if (!ndk || !ndk.signer) throw new Error('NDK instance with Signer is required');
+    if (!relatedEvents.length) return this.resolveRelatedEvents(startEvent, config, ndk);
+
+    if (this.needsStatusResolution(startEvent, relatedEvents)) {
+      return this.resolveRelatedEvents(startEvent, config, ndk);
+    }
+
+    if (this.needsRefundOrOutboundResolution(startEvent, relatedEvents, pubkey, config)) {
+      return this.resolveRelatedEvents(startEvent, config, ndk);
+    }
+
+    return relatedEvents;
+  }
+
+  private static async resolveRelatedEvents(
+    startEvent: NostrEvent,
+    config: ConfigProps,
+    ndk: NDK,
+  ): Promise<NostrEvent[]> {
     if (!startEvent.id) return [];
 
     const relatedEvents = await ndk.fetchEvents({
@@ -354,96 +529,30 @@ export class TransactionParser {
       '#e': [startEvent.id],
     });
 
-    return Promise.all(Array.from(relatedEvents).map(e => e.toNostrEvent()));
+    return Promise.all(Array.from(relatedEvents).map((e) => e.toNostrEvent()));
   }
 
-  private findStatusEvent(tags: string[]): NostrEvent | undefined {
-    return this.relatedEvents.find((e) => tags.includes(getTagValue(e.tags, 't')));
+  get isConfirmed(): boolean {
+    return this.status === TransactionStatus.CONFIRMED;
   }
 
-  async toTransaction(): Promise<Transaction | undefined> {
-    const pTagValues = getMultipleTagsValues(this.startEvent.tags, 'p');
-    if (!pTagValues.includes(this.config.modulePubkeys.ledger)) return;
+  get isPending(): boolean {
+    return this.status === TransactionStatus.PENDING;
+  }
 
-    const AuthorIsCard: boolean = this.startEvent.pubkey === this.config.modulePubkeys.card;
-    const DelegatorIsUser: boolean = AuthorIsCard && getDelegator(this.startEvent as Event) === this.pubkey;
-    const AuthorIsUser: boolean = DelegatorIsUser || this.startEvent.pubkey === this.pubkey;
-
-    if (AuthorIsCard && !DelegatorIsUser && !pTagValues.includes(this.pubkey)) return;
-
-    const direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
-
-    const eventContent = parseContent(this.startEvent.content);
-    const metadata = getTag(this.startEvent.tags, 'metadata');
-
-    let tx: Transaction = {
-      id: this.startEvent.id!,
-      status: TransactionStatus.PENDING,
-      memo: eventContent.memo ?? '',
-      direction,
-      type: AuthorIsCard ? TransactionType.CARD : TransactionType.INTERNAL,
-      tokens: eventContent.tokens,
-      events: [this.startEvent],
-      errors: [],
-      createdAt: this.startEvent.created_at! * 1000,
-      metadata,
+  toJSON(): Transaction {
+    return {
+      id: this.id,
+      status: this.status,
+      memo: this.memo,
+      direction: this.direction,
+      type: this.type,
+      tokens: this.tokens,
+      events: this.events,
+      createdAt: this.createdAt,
+      metadata: this.metadata,
+      errors: this.errors,
+      preimage: this.preimage,
     };
-
-    if (!AuthorIsCard) {
-      const boltTag: string | undefined = getTagValue(this.startEvent.tags, 'bolt11');
-      if (boltTag && boltTag.length) tx.type = TransactionType.LN;
-    }
-
-    const applyStatus = (statusEvent?: NostrEvent) => {
-      if (!statusEvent) return;
-      const statusTag = getTagValue(statusEvent.tags, 't');
-      if (!statusTag) return;
-
-      tx.events.push(statusEvent);
-
-      if ([TransactionTags.INTERNAL.ok, TransactionTags.OUTBOUND.ok, TransactionTags.INBOUND.ok].includes(statusTag)) {
-        tx.status = TransactionStatus.CONFIRMED;
-        return;
-      }
-
-      if ([TransactionTags.INTERNAL.error, TransactionTags.OUTBOUND.error, TransactionTags.INBOUND.error].includes(statusTag)) {
-        tx.status = TransactionStatus.ERROR;
-        const parsed = parseContent(statusEvent.content);
-        if (parsed?.messages?.length) {
-          tx.memo = parsed.messages[0];
-          tx.errors = parsed.messages;
-        }
-      }
-    };
-
-    applyStatus(this.transaction.statusEvent);
-
-    if (tx.direction === TransactionDirection.OUTGOING && tx.type === TransactionType.LN) {
-      if (this.outbound) {
-        tx.events.push(this.outbound.startEvent);
-        const encryptedPreimage = getTagValue(this.outbound.startEvent.tags, 'preimage');
-        if (encryptedPreimage && this.ndk.signer) {
-          const user = new NDKUser({ pubkey: this.config.modulePubkeys.urlx });
-          const decryptedMessage = await this.ndk.signer.decrypt(user, encryptedPreimage);
-          tx.preimage = decryptedMessage;
-        }
-        applyStatus(this.outbound.statusEvent);
-      } else {
-        tx.status = TransactionStatus.PENDING;
-      }
-    }
-
-    if (this.refund?.startEvent) {
-      tx.status = TransactionStatus.REVERTED;
-      tx.events.push(this.refund.startEvent);
-      if (this.refund.statusEvent) {
-        tx.events.push(this.refund.statusEvent);
-        const parsed = parseContent(this.refund.statusEvent.content);
-        tx.memo = parsed?.memo ?? tx.memo;
-        if (parsed?.memo) tx.errors.push(parsed.memo);
-      }
-    }
-
-    return tx;
   }
 }

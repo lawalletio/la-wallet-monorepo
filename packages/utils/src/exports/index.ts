@@ -26,7 +26,7 @@ export { UserIdentity } from '../models/Identity.js';
 
 export * as nip26 from '../libs/nip26.js';
 
-export * from '../libs/transaction.js'
+export * from '../libs/transaction.js';
 
 export {
   type MultiNip04Content,

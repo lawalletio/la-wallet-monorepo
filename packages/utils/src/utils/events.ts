@@ -145,11 +145,7 @@ export const buildCreateNonceEvent = (adminPubkey: string, randomNonce: string):
 export const buildTxStartEvent = (props: TransactionProps, config: ConfigProps = baseConfig): NostrEvent => {
   const { tokenName, amount, senderPubkey, comment, tags = [] } = props;
 
-  const txTags: NDKTag[] = [
-    ['t', TransactionTags.INTERNAL.start],
-    ['p', config.modulePubkeys.ledger],
-    ...tags,
-  ];
+  const txTags: NDKTag[] = [['t', TransactionTags.INTERNAL.start], ['p', config.modulePubkeys.ledger], ...tags];
 
   return {
     pubkey: senderPubkey,

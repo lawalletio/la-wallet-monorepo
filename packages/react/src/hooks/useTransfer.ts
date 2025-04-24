@@ -147,6 +147,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
       let shouldResetStartEvent = false;
 
       switch (subkind) {
+        case TransactionTags.INTERNAL.start:
         case TransactionTags.INTERNAL.error:
           statusVars.handleMarkError();
           shouldResetStartEvent = true;
@@ -193,7 +194,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
 
   React.useEffect(() => {
     if (startEventInfo.published) validateRelaysStatus();
-  }, [startEventInfo.published])
+  }, [startEventInfo.published]);
 
   return {
     ...statusVars,
