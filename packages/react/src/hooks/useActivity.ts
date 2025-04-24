@@ -2,6 +2,7 @@ import {
   LaWalletKinds,
   nowInSeconds,
   MappedStoragedKeys,
+  getTagValue,
 } from '@lawallet/utils';
 import { TransactionStatus, type ConfigParameter } from '@lawallet/utils/types';
 import type { Transaction } from '@lawallet/utils/types';
@@ -13,7 +14,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
 import { classificateTxEvents, TransactionParser, TransactionTags } from '@lawallet/utils';
 
-const MAX_TRANSACTIONS_TIME = 90 * 24 * 60 * 60;
+const MAX_SUBSCRIPTION_TIME = 90 * 24 * 60 * 60;
 const MAX_CACHED_TXS = 150;
 
 export type UseActivityReturns = {
@@ -49,12 +50,12 @@ const defaultActivity: ActivityType = {
   cache: {
     transactions: [],
     loaded: false,
-    lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
+    lastCached: nowInSeconds() - MAX_SUBSCRIPTION_TIME,
   },
   transactions: [],
 };
 
-export function splitTransactionsForCache(transactions: Transaction[], max = 200): Transaction[] {
+function splitTransactionsForCache(transactions: Transaction[], max = 200): Transaction[] {
   const sorted = [...transactions].sort((a, b) => b.createdAt - a.createdAt);
 
   const lastPendingIndex = sorted.findIndex(tx => tx.status === TransactionStatus.PENDING);
@@ -81,7 +82,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const since = useMemo(() =>
     sinceParam ??
     (activityInfo.cache.lastCached > 0 ? activityInfo.cache.lastCached : undefined) ??
-    (nowInSeconds() - MAX_TRANSACTIONS_TIME),
+    (nowInSeconds() - MAX_SUBSCRIPTION_TIME),
   [sinceParam, activityInfo]);
 
   const filters = useMemo(
@@ -108,8 +109,6 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         '#t': [
           TransactionTags.INTERNAL.ok,
           TransactionTags.INTERNAL.error,
-          TransactionTags.OUTBOUND.ok,
-          TransactionTags.OUTBOUND.error
         ],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
         since,
@@ -123,7 +122,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const { events: txsEvents } = useSubscription({
     filters,
     config,
-    options: { groupable: true, closeOnEose: false },
+    options: { groupable: false, closeOnEose: false },
     enabled: enabled && activityInfo.cache.loaded,
   });
 
@@ -135,8 +134,8 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   }, [activityInfo.transactions, activityInfo.cache.transactions]);
 
   const saveTransactionsOnCache = useCallback(
-    async (transactions: Transaction[]) => {
-      const toCache = splitTransactionsForCache(transactions, MAX_CACHED_TXS);
+    async (txs: Transaction[]) => {
+      const toCache = splitTransactionsForCache(txs, MAX_CACHED_TXS);
       await config.storage.setItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`, JSON.stringify(toCache));
     },
     [pubkey],
@@ -187,17 +186,17 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const debouncedHandleEvents = useCallback(
     (events: NDKEvent[]) => {
       const seen = new Set(transactions.flatMap((tx) => tx.events.map((e) => e.id)));
-      const hasNew = events.some((e) => !seen.has(e.id!));
-      if (!hasNew) return;
-
+      const newEvents = events.filter((e) => !seen.has(e.id!));
+      if (!newEvents.length) return;
+      
       if (debounceRef.current) clearTimeout(debounceRef.current);
       setActivityInfo((prev) => ({ ...prev, loading: true }));
-
+  
       debounceRef.current = setTimeout(async () => {
-        const txs = await generateTransactions(events)
-
+        const txs = await generateTransactions(newEvents);
+  
         setActivityInfo((prev) => ({ ...prev, transactions: txs, loading: false }));
-        if (storage) saveTransactionsOnCache([...activityInfo.cache.transactions, ...txs]);
+        if (storage) saveTransactionsOnCache([...transactions, ...txs]);
       }, 350);
     },
     [transactions, storage, generateTransactions],
@@ -215,11 +214,16 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     let deepSearchActive = params?.deepSearch ?? false;
     const now = nowInSeconds();
     const maxLookback = 365 * 24 * 60 * 60;
-    const chunkSize = MAX_TRANSACTIONS_TIME / 2;
+    const chunkSize = MAX_SUBSCRIPTION_TIME / 2;
+
+    const seen = new Set(transactions.flatMap((tx) => tx.events.map((e) => e.id)));
   
-    let currentUntil = activityInfo.cache.transactions.length
-      ? Math.floor(activityInfo.cache.transactions.at(-1)!.createdAt / 1000) - 1
+    let currentUntil = transactions.length
+      ? Math.floor(transactions.at(-1)!.createdAt / 1000) - 1
       : now;
+
+    console.log(currentUntil);
+    console.log(now)
   
     let loadedTxs: Transaction[] = [];
     let emptyAttempts = 0;
@@ -265,14 +269,22 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         },
       ];
   
-      const events = await ndk.fetchEvents(filters);
+      const events = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
       if (!events.size) {
         emptyAttempts++;
         currentUntil = currentSince;
         continue;
       }
 
-      const txs = await generateTransactions(Array.from(events));
+      const eventsArray = Array.from(events);
+      const unseenEvents = eventsArray.filter((e) => !seen.has(e.id!));
+      if (!unseenEvents.length) {
+        emptyAttempts++;
+        currentUntil = currentSince;
+        continue;
+      }
+
+      const txs = await generateTransactions(unseenEvents);
       if (!txs.length) {
         emptyAttempts++;
         currentUntil = currentSince;
@@ -299,15 +311,14 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     }
 
     return false;
-  }, [transactions, storage, pubkey, config, ndk, generateTransactions]);
+  }, [transactions, activityInfo, storage, pubkey, config, ndk, generateTransactions]);
 
   useEffect(() => {
-    if (!pubkey || sinceParam || transactions.length >= MAX_CACHED_TXS) return;
+    const totalTxs = transactions.length;
+    if (!pubkey || sinceParam || totalTxs >= MAX_CACHED_TXS) return;
   
     const timeout = setTimeout(() => {
-      const totalTxs = transactions.length;
       if (totalTxs === 0) setActivityInfo((prev) => ({ ...prev, loading: true }));
-      
       if (totalTxs <= MAX_CACHED_TXS) loadMoreTransactions({ deepSearch: true });
     }, 3000);
   

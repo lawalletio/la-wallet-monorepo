@@ -103,7 +103,9 @@ async function resolveMissingOutboundEvents({
     })),
   ];
 
-  const fetched = await ndk.fetchEvents(filters);
+  if (!filters.length) return { outboundStart: [], outboundStatus: [] }
+
+  const fetched = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
   const outboundStart: NostrEvent[] = [];
   const outboundStatus: NostrEvent[] = [];
 

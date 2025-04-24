@@ -40,7 +40,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
   const config = useConfig(params);
   const statusVars = useStatusVars(params);
 
-  const { ndk, signer, signerInfo, signEvent } = useNostr({ config });
+  const { ndk, validateRelaysStatus, signer, signerInfo, signEvent } = useNostr({ config });
   const [startEventInfo, setStartEventInfo] = React.useState<StartEventInfo>({ published: false });
 
   const { events } = useSubscription({
@@ -190,6 +190,10 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
   React.useEffect(() => {
     if (events.length) processStatusTransfer(events);
   }, [events]);
+
+  React.useEffect(() => {
+    if (startEventInfo.published) validateRelaysStatus();
+  }, [startEventInfo.published])
 
   return {
     ...statusVars,
