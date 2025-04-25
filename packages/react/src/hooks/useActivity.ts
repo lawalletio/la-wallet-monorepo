@@ -69,7 +69,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const { pubkey, enabled = true, limit = 1000, since: sinceParam, until, storage = false } = parameters;
 
   const config = useConfig(parameters);
-  const { ndk } = useNostr();
+  const { ndk, signerInfo } = useNostr();
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const saveDebounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -106,6 +106,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const saveTransactionsOnCache = useCallback(
     (txs: TransactionInstance[]) => {
       if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
+      if (!pubkey) return;
 
       saveDebounceRef.current = setTimeout(async () => {
         const sorted = [...txs].sort((a, b) => b.createdAt - a.createdAt);
@@ -119,6 +120,8 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   );
 
   const loadCachedTransactions = useCallback(async () => {
+    if (!signerInfo || signerInfo.pubkey !== pubkey) return;
+
     const raw = await config.storage.getItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`);
     if (!raw) {
       return setActivityInfo((prev) => ({
@@ -144,10 +147,12 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       cache: { loaded: true, transactions: txs, lastCached: lastCachedTime },
       loading: false,
     }));
-  }, [pubkey]);
+  }, [pubkey, activityInfo, ndk, signerInfo]);
 
   const generateTransactions = useCallback(
     async (events: NDKEvent[]) => {
+      if (!signerInfo || signerInfo.pubkey !== pubkey) return [];
+      
       const rawEvents = await Promise.all(events.map((e) => e.toNostrEvent()));
       const { started, referencedBy } = await linkTxWithRelatedEvents(rawEvents, pubkey, config, ndk);
 
@@ -156,38 +161,40 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       const txs: TransactionInstance[] = [];
       for (const startEvent of mostRecentStartedEvents) {
         const related = referencedBy.get(startEvent.id!) ?? [];
-        const tx = await TransactionInstance.create(startEvent, pubkey, config, ndk, related);
+        const tx = new TransactionInstance(startEvent, related, pubkey, config, ndk);
 
         if (tx) txs.push(tx);
       }
 
       return txs.sort((a, b) => b.createdAt - a.createdAt);
     },
-    [pubkey, ndk, config, activityInfo],
+    [pubkey, ndk, signerInfo, config, activityInfo],
   );
 
   const debouncedHandleEvents = useCallback(
     (events: NDKEvent[], lastSeenTransactions: TransactionInstance[]) => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+
       const seen = new Set(lastSeenTransactions.flatMap((tx) => tx.events.map((e) => e.id)));
       const newEvents = events.filter((e) => !seen.has(e.id!));
       if (!newEvents.length) return;
 
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      setActivityInfo((prev) => ({ ...prev, loading: true }));
-
       debounceRef.current = setTimeout(async () => {
+        setActivityInfo((prev) => ({ ...prev, loading: true }));
+
         const txs = await generateTransactions(newEvents);
 
         setActivityInfo((prev) => ({
           ...prev,
-          transactions: txs,
+          transactions: txs ?? [],
           cache: { ...prev.cache, transactions: lastSeenTransactions },
           loading: false,
         }));
+        
         if (storage) saveTransactionsOnCache([...lastSeenTransactions, ...txs]);
       }, 350);
     },
-    [storage, generateTransactions],
+    [storage, activityInfo, generateTransactions],
   );
 
   const loadMoreTransactions = useCallback(
@@ -200,7 +207,6 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       const seen = new Set(transactions.flatMap((tx) => tx.events.map((e) => e.id)));
 
       let currentUntil = transactions.length ? Math.floor(transactions.at(-1)!.createdAt / 1000) - 1 : now;
-
       let loadedTxs: TransactionInstance[] = [];
       let emptyAttempts = 0;
 
@@ -231,6 +237,8 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
           continue;
         }
 
+        if (transactions.length === 0) setActivityInfo((prev) => ({ ...prev, loading: true }));
+
         const txs = await generateTransactions(unseenEvents);
         if (!txs.length) {
           emptyAttempts++;
@@ -256,6 +264,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
           cache: { ...prev.cache, transactions: [...prev.cache.transactions, ...loadedTxs] },
           loading: false,
         }));
+
         if (storage && deepSearchActive) saveTransactionsOnCache([...transactions, ...loadedTxs]);
 
         return true;
@@ -297,6 +306,8 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     options: { groupable: false, closeOnEose: false },
     enabled: Boolean(statusTxsFilter.length),
     onEvent(event) {
+      if (!pubkey || !enabled) return;
+
       const associatedIds = getMultipleTagsValues(event.tags, 'e');
       const tx = transactions.find((tx) => {
         return associatedIds.includes(tx.id);
@@ -313,8 +324,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     const totalTxs = transactions.length;
     if (!pubkey || sinceParam || totalTxs >= MAX_CACHED_TXS || !enabled) return;
 
-    const timeout = setTimeout(() => {
-      if (totalTxs === 0) setActivityInfo((prev) => ({ ...prev, loading: true }));
+    const timeout = setTimeout(async () => {
       if (totalTxs <= MAX_CACHED_TXS) loadMoreTransactions({ deepSearch: true });
     }, 3000);
 
@@ -322,21 +332,30 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   }, [pubkey, sinceParam, transactions]);
 
   useEffect(() => {
+    if (!pubkey) {
+      setActivityInfo(defaultActivity);
+      return
+    }
+    
     if (activityInfo.cache.loaded) return;
-    if (!pubkey) return setActivityInfo(defaultActivity);
 
     storage
       ? loadCachedTransactions()
       : setActivityInfo((prev) => ({ ...prev, cache: { transactions: [], lastCached: 0, loaded: true } }));
-  }, [pubkey, activityInfo.cache.loaded, storage]);
+  }, [pubkey, activityInfo.cache.loaded, storage, signerInfo]);
 
   useEffect(() => {
+    if (!enabled || !pubkey) {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      return;
+    }
+
     if (startEvents.length) debouncedHandleEvents(startEvents, transactions);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [startEvents, transactions, pubkey, activityInfo.cache.loaded]);
+  }, [startEvents, enabled, transactions, pubkey, activityInfo.cache.loaded]);
 
   return {
     transactions,

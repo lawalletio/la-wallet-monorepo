@@ -372,9 +372,11 @@ export class TransactionInstance implements Transaction {
   }
 
   private async resolvePreimage(encryptedPreimage: string): Promise<void> {
+    if (!this.ndk.signer) return;
+
     try {
       const user = new NDKUser({ pubkey: this.config.modulePubkeys.urlx });
-      const preimage = await this.ndk.signer!.decrypt(user, encryptedPreimage);
+      const preimage = await this.ndk.signer.decrypt(user, encryptedPreimage);
       if (preimage) this.preimage = preimage;
     } catch (e) {
       console.warn('Error decrypting preimage:', e);
@@ -502,7 +504,7 @@ export class TransactionInstance implements Transaction {
     config: ConfigProps,
     ndk: NDK,
   ): Promise<NostrEvent[]> {
-    if (!ndk || !ndk.signer) throw new Error('NDK instance with Signer is required');
+    if (!ndk) throw new Error('NDK instance is required');
     if (!relatedEvents.length) return this.resolveRelatedEvents(startEvent, config, ndk);
 
     if (this.needsStatusResolution(startEvent, relatedEvents)) {
