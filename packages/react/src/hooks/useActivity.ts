@@ -4,9 +4,8 @@ import {
   internalTransactionFilters,
   internalStatusTransactionFilters,
   TransactionInstance,
-  TransactionTags,
-  LaWalletKinds,
   getMultipleTagsValues,
+  relatedTxEventFilters,
 } from '@lawallet/utils';
 import { type ConfigParameter } from '@lawallet/utils/types';
 import type { Transaction } from '@lawallet/utils/types';
@@ -279,28 +278,10 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
   const statusTxsFilter = useMemo(() => {
     const pendingTxs = transactions.filter((tx) => tx.isPending);
-
-    if (!pendingTxs.length) return [];
-
     const pendingIds = pendingTxs.map((tx) => tx.id);
-
-    return [
-      {
-        authors: [config.modulePubkeys.ledger, config.modulePubkeys.urlx],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        '#t': [
-          TransactionTags.INTERNAL.start,
-          TransactionTags.INTERNAL.error,
-          TransactionTags.INTERNAL.ok,
-          TransactionTags.OUTBOUND.start,
-          TransactionTags.OUTBOUND.ok,
-          TransactionTags.OUTBOUND.error,
-        ],
-        '#e': pendingIds,
-        limit: 1000,
-      },
-    ];
-  }, [transactions, config.modulePubkeys]);
+  
+    return relatedTxEventFilters(pendingIds, config);
+  }, [transactions, config]);
 
   useSubscription({
     filters: statusTxsFilter,

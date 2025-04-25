@@ -63,6 +63,38 @@ export const internalStatusTransactionFilters = (
   },
 ];
 
+const CHUNK_SIZE = 20;
+
+export function relatedTxEventFilters(
+  eventIds: string[],
+  config: ConfigProps = baseConfig,
+  limit?: number
+): NDKFilter[] {
+  if (!eventIds.length) return [];
+
+  const RELATED_TX_TAGS = [
+    TransactionTags.OUTBOUND.start,
+    TransactionTags.OUTBOUND.error,
+    TransactionTags.OUTBOUND.ok,
+    TransactionTags.INTERNAL.start,
+    TransactionTags.INTERNAL.error,
+    TransactionTags.INTERNAL.ok,
+  ];
+
+  const chunk = <T>(arr: T[], size: number): T[][] =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+      arr.slice(i * size, i * size + size)
+    );
+
+  return chunk(eventIds, CHUNK_SIZE).map((chunkIds) => ({
+    kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+    authors: [config.modulePubkeys.urlx, config.modulePubkeys.ledger],
+    '#t': RELATED_TX_TAGS,
+    '#e': chunkIds,
+    limit
+  }));
+}
+
 async function resolveRelatedEvents({
   missingIds,
   ndk,
@@ -74,28 +106,12 @@ async function resolveRelatedEvents({
 }): Promise<NostrEvent[]> {
   if (!missingIds.length) return [];
 
-  const chunk = <T>(arr: T[], size: number): T[][] =>
-    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, (i + 1) * size));
+  const filters = relatedTxEventFilters(missingIds, config);
+  const fetched = await ndk.fetchEvents(filters, {
+    groupable: false,
+    closeOnEose: true,
+  });
 
-  const chunked = chunk(missingIds, 20);
-
-  const fixedTags = [
-    TransactionTags.OUTBOUND.ok,
-    TransactionTags.OUTBOUND.error,
-    TransactionTags.INTERNAL.start,
-    TransactionTags.INTERNAL.ok,
-    TransactionTags.INTERNAL.error,
-    TransactionTags.OUTBOUND.start,
-  ];
-
-  const filters: NDKFilter[] = chunked.map((chunkIds) => ({
-    kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-    authors: [config.modulePubkeys.urlx, config.modulePubkeys.ledger],
-    '#t': fixedTags,
-    '#e': chunkIds,
-  }));
-
-  const fetched = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
   return Promise.all(Array.from(fetched).map((e) => e.toNostrEvent()));
 }
 
