@@ -267,6 +267,8 @@ export class TransactionInstance implements Transaction {
   }
 
   private rebuild() {
+    if (!this.startEvent || !this.startEvent.id) throw new Error('Invalid start event');
+
     const internalType = TransactionTags.INTERNAL;
     const outboundType = TransactionTags.OUTBOUND;
 
@@ -300,9 +302,9 @@ export class TransactionInstance implements Transaction {
 
       this.addEvent(statusEvent);
 
-      if ([internalType.ok, outboundType.ok, TransactionTags.INBOUND.ok].includes(tag)) {
+      if ((tag === internalType.ok && this.type === TransactionType.INTERNAL) || (this.type !== TransactionType.INTERNAL && tag === outboundType.ok)) {
         this.status = TransactionStatus.CONFIRMED;
-      } else if ([internalType.error, outboundType.error, TransactionTags.INBOUND.error].includes(tag)) {
+      } else if ([internalType.error, outboundType.error].includes(tag)) {
         this.status = TransactionStatus.ERROR;
         const parsed = parseContent(statusEvent.content);
         if (parsed?.messages?.length) {
@@ -312,8 +314,21 @@ export class TransactionInstance implements Transaction {
       }
     };
 
-    const mainStatus = this.findStatusEvent([internalType.ok, internalType.error]);
-    applyStatus(mainStatus);
+    const refundStart = this.relatedEvents.find(
+      (e) =>
+        getTagValue(e.tags, 't') === internalType.start &&
+        e.pubkey === this.config.modulePubkeys.urlx &&
+        getMultipleTagsValues(e.tags, 'p').includes(this.pubkey),
+    );
+
+    const internalStatus = this.relatedEvents.find((e) => {
+      const isInternalStatus = [internalType.ok, internalType.error].includes(getTagValue(e.tags, 't'));
+      const isRefundStatus = (refundStart && !(getMultipleTagsValues(e.tags, 'e').includes(refundStart.id!)));
+
+      return isInternalStatus && !isRefundStatus
+    });
+    
+    applyStatus(internalStatus);
 
     const outboundStart = this.relatedEvents.find((e) => getTagValue(e.tags, 't') === outboundType.start);
 
@@ -333,13 +348,6 @@ export class TransactionInstance implements Transaction {
       applyStatus(outboundStatus);
     }
 
-    const refundStart = this.relatedEvents.find(
-      (e) =>
-        getTagValue(e.tags, 't') === internalType.start &&
-        e.pubkey === this.config.modulePubkeys.urlx &&
-        getMultipleTagsValues(e.tags, 'p').includes(this.pubkey),
-    );
-
     if (refundStart) {
       const refundStatus = this.relatedEvents.find(
         (e) =>
@@ -358,14 +366,10 @@ export class TransactionInstance implements Transaction {
     }
   }
 
-  private findStatusEvent(tags: string[]): NostrEvent | undefined {
-    return this.relatedEvents.find((e) => tags.includes(getTagValue(e.tags, 't')));
-  }
-
   updateWithEvent(event: NostrEvent) {
-    if (!this.events.find((e) => e.id === event.id)) {
-      let added = this.addEvent(event);
-      if (added) this.rebuild();
+    if (!this.relatedEvents.find((e) => e.id === event.id)) {
+      this.relatedEvents.push(event);
+      this.rebuild();
       return true;
     }
 
@@ -530,33 +534,19 @@ export class TransactionInstance implements Transaction {
     ndk: NDK,
   ): Promise<NostrEvent[]> {
     if (!ndk || !ndk.signer) throw new Error('NDK instance with signer is required');
-    if (!relatedEvents.length) return this.resolveRelatedEvents(startEvent, config, ndk);
+    if (!startEvent.id) throw new Error('Invalid event');
+  
+    if (!relatedEvents.length) return resolveRelatedEvents({ missingIds: [startEvent.id], config, ndk});
 
     if (this.needsStatusResolution(startEvent, relatedEvents)) {
-      return this.resolveRelatedEvents(startEvent, config, ndk);
+      return resolveRelatedEvents({missingIds: [startEvent.id], config, ndk});
     }
 
     if (this.needsRefundOrOutboundResolution(startEvent, relatedEvents, pubkey, config)) {
-      return this.resolveRelatedEvents(startEvent, config, ndk);
+      return resolveRelatedEvents({ missingIds: [startEvent.id], config, ndk});
     }
 
     return relatedEvents;
-  }
-
-  private static async resolveRelatedEvents(
-    startEvent: NostrEvent,
-    config: ConfigProps,
-    ndk: NDK,
-  ): Promise<NostrEvent[]> {
-    if (!startEvent.id) return [];
-
-    const relatedEvents = await ndk.fetchEvents({
-      kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-      authors: [config.modulePubkeys.urlx, config.modulePubkeys.ledger],
-      '#e': [startEvent.id],
-    });
-
-    return Promise.all(Array.from(relatedEvents).map((e) => e.toNostrEvent()));
   }
 
   get isConfirmed(): boolean {

@@ -14,7 +14,7 @@ import { useNostr } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
 import { useLaWallet } from '../context/WalletContext.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
+import type { NDKEvent } from '@nostr-dev-kit/ndk';
 import { linkTxWithRelatedEvents } from '@lawallet/utils';
 
 const MAX_SUBSCRIPTION_TIME = 90 * 24 * 60 * 60;
@@ -283,25 +283,39 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     return relatedTxEventFilters(pendingIds, config);
   }, [transactions, config]);
 
-  useSubscription({
+  const { events: statusPendingEvents } = useSubscription({
     filters: statusTxsFilter,
     config,
     options: { groupable: false, closeOnEose: false },
     enabled: Boolean(statusTxsFilter.length),
-    onEvent(event) {
-      if (!pubkey || !enabled) return;
-
-      const associatedIds = getMultipleTagsValues(event.tags, 'e');
-      const tx = transactions.find((tx) => {
-        return associatedIds.includes(tx.id);
-      });
-
-      if (tx) {
-        const updatedTransaction = tx.updateWithEvent(event);
-        if (updatedTransaction && storage) saveTransactionsOnCache(transactions);
-      }
-    },
   });
+
+  const processStatusEvents = useCallback(
+    async (events: NDKEvent[]) => {
+      if (!pubkey || !enabled || !events.length) return;
+  
+      const rawEvents = await Promise.all(events.map((e) => e.toNostrEvent()));
+      let hasUpdated = false;
+  
+      for (const event of rawEvents) {
+        const associatedIds = getMultipleTagsValues(event.tags, 'e');
+        const tx = transactions.find((tx) => associatedIds.includes(tx.id));
+        if (tx) {
+          const updated = tx.updateWithEvent(event);
+          if (updated) hasUpdated = true;
+        }
+      }
+  
+      if (hasUpdated && storage) saveTransactionsOnCache(transactions);
+    },
+    [pubkey, enabled, transactions, storage]
+  );
+
+  useEffect(() => {
+    if (statusPendingEvents?.length) {
+      void processStatusEvents(statusPendingEvents);
+    }
+  }, [statusPendingEvents, processStatusEvents]);
 
   useEffect(() => {
     const totalTxs = transactions.length;
