@@ -29,6 +29,8 @@ export interface ActivitySubscriptionProps {
   pubkey: string;
 }
 
+type CacheTransactions = { transactions: Transaction[], lastCached: number };
+
 export type ActivityType = {
   loading: boolean;
   cache: {
@@ -53,7 +55,7 @@ const defaultActivity: ActivityType = {
   cache: {
     transactions: [],
     loaded: false,
-    lastCached: nowInSeconds() - MAX_SUBSCRIPTION_TIME,
+    lastCached: 0,
   },
   transactions: [],
 };
@@ -102,18 +104,28 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     enabled: enabled && activityInfo.cache.loaded,
   });
 
-  const saveTransactionsOnCache = useCallback(
+  const saveTransactionsCache = useCallback(
     (txs: TransactionInstance[]) => {
       if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
-      if (!pubkey || !txs.length) return;
-
+      if (!pubkey) return;
+  
       saveDebounceRef.current = setTimeout(async () => {
-        const sorted = [...txs].sort((a, b) => b.createdAt - a.createdAt);
-        const spliced = sorted.slice(0, MAX_CACHED_TXS);
-        const txsToStore = spliced.map((tx) => tx.toJSON());
+        let txsToStore: Transaction[] = [];
 
-        await config.storage.setItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`, JSON.stringify(txsToStore));
-      }, 500);
+        if (txs.length) {
+          const sorted = [...txs].sort((a, b) => b.createdAt - a.createdAt);
+          const spliced = sorted.slice(0, MAX_CACHED_TXS);
+
+          txsToStore = spliced.map((tx) => tx.toJSON());
+        }
+  
+        const cacheToSave: CacheTransactions = {
+          transactions: txsToStore,
+          lastCached: txsToStore[0] ? txsToStore[0].createdAt / 1000 : nowInSeconds() - MAX_SUBSCRIPTION_TIME,
+        };
+  
+        await config.storage.setItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`, JSON.stringify(cacheToSave));
+      }, 300);
     },
     [pubkey],
   );
@@ -125,16 +137,15 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     if (!raw) {
       return setActivityInfo((prev) => ({
         ...prev,
-        cache: { loaded: true, transactions: [], lastCached: 0 },
+        cache: { ...defaultActivity.cache, loaded: true },
         loading: false,
       }));
     }
 
-    const cachedTxs: Transaction[] = JSON.parse(raw);
-    const lastCachedTime = cachedTxs[0]?.events?.[0]?.created_at ?? nowInSeconds();
+    const cachedTxInfo: CacheTransactions = JSON.parse(raw);
 
     const txs = await Promise.all(
-      cachedTxs.map(async (tx) => {
+      cachedTxInfo.transactions.map(async (tx) => {
         const start = tx.events.find((e) => e.id === tx.id)!;
         const related = tx.events.filter((e) => e.id !== tx.id);
         return TransactionInstance.create(start, pubkey, config, ndk, related);
@@ -143,7 +154,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
     setActivityInfo((prev) => ({
       ...prev,
-      cache: { loaded: true, transactions: txs, lastCached: lastCachedTime },
+      cache: { loaded: true, transactions: txs, lastCached: cachedTxInfo.lastCached },
       loading: false,
     }));
   }, [pubkey, activityInfo, ndk, signerInfo]);
@@ -186,11 +197,11 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         setActivityInfo((prev) => ({
           ...prev,
           transactions: txs ?? [],
-          cache: { ...prev.cache, transactions: lastSeenTransactions },
+          cache: { ...prev.cache, transactions: lastSeenTransactions, lastCached: lastSeenTransactions[0] ? lastSeenTransactions[0].createdAt / 1000 : nowInSeconds() },
           loading: false,
         }));
         
-        if (storage) saveTransactionsOnCache([...lastSeenTransactions, ...txs]);
+        if (storage) saveTransactionsCache([...lastSeenTransactions, ...txs]);
       }, 350);
     },
     [storage, activityInfo, generateTransactions],
@@ -199,6 +210,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const loadMoreTransactions = useCallback(
     async (params?: { deepSearch: boolean }) => {
       let deepSearchActive = params?.deepSearch ?? false;
+
       const now = nowInSeconds();
       const maxLookback = 365 * 24 * 60 * 60;
       const chunkSize = MAX_SUBSCRIPTION_TIME / 2;
@@ -264,11 +276,15 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
           loading: false,
         }));
 
-        if (storage && deepSearchActive) saveTransactionsOnCache([...transactions, ...loadedTxs]);
+        if (storage && deepSearchActive) saveTransactionsCache([...transactions, ...loadedTxs]);
 
         return true;
       } else {
-        if (activityInfo.loading) setActivityInfo((prev) => ({...prev, loading: false }))
+        if (activityInfo.loading) {
+          setActivityInfo((prev) => ({...prev, loading: false }))
+
+          if (storage && deepSearchActive) saveTransactionsCache([]);
+        }
       }
 
       return false;
@@ -306,7 +322,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         }
       }
   
-      if (hasUpdated && storage) saveTransactionsOnCache(transactions);
+      if (hasUpdated && storage) saveTransactionsCache(transactions);
     },
     [pubkey, enabled, transactions, storage]
   );
@@ -319,14 +335,14 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
   useEffect(() => {
     const totalTxs = transactions.length;
-    if (!pubkey || sinceParam || totalTxs >= MAX_CACHED_TXS || !enabled) return;
+    if (!enabled || !pubkey || !storage || sinceParam || totalTxs >= MAX_CACHED_TXS || activityInfo.cache.lastCached) return;
 
     const timeout = setTimeout(async () => {
-      if (totalTxs <= MAX_CACHED_TXS) loadMoreTransactions({ deepSearch: true });
+      if (totalTxs <= MAX_CACHED_TXS && !activityInfo.cache.lastCached) loadMoreTransactions({ deepSearch: true });
     }, 3000);
 
     return () => clearTimeout(timeout);
-  }, [pubkey, sinceParam, transactions]);
+  }, [pubkey, storage, enabled, sinceParam, activityInfo.cache.lastCached, transactions]);
 
   useEffect(() => {
     if (!pubkey) {
@@ -338,7 +354,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
     storage
       ? loadCachedTransactions()
-      : setActivityInfo((prev) => ({ ...prev, cache: { transactions: [], lastCached: 0, loaded: true } }));
+      : setActivityInfo((prev) => ({ ...prev, cache: { ...defaultActivity.cache, loaded: true } }));
   }, [pubkey, activityInfo.cache.loaded, storage, signerInfo]);
 
   useEffect(() => {

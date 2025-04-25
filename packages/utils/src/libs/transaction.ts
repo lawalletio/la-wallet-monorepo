@@ -230,6 +230,13 @@ export class TransactionTags {
   }
 }
 
+function filterRelatedEvents(startId: string, relatedEvents: NostrEvent[]): NostrEvent[] {
+  return relatedEvents.filter(event => {
+    const associatedIds = getMultipleTagsValues(event.tags, 'e');
+    return associatedIds.includes(startId);
+  });
+}
+
 export class TransactionInstance implements Transaction {
   id: string;
   status: TransactionStatus = TransactionStatus.PENDING;
@@ -247,20 +254,24 @@ export class TransactionInstance implements Transaction {
   private pubkey: string;
   private config: ConfigProps;
   private ndk: NDK;
+  private relatedEvents: NostrEvent[];
 
   constructor(
     private startEvent: NostrEvent,
-    private relatedEvents: NostrEvent[],
+    relatedEvents: NostrEvent[],
     pubkey: string,
     config: ConfigProps,
     ndk: NDK,
   ) {
+    if (!startEvent.id) throw new Error('Invalid start event');
+
     this.pubkey = pubkey;
     this.config = config;
     this.ndk = ndk;
 
+    this.id = startEvent.id;
     this.events = [startEvent];
-    this.id = startEvent.id!;
+    this.relatedEvents = filterRelatedEvents(startEvent.id, relatedEvents);
     this.createdAt = startEvent.created_at! * 1000;
 
     this.rebuild();
@@ -367,6 +378,9 @@ export class TransactionInstance implements Transaction {
   }
 
   updateWithEvent(event: NostrEvent) {
+    if (!event || !event.id || !this.startEvent.id) return false;
+    if (!getMultipleTagsValues(event.tags, 'e').includes(this.startEvent.id)) return false;
+    
     if (!this.relatedEvents.find((e) => e.id === event.id)) {
       this.relatedEvents.push(event);
       this.rebuild();
@@ -497,8 +511,7 @@ export class TransactionInstance implements Transaction {
       (e) =>
         getTagValue(e.tags, 't') === TransactionTags.INTERNAL.start &&
         e.pubkey === config.modulePubkeys.urlx &&
-        getMultipleTagsValues(e.tags, 'p').includes(pubkey) &&
-        getMultipleTagsValues(e.tags, 'e').includes(startEvent.id!),
+        getMultipleTagsValues(e.tags, 'p').includes(pubkey)
     );
 
     const refundStatus =
@@ -511,8 +524,7 @@ export class TransactionInstance implements Transaction {
 
     const outboundStart = relatedEvents.find(
       (e) =>
-        getTagValue(e.tags, 't') === TransactionTags.OUTBOUND.start &&
-        getMultipleTagsValues(e.tags, 'e').includes(startEvent.id!),
+        getTagValue(e.tags, 't') === TransactionTags.OUTBOUND.start
     );
 
     const outboundStatus =
@@ -535,18 +547,19 @@ export class TransactionInstance implements Transaction {
   ): Promise<NostrEvent[]> {
     if (!ndk || !ndk.signer) throw new Error('NDK instance with signer is required');
     if (!startEvent.id) throw new Error('Invalid event');
-  
-    if (!relatedEvents.length) return resolveRelatedEvents({ missingIds: [startEvent.id], config, ndk});
 
-    if (this.needsStatusResolution(startEvent, relatedEvents)) {
+    const filteredRelatedEvents = filterRelatedEvents(startEvent.id, relatedEvents)
+    if (!filteredRelatedEvents.length) return resolveRelatedEvents({ missingIds: [startEvent.id], config, ndk});
+
+    if (this.needsStatusResolution(startEvent, filteredRelatedEvents)) {
       return resolveRelatedEvents({missingIds: [startEvent.id], config, ndk});
     }
 
-    if (this.needsRefundOrOutboundResolution(startEvent, relatedEvents, pubkey, config)) {
+    if (this.needsRefundOrOutboundResolution(startEvent, filteredRelatedEvents, pubkey, config)) {
       return resolveRelatedEvents({ missingIds: [startEvent.id], config, ndk});
     }
 
-    return relatedEvents;
+    return filteredRelatedEvents;
   }
 
   get isConfirmed(): boolean {
