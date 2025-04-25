@@ -106,7 +106,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const saveTransactionsOnCache = useCallback(
     (txs: TransactionInstance[]) => {
       if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
-      if (!pubkey) return;
+      if (!pubkey || !txs.length) return;
 
       saveDebounceRef.current = setTimeout(async () => {
         const sorted = [...txs].sort((a, b) => b.createdAt - a.createdAt);
@@ -268,6 +268,8 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         if (storage && deepSearchActive) saveTransactionsOnCache([...transactions, ...loadedTxs]);
 
         return true;
+      } else {
+        if (activityInfo.loading) setActivityInfo((prev) => ({...prev, loading: false }))
       }
 
       return false;

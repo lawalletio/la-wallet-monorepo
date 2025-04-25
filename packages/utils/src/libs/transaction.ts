@@ -282,7 +282,7 @@ export class TransactionInstance implements Transaction {
       const tag = getTagValue(statusEvent.tags, 't');
       if (!tag) return;
 
-      this.events.push(statusEvent);
+      this.addEvent(statusEvent);
 
       if ([internalType.ok, outboundType.ok, TransactionTags.INBOUND.ok].includes(tag)) {
         this.status = TransactionStatus.CONFIRMED;
@@ -308,8 +308,8 @@ export class TransactionInstance implements Transaction {
           getMultipleTagsValues(e.tags, 'e').includes(outboundStart.id!),
       );
 
-      this.events.push(outboundStart);
-      if (outboundStatus) this.events.push(outboundStatus);
+      this.addEvent(outboundStart);
+      if (outboundStatus) this.addEvent(outboundStatus);
 
       const encryptedPreimage = getTagValue(outboundStart.tags, 'preimage');
       if (encryptedPreimage && this.ndk.signer) this.resolvePreimage(encryptedPreimage);
@@ -332,9 +332,9 @@ export class TransactionInstance implements Transaction {
       );
 
       this.status = TransactionStatus.REVERTED;
-      this.events.push(refundStart);
+      this.addEvent(refundStart);
       if (refundStatus) {
-        this.events.push(refundStatus);
+        this.addEvent(refundStatus);
         const parsed = parseContent(refundStatus.content);
         this.memo = parsed?.memo ?? this.memo;
         if (parsed?.memo) this.errors.push(parsed.memo);
@@ -348,8 +348,8 @@ export class TransactionInstance implements Transaction {
 
   updateWithEvent(event: NostrEvent) {
     if (!this.events.find((e) => e.id === event.id)) {
-      this.relatedEvents.push(event);
-      this.rebuild();
+      let added = this.addEvent(event);
+      if (added) this.rebuild();
       return true;
     }
 
@@ -440,6 +440,15 @@ export class TransactionInstance implements Transaction {
     }
   }
 
+  private addEvent(event: NostrEvent) {
+    if (!this.events.find((e) => e.id === event.id)) {
+      this.events.push(event);
+      return true;
+    }
+
+    return false;
+  }
+
   private static needsStatusResolution(startEvent: NostrEvent, relatedEvents: NostrEvent[]): boolean {
     return !relatedEvents.some(
       (e) =>
@@ -504,7 +513,7 @@ export class TransactionInstance implements Transaction {
     config: ConfigProps,
     ndk: NDK,
   ): Promise<NostrEvent[]> {
-    if (!ndk) throw new Error('NDK instance is required');
+    if (!ndk || !ndk.signer) throw new Error('NDK instance with signer is required');
     if (!relatedEvents.length) return this.resolveRelatedEvents(startEvent, config, ndk);
 
     if (this.needsStatusResolution(startEvent, relatedEvents)) {
