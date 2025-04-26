@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { NDKEvent } from '@nostr-dev-kit/ndk';
 import { linkTxWithRelatedEvents } from '@lawallet/utils';
 
-const MAX_LOOKBACK = 365 * 24 * 60 * 60;
+const DEFAULT_MAX_LOOKBACK = 365 * 24 * 60 * 60;
 const MAX_SUBSCRIPTION_TIME = 90 * 24 * 60 * 60;
 const MAX_CACHED_TXS = 150;
 
@@ -49,6 +49,7 @@ export interface UseActivityProps extends ConfigParameter {
   since?: number | undefined;
   until?: number | undefined;
   limit?: number;
+  maxLookback?: number;
   enabled?: boolean;
   storage?: boolean;
 }
@@ -71,7 +72,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
     return context.activity;
   }
 
-  const { pubkey, enabled = true, limit = 1000, since: sinceParam, until, storage = false } = parameters;
+  const { pubkey, enabled = true, limit = 1000, since: sinceParam, until, maxLookback = DEFAULT_MAX_LOOKBACK, storage = false } = parameters;
 
   const config = useConfig(parameters);
   const { ndk, signerInfo } = useNostr();
@@ -250,7 +251,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       since: number;
       until: number;
       limit: number;
-      deepSearch?: { enabled: boolean; maxLookback: number };
+      deepSearch?: { enabled: boolean; maxEmptyAttempts: number, maxLookback: number };
     }): Promise<{ transactions: TransactionInstance[]; reachedMaxLookback: boolean }> => {
       if (!pubkey) return { transactions: [], reachedMaxLookback: false };
 
@@ -264,7 +265,6 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         )
       );
 
-      const MAX_EMPTY_ATTEMTPS = 5;
       let emptyAttempts = 0;
   
       let currentSince = since;
@@ -292,7 +292,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   
         const canContinue = deepSearch?.enabled
           && totalLoaded < limit
-          && emptyAttempts < MAX_EMPTY_ATTEMTPS
+          && emptyAttempts < deepSearch.maxEmptyAttempts
           && withinLookback;
   
         if (!canContinue) {
@@ -305,7 +305,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   
       return {
         transactions: loadedTxs.slice(0, limit),
-        reachedMaxLookback: !deepSearch?.enabled ? false : (emptyAttempts >= MAX_EMPTY_ATTEMTPS || (now - currentUntil) > deepSearch.maxLookback),
+        reachedMaxLookback: !deepSearch?.enabled ? false : (emptyAttempts >= deepSearch.maxEmptyAttempts || (now - currentUntil) > deepSearch.maxLookback),
       };
     },
     [pubkey, transactions, fetchTransactionsChunk],
@@ -326,13 +326,14 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       limit: MAX_CACHED_TXS - transactions.length,
       deepSearch: {
         enabled: true,
-        maxLookback: MAX_LOOKBACK,
+        maxEmptyAttempts: 5,
+        maxLookback,
       },
     });
 
     const lastLookback = !reached && newTxs.length
     ? Math.floor(newTxs.at(-1)!.createdAt / 1000)
-    : now - MAX_LOOKBACK;
+    : now - maxLookback;
 
     setActivityInfo((prev) => ({
       ...prev,
@@ -398,7 +399,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       pubkey &&
       activityInfo.cache.loaded &&
       transactions.length < MAX_CACHED_TXS &&
-      (!activityInfo.cache.lastLookback || activityInfo.cache.lastLookback > now - MAX_LOOKBACK);
+      (!activityInfo.cache.lastLookback || activityInfo.cache.lastLookback > now - maxLookback);
   
     if (!shouldDeepSearch) return;
   
