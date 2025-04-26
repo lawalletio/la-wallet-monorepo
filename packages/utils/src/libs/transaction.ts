@@ -343,7 +343,7 @@ export class TransactionInstance implements Transaction {
 
     const outboundStart = this.relatedEvents.find((e) => getTagValue(e.tags, 't') === outboundType.start);
 
-    if (this.direction === TransactionDirection.OUTGOING && this.type === TransactionType.LN && outboundStart) {
+    if (this.direction === TransactionDirection.OUTGOING && this.type !== TransactionType.INTERNAL && outboundStart) {
       const outboundStatus = this.relatedEvents.find(
         (e) =>
           [outboundType.ok, outboundType.error].includes(getTagValue(e.tags, 't')) &&
@@ -398,7 +398,7 @@ export class TransactionInstance implements Transaction {
     relatedEvents?: NostrEvent[],
   ): Promise<TransactionInstance> {
     const isValidStartEvent =
-      startEvent.pubkey === pubkey || getMultipleTagsValues(startEvent.tags, 'p').includes(pubkey);
+      startEvent.pubkey === pubkey || getMultipleTagsValues(startEvent.tags, 'p').includes(pubkey) || (startEvent.pubkey === config.modulePubkeys.card && (getDelegator(startEvent as Event) === pubkey))
     if (!isValidStartEvent) throw new Error('Provided startEvent is not a valid transaction for this pubkey.');
 
     relatedEvents = await this.ensureMinimumRelatedEvents(startEvent, relatedEvents ?? [], pubkey, config, ndk);

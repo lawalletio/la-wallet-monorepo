@@ -17,26 +17,29 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { NDKEvent } from '@nostr-dev-kit/ndk';
 import { linkTxWithRelatedEvents } from '@lawallet/utils';
 
+const MAX_LOOKBACK = 365 * 24 * 60 * 60;
 const MAX_SUBSCRIPTION_TIME = 90 * 24 * 60 * 60;
 const MAX_CACHED_TXS = 150;
 
 export type UseActivityReturns = {
   transactions: TransactionInstance[];
   loading: boolean;
+  reachedMaxLookback: boolean;
 };
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
 }
 
-type CacheTransactions = { transactions: Transaction[], lastCached: number };
+type CacheTransactions = { transactions: Transaction[], lastCached: number, lastLookback: number };
 
 export type ActivityType = {
   loading: boolean;
   cache: {
     transactions: TransactionInstance[];
-    lastCached: number;
     loaded: boolean;
+    lastCached: number;
+    lastLookback: number;
   };
   transactions: TransactionInstance[];
 };
@@ -56,6 +59,7 @@ const defaultActivity: ActivityType = {
     transactions: [],
     loaded: false,
     lastCached: 0,
+    lastLookback: 0
   },
   transactions: [],
 };
@@ -76,6 +80,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const saveDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const [activityInfo, setActivityInfo] = useState<ActivityType>(defaultActivity);
+  const [reachedMaxLookback, setReachedMaxLookback] = useState<boolean>(false);
 
   const transactions = useMemo(() => {
     const combined = [...activityInfo.transactions, ...activityInfo.cache.transactions];
@@ -105,7 +110,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   });
 
   const saveTransactionsCache = useCallback(
-    (txs: TransactionInstance[]) => {
+    (txs: TransactionInstance[], lastLookback: number) => {
       if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
       if (!pubkey) return;
   
@@ -122,12 +127,13 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         const cacheToSave: CacheTransactions = {
           transactions: txsToStore,
           lastCached: txsToStore[0] ? txsToStore[0].createdAt / 1000 : nowInSeconds() - MAX_SUBSCRIPTION_TIME,
+          lastLookback,
         };
   
         await config.storage.setItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`, JSON.stringify(cacheToSave));
       }, 300);
     },
-    [pubkey],
+    [config.storage, pubkey],
   );
 
   const loadCachedTransactions = useCallback(async () => {
@@ -154,10 +160,10 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
     setActivityInfo((prev) => ({
       ...prev,
-      cache: { loaded: true, transactions: txs, lastCached: cachedTxInfo.lastCached },
+      cache: { loaded: true, transactions: txs, lastCached: cachedTxInfo.lastCached, lastLookback: cachedTxInfo.lastLookback },
       loading: false,
     }));
-  }, [pubkey, activityInfo, ndk, signerInfo]);
+  }, [pubkey, ndk, signerInfo]);
 
   const generateTransactions = useCallback(
     async (events: NDKEvent[]) => {
@@ -178,7 +184,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
       return txs.sort((a, b) => b.createdAt - a.createdAt);
     },
-    [pubkey, ndk, signerInfo, config, activityInfo],
+    [pubkey, ndk, signerInfo, config],
   );
 
   const debouncedHandleEvents = useCallback(
@@ -201,96 +207,148 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
           loading: false,
         }));
         
-        if (storage) saveTransactionsCache([...lastSeenTransactions, ...txs]);
+        if (storage) saveTransactionsCache([...lastSeenTransactions, ...txs], activityInfo.cache.lastLookback);
       }, 350);
     },
-    [storage, activityInfo, generateTransactions],
+    [storage, activityInfo.cache.lastLookback, generateTransactions],
   );
 
-  const loadMoreTransactions = useCallback(
-    async (params?: { deepSearch: boolean }) => {
-      let deepSearchActive = params?.deepSearch ?? false;
+  const fetchTransactionsChunk = useCallback(
+    async (since: number, until: number, seen: Set<string>): Promise<TransactionInstance[]> => {
+      if (!pubkey) return [];
+
+      const filters = [
+        ...internalTransactionFilters(pubkey, since, until, 1000, config),
+        ...internalStatusTransactionFilters(pubkey, since, until, 1000, config),
+      ];
+  
+      const events = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
+      if (!events.size) {
+        return [];
+      }
+  
+      const eventsArray = Array.from(events);
+      const unseenEvents = eventsArray.filter((e) => !seen.has(e.id!));
+      unseenEvents.forEach((e) => seen.add(e.id!));
+  
+      if (!unseenEvents.length) {
+        return [];
+      }
+  
+      return generateTransactions(unseenEvents);
+    },
+    [pubkey, config, ndk, generateTransactions],
+  );
+
+  const fetchTransactions = useCallback(
+    async ({
+      since,
+      until,
+      limit,
+      deepSearch,
+    }: {
+      since: number;
+      until: number;
+      limit: number;
+      deepSearch?: { enabled: boolean; maxLookback: number };
+    }): Promise<{ transactions: TransactionInstance[]; reachedMaxLookback: boolean }> => {
+      if (!pubkey) return { transactions: [], reachedMaxLookback: false };
 
       const now = nowInSeconds();
-      const maxLookback = 365 * 24 * 60 * 60;
-      const chunkSize = MAX_SUBSCRIPTION_TIME / 2;
+      const loadedTxs: TransactionInstance[] = [];
+      const seen = new Set(
+        transactions.flatMap((tx) =>
+          tx.events
+            .map((e) => e.id)
+            .filter((id): id is string => !!id)
+        )
+      );
 
-      const seen = new Set(transactions.flatMap((tx) => tx.events.map((e) => e.id)));
-
-      let currentUntil = transactions.length ? Math.floor(transactions.at(-1)!.createdAt / 1000) - 1 : now;
-      let loadedTxs: TransactionInstance[] = [];
+      const MAX_EMPTY_ATTEMTPS = 5;
       let emptyAttempts = 0;
-
-      while (
-        now - currentUntil <= maxLookback &&
-        deepSearchActive &&
-        loadedTxs.length + transactions.length < MAX_CACHED_TXS &&
-        emptyAttempts < 5
-      ) {
-        const currentSince = currentUntil - chunkSize;
-
-        const filters = [
-          ...internalTransactionFilters(pubkey, currentSince, currentUntil, 1000),
-          ...internalStatusTransactionFilters(pubkey, currentSince, currentUntil, limit, config),
-        ];
-        const events = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
-        if (!events.size) {
-          emptyAttempts++;
-          currentUntil = currentSince;
-          continue;
-        }
-
-        const eventsArray = Array.from(events);
-        const unseenEvents = eventsArray.filter((e) => !seen.has(e.id!));
-        if (!unseenEvents.length) {
-          emptyAttempts++;
-          currentUntil = currentSince;
-          continue;
-        }
-
-        if (transactions.length === 0) setActivityInfo((prev) => ({ ...prev, loading: true }));
-
-        const txs = await generateTransactions(unseenEvents);
-        if (!txs.length) {
-          emptyAttempts++;
-          currentUntil = currentSince;
-          continue;
-        }
-
-        emptyAttempts = 0;
-        loadedTxs.push(...txs);
-        if (!deepSearchActive) break;
-
-        const oldestTx = txs.at(-1);
-        if (oldestTx) {
-          currentUntil = Math.floor(oldestTx.createdAt / 1000) - 1;
+  
+      let currentSince = since;
+      let currentUntil = until;
+  
+      while (true) {
+        const txs = await fetchTransactionsChunk(currentSince, currentUntil, seen);
+  
+        if (txs.length) {
+          loadedTxs.push(...txs);
+          txs.forEach((tx) => tx.events.forEach((e) => seen.add(e.id!)));
+          emptyAttempts = 0;
         } else {
-          currentUntil = currentSince;
+          emptyAttempts++;
         }
-      }
-
-      if (loadedTxs.length) {
-        setActivityInfo((prev) => ({
-          ...prev,
-          cache: { ...prev.cache, transactions: [...prev.cache.transactions, ...loadedTxs] },
-          loading: false,
-        }));
-
-        if (storage && deepSearchActive) saveTransactionsCache([...transactions, ...loadedTxs]);
-
-        return true;
-      } else {
-        if (activityInfo.loading) {
-          setActivityInfo((prev) => ({...prev, loading: false }))
-
-          if (storage && deepSearchActive) saveTransactionsCache([]);
+  
+        const totalLoaded = loadedTxs.length;
+        const oldestTx = txs.at(-1);
+        const nextUntil = oldestTx ? Math.floor(oldestTx.createdAt / 1000) - 1 : currentSince - 1;
+        const nextSince = nextUntil - (MAX_SUBSCRIPTION_TIME / 2);
+  
+        const withinLookback = deepSearch?.enabled
+          ? (now - nextUntil) <= deepSearch.maxLookback
+          : true;
+  
+        const canContinue = deepSearch?.enabled
+          && totalLoaded < limit
+          && emptyAttempts < MAX_EMPTY_ATTEMTPS
+          && withinLookback;
+  
+        if (!canContinue) {
+          break;
         }
+  
+        currentSince = nextSince;
+        currentUntil = nextUntil;
       }
-
-      return false;
+  
+      return {
+        transactions: loadedTxs.slice(0, limit),
+        reachedMaxLookback: !deepSearch?.enabled ? false : (emptyAttempts >= MAX_EMPTY_ATTEMTPS || (now - currentUntil) > deepSearch.maxLookback),
+      };
     },
-    [transactions, activityInfo, storage, pubkey, config, ndk, generateTransactions],
+    [pubkey, transactions, fetchTransactionsChunk],
   );
+
+  const handleInitialDeepSearch = useCallback(async () => {
+    if (!enabled || !pubkey || !storage) return;  
+    if (transactions.length === 0) setActivityInfo((prev) => ({ ...prev, loading: true }));
+  
+    const now = nowInSeconds();
+    const lastKnownCreatedAt = transactions.length
+    ? Math.floor(transactions.at(-1)!.createdAt / 1000)
+    : now;
+
+    const { transactions: newTxs, reachedMaxLookback: reached } = await fetchTransactions({
+      since: lastKnownCreatedAt - MAX_SUBSCRIPTION_TIME,
+      until: lastKnownCreatedAt - 1,
+      limit: MAX_CACHED_TXS - transactions.length,
+      deepSearch: {
+        enabled: true,
+        maxLookback: MAX_LOOKBACK,
+      },
+    });
+
+    const lastLookback = !reached && newTxs.length
+    ? Math.floor(newTxs.at(-1)!.createdAt / 1000)
+    : now - MAX_LOOKBACK;
+
+    setActivityInfo((prev) => ({
+      ...prev,
+      cache: {
+        transactions: newTxs,
+        loaded: true,
+        lastCached: now,
+        lastLookback,
+      },
+      loading: false,
+    }));
+  
+    if (storage) saveTransactionsCache([...transactions, ...newTxs], lastLookback);
+    if (reached) setReachedMaxLookback(true);
+  
+  }, [fetchTransactions, enabled, pubkey, storage, transactions]);
 
   const statusTxsFilter = useMemo(() => {
     const pendingTxs = transactions.filter((tx) => tx.isPending);
@@ -322,7 +380,7 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         }
       }
   
-      if (hasUpdated && storage) saveTransactionsCache(transactions);
+      if (hasUpdated && storage) saveTransactionsCache(transactions, activityInfo.cache.lastLookback);
     },
     [pubkey, enabled, transactions, storage]
   );
@@ -334,15 +392,22 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   }, [statusPendingEvents, processStatusEvents]);
 
   useEffect(() => {
-    const totalTxs = transactions.length;
-    if (!enabled || !pubkey || !storage || sinceParam || totalTxs >= MAX_CACHED_TXS || activityInfo.cache.lastCached) return;
-
-    const timeout = setTimeout(async () => {
-      if (totalTxs <= MAX_CACHED_TXS && !activityInfo.cache.lastCached) loadMoreTransactions({ deepSearch: true });
+    const now = nowInSeconds();
+    const shouldDeepSearch =
+      enabled &&
+      pubkey &&
+      activityInfo.cache.loaded &&
+      transactions.length < MAX_CACHED_TXS &&
+      (!activityInfo.cache.lastLookback || activityInfo.cache.lastLookback > now - MAX_LOOKBACK);
+  
+    if (!shouldDeepSearch) return;
+  
+    const timeout = setTimeout(() => {
+      handleInitialDeepSearch();
     }, 3000);
-
+  
     return () => clearTimeout(timeout);
-  }, [pubkey, storage, enabled, sinceParam, activityInfo.cache.lastCached, transactions]);
+  }, [enabled, pubkey, storage, transactions, activityInfo.cache]);
 
   useEffect(() => {
     if (!pubkey) {
@@ -373,5 +438,6 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   return {
     transactions,
     loading: activityInfo.loading || (storage && !activityInfo.cache.loaded),
+    reachedMaxLookback
   };
 }
