@@ -313,7 +313,7 @@ export class TransactionInstance implements Transaction {
 
       this.addEvent(statusEvent);
 
-      if ((tag === internalType.ok && this.type === TransactionType.INTERNAL) || (this.type !== TransactionType.INTERNAL && tag === outboundType.ok)) {
+      if ((tag === internalType.ok && (this.type === TransactionType.INTERNAL || (this.type === TransactionType.CARD && this.direction === TransactionDirection.INCOMING))) || (this.type !== TransactionType.INTERNAL && tag === outboundType.ok)) {
         this.status = TransactionStatus.CONFIRMED;
       } else if ([internalType.error, outboundType.error].includes(tag)) {
         this.status = TransactionStatus.ERROR;
