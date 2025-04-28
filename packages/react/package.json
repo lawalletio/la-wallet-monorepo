@@ -1,6 +1,6 @@
 {
   "name": "@lawallet/react",
-  "version": "0.2.6",
+  "version": "0.2.6-beta.1",
   "prettier": "@lacrypta/prettier-config",
   "private": false,
   "repository": {
