@@ -354,7 +354,7 @@ export class TransactionInstance implements Transaction {
       if (outboundStatus) this.addEvent(outboundStatus);
 
       const encryptedPreimage = getTagValue(outboundStart.tags, 'preimage');
-      if (encryptedPreimage && this.ndk.signer) this.resolvePreimage(encryptedPreimage);
+      if (encryptedPreimage && this.ndk.signer) this.resolvePreimage(encryptedPreimage)
 
       applyStatus(outboundStatus);
     }
@@ -404,45 +404,54 @@ export class TransactionInstance implements Transaction {
     relatedEvents = await this.ensureMinimumRelatedEvents(startEvent, relatedEvents ?? [], pubkey, config, ndk);
     return new TransactionInstance(startEvent, relatedEvents, pubkey, config, ndk);
   }
+  
 
   private async resolvePreimage(encryptedPreimage: string): Promise<void> {
     if (!this.ndk.signer) return;
 
     try {
-      const user = new NDKUser({ pubkey: this.config.modulePubkeys.urlx });
-      const preimage = await this.ndk.signer.decrypt(user, encryptedPreimage);
+      const preimage = await this.decryptMetadata(encryptedPreimage, this.config.modulePubkeys.urlx, 'nip04')
       if (preimage) this.preimage = preimage;
     } catch (e) {
       console.warn('Error decrypting preimage:', e);
     }
   }
 
+  private async decryptMetadata(message: string, pubkey: string, encryptType: 'nip04' | 'nip44'): Promise<string | undefined> {
+    if (!this.ndk.signer) return;
+  
+    const user = new NDKUser({ pubkey });
+  
+    try {
+      return await this.ndk.signer.decrypt(user, message, encryptType);
+    } catch {
+      return undefined;
+    }
+  }
+
   async extractMetadata(): Promise<Record<string, string>> {
     if (this._metadata) return this._metadata;
-
+  
     try {
       const receiverPubkey = getMultipleTagsValues(this.startEvent.tags, 'p')[1]!;
       const metadataTag = getTag(this.startEvent.tags, 'metadata');
-
+  
       let parsedMetadata: Record<string, string> = {};
-
+  
       if (metadataTag && metadataTag.length === 4) {
         const [, encrypted, encryptType, message] = metadataTag;
-
+  
         if (!encrypted) {
           parsedMetadata = parseContent(message!);
-        } else if (encryptType === 'nip04' && this.ndk.signer) {
+        } else if (encryptType === 'nip04') {
           const decryptWithPubkey =
             this.direction === TransactionDirection.INCOMING ? this.startEvent.pubkey : receiverPubkey;
-
-          const user = new NDKUser({ pubkey: decryptWithPubkey });
-          const decrypted = await this.ndk.signer.decrypt(user, message!);
-          if (decrypted) {
-            parsedMetadata = parseContent(decrypted) ?? {};
-          }
+  
+          const decrypted = await this.decryptMetadata(message!, decryptWithPubkey, encryptType);
+          if (decrypted) parsedMetadata = parseContent(decrypted) ?? {};
         }
       }
-
+  
       if (
         this.direction === TransactionDirection.OUTGOING &&
         receiverPubkey !== this.config.modulePubkeys.urlx &&
@@ -453,7 +462,7 @@ export class TransactionInstance implements Transaction {
           parsedMetadata.receiver = `${receiverUsername}@${normalizeLNDomain(this.config.endpoints.lightningDomain)}`;
         }
       }
-
+  
       if (
         this.direction === TransactionDirection.INCOMING &&
         this.startEvent.pubkey !== this.config.modulePubkeys.urlx &&
@@ -465,7 +474,7 @@ export class TransactionInstance implements Transaction {
           parsedMetadata.sender = `${senderUsername}@${normalizeLNDomain(this.config.endpoints.lightningDomain)}`;
         }
       }
-
+  
       this._metadata = parsedMetadata;
       return parsedMetadata;
     } catch {

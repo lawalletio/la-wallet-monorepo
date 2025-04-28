@@ -356,15 +356,11 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
       if (!pubkey || !enabled || !events.length) return;
   
       const rawEvents = await Promise.all(events.map((e) => e.toNostrEvent()));
-      let hasUpdated = false;
   
       for (const event of rawEvents) {
         const associatedIds = getMultipleTagsValues(event.tags, 'e');
         const tx = transactions.find((tx) => associatedIds.includes(tx.id));
-        if (tx) {
-          const updated = tx.updateWithEvent(event);
-          if (updated) hasUpdated = true;
-        }
+        if (tx) tx.updateWithEvent(event);
       }
     },
     [pubkey, enabled, transactions, storage]

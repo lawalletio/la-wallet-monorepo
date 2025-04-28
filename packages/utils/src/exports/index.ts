@@ -1,5 +1,7 @@
 export * from '../constants/constants.js';
 
+export { logger } from '../utils/logger.js'
+
 export {
   LaWalletKinds,
   LaWalletTags,
