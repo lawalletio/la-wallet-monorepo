@@ -6,6 +6,7 @@ import {
   TransactionInstance,
   getMultipleTagsValues,
   relatedTxEventFilters,
+  parseContent,
 } from '@lawallet/utils';
 import { type ConfigParameter } from '@lawallet/utils/types';
 import type { Transaction } from '@lawallet/utils/types';
@@ -161,13 +162,15 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
     const cachedTxInfo: CacheTransactions = JSON.parse(raw);
 
-    const txs = await Promise.all(
+    const rawTxs = await Promise.all(
       cachedTxInfo.transactions.map(async (tx) => {
         const start = tx.events.find((e) => e.id === tx.id)!;
         const related = tx.events.filter((e) => e.id !== tx.id);
         return TransactionInstance.create(start, pubkey, config, ndk, related);
       }),
     );
+
+    const txs = rawTxs.filter(tx => tx.tokens && Object.values(tx.tokens).some((v: number)=> v > 0));
 
     const { lastUntilChecked, lastSinceChecked } = cachedTxInfo;
 
@@ -192,7 +195,9 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
         const related = referencedBy.get(startEvent.id!) ?? [];
         const tx = new TransactionInstance(startEvent, related, pubkey, config, ndk);
 
-        if (tx) txs.push(tx);
+        if (tx.tokens && Object.values(tx.tokens).some((v: number )=> v > 0)) {
+          txs.push(tx);
+        }
       }
 
       return txs.sort((a, b) => b.createdAt - a.createdAt);
@@ -317,14 +322,25 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
 
         const seen = new Set(transactions.flatMap((tx) => tx.events.map((e) => e.id)));
         const newEvents = events.filter((e) => !seen.has(e.id!));
-        if (!newEvents.length) {
+        const filteredEvents = newEvents.filter((e) => {
+          try {
+            const content: { tokens: { [tokenId: string]: number } } = parseContent(e.content);
+            if (!content || !content.tokens) return false;
+
+            return Object.values(content.tokens).some((v: number) => v > 0);
+          } catch {
+            return false;
+          }
+        });
+
+        if (!filteredEvents.length) {
           tryLoadOlderTransactions(transactions);
           return;
         }
 
         setActivityInfo((prev) => ({ ...prev, loading: true }));
 
-        const txs = await generateTransactions(newEvents);
+        const txs = await generateTransactions(filteredEvents);
 
         setActivityInfo((prev) => ({
           ...prev,
@@ -340,7 +356,8 @@ export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   const statusTxsFilter = useMemo(() => {
     const pendingTxs = transactions.filter((tx) => tx.isPending);
     const pendingIds = pendingTxs.map((tx) => tx.id);
-  
+    if (!pendingTxs.length) return [];
+
     return relatedTxEventFilters(pendingIds, config);
   }, [transactions, config]);
 
