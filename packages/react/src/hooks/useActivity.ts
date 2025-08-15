@@ -1,31 +1,47 @@
 import {
-  LaWalletKinds,
-  LaWalletTags,
-  getMultipleTagsValues,
-  getTag,
-  getTagValue,
-  nip26,
   nowInSeconds,
+  MappedStoragedKeys,
+  internalTransactionFilters,
+  internalStatusTransactionFilters,
+  TransactionInstance,
+  getMultipleTagsValues,
+  relatedTxEventFilters,
   parseContent,
 } from '@lawallet/utils';
-import type { ConfigParameter } from '@lawallet/utils/types';
-import { TransactionDirection, TransactionStatus, TransactionType, type Transaction } from '@lawallet/utils/types';
-import { NDKEvent, type NDKKind, type NDKSubscriptionOptions, type NostrEvent } from '@nostr-dev-kit/ndk';
-import { type Event } from 'nostr-tools';
-import * as React from 'react';
-import { CACHE_TXS_KEY } from '../constants/constants.js';
-import { useLaWallet } from '../context/WalletContext.js';
-import { useConfig } from './useConfig.js';
+import { type ConfigParameter } from '@lawallet/utils/types';
+import type { Transaction } from '@lawallet/utils/types';
 import { useSubscription } from './useSubscription.js';
+import { useNostr } from '../context/NostrContext.js';
+import { useConfig } from './useConfig.js';
+import { useLaWallet } from '../context/WalletContext.js';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { NDKEvent } from '@nostr-dev-kit/ndk';
+import { linkTxWithRelatedEvents } from '@lawallet/utils';
+
+const MAX_SUBSCRIPTION_TIME = 90 * 24 * 60 * 60;
+const DEFAULT_MAX_LIMIT = 1000;
+
+export type UseActivityReturns = {
+  transactions: TransactionInstance[];
+  loading: boolean;
+  reachedMaxLookback: boolean;
+};
 
 export interface ActivitySubscriptionProps {
   pubkey: string;
 }
 
+type CacheTransactions = { transactions: Transaction[], lastUntilChecked: number, lastSinceChecked: number };
+
 export type ActivityType = {
   loading: boolean;
-  lastCached: number;
-  transactions: Transaction[];
+  cache: {
+    transactions: TransactionInstance[];
+    loaded: boolean;
+    lastUntilChecked: number;
+    lastSinceChecked: number;
+  };
+  transactions: TransactionInstance[];
 };
 
 export interface UseActivityProps extends ConfigParameter {
@@ -33,404 +49,372 @@ export interface UseActivityProps extends ConfigParameter {
   since?: number | undefined;
   until?: number | undefined;
   limit?: number;
+  maxLookback?: number;
   enabled?: boolean;
   storage?: boolean;
 }
 
-export const options: NDKSubscriptionOptions = {
-  groupable: false,
-  closeOnEose: false,
-};
-
-const startTags: string[] = [LaWalletTags.INTERNAL_TRANSACTION_START, LaWalletTags.INBOUND_TRANSACTION_START];
-
-const statusTags: string[] = [
-  LaWalletTags.INTERNAL_TRANSACTION_OK,
-  LaWalletTags.INTERNAL_TRANSACTION_ERROR,
-  LaWalletTags.OUTBOUND_TRANSACTION_OK,
-  LaWalletTags.OUTBOUND_TRANSACTION_ERROR,
-  LaWalletTags.INBOUND_TRANSACTION_OK,
-  LaWalletTags.INBOUND_TRANSACTION_ERROR,
-];
-
-const MAX_TRANSACTIONS_TIME: number = 90 * (24 * 60 * 60); // 90 days
-const CACHE_TIME: number = 24 * 60 * 60;
-
-const defaultActivity = {
+const defaultActivity: ActivityType = {
   loading: true,
-  lastCached: nowInSeconds() - MAX_TRANSACTIONS_TIME,
+  cache: {
+    transactions: [],
+    loaded: false,
+    lastUntilChecked: 0,
+    lastSinceChecked: nowInSeconds() - MAX_SUBSCRIPTION_TIME
+  },
   transactions: [],
 };
 
-type EventWithStatus = {
-  startEvent: NostrEvent | undefined;
-  statusEvent: NostrEvent | undefined;
-};
-
-let debounceTimeout: NodeJS.Timeout;
-
-export type UseActivityReturns = {
-  transactions: Transaction[];
-  loading: boolean;
-};
-
-export const useActivity = (parameters?: UseActivityProps): UseActivityReturns => {
+export function useActivity(parameters?: UseActivityProps): UseActivityReturns {
   if (!parameters) {
     const context = useLaWallet();
-
-    if (!context)
-      throw new Error(
-        'If you do not send parameters to the hook, it must have a LaWalletConfig context from which to obtain the information.',
-      );
-
+    if (!context) throw new Error('Missing context and parameters');
     return context.activity;
   }
 
-  const {
-    pubkey,
-    enabled = true,
-    limit = 1000,
-    since: sinceParam = undefined,
-    until = undefined,
-    storage = false,
-  } = parameters;
+  const { pubkey, enabled = true, limit = DEFAULT_MAX_LIMIT, since: sinceParam, until, storage = false } = parameters;
 
   const config = useConfig(parameters);
+  const { ndk, signerInfo } = useNostr();
 
-  const [activityInfo, setActivityInfo] = React.useState<ActivityType>(defaultActivity);
-  const [cacheEvents, setCacheEvents] = React.useState<NostrEvent[]>([]);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const saveDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  const since = React.useMemo(() => {
-    if (sinceParam) return sinceParam;
+  const [activityInfo, setActivityInfo] = useState<ActivityType>(defaultActivity);
 
-    if (!sinceParam && !activityInfo.lastCached) return nowInSeconds() - MAX_TRANSACTIONS_TIME;
-    return activityInfo.lastCached;
-  }, [sinceParam, activityInfo]);
+  const reachedMaxLookback = useMemo(() => (activityInfo.cache.lastSinceChecked === 0), [activityInfo.cache.lastSinceChecked])
 
-  const filters = React.useMemo(
-    () => [
-      {
-        authors: [pubkey],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
-        since,
-        until: until,
-        limit: limit * 2,
-      },
-      {
-        '#p': [pubkey],
-        '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since,
-        until: until,
-        limit: limit * 2,
-      },
-      {
-        authors: [config.modulePubkeys.urlx],
-        '#p': [pubkey],
-        '#t': [LaWalletTags.INBOUND_TRANSACTION_START],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since,
-        until: until,
-        limit: limit * 2,
-      },
-      {
-        authors: [config.modulePubkeys.ledger],
-        kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        '#p': [pubkey],
-        '#t': statusTags,
-        since,
-        until: until,
-        limit: limit * 2,
-      },
-    ],
-    [pubkey, since, activityInfo, storage, until, limit, config],
+  const transactions = useMemo(() => {
+    const combined = [...activityInfo.transactions, ...activityInfo.cache.transactions];
+    const txMap = new Map<string, TransactionInstance>();
+    for (const tx of combined) txMap.set(tx.id, tx);
+    return Array.from(txMap.values());
+  }, [activityInfo.transactions, activityInfo.cache.transactions]);
+
+  const since = useMemo(
+    () =>
+      sinceParam ??
+      (activityInfo.cache.lastUntilChecked > 0 ? activityInfo.cache.lastUntilChecked : undefined) ??
+      nowInSeconds() - MAX_SUBSCRIPTION_TIME,
+    [sinceParam, activityInfo],
   );
 
-  const { events: walletEvents } = useSubscription({
-    filters,
-    options,
-    enabled: enabled && !activityInfo.loading,
+  const startTxsFilters = useMemo(
+    () => internalTransactionFilters(pubkey, since, until, limit, config),
+    [pubkey, since, until, limit, config],
+  );
+
+  const { events: startEvents } = useSubscription({
+    filters: startTxsFilters,
     config,
+    options: { groupable: false, closeOnEose: false },
+    enabled: enabled && activityInfo.cache.loaded,
   });
 
-  const formatStartTransaction = React.useCallback(
-    async (event: NostrEvent) => {
-      const pTagValues = getMultipleTagsValues(event.tags, 'p');
-      if (!pTagValues.includes(config.modulePubkeys.ledger)) return;
+  const saveTransactionsCache = useCallback(
+    (txs: TransactionInstance[]) => {
+      if (saveDebounceRef.current) clearTimeout(saveDebounceRef.current);
+      if (!pubkey) return;
+  
+      saveDebounceRef.current = setTimeout(async () => {
+        let txsToStore: Transaction[] = [];
 
-      const AuthorIsCard: boolean = event.pubkey === config.modulePubkeys.card;
+        if (txs.length) {
+          const sorted = [...txs].sort((a, b) => b.createdAt - a.createdAt);
+          const spliced = sorted.slice(0, limit);
 
-      const DelegatorIsUser: boolean = AuthorIsCard && nip26.getDelegator(event as Event) === pubkey;
-      const AuthorIsUser: boolean = DelegatorIsUser || event.pubkey === pubkey;
+          txsToStore = spliced.map((tx) => tx.toJSON());
+        }
 
-      if (AuthorIsCard && !DelegatorIsUser && !pTagValues.includes(pubkey)) return;
-
-      const direction = AuthorIsUser ? TransactionDirection.OUTGOING : TransactionDirection.INCOMING;
-
-      const eventContent = parseContent(event.content);
-      const metadata = getTag(event.tags, 'metadata');
-
-      let newTransaction: Transaction = {
-        id: event.id!,
-        status: TransactionStatus.PENDING,
-        memo: eventContent.memo ?? '',
-        direction,
-        type: AuthorIsCard ? TransactionType.CARD : TransactionType.INTERNAL,
-        tokens: eventContent.tokens,
-        events: [event],
-        errors: [],
-        createdAt: event.created_at! * 1000,
-        metadata,
-      };
-
-      if (!AuthorIsCard) {
-        const boltTag: string | undefined = getTagValue(event.tags, 'bolt11');
-        if (boltTag && boltTag.length) newTransaction.type = TransactionType.LN;
-      }
-
-      return newTransaction;
+        const defaultTime = nowInSeconds() - MAX_SUBSCRIPTION_TIME;
+        const newestTransaction = txsToStore[0];
+        const oldestTransaction = txsToStore.at(-1);
+  
+        const cacheToSave: CacheTransactions = {
+          transactions: txsToStore,
+          lastUntilChecked: newestTransaction
+          ? Math.floor(newestTransaction.createdAt / 1000)
+          : defaultTime,
+          lastSinceChecked: txsToStore.length < limit && activityInfo.cache.lastSinceChecked == 0
+          ? 0
+          : oldestTransaction
+            ? Math.floor(oldestTransaction.createdAt / 1000)
+            : defaultTime,
+        };
+  
+        await config.storage.setItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`, JSON.stringify(cacheToSave));
+      }, 300);
     },
-    [pubkey],
+    [activityInfo, limit],
   );
 
-  const markTxRefund = async (transaction: Transaction, statusEvent: NostrEvent) => {
-    const parsedContent = parseContent(statusEvent.content);
-    transaction.status = TransactionStatus.REVERTED;
-    transaction.errors = [parsedContent?.memo];
-    transaction.events.push(statusEvent);
+  const loadCachedTransactions = useCallback(async () => {
+    if (!signerInfo || signerInfo.pubkey !== pubkey) return;
 
-    return transaction;
-  };
-
-  const updateTxStatus = async (transaction: Transaction, statusEvent: NostrEvent) => {
-    const parsedContent = parseContent(statusEvent.content);
-
-    const statusTag: string | undefined = getTagValue(statusEvent.tags, 't');
-
-    if (statusTag) {
-      const isError: boolean = statusTag.includes('error');
-
-      if (transaction.direction === TransactionDirection.INCOMING && statusTag.includes('inbound'))
-        transaction.type = TransactionType.LN;
-
-      transaction.status = isError ? TransactionStatus.ERROR : TransactionStatus.CONFIRMED;
-
-      if (isError) transaction.errors = [parsedContent];
-      transaction.events.push(statusEvent);
+    const raw = await config.storage.getItem(`${MappedStoragedKeys.TxEvents}_${pubkey}`);
+    if (!raw) {
+      return setActivityInfo((prev) => ({
+        ...prev,
+        cache: { ...defaultActivity.cache, loaded: true },
+        loading: false,
+      }));
     }
 
-    return transaction;
-  };
+    const cachedTxInfo: CacheTransactions = JSON.parse(raw);
 
-  const findAsocciatedEvent = React.useCallback((events: NostrEvent[], eventId: string) => {
-    return events.find((event) => {
-      const associatedEvents: string[] = getMultipleTagsValues(event.tags, 'e');
-      return associatedEvents.includes(eventId) ? event : undefined;
-    });
-  }, []);
+    const rawTxs = await Promise.all(
+      cachedTxInfo.transactions.map(async (tx) => {
+        const start = tx.events.find((e) => e.id === tx.id)!;
+        const related = tx.events.filter((e) => e.id !== tx.id);
+        return TransactionInstance.create(start, pubkey, config, ndk, related);
+      }),
+    );
 
-  const filterEventsByTxType = (events: NostrEvent[]) => {
-    const startedEvents: NostrEvent[] = [],
-      statusEvents: NostrEvent[] = [],
-      refundEvents: NostrEvent[] = [];
+    const txs = rawTxs.filter(tx => tx.tokens && Object.values(tx.tokens).some((v: number)=> v > 0));
 
-    events.forEach((e) => {
-      const subkind: string | undefined = getTagValue(e.tags, 't');
-      if (subkind) {
-        const isStatusEvent: boolean = statusTags.includes(subkind);
+    const { lastUntilChecked, lastSinceChecked } = cachedTxInfo;
 
-        if (isStatusEvent) {
-          statusEvents.push(e);
-          return;
-        } else {
-          const eTags: string[] = getMultipleTagsValues(e.tags, 'e');
+    setActivityInfo((prev) => ({
+      ...prev,
+      cache: { loaded: true, transactions: txs, lastUntilChecked, lastSinceChecked },
+      loading: false,
+    }));
+  }, [pubkey, ndk, signerInfo]);
 
-          if (eTags.length) {
-            const isRefundEvent =
-              e.pubkey === config.modulePubkeys.urlx && Boolean(events.find((event) => eTags.includes(event.id!)));
+  const generateTransactions = useCallback(
+    async (events: NDKEvent[]) => {
+      if (!signerInfo || signerInfo.pubkey !== pubkey) return [];
+      
+      const rawEvents = await Promise.all(events.map((e) => e.toNostrEvent()));
+      const { started, referencedBy } = await linkTxWithRelatedEvents(rawEvents, pubkey, config, ndk);
 
-            isRefundEvent ? refundEvents.push(e) : startedEvents.push(e);
-            return;
-          } else {
-            const existTransaction: boolean = Boolean(startedEvents.find((startEvent) => startEvent.id === e.id));
+      const mostRecentStartedEvents = limit ? [...started].sort((a, b) => b.created_at - a.created_at).slice(0, limit) : started;
 
-            if (!existTransaction) startedEvents.push(e);
-            return;
-          }
+      const txs: TransactionInstance[] = [];
+      for (const startEvent of mostRecentStartedEvents) {
+        const related = referencedBy.get(startEvent.id!) ?? [];
+        const tx = new TransactionInstance(startEvent, related, pubkey, config, ndk);
+
+        if (tx.tokens && Object.values(tx.tokens).some((v: number )=> v > 0)) {
+          txs.push(tx);
         }
       }
-    });
 
-    return [startedEvents, statusEvents, refundEvents];
-  };
-
-  function parseStatusEvents(
-    startEvent: NostrEvent,
-    statusEvents?: NostrEvent[],
-    refundEvents?: NostrEvent[],
-  ): EventWithStatus[] {
-    const statusEvent: NostrEvent | undefined = statusEvents
-      ? findAsocciatedEvent(statusEvents, startEvent.id!)
-      : undefined;
-
-    const startRefundEvent: NostrEvent | undefined = refundEvents
-      ? findAsocciatedEvent(refundEvents, startEvent.id!)
-      : undefined;
-
-    const statusRefundEvent: NostrEvent | undefined =
-      startRefundEvent && refundEvents ? findAsocciatedEvent(refundEvents, startRefundEvent.id!) : undefined;
-
-    const startWithStatus: EventWithStatus = {
-      startEvent,
-      statusEvent,
-    };
-
-    const refundWithStatus: EventWithStatus = {
-      startEvent: startRefundEvent,
-      statusEvent: statusRefundEvent,
-    };
-
-    return [startWithStatus, refundWithStatus];
-  }
-
-  async function fillTransaction(txEvents: EventWithStatus, refundEvents: EventWithStatus) {
-    let tmpTransaction: Transaction | undefined = await formatStartTransaction(txEvents.startEvent!);
-    if (!tmpTransaction) return;
-
-    if (txEvents.statusEvent) tmpTransaction = await updateTxStatus(tmpTransaction, txEvents.statusEvent);
-
-    if (refundEvents.startEvent)
-      tmpTransaction = await markTxRefund(tmpTransaction, refundEvents.statusEvent || refundEvents.startEvent);
-
-    return tmpTransaction;
-  }
-
-  const generateTransactions = React.useCallback(
-    async (events: NostrEvent[]) => {
-      if (!pubkey.length) return;
-
-      setActivityInfo((prev) => {
-        return { ...prev, loading: true };
-      });
-
-      const transactions: Transaction[] = [];
-      const [startedEvents, statusEvents, refundEvents] = filterEventsByTxType(events);
-
-      await Promise.all(
-        startedEvents!.map(async (startEvent) => {
-          const [startWithStatus, refundWithStatus] = parseStatusEvents(startEvent, statusEvents, refundEvents);
-          const transaction = await fillTransaction(startWithStatus!, refundWithStatus!);
-          if (transaction) transactions.push(transaction);
-        }),
-      );
-
-      setActivityInfo((prev) => {
-        return {
-          ...prev,
-          transactions,
-          loading: false,
-        };
-      });
-
-      if (storage) saveTransactionsOnCache(events);
+      return txs.sort((a, b) => b.createdAt - a.createdAt);
     },
-    [storage, pubkey],
+    [pubkey, ndk, signerInfo, limit, config],
   );
 
-  const loadCachedEvents = React.useCallback(async () => {
-    if (pubkey.length) {
-      const storagedData: string = ((await config.storage.getItem(`${CACHE_TXS_KEY}_${pubkey}`)) as string) || '';
+  const fetchTransactions = useCallback(
+    async (since: number, until: number, seen: Set<string>): Promise<TransactionInstance[]> => {
+      if (!pubkey) return [];
 
-      if (!storage || !storagedData) {
-        setActivityInfo({ ...defaultActivity, loading: false });
-        return;
+      const filters = [
+        ...internalTransactionFilters(pubkey, since, until, 1000, config),
+        ...internalStatusTransactionFilters(pubkey, since, until, 1000, config),
+      ];
+  
+      const events = await ndk.fetchEvents(filters, { groupable: false, closeOnEose: true });
+      if (!events.size) {
+        return [];
       }
+  
+      const eventsArray = Array.from(events);
+      const unseenEvents = eventsArray.filter((e) => !seen.has(e.id!));
+      unseenEvents.forEach((e) => seen.add(e.id!));
+  
+      if (!unseenEvents.length) {
+        return [];
+      }
+  
+      return generateTransactions(unseenEvents);
+    },
+    [pubkey, config, ndk, generateTransactions],
+  );
 
-      const cachedTxs: NostrEvent[] = parseContent(storagedData);
-      if (cachedTxs.length) {
-        const lastEvent = cachedTxs[0]!;
-        const sinceDefault = nowInSeconds() - MAX_TRANSACTIONS_TIME;
-        const sinceLastCached = lastEvent.created_at ?? sinceDefault;
+  const loadHistoricalTransactions = useCallback(async (transactionsLimit: number) => {
+    if (!enabled || !pubkey || sinceParam) return;
+  
+    const now = nowInSeconds();
+    const loadedTxs: TransactionInstance[] = [];
+    const seen = new Set(
+      transactions.flatMap((tx) =>
+        tx.events.map((e) => e.id).filter((id): id is string => !!id)
+      )
+    );
+  
+    const lastKnownCreatedAt = transactions.length
+      ? Math.floor(transactions.at(-1)!.createdAt / 1000)
+      : now;
+  
+    let currentSince = lastKnownCreatedAt - (MAX_SUBSCRIPTION_TIME / 2);
+    let currentUntil = lastKnownCreatedAt - 1;
+  
+    let emptyAttempts = 0;
+    let reachedMaxLookback = false;
+    let txs: TransactionInstance[] = []
+  
+    while (true) {
+      txs = await fetchTransactions(currentSince, currentUntil, seen);
+  
+      if (txs.length) {
+        loadedTxs.push(...txs);
+        txs.forEach((tx) => tx.events.forEach((e) => seen.add(e.id!)));
+        emptyAttempts = 0;
+      } else {
+        emptyAttempts++;
+      }
+  
+      if (loadedTxs.length > 0 && transactions.length === 0) {
+        setActivityInfo((prev) => ({ ...prev, loading: true }));
+      }
+  
+      if (loadedTxs.length >= transactionsLimit) {
+        break;
+      }
+  
+      if (emptyAttempts >= 3) {
+        txs = await fetchTransactions(0, currentUntil, seen);
+  
+        if (txs.length) {
+          loadedTxs.push(...txs);
+          txs.forEach((tx) => tx.events.forEach((e) => seen.add(e.id!)));
+        }
 
-        setCacheEvents(cachedTxs);
+        reachedMaxLookback = true;
+  
+        break;
+      }
+  
+      const oldestTx = txs.at(-1);
+      const nextUntil = oldestTx ? Math.floor(oldestTx.createdAt / 1000) - 1 : currentSince - 1;
+      const nextSince = nextUntil - (MAX_SUBSCRIPTION_TIME / 2);
+  
+      currentSince = nextSince;
+      currentUntil = nextUntil;
+    }
+  
+    const lastSinceChecked = !reachedMaxLookback && loadedTxs.length
+      ? Math.floor(loadedTxs.at(-1)!.createdAt / 1000)
+      : 0;
+  
+    setActivityInfo((prev) => ({
+      ...prev,
+      cache: {
+        transactions: loadedTxs,
+        loaded: true,
+        lastUntilChecked: now,
+        lastSinceChecked,
+      },
+      loading: false,
+    }));  
+  }, [sinceParam, enabled, pubkey, transactions, fetchTransactions]);
+
+  const debouncedHandleEvents = useCallback(
+    (events: NDKEvent[]) => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (!enabled || !pubkey) return;
+
+      debounceRef.current = setTimeout(async () => {
+        const tryLoadOlderTransactions = (txs: TransactionInstance[]) => {
+          if (activityInfo.cache.lastSinceChecked !== 0 && txs.length < limit) loadHistoricalTransactions(limit - txs.length)
+        }
+
+        const seen = new Set(transactions.flatMap((tx) => tx.events.map((e) => e.id)));
+        const newEvents = events.filter((e) => !seen.has(e.id!));
+        const filteredEvents = newEvents.filter((e) => {
+          try {
+            const content: { tokens: { [tokenId: string]: number } } = parseContent(e.content);
+            if (!content || !content.tokens) return false;
+
+            return Object.values(content.tokens).some((v: number) => v > 0);
+          } catch {
+            return false;
+          }
+        });
+
+        if (!filteredEvents.length) {
+          tryLoadOlderTransactions(transactions);
+          return;
+        }
+
+        setActivityInfo((prev) => ({ ...prev, loading: true }));
+
+        const txs = await generateTransactions(filteredEvents);
 
         setActivityInfo((prev) => ({
           ...prev,
-          lastCached: sinceLastCached - CACHE_TIME,
-          loading: cachedTxs.length ? true : false,
+          transactions: txs ?? [],
+          cache: { ...prev.cache, transactions, lastUntilChecked: transactions[0] ? transactions[0].createdAt / 1000 : nowInSeconds() },
+          loading: false,
         }));
-
-        if (cachedTxs.length) generateTransactions(cachedTxs);
-      }
-    }
-  }, [storage, pubkey]);
-
-  const saveTransactionsOnCache = React.useCallback(
-    async (events: NostrEvent[]) => {
-      await config.storage.setItem(`${CACHE_TXS_KEY}_${pubkey}`, JSON.stringify(events));
+      }, 500);
     },
-    [pubkey],
+    [transactions, startEvents, limit, activityInfo.cache.lastSinceChecked, pubkey, enabled, generateTransactions, loadHistoricalTransactions],
   );
 
-  const transactions: Transaction[] = React.useMemo(() => {
-    return activityInfo.transactions.sort((a, b) => b.createdAt - a.createdAt);
-  }, [activityInfo.transactions.length]);
+  const statusTxsFilter = useMemo(() => {
+    const pendingTxs = transactions.filter((tx) => tx.isPending);
+    const pendingIds = pendingTxs.map((tx) => tx.id);
+    if (!pendingTxs.length) return [];
 
-  const debouncedGenerateTransactions = React.useCallback(
+    return relatedTxEventFilters(pendingIds, config);
+  }, [transactions, config]);
+
+  const { events: statusPendingEvents } = useSubscription({
+    filters: statusTxsFilter,
+    config,
+    options: { groupable: false, closeOnEose: false },
+    enabled: Boolean(statusTxsFilter.length),
+  });
+
+  const processStatusEvents = useCallback(
     async (events: NDKEvent[]) => {
-      if (debounceTimeout) {
-        clearTimeout(debounceTimeout);
+      if (!pubkey || !enabled || !events.length) return;
+  
+      const rawEvents = await Promise.all(events.map((e) => e.toNostrEvent()));
+  
+      for (const event of rawEvents) {
+        const associatedIds = getMultipleTagsValues(event.tags, 'e');
+        const tx = transactions.find((tx) => associatedIds.includes(tx.id));
+        if (tx) tx.updateWithEvent(event);
       }
-
-      const nostrEvents: NostrEvent[] = await Promise.all(
-        events.map(async (event) => {
-          const nEvent = await event.toNostrEvent();
-          return nEvent;
-        }),
-      );
-
-      const combinedEvents = [...cacheEvents, ...nostrEvents];
-      const uniqueEventsMap = new Map<string, NostrEvent>();
-
-      combinedEvents.forEach((event) => {
-        uniqueEventsMap.set(event.id!, event);
-      });
-
-      const uniqueEvents: NostrEvent[] = Array.from(uniqueEventsMap.values());
-
-      debounceTimeout = setTimeout(() => {
-        generateTransactions(uniqueEvents);
-      }, 300);
     },
-    [debounceTimeout, cacheEvents],
+    [pubkey, enabled, transactions, storage]
   );
 
-  React.useEffect(() => {
-    if (!pubkey) return;
-    if (walletEvents.length) debouncedGenerateTransactions(walletEvents);
+  useEffect(() => {
+    if (statusPendingEvents?.length) {
+      void processStatusEvents(statusPendingEvents);
+    }
+  }, [statusPendingEvents, processStatusEvents]);
 
-    return () => clearTimeout(debounceTimeout);
-  }, [pubkey, walletEvents.length]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (!pubkey) {
       setActivityInfo(defaultActivity);
-      return;
+      return
     }
+    
+    if (activityInfo.cache.loaded || sinceParam) return;
 
     storage
-      ? loadCachedEvents()
-      : setActivityInfo((prev) => {
-          return {
-            ...prev,
-            loading: false,
-          };
-        });
-  }, [pubkey, storage]);
+      ? loadCachedTransactions()
+      : setActivityInfo((prev) => ({ ...prev, cache: { ...defaultActivity.cache, loaded: true } }));
+  }, [pubkey, sinceParam, activityInfo.cache.loaded, storage, signerInfo]);
+
+  useEffect(() => {
+    debouncedHandleEvents(startEvents);
+  }, [debouncedHandleEvents]);
+
+  useEffect(() => {
+    if (!enabled || !pubkey || !activityInfo.cache.loaded) return;
+
+    if (pubkey && transactions.length >= activityInfo.cache.transactions.length) saveTransactionsCache(transactions);
+  }, [transactions, storage, pubkey, enabled, activityInfo.cache])
 
   return {
     transactions,
-    loading: activityInfo.loading,
+    loading: activityInfo.loading || (storage && !activityInfo.cache.loaded),
+    reachedMaxLookback
   };
-};
+}

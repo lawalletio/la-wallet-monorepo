@@ -67,8 +67,12 @@ export const useNostrHook = ({
   });
 
   const initializeSigner = async (signer: SignerTypes) => {
-    if (!signer) return;
     ndk.signer = signer;
+
+    if (!signer) {
+      setSignerInfo(undefined);
+      return;
+    }
 
     const user: NDKUser = await signer.user();
     if (user && user.pubkey) setSignerInfo(user);

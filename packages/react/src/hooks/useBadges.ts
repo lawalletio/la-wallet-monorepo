@@ -1,5 +1,5 @@
 import { NDKEvent, type NDKFilter, type NDKKind } from '@nostr-dev-kit/ndk';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNostr } from '../context/NostrContext.js';
 import { useSubscription } from './useSubscription.js';
 import { useLaWallet } from '../context/WalletContext.js';
@@ -41,7 +41,7 @@ export const useBadges = (params?: { pubkey: string }): UseBadgesReturns => {
 
   const { pubkey } = params;
   const { ndk } = useNostr();
-  const [userBadges, setUserBadges] = useState<BadgesInfo>({ accepted: [], pendings: [] });
+  const [userBadges, setUserBadges] = React.useState<BadgesInfo>({ accepted: [], pendings: [] });
 
   const { events: profileBadgesEvents } = useSubscription({
     filters: [
@@ -245,7 +245,7 @@ export const useBadges = (params?: { pubkey: string }): UseBadgesReturns => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (badgeAwardsEvents && badgeAwardsEvents.length > 0) {
       processBadges();
     }

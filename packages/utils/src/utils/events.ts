@@ -6,6 +6,7 @@ import { ConfigTypes } from '../types/card.js';
 import { type ConfigProps } from '../types/config.js';
 import { nowInSeconds } from './utilities.js';
 import { createDelegation } from '../libs/nip26.js';
+import { TransactionTags } from '../libs/transaction.js';
 
 export enum LaWalletKinds {
   REGULAR = 1112,
@@ -14,14 +15,6 @@ export enum LaWalletKinds {
 }
 
 export enum LaWalletTags {
-  INTERNAL_TRANSACTION_START = 'internal-transaction-start',
-  INTERNAL_TRANSACTION_OK = 'internal-transaction-ok',
-  INTERNAL_TRANSACTION_ERROR = 'internal-transaction-error',
-  INBOUND_TRANSACTION_START = 'inbound-transaction-start',
-  INBOUND_TRANSACTION_OK = 'inbound-transaction-ok',
-  INBOUND_TRANSACTION_ERROR = 'inbound-transaction-error',
-  OUTBOUND_TRANSACTION_OK = 'outbound-transaction-ok',
-  OUTBOUND_TRANSACTION_ERROR = 'outbound-transaction-error',
   CREATE_IDENTITY = 'create-identity',
   CARD_ACTIVATION_REQUEST = 'card-activation-request',
   CARD_TRANSFER_DONATION = 'card-transfer-donation',
@@ -152,11 +145,7 @@ export const buildCreateNonceEvent = (adminPubkey: string, randomNonce: string):
 export const buildTxStartEvent = (props: TransactionProps, config: ConfigProps = baseConfig): NostrEvent => {
   const { tokenName, amount, senderPubkey, comment, tags = [] } = props;
 
-  const txTags: NDKTag[] = [
-    ['t', LaWalletTags.INTERNAL_TRANSACTION_START],
-    ['p', config.modulePubkeys.ledger],
-    ...tags,
-  ];
+  const txTags: NDKTag[] = [['t', TransactionTags.INTERNAL.start], ['p', config.modulePubkeys.ledger], ...tags];
 
   return {
     pubkey: senderPubkey,

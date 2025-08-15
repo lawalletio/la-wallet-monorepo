@@ -16,6 +16,7 @@ export interface UseProfileParams {
 }
 
 export interface UseProfileReturns {
+  resetProfile: () => void;
   nip05?: NDKUserProfile;
   lud16?: LNRequestResponse;
   lud16Avatar?: string;
@@ -58,6 +59,14 @@ export const useProfile = (params?: UseProfileParams, _options?: UseProfileConfi
   const [lud16Avatar, setLud16Avatar] = React.useState<string | undefined>();
   const [nip05Avatar, setNip05Avatar] = React.useState<string | undefined>();
   const [domainAvatar, setDomainAvatar] = React.useState<string>(FALLBACK_AVATAR_URL);
+
+  const resetProfile = () => {
+    setNip05(undefined);
+    setLud16(undefined);
+    setLud16Avatar(undefined);
+    setNip05Avatar(undefined);
+    setDomainAvatar(FALLBACK_AVATAR_URL);
+  };
 
   // Marge all loadings into isLoading
   React.useEffect(() => {
@@ -120,6 +129,7 @@ export const useProfile = (params?: UseProfileParams, _options?: UseProfileConfi
 
   React.useEffect(() => {
     if (!pubkey) {
+      resetProfile();
       return;
     }
 
@@ -136,6 +146,7 @@ export const useProfile = (params?: UseProfileParams, _options?: UseProfileConfi
 
   // useProfile return
   return {
+    resetProfile,
     isLoading,
     nip05,
     lud16,

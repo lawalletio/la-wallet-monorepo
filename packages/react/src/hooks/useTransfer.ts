@@ -6,7 +6,8 @@ import { broadcastEvent } from '@lawallet/utils/actions';
 import type { ConfigParameter } from '@lawallet/utils/types';
 import { useNostr } from '../context/NostrContext.js';
 import { useConfig } from './useConfig.js';
-import { LaWalletKinds, LaWalletTags, buildTxStartEvent, getTagValue } from '@lawallet/utils';
+import { LaWalletKinds, buildTxStartEvent, getTagValue } from '@lawallet/utils';
+import { TransactionTags } from '@lawallet/utils';
 
 type OutboundTransferParameters = { amount: number; tags: NDKTag[] };
 type InternalTransferParameters = {
@@ -28,35 +29,45 @@ interface UseTransferParameters extends ConfigParameter {
   onError?: (message?: string) => void;
 }
 
+type StartEventInfo = {
+  published: boolean;
+  event?: NostrEvent;
+  type?: 'internal' | 'external';
+};
+
 export const useTransfer = (params: UseTransferParameters): UseTransferReturns => {
   const { tokenName } = params;
   const config = useConfig(params);
   const statusVars = useStatusVars(params);
 
-  const [startEvent, setStartEvent] = React.useState<NostrEvent | null>(null);
-  const { ndk, signer, signerInfo, signEvent } = useNostr({ config });
+  const { ndk, validateRelaysStatus, signer, signerInfo, signEvent } = useNostr({ config });
+  const [startEventInfo, setStartEventInfo] = React.useState<StartEventInfo>({ published: false });
 
   const { events } = useSubscription({
     filters: [
       {
-        authors: [config.modulePubkeys.ledger],
+        authors: [config.modulePubkeys.ledger, config.modulePubkeys.urlx],
         kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
-        since: startEvent ? startEvent.created_at - 60000 : undefined,
-        '#e': startEvent?.id ? [startEvent.id] : [],
+        since: startEventInfo.event ? startEventInfo.event.created_at - 60000 : undefined,
+        '#e': startEventInfo.event?.id ? [startEventInfo.event.id] : [],
       },
     ],
     options: {
       groupable: false,
     },
-    enabled: Boolean(startEvent?.id),
+    enabled: startEventInfo.published,
     config,
   });
 
-  const publishTransfer = (event: NostrEvent): Promise<boolean> => {
+  const publishTransfer = (event: NostrEvent, txType: 'internal' | 'external'): Promise<boolean> => {
     return broadcastEvent(event, config).then((published) => {
       if (!published) statusVars.handleMarkError();
 
-      setStartEvent(event);
+      setStartEventInfo({
+        event,
+        type: txType,
+        published,
+      });
       statusVars.handleMarkLoading(false);
 
       return published;
@@ -82,7 +93,7 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
       ),
     );
 
-    return txEvent ? publishTransfer(txEvent) : false;
+    return txEvent ? publishTransfer(txEvent, 'internal') : false;
   };
 
   const execOutboundTransfer = async (params: OutboundTransferParameters): Promise<boolean> => {
@@ -103,38 +114,91 @@ export const useTransfer = (params: UseTransferParameters): UseTransferReturns =
       ),
     );
 
-    return txEvent ? publishTransfer(txEvent) : false;
+    return txEvent ? publishTransfer(txEvent, 'external') : false;
   };
 
-  const processStatusTransfer = async (ledgerEvent: NDKEvent) => {
-    if (startEvent) {
-      const subkind: string | undefined = getTagValue(ledgerEvent.tags, 't');
-      if (subkind) {
-        if (subkind.includes('error')) statusVars.handleMarkError();
+  const handleInternalStatus = async (event: NDKEvent) => {
+    const subkind: string | undefined = getTagValue(event.tags, 't');
 
-        if (subkind.includes('ok')) {
+    switch (subkind) {
+      case 'internal-transaction-error':
+        statusVars.handleMarkError();
+        break;
+
+      case 'internal-transaction-ok': {
+        const refundEvent = await ndk.fetchEvent({
+          kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
+          authors: [config.modulePubkeys.urlx],
+          '#t': [TransactionTags.INTERNAL.start],
+          '#e': [event.id],
+        });
+
+        refundEvent ? statusVars.handleMarkError() : statusVars.handleMarkSuccess();
+        break;
+      }
+    }
+
+    setStartEventInfo({ published: false });
+  };
+
+  const handleExternalStatus = async (events: NDKEvent[]) => {
+    for (const event of events) {
+      const subkind: string | undefined = getTagValue(event.tags, 't');
+      let shouldResetStartEvent = false;
+
+      switch (subkind) {
+        case TransactionTags.INTERNAL.start:
+        case TransactionTags.INTERNAL.error:
+          statusVars.handleMarkError();
+          shouldResetStartEvent = true;
+          break;
+
+        case TransactionTags.OUTBOUND.error:
+        case TransactionTags.INTERNAL.error: {
           const refundEvent = await ndk.fetchEvent({
             kinds: [LaWalletKinds.REGULAR as unknown as NDKKind],
             authors: [config.modulePubkeys.urlx],
-            '#t': [LaWalletTags.INTERNAL_TRANSACTION_START],
-            '#e': [startEvent.id!],
+            '#t': [TransactionTags.INTERNAL.start],
+            '#e': [event.id],
           });
 
-          refundEvent ? statusVars.handleMarkError() : statusVars.handleMarkSuccess();
+          if (refundEvent) statusVars.handleMarkError();
+          shouldResetStartEvent = true;
+          break;
         }
 
-        setStartEvent(null);
+        case TransactionTags.OUTBOUND.ok:
+          statusVars.handleMarkSuccess();
+          shouldResetStartEvent = true;
+          break;
       }
+
+      if (shouldResetStartEvent) setStartEventInfo((prev) => ({ ...prev, published: false }));
+    }
+  };
+
+  const processStatusTransfer = async (statusEvents: NDKEvent[]) => {
+    if (startEventInfo.published) {
+      if (startEventInfo.type === 'internal') {
+        handleInternalStatus(statusEvents[0]!);
+        return;
+      }
+
+      handleExternalStatus(statusEvents);
     }
   };
 
   React.useEffect(() => {
-    if (events.length) processStatusTransfer(events[0]!);
+    if (events.length) processStatusTransfer(events);
   }, [events]);
+
+  React.useEffect(() => {
+    if (startEventInfo.published) validateRelaysStatus();
+  }, [startEventInfo.published]);
 
   return {
     ...statusVars,
-    isPending: Boolean(startEvent),
+    isPending: startEventInfo.published,
     execInternalTransfer,
     execOutboundTransfer,
   };

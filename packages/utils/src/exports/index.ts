@@ -1,5 +1,7 @@
 export * from '../constants/constants.js';
 
+export { logger } from '../utils/logger.js'
+
 export {
   LaWalletKinds,
   LaWalletTags,
@@ -18,13 +20,15 @@ export {
 } from '../utils/events.js';
 
 export { type CreateConfigParameters, createConfig } from '../createConfig.js';
-export { type BaseStorage, type CreateStorageParameters, createStorage } from '../createStorage.js';
+export { type BaseStorage, type CreateStorageParameters, createStorage, MappedStoragedKeys } from '../createStorage.js';
 
 export { lnurl_decode, lnurl_encode } from '../libs/lnurl.js';
 
 export { UserIdentity } from '../models/Identity.js';
 
 export * as nip26 from '../libs/nip26.js';
+
+export * from '../libs/transaction.js';
 
 export {
   type MultiNip04Content,

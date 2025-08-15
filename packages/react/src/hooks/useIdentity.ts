@@ -9,6 +9,37 @@ export interface UseIdentityParameters extends ConfigParameter {
   privateKey?: string;
 }
 
+function useForceRender() {
+  const [, update] = React.useReducer((c) => c + 1, 0);
+  return update;
+}
+
+class ReactiveUserIdentity extends UserIdentity {
+  #forceRender: () => void;
+
+  constructor(params: UseIdentityParameters, forceRender: () => void) {
+    super(params);
+    this.#forceRender = forceRender;
+  }
+
+  override reset() {
+    super.reset();
+    this.#forceRender();
+  }
+
+  override async initializeFromPrivateKey(key: string, username?: string) {
+    const result = await super.initializeFromPrivateKey(key, username);
+    this.#forceRender();
+    return result;
+  }
+
+  override async initializeIdentityFromPubkey(pubkey: string) {
+    const result = await super.initializeIdentityFromPubkey(pubkey);
+    this.#forceRender();
+    return result;
+  }
+}
+
 export const useIdentity = (params?: UseIdentityParameters): UserIdentity => {
   if (!params) {
     const context = useLaWallet();
@@ -22,21 +53,18 @@ export const useIdentity = (params?: UseIdentityParameters): UserIdentity => {
   }
 
   const config = useConfig(params);
-  const [identity, setIdentity] = React.useState<UserIdentity>(new UserIdentity({ config }));
+  const forceRender = useForceRender();
+  const [identity] = React.useState<UserIdentity>(() => new ReactiveUserIdentity({ ...params, config }, forceRender));
 
   React.useEffect(() => {
-    const _identity: UserIdentity = new UserIdentity({ ...params, config });
-
     if (params.pubkey) {
-      _identity.initializeIdentityFromPubkey(params.pubkey).then(() => setIdentity(_identity));
+      identity.initializeIdentityFromPubkey(params.pubkey);
     }
   }, [params.pubkey]);
 
   React.useEffect(() => {
-    const _identity: UserIdentity = new UserIdentity({ ...params, config });
-
     if (params.privateKey) {
-      _identity.initializeFromPrivateKey(params.privateKey).then(() => setIdentity(_identity));
+      identity.initializeFromPrivateKey(params.privateKey);
     }
   }, [params.privateKey]);
 
